@@ -1,0 +1,24 @@
+/.idea/*
+
+/documentation/*.xml~
+/documentation/output/*
+
+/component/connection*.xml
+/component/backend/connection*.xml
+/component/backend/CHANGELOG.php
+/component/backend/version.php
+
+/component/cli/*.xml
+
+/component/backend/media/css/fef*
+/component/backend/media/fonts
+/component/backend/media/images
+/component/backend/media/uncompressed/js/tabs.js
+
+/release/*
+
+# Internal language symlinks
+/component/language/*/en-GB
+/modules/*/*/language/en-GB
+/plugins/*/*/language/en-GB
+/translations

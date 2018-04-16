@@ -1,0 +1,59 @@
+<extension type="component" version="2.5.0" method="upgrade">
+	<name>COM_CONNECTION</name>
+	<creationDate>##DATE##</creationDate>
+	<author>Nicholas K. Dionysopoulos</author>
+	<authorEmail>nicholas@akeebabackup.com</authorEmail>
+	<authorUrl>http://www.akeebabackup.com</authorUrl>
+	<copyright>Copyright (c)2018 Nicholas K. Dionysopoulos</copyright>
+	<license>This component in released under the GNU/GPL v3 or later license</license>
+	<version>##VERSION##</version>
+	<description>A component to ask for connection details of users and auto-delete them after a while</description>
+
+	<!-- Public front end files -->
+	<files folder="frontend">
+        <folder>Dispatcher</folder>
+
+        <filename>connection.php</filename>
+	</files>
+
+	<!-- Front end translation files -->
+	<languages folder="language/frontend">
+		<language tag="en-GB">en-GB/en-GB.com_connection.ini</language>
+	</languages>
+
+	<!-- Administrator back-end section -->
+	<administration>
+		<!-- Administration menu -->
+		<menu view="cpanel">COM_CONNECTION</menu>
+
+		<!-- Back-end files -->
+        <files folder="backend">
+            <folder>assets</folder>
+            <folder>Controller</folder>
+            <folder>Dispatcher</folder>
+            <folder>Helper</folder>
+            <folder>media</folder>
+            <folder>Model</folder>
+            <folder>sql</folder>
+            <folder>Toolbar</folder>
+            <folder>View</folder>
+
+            <filename>access.xml</filename>
+            <filename>connection.php</filename>
+            <filename>CHANGELOG.php</filename>
+            <filename>config.xml</filename>
+            <filename>fof.xml</filename>
+            <filename>version.php</filename>
+        </files>
+
+		<!-- Back-end translation files -->
+		<languages folder="language/backend">
+			<language tag="en-GB">en-GB/en-GB.com_connection.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_connection.sys.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_connection.menu.ini</language>
+		</languages>
+
+	</administration>
+
+	<scriptfile>script.com_connection.php</scriptfile>
+</extension>

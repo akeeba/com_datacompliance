@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<project name="Connections" description="Connection Defatuls" default="git" >
+    <import file="${phing.dir}/../../buildfiles/phing/common.xml" />
+
+	<!--
+	====================================================================================================
+	File sets
+	====================================================================================================
+	-->
+	<fileset dir="${dirs.component}" id="component" expandsymboliclinks="true">
+		<include name="**" />
+	</fileset>
+
+    <fileset dir="${dirs.release}" id="package">
+        <include name="com_*.zip" />
+        <!--<include name="file_*.zip" />-->
+        <!--<include name="mod_*.zip" />-->
+        <include name="lib_*.zip" />
+		<include name="file_fef*.zip" />
+        <include name="pkg_*.xml" />
+        <include name="*.txt" />
+        <include name="script.*.php" />
+    </fileset>
+
+    <fileset dir="${dirs.component}/cli" id="cli">
+        <include name="*.php" />
+        <include name="file_connection.xml" />
+    </fileset>
+
+
+    <!--
+    ====================================================================================================
+    Tasks - General
+    ====================================================================================================
+    -->
+
+    <target name="all" description="Makes everything"
+            depends="git,documentation">
+    </target>
+
+    <target name="git" description="Makes only packages, not the documentation"
+            depends="new-release,setup-properties,copy-changelog,component-packages">
+    </target>
+
+    <target name="documentation" description="Creates the documentation packages"
+            depends="doc-j-pdf">
+    </target>
+
+    <target name="component-packages" depends="new-release, setup-properties, package-plugins, package-pkg" />
+
+	<!--
+	====================================================================================================
+	Tasks - Joomla! packages
+	====================================================================================================
+	-->
+
+
+    <!--
+    ====================================================================================================
+    Tasks - Documentation
+    ====================================================================================================
+    -->
+    <target name="doc-j-pdf" description="Documentation for Joomla! in PDF format">
+        <phingcall target="docbook-pdf">
+            <property name="docs.input" value="connection.xml" />
+        </phingcall>
+    </target>
+
+    <target name="doc-epub" description="Documentation for Joomla! in ePub format">
+        <phingcall target="docbook-epub">
+            <property name="docs.input" value="connection.xml" />
+        </phingcall>
+    </target>
+
+    <!--
+        ====================================================================================================
+        Tasks - Other build tasks
+        ====================================================================================================
+        -->
+
+    <target name="copy-changelog" description="Copies the CHANGELOG" depends="setup-properties">
+        <!-- Copy the CHANGELOG -->
+        <copy file="${dirs.root}/CHANGELOG" tofile="${dirs.component}/backend/CHANGELOG.php" overwrite="true" />
+    </target>
+
+    <!--
+    ====================================================================================================
+    Tasks - Project management
+    ====================================================================================================
+    -->
+    <target name="docsdeploy" depends="docsdeploy-admintools">
+        <echo>All Connection documentation has been uploaded</echo>
+    </target>
+
+    <target name="docsdeploy-admintools" >
+        <phingcall target="docbook-deploy">
+            <property name="docsdeploy.path.source" value="" />
+              <property name="docsdeploy.path.target" value="connection" />
+        </phingcall>
+    </target>
+</project>
