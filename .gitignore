@@ -3,8 +3,8 @@
 /documentation/*.xml~
 /documentation/output/*
 
-/component/connection*.xml
-/component/backend/connection*.xml
+/component/connection.xml
+/component/backend/connection.xml
 /component/backend/CHANGELOG.php
 /component/backend/version.php
 
@@ -21,4 +21,3 @@
 /component/language/*/en-GB
 /modules/*/*/language/en-GB
 /plugins/*/*/language/en-GB
-/translations
