@@ -11,8 +11,6 @@
 
 	<!-- Public front end files -->
 	<files folder="frontend">
-        <folder>Dispatcher</folder>
-
         <filename>connection.php</filename>
 	</files>
 
@@ -20,6 +18,13 @@
 	<languages folder="language/frontend">
 		<language tag="en-GB">en-GB/en-GB.com_connection.ini</language>
 	</languages>
+
+	<!-- Media files -->
+	<media destination="com_connection" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+		<folder>icons</folder>
+	</media>
 
 	<!-- Administrator back-end section -->
 	<administration>
