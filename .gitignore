@@ -10,10 +10,10 @@
 
 /component/cli/*.xml
 
-/component/backend/media/css/fef*
-/component/backend/media/fonts
-/component/backend/media/images
-/component/backend/media/uncompressed/js/tabs.js
+/component/media/css/fef*
+/component/media/fonts
+/component/media/images
+/component/media/uncompressed/js/tabs.js
 
 /release/*
 
