@@ -7,11 +7,11 @@
 	<copyright>Copyright (c)2018 Nicholas K. Dionysopoulos</copyright>
 	<license>This component in released under the GNU/GPL v3 or later license</license>
 	<version>##VERSION##</version>
-	<description>A component to ask for connection details of users and auto-delete them after a while</description>
+	<description>A component to help with GDPR compliance on AkeebaBackup.com</description>
 
 	<!-- Public front end files -->
 	<files folder="frontend">
-        <filename>connection.php</filename>
+        <filename>compliance.php</filename>
 	</files>
 
 	<!-- Front end translation files -->
@@ -42,7 +42,7 @@
             <folder>View</folder>
 
             <filename>access.xml</filename>
-            <filename>connection.php</filename>
+            <filename>compliance.php</filename>
             <filename>CHANGELOG.php</filename>
             <filename>config.xml</filename>
             <filename>fof.xml</filename>

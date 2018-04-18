@@ -1,13 +1,11 @@
 <?php
 /**
- * @package   Akeeba Connection
+ * @package   Akeeba Data Compliance
  * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
 defined('_JEXEC') or die;
-
-JDEBUG ? define('AKEEBADEBUG', 1) : null;
 
 if (version_compare(PHP_VERSION, '5.4.0', 'lt'))
 {
@@ -66,7 +64,7 @@ if (!@file_exists(JPATH_SITE . '/media/fef/fef.php'))
  * Now you know what we did and why we did it. Feel free to include this idea in your GPL projects :)
  */
 
-function mainLoopConnectionForJoomla()
+function mainLoopDataComplianceForJoomla()
 {
 	if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
 	{
@@ -75,12 +73,12 @@ function mainLoopConnectionForJoomla()
 		return;
 	}
 
-	FOF30\Container\Container::getInstance('com_connection')->dispatcher->dispatch();
+	FOF30\Container\Container::getInstance('com_datacompliance')->dispatcher->dispatch();
 };
 
-function errorHandlerConnectionForJoomla($e)
+function errorHandlerDataComplianceForJoomla($e)
 {
-	$title = 'Akeeba Connection';
+	$title = 'Akeeba Data Compliance';
 	$isPro = 1;
 
 	if (!(include_once __DIR__ . '/View/errorhandler.php'))
@@ -94,11 +92,11 @@ if (version_compare(PHP_VERSION, '7.0.0', 'lt'))
 	// PHP 5.4, 5.5 and 5.6. Only user exceptions can be caught.
 	try
 	{
-		mainLoopConnectionForJoomla();
+		mainLoopDataComplianceForJoomla();
 	}
 	catch (Exception $e)
 	{
-		errorHandlerConnectionForJoomla($e);
+		errorHandlerDataComplianceForJoomla($e);
 	}
 }
 else
@@ -106,10 +104,10 @@ else
 	// PHP 7.0 or later; we can catch PHP Fatal Errors as well
 	try
 	{
-		mainLoopConnectionForJoomla();
+		mainLoopDataComplianceForJoomla();
 	}
 	catch (Throwable $e)
 	{
-		errorHandlerConnectionForJoomla($e);
+		errorHandlerDataComplianceForJoomla($e);
 	}
 }

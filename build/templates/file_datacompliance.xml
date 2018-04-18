@@ -8,11 +8,11 @@
     <license>GNU GPL v3 or later</license>
     <version>##VERSION##</version>
     <creationDate>##DATE##</creationDate>
-    <description>Connection CLI scripts v.##VERSION##</description>
+    <description>Data Compliance CLI scripts v.##VERSION##</description>
 
     <fileset>
         <files target="cli">
-            <file>connection_purge.php</file>
+            <file>XXX_XXX.php</file>
         </files>
     </fileset>
 </extension>

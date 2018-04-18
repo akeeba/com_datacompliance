@@ -1,13 +1,11 @@
 <?php
 /**
- * @package   Akeeba Connection
+ * @package   Akeeba Data Compliance
  * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
 defined('_JEXEC') or die();
-
-JDEBUG ? define('AKEEBADEBUG', 1) : null;
 
 if (version_compare(PHP_VERSION, '5.4.0', 'lt'))
 {
@@ -20,4 +18,4 @@ if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/inclu
 	throw new RuntimeException('FOF 3.0 is not installed', 500);
 }
 
-FOF30\Container\Container::getInstance('com_connection')->dispatcher->dispatch();
+FOF30\Container\Container::getInstance('com_datacompliance')->dispatcher->dispatch();

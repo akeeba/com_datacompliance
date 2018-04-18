@@ -1,11 +1,11 @@
 <?php
 /**
- * @package   Akeeba Connection
+ * @package   Akeeba Data Compliance
  * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Connection\Admin\Model;
+namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 

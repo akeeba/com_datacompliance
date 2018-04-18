@@ -1,11 +1,11 @@
 <?php
 /**
- * @package   Akeeba Connection
+ * @package   Akeeba Data Compliance
  * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Connection\Admin\Toolbar;
+namespace Akeeba\DataCompliance\Admin\Toolbar;
 
 defined('_JEXEC') or die;
 
@@ -28,7 +28,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 
 	public function onControlPanelsBrowse()
 	{
-		JToolbarHelper::title(JText::_('COM_CONNECTION_TITLE_DASHBOARD') . ' <small>' . AKCONNECTION_DATE . '</small>', 'connection');
+		JToolbarHelper::title(JText::_('COM_CONNECTION_TITLE_DASHBOARD') . ' <small>' . DATACOMPLIANCE_DATE . '</small>', 'connection');
 
 		JToolbarHelper::preferences('com_connection');
 	}

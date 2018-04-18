@@ -1,6 +1,6 @@
 <?php
 /**
- * @package   Akeeba Connection
+ * @package   Akeeba Data Compliance
  * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
@@ -12,7 +12,7 @@ define('_JEXEC', 1);
 $minphp = '5.4.0';
 $curdir = __DIR__;
 
-require_once __DIR__ . '/../administrator/components/com_connection/assets/cli/base.php';
+require_once __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
 
 class AdmintoolsDbrepair extends ConnectionCliBase
 {
@@ -55,11 +55,11 @@ class AdmintoolsDbrepair extends ConnectionCliBase
 		{
 			$year = gmdate('Y');
 			echo <<<ENDBLOCK
-Akeeba Connection purge details CLI $version ($date)
+Akeeba Data Compliance purge details CLI $version ($date)
 Copyright (c) 2018-$year Akeeba Ltd / Nicholas K. Dionysopoulos
 -------------------------------------------------------------------------------
-Akeeba Connection is Free Software, distributed under the terms of the GNU General
-Public License version 3 or, at your option, any later version.
+Akeeba Data Compliance is Free Software, distributed under the terms of the GNU
+General Public License version 3 or, at your option, any later version.
 This program comes with ABSOLUTELY NO WARRANTY as per sections 15 & 16 of the
 license. See http://www.gnu.org/licenses/gpl-3.0.html for details.
 -------------------------------------------------------------------------------

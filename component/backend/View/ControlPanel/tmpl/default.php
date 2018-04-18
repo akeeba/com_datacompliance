@@ -1,11 +1,11 @@
 <?php
 /**
- * @package   Akeeba Connection
+ * @package   Akeeba Data Compliance
  * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 
-/** @var  \Akeeba\Connection\Admin\View\ControlPanel\Html $this For type hinting in the IDE */
+/** @var  \Akeeba\DataCompliance\Admin\View\ControlPanel\Html $this For type hinting in the IDE */
 
 // Protect from unauthorized access
 defined('_JEXEC') or die;
