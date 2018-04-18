@@ -3,8 +3,8 @@
 /documentation/*.xml~
 /documentation/output/*
 
-/component/connection.xml
-/component/backend/connection.xml
+/component/datacompliance.xml
+/component/backend/datacompliance.xml
 /component/backend/CHANGELOG.php
 /component/backend/version.php
 
