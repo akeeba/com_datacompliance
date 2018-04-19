@@ -56,7 +56,7 @@ class plgAtsDeletenotes extends JPlugin
 	public function onComAtsModelTicketsAfterUpdate($ticket)
 	{
 		// Only trigger when the ticket is unpublised (not enabled) or closed (status = C)
-		$mustTrigger = !$ticket->enabled || ($ticket->status = 'C');
+		$mustTrigger = !$ticket->enabled || ($ticket->status == 'C');
 
 		if (!$mustTrigger)
 		{
