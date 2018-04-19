@@ -31,23 +31,16 @@ class Dispatcher extends \FOF30\Dispatcher\Dispatcher
 
 		// FEF Renderer options. Used to load the common CSS file.
 		$this->container->renderer->setOptions([
-			'custom_css' => 'admin://components/com_connection/media/css/backend.min.css'
+			'custom_css' => 'admin://components/com_datacompliance/media/css/backend.min.css'
 		]);
 
 	    // Load the version file
         @include_once($this->container->backEndPath . '/version.php');
 
-        if (!defined('AKCONNECTION_VERSION'))
+        if (!defined('DATACOMPLIANCE_VERSION'))
         {
-            define('AKCONNECTION_VERSION', 'dev');
-            define('AKCONNECTION_DATE', date('Y-m-d'));
-        }
-
-        // Inject JS code to namespace the current jQuery instance
-        if($this->container->platform->getDocument()->getType() == 'html')
-        {
-            \JHtml::_('jquery.framework');
-            $this->container->template->addJS('admin://components/com_connection/media/js/namespace.min.js', false, false, AKCONNECTION_VERSION);
+            define('DATACOMPLIANCE_VERSION', 'dev');
+            define('DATACOMPLIANCE_DATE', date('Y-m-d'));
         }
     }
 }

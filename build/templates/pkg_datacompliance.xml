@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.3.0" type="package" method="upgrade">
-    <name>Akeea Connection package</name>
+    <name>Akeea Data Compliance package</name>
     <author>Nicholas K. Dionysopoulos</author>
     <creationDate>##DATE##</creationDate>
-    <packagename>connection</packagename>
+    <packagename>compliance</packagename>
     <version>##VERSION##</version>
     <url>https://www.akeebabackup.com</url>
     <packager>Akeeba Ltd</packager>
     <packagerurl>https://www.akeebabackup.com</packagerurl>
     <copyright>Copyright (c)2018 Akeeba Ltd / Nicholas K. Dionysopoulos</copyright>
     <license>GNU GPL v3 or later</license>
-    <description>Akeeba Connection installation package v.##VERSION##</description>
+    <description>Akeeba Data Compliance installation package v.##VERSION##</description>
 
     <!-- List of extensions to install -->
     <files>
@@ -22,5 +22,5 @@
     </files>
 
     <!-- Installation script -->
-    <scriptfile>script.connection.php</scriptfile>
+    <scriptfile>script.datacompliance.php</scriptfile>
 </extension>

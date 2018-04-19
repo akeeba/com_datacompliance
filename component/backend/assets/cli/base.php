@@ -10,93 +10,16 @@ defined('_JEXEC') or die;
 /**
  * You need to set the following variables:
  *
- * $minphp = '5.4.0'; // Minimum PHP version required for your script
  * $curdir = __DIR__; // Path to your script file
  */
-
-// Work around some misconfigured servers which print out notices
-if (function_exists('error_reporting'))
-{
-	$oldLevel = error_reporting(0);
-}
-
-// Minimum PHP version check
-if (!isset($minphp))
-{
-	$minphp = '5.4.0';
-}
-
-if (version_compare(PHP_VERSION, $minphp, 'lt'))
-{
-	$curversion = PHP_VERSION;
-	$bindir = PHP_BINDIR;
-	echo <<< ENDWARNING
-================================================================================
-WARNING! Incompatible PHP version $curversion (required: $minphp or later)
-================================================================================
-
-This script must be run using PHP version $minphp or later. Your server is
-currently using a much older version which would cause this script to crash. As
-a result we have aborted execution of the script. Please contact your host and
-ask them for the correct path to the PHP CLI binary for PHP $minphp or later, then
-edit your CRON job and replace your current path to PHP with the one your host
-gave you.
-
-For your information, the current PHP version information is as follows.
-
-PATH:    $bindir
-VERSION: $curversion
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-IMPORTANT!
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-PHP version numbers are NOT decimals! Trailing zeros do matter. For example,
-PHP 5.3.28 is twenty four versions newer (greater than) than PHP 5.3.4.
-Please consult https://www.akeebabackup.com/how-do-version-numbers-work.html
-
-
-Further clarifications:
-
-1. There is no possible way that you are receiving this message in error. We
-   are using the PHP_VERSION constant to detect the PHP version you are
-   currently using. This is what PHP itself reports as its own version. It
-   simply cannot lie.
-
-2. Even though your *site* may be running in a higher PHP version that the one
-   reported above, your CRON scripts will most likely not be running under it.
-   This has to do with the fact that your site DOES NOT run under the command
-   line and there are different executable files (binaries) for the web and
-   command line versions of PHP.
-
-3. Please note that we cannot provide support about this error as the solution
-   depends only on your server setup. The only people who know how your server
-   is set up are your host's technicians. Therefore we can only advise you to
-   contact your host and request them the correct path to the PHP CLI binary.
-   Let us stress out that only your host knows and can give this information
-   to you.
-
-4. The latest published versions of PHP can be found at http://www.php.net/
-   Any older version is considered insecure and must not be used on a
-   production site. If your server uses a much older version of PHP than those
-   published in the URL above please notify your host that their servers are
-   insecure and in need of an update.
-
-This script will now terminate. Goodbye.
-
-ENDWARNING;
-	die();
-}
 
 // Required by the CMS
 define('DS', DIRECTORY_SEPARATOR);
 
-// Mark this as a CLI script. Used by the Platform class.
-define('AKEEBACLI', 1);
-
 // Load system defines
 if (!isset($curdir))
 {
-	// I assume I'm located in administrator/components/com_connection/assets/cli
+	// I assume I'm located in administrator/components/com_datacompliance/assets/cli
 	$curdir = __DIR__ . '/../../../../../cli';
 	$realPath = @realpath($curdir);
 
@@ -106,10 +29,9 @@ if (!isset($curdir))
 	}
 }
 
-// Restore the error reporting before importing Joomla core code
-if (function_exists('error_reporting'))
+if (!file_exists($curdir . '/includes/defines.php'))
 {
-	error_reporting($oldLevel);
+	$curdir = getcwd();
 }
 
 if (file_exists($curdir . '/defines.php'))
@@ -151,11 +73,8 @@ JLoader::import('joomla.filter.input');
 JLoader::import('joomla.filter.filterinput');
 JLoader::import('joomla.factory');
 
-if (version_compare(JVERSION, '3.4.9999', 'ge'))
-{
-	// Joomla! 3.5 and later does not load the configuration.php unless you explicitly tell it to.
-	JFactory::getConfig(JPATH_CONFIGURATION . '/configuration.php');
-}
+// Joomla! 3.5 and later does not load the configuration.php unless you explicitly tell it to.
+JFactory::getConfig(JPATH_CONFIGURATION . '/configuration.php');
 
 if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
 {
@@ -165,7 +84,7 @@ if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/inclu
 /**
  * Base class for a Joomla! command line application. Adapted from JCli / JApplicationCli
  */
-class ConnectionCliBase
+class DataComplianceCliBase
 {
 	/**
 	 * The application input object.
@@ -184,7 +103,7 @@ class ConnectionCliBase
 	/**
 	 * The application instance.
 	 *
-	 * @var    AdmintoolsCliBase
+	 * @var    DataComplianceCliBase
 	 */
 	protected static $instance;
 
@@ -270,27 +189,27 @@ class ConnectionCliBase
 	}
 
 	/**
-	 * Returns a reference to the global ConnectionCliBase object, only creating it if it
+	 * Returns a reference to the global DataComplianceCliBase object, only creating it if it
 	 * doesn't already exist.
 	 *
-	 * This method must be invoked as: $cli = ConnectionCliBase::getInstance();
+	 * This method must be invoked as: $cli = DataComplianceCliBase::getInstance();
 	 *
-	 * @param   string $name The name of the ConnectionCliBase class to instantiate.
+	 * @param   string $name The name of the DataComplianceCliBase class to instantiate.
 	 *
-	 * @return  ConnectionCliBase  A ConnectionCliBase object
+	 * @return  DataComplianceCliBase  A DataComplianceCliBase object
 	 */
 	public static function &getInstance($name = null)
 	{
 		// Only create the object if it doesn't exist.
 		if (empty(self::$instance))
 		{
-			if (class_exists($name) && (is_subclass_of($name, 'ConnectionCliBase')))
+			if (class_exists($name) && (is_subclass_of($name, 'DataComplianceCliBase')))
 			{
 				self::$instance = new $name;
 			}
 			else
 			{
-				self::$instance = new ConnectionCliBase;
+				self::$instance = new DataComplianceCliBase;
 			}
 		}
 

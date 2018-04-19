@@ -23,9 +23,9 @@ $emptyRoot = empty($root);
 	<div class="akeeba-block--failure">
 		<p>
 			<?php
-			echo \JText::sprintf('COM_CONNECTION_CPANEL_ERR_UPDATE_STUCK',
+			echo \JText::sprintf('COM_DATACOMPLIANCE_CPANEL_ERR_UPDATE_STUCK',
 				$this->container->db->getPrefix(),
-				'index.php?option=com_connection&view=ControlPanel&task=forceUpdateDb'
+				'index.php?option=com_datacompliance&view=ControlPanel&task=forceUpdateDb'
 			)?>
 		</p>
 	</div>

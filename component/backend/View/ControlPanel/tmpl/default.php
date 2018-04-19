@@ -11,7 +11,7 @@
 defined('_JEXEC') or die;
 
 ?>
-<?php echo $this->loadAnyTemplate('admin:com_connection/ControlPanel/warnings'); ?>
+<?php echo $this->loadAnyTemplate('admin:com_datacompliance/ControlPanel/warnings'); ?>
 
 <div>
 	<div class="akeeba-container--50-50">

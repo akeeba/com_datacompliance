@@ -11,50 +11,19 @@
  * let us do that from CLI (it tries to access the Joomla! session which is nonexistent under the CLI).
  */
 
-define('_JEXEC', 1);
+$path = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
 
-// Load system defines
-if (file_exists(__DIR__ . '/defines.php'))
+if (file_exists($path))
 {
-	include_once __DIR__ . '/defines.php';
+	require_once $path;
+}
+else
+{
+	$curDir = getcwd();
+	require_once $curDir . '/../administrator/components/com_datacompliance/assets/cli/base.php';
 }
 
-if (!defined('_JDEFINES'))
-{
-	$curDir = __DIR__;
-
-	if (!file_exists($curDir . '/includes/defines.php'))
-	{
-		$curDir = getcwd();
-	}
-
-}
-
-if (!defined('_JDEFINES'))
-{
-	$path = rtrim($curDir, DIRECTORY_SEPARATOR);
-	$rpos = strrpos($path, DIRECTORY_SEPARATOR);
-	$path = substr($path, 0, $rpos);
-	define('JPATH_BASE', $path);
-	require_once JPATH_BASE . '/includes/defines.php';
-}
-
-// Load the rest of the framework include files
-require_once JPATH_LIBRARIES . '/import.legacy.php';
-require_once JPATH_LIBRARIES . '/cms.php';
-
-// Load the JApplicationCli class
-JLoader::import('joomla.application.cli');
-JLoader::import('joomla.environment.request');
-JLoader::import('joomla.environment.uri');
-JLoader::import('joomla.utilities.date');
-JLoader::import('joomla.application.component.helper');
-JLoader::import('legacy.component.helper');
-
-// Joomla! 3.5 and later does not load the configuration.php unless you explicitly tell it to.
-JFactory::getConfig(JPATH_CONFIGURATION . '/configuration.php');
-
-class GDPRPrepareATSRemoveDeadCats extends JApplicationCli
+class GDPRPrepareATSRemoveDeadCats extends DataComplianceCliBase
 {
 	/**
 	 * @var \FOF30\Container\Container
@@ -103,6 +72,8 @@ class GDPRPrepareATSRemoveDeadCats extends JApplicationCli
 			 * the actual categories myself.
 			 */
 		}
+
+		parent::execute();
 	}
 
 	public function getDeadCategories(): array
@@ -132,18 +103,4 @@ class GDPRPrepareATSRemoveDeadCats extends JApplicationCli
 	}
 }
 
-$app = JApplicationCli::getInstance('GDPRPrepareATSRemoveDeadCats');
-
-try
-{
-	$app->execute();
-}
-catch (Throwable $e)
-{
-	echo "\n\n\n" . str_repeat('=', 79);
-	echo "\nWHOOPSIE!!!!\n" . str_repeat('=', 79) . "\n\n";
-	echo $e->getMessage() . "\n\n";
-	echo $e->getFile() . ' --- L ' . $e->getLine() . "\n\n";
-	echo $e->getTraceAsString();
-	echo "\n";
-}
+DataComplianceCliBase::getInstance('GDPRPrepareATSRemoveDeadCats')->execute();

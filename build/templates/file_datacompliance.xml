@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.3.0" type="file" method="upgrade">
-    <name>file_connection</name>
+    <name>file_datacompliance</name>
     <author>Nicholas K. Dionysopoulos</author>
     <authorEmail>nicholas@akeebabackup.com</authorEmail>
     <authorUrl>https://www.akeebabackup.com</authorUrl>
@@ -12,7 +12,11 @@
 
     <fileset>
         <files target="cli">
-            <file>XXX_XXX.php</file>
+            <!-- CLI scripts to be run once, when preparing our site for the compliance -->
+            <file>gdpr-prepare-ats-remove-dead-categories.php</file>
+
+            <!-- CLI scripts to run periodically to achieve compliance -->
+            <file>gdpr-scheduled-remove-contactus-entries.php</file>
         </files>
     </fileset>
 </extension>

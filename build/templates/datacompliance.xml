@@ -1,5 +1,5 @@
 <extension type="component" version="2.5.0" method="upgrade">
-	<name>COM_CONNECTION</name>
+	<name>COM_DATACOMPLIANCE</name>
 	<creationDate>##DATE##</creationDate>
 	<author>Nicholas K. Dionysopoulos</author>
 	<authorEmail>nicholas@akeebabackup.com</authorEmail>
@@ -20,7 +20,7 @@
 	</languages>
 
 	<!-- Media files -->
-	<media destination="com_connection" folder="media">
+	<media destination="com_datacompliance" folder="media">
 		<folder>css</folder>
 		<folder>js</folder>
 		<folder>icons</folder>
@@ -29,7 +29,7 @@
 	<!-- Administrator back-end section -->
 	<administration>
 		<!-- Administration menu -->
-		<menu view="cpanel">COM_CONNECTION</menu>
+		<menu view="cpanel">COM_DATACOMPLIANCE</menu>
 
 		<!-- Back-end files -->
         <files folder="backend">
@@ -57,5 +57,5 @@
 
 	</administration>
 
-	<scriptfile>script.com_connection.php</scriptfile>
+	<scriptfile>script.com_datacompliance.php</scriptfile>
 </extension>

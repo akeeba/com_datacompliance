@@ -41,7 +41,7 @@ class ControlPanel extends Model
 
 		// Install or update database
 		$db          = $this->container->db;
-		$dbInstaller = new Installer($db, JPATH_ADMINISTRATOR . '/components/com_connection/sql/xml');
+		$dbInstaller = new Installer($db, JPATH_ADMINISTRATOR . '/components/com_datacompliance/sql/xml');
 
 		$dbInstaller->updateSchema();
 
