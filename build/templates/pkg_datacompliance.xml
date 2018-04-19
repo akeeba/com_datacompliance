@@ -15,7 +15,10 @@
     <!-- List of extensions to install -->
     <files>
         <!-- Component -->
-        <file type="component" id="com_connection">com_connection.zip</file>
+        <file type="component" id="com_datacompliance">com_datacompliance.zip</file>
+
+        <!-- Plugins: ats -->
+        <file type="plugin" group="ats" id="deletenotes">plg_ats_deletenotes.zip</file>
     </files>
 
     <!-- Installation script -->

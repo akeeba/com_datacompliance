@@ -11,12 +11,12 @@
 
 	<!-- Public front end files -->
 	<files folder="frontend">
-        <filename>compliance.php</filename>
+        <filename>datacompliance.php</filename>
 	</files>
 
 	<!-- Front end translation files -->
 	<languages folder="language/frontend">
-		<language tag="en-GB">en-GB/en-GB.com_connection.ini</language>
+		<language tag="en-GB">en-GB/en-GB.com_datacompliance.ini</language>
 	</languages>
 
 	<!-- Media files -->
@@ -42,8 +42,7 @@
             <folder>View</folder>
 
             <filename>access.xml</filename>
-            <filename>compliance.php</filename>
-            <filename>CHANGELOG.php</filename>
+            <filename>datacompliance.php</filename>
             <filename>config.xml</filename>
             <filename>fof.xml</filename>
             <filename>version.php</filename>
@@ -51,9 +50,9 @@
 
 		<!-- Back-end translation files -->
 		<languages folder="language/backend">
-			<language tag="en-GB">en-GB/en-GB.com_connection.ini</language>
-			<language tag="en-GB">en-GB/en-GB.com_connection.sys.ini</language>
-			<language tag="en-GB">en-GB/en-GB.com_connection.menu.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_datacompliance.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_datacompliance.sys.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_datacompliance.menu.ini</language>
 		</languages>
 
 	</administration>
