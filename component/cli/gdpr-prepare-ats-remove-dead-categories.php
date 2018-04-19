@@ -11,6 +11,8 @@
  * let us do that from CLI (it tries to access the Joomla! session which is nonexistent under the CLI).
  */
 
+define('_JEXEC', 1);
+
 $path = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
 
 if (file_exists($path))
