@@ -33,12 +33,11 @@ class Test extends Controller
 	public function test()
 	{
 		$userID = $this->input->getInt('id');
-		/** @var \Akeeba\DataCompliance\Admin\Model\Export $export */
-		$export = $this->container->factory->model('Export')->tmpInstance();
-		$xml = $export->exportFormattedXML($userID);
+		/** @var \Akeeba\DataCompliance\Admin\Model\Wipe $wipe */
+		$wipe = $this->container->factory->model('Wipe')->tmpInstance();
+		$result = $wipe->wipe($userID);
 
-		$xml = htmlentities($xml);
-		echo "<pre>$xml</pre>";
+		var_dump($result, $wipe->getError());
 
 		return;
 	}

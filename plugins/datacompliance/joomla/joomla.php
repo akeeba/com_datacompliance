@@ -81,11 +81,12 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 * - User keys (#__user_keys) are deleted
 	 * - All user groups are removed from #__user_usergroup_map for this user, making it impossible to login
 	 *
-	 * @param   int  $userID  The user ID we are asked to delete
+	 * @param   int     $userID  The user ID we are asked to delete
+	 * @param   string  $type    The export type (user, admin, lifecycle)
 	 *
 	 * @return  array
 	 */
-	public function onDataComplianceDeleteUser($userID): array
+	public function onDataComplianceDeleteUser(int $userID, string $type): array
 	{
 		$ret = [
 			'joomla' => [
@@ -213,6 +214,24 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	}
 
 	/**
+	 * Returns a list of user IDs which are to be removed on $date due to the lifecycle policy. In other words, which
+	 * user IDs this plugin considers to be "expired" on $date.
+	 *
+	 * Not all plugins need to implement this method. Some plugins may implement _only_ this method, e.g. if your
+	 * lifecycle policy depends on an external service's results (you could have, for example, LDAP fields to mark
+	 * ex-employee records as ripe for garbage collection).
+	 *
+	 * @param   DateTime  $date
+	 *
+	 * @return  int[]
+	 */
+	public function onDataComplianceGetEOLRecords(DateTime $date): array
+	{
+		// This plugin does not specify any lifecycle policies
+		return [];
+	}
+
+	/**
 	 * Get the Joomla! user object for the given user ID
 	 *
 	 * @param   int  $userID  The user ID to return the user for
@@ -259,7 +278,14 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		$user->registerDate  = $jFake->toSql();
 		$user->lastvisitDate = $jFake->toSql();
 		$user->activation    = UserHelper::genRandomPassword(32);
-		$user->params->loadString('{}');
+		if (!is_object($user->params) || !($user->params instanceof \Joomla\Registry\Registry))
+		{
+			$user->params = '{}';
+		}
+		else
+		{
+			$user->params->loadString('{}');
+		}
 		$user->lastResetTime = $jFake->toSql();
 		$user->resetCount    = 0;
 		$user->requireReset  = 1;
