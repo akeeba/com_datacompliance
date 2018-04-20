@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.7" type="plugin" group="ats" method="upgrade">
-	<name>PLG_ATS_DELETENOTES</name>
+<extension version="3.7" type="plugin" group="datacompliance" method="upgrade">
+	<name>PLG_DATACOMPLIANCE_JOOMLA</name>
 	<author>Nicholas K. Dionysopoulos</author>
 	<authorEmail>nicholas@akeebabackup.com</authorEmail>
 	<authorUrl>http://www.akeebabackup.com</authorUrl>
@@ -8,15 +8,15 @@
 	<license>GNU General Public License version 3, or later</license>
 	<creationDate>2018-04-19</creationDate>
 	<version>1.0</version>
-	<description>PLG_ATS_DELETENOTES_DESCRIPTION</description>
+	<description>PLG_DATACOMPLIANCE_JOOMLA_DESCRIPTION</description>
 
 	<files>
-		<filename plugin="deletenotes">deletenotes.php</filename>
+		<filename plugin="joomla">joomla.php</filename>
 	</files>
 
 	<languages folder="language">
-		<language tag="en-GB">en-GB/en-GB.plg_ats_deletenotes.ini</language>
-		<language tag="en-GB">en-GB/en-GB.plg_ats_deletenotes.sys.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_datacompliance_joomla.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_datacompliance_joomla.sys.ini</language>
 	</languages>
 
 	<scriptfile>script.php</scriptfile>

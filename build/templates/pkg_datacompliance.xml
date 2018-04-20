@@ -19,6 +19,9 @@
 
         <!-- Plugins: ats -->
         <file type="plugin" group="ats" id="deletenotes">plg_ats_deletenotes.zip</file>
+
+        <!-- Plugins: datacompliance -->
+        <file type="plugin" group="datacompliance" id="joomla">plg_datacompliance_joomla.zip</file>
     </files>
 
     <!-- Installation script -->
