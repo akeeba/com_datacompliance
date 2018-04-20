@@ -43,6 +43,28 @@ abstract class Export
 	}
 
 	/**
+	 * Merge two SimpleXMLElement documents into a new one. The root element of the first document is kept. The top
+	 * level children of $second become top level children of $first, appended after $first's existing children. This is
+	 * used to merge multiple export documents, containing one or more domains, into one big file.
+	 *
+	 * @param   SimpleXMLElement  $first
+	 * @param   SimpleXMLElement  $second
+	 *
+	 * @return  SimpleXMLElement
+	 */
+	public static function merge(SimpleXMLElement &$first, SimpleXMLElement $second): SimpleXMLElement
+	{
+		$ret = clone $first;
+
+		foreach ($second->children() as $child)
+		{
+			self::adoptChild($ret, $child);
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Create an XML export item from array data
 	 *
 	 * @param   array   $data   The array data to convert into an <item> document
@@ -106,7 +128,7 @@ abstract class Export
 	public static function exportItemFromJTable($table): SimpleXMLElement
 	{
 		$data        = [];
-		$idCol       = $table->getPrimaryKey();
+		$idCol       = $table->getKeyName(false);
 		$tableFields = $table->getFields();
 
 		foreach ($tableFields as $fieldName => $fieldDefinition)
