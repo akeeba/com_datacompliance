@@ -14,6 +14,7 @@
         <files target="cli">
             <!-- CLI scripts to be run once, when preparing our site for the compliance -->
             <file>gdpr-prepare-ats-remove-dead-categories.php</file>
+            <file>gdpr-prepare-ats-remove-login-info.php</file>
 
             <!-- CLI scripts to run periodically to achieve compliance -->
             <file>gdpr-scheduled-remove-contactus-entries.php</file>
