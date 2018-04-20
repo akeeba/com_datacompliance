@@ -28,7 +28,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 
 	public function onControlPanelsBrowse()
 	{
-		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_TITLE_DASHBOARD') . ' <small>' . DATACOMPLIANCE_DATE . '</small>', 'connection');
+		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_TITLE_DASHBOARD') . ' <small>' . DATACOMPLIANCE_DATE . '</small>', 'vcard');
 
 		JToolbarHelper::preferences('com_datacompliance');
 	}

@@ -13,6 +13,9 @@ use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
 use FOF30\Model\Model;
 use SimpleXMLElement;
 
+/**
+ * A model to export user information (data portability)
+ */
 class Export extends Model
 {
 	/**
@@ -26,6 +29,13 @@ class Export extends Model
 	 */
 	public function exportSimpleXML($userId): SimpleXMLElement
 	{
+		// Create an audit trail entry for this export
+		/** @var Exporttrails $trail */
+		$trail = $this->container->factory->model('Exporttrails')->tmpInstance();
+		$trail->create([
+			'user_id' => $userId
+		]);
+
 		$platform = $this->container->platform;
 		$platform->importPlugin('datacompliance');
 		$results = $platform->runPlugins('onDataComplianceExportUser', [$userId]);

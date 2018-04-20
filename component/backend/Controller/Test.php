@@ -33,32 +33,9 @@ class Test extends Controller
 	public function test()
 	{
 		$userID = $this->input->getInt('id');
-
-		$platform = $this->container->platform;
-		$platform->importPlugin('datacompliance');
-		$results = $platform->runPlugins('onDataComplianceExportUser', [$userID]);
-
-		$export = new \SimpleXMLElement("<root />");
-
-		foreach ($results as $result)
-		{
-			if (!is_object($result))
-			{
-				continue;
-			}
-
-			if (!($result instanceof \SimpleXMLElement))
-			{
-				continue;
-			}
-
-			$export = Export::merge($export, $result);
-		}
-
-		$dom = new \DOMDocument();
-		$dom->loadXML($export->asXML());
-		$dom->formatOutput = true;
-		$xml = $dom->saveXML();
+		/** @var \Akeeba\DataCompliance\Admin\Model\Export $export */
+		$export = $this->container->factory->model('Export')->tmpInstance();
+		$xml = $export->exportFormattedXML($userID);
 
 		$xml = htmlentities($xml);
 		echo "<pre>$xml</pre>";

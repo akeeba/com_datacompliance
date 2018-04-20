@@ -13,26 +13,26 @@
 	<!-- SQL commands to run on installation and update -->
 	<sql>
 		<!-- User data export audit trail -->
-		<action table="#__datacompliance_exporttrail" canfail="0">
+		<action table="#__datacompliance_exporttrails" canfail="0">
 			<condition type="missing" value="" />
 			<query><![CDATA[
-CREATE TABLE `#__datacompliance_exporttrail` (
-`id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `#__datacompliance_exporttrails` (
+`datacompliance_exporttrail_id` bigint(20) NOT NULL AUTO_INCREMENT,
 `user_id` bigint(20) unsigned NOT NULL,
 `created_on` datetime NOT NULL,
 `created_by` bigint(20) NOT NULL,
 `requester_ip` varchar(255) NOT NULL,
-PRIMARY KEY (`id`),
+PRIMARY KEY (`datacompliance_exporttrail_id`),
 KEY `#__datacompliance_exporttrail_user` (`user_id`)
 ) DEFAULT COLLATE utf8_general_ci;
             ]]></query>
 		</action>
 
 		<!-- User data wiping audit trail -->
-		<action table="#__datacompliance_wipetrail" canfail="0">
+		<action table="#__datacompliance_wipetrails" canfail="0">
 			<condition type="missing" value="" />
 			<query><![CDATA[
-CREATE TABLE `#__datacompliance_wipetrail` (
+CREATE TABLE `#__datacompliance_wipetrails` (
 `user_id` bigint(20) NOT NULL,
 `type` enum('lifecycle','user','admin') NOT NULL DEFAULT 'user',
 `created_on` datetime NOT NULL,
