@@ -36,14 +36,7 @@ class ControlPanel extends Controller
 		$model = $this->getModel();
 
 		// Upgrade the database schema if necessary
-		try
-		{
-			$model->checkAndFixDatabase();
-		}
-		catch (\RuntimeException $e)
-		{
-			// The update is stuck. We will display a warning in the Control Panel
-		}
+		$model->checkAndFixDatabase();
 
 		// Update the magic parameters
 		$model->updateMagicParameters();

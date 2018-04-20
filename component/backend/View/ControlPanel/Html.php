@@ -16,9 +16,6 @@ class Html extends BaseView
 	/** @var  string	The fancy formatted changelog of the component */
 	public $formattedChangelog = '';
 
-	/**@var  bool	Do I have stuck updates pending? */
-	public $stuckUpdates = false;
-
 	/**
 	 * Main Control Panel task
 	 *
@@ -27,7 +24,6 @@ class Html extends BaseView
 	protected function onBeforeMain()
 	{
 		$this->formattedChangelog    = $this->formatChangelog();
-		$this->stuckUpdates          = ($this->container->params->get('updatedb', 0) == 1);
 
 		$this->addJavascriptFile('admin://components/com_admintools/media/js/Modal.min.js');
 		$this->addJavascriptFile('admin://components/com_admintools/media/js/ControlPanel.min.js');

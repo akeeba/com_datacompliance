@@ -25,29 +25,11 @@ class ControlPanel extends Model
 	 */
 	public function checkAndFixDatabase()
 	{
-		$params = $this->container->params;
-
-		// First of all let's check if we are already updating
-		$stuck = $params->get('updatedb', 0);
-
-		if ($stuck)
-		{
-			throw new \RuntimeException('Previous database update is flagged as stuck');
-		}
-
-		// Then set the flag
-		$params->set('updatedb', 1);
-		$params->save();
-
 		// Install or update database
 		$db          = $this->container->db;
 		$dbInstaller = new Installer($db, JPATH_ADMINISTRATOR . '/components/com_datacompliance/sql/xml');
 
 		$dbInstaller->updateSchema();
-
-		// And finally remove the flag if everything went fine
-		$params->set('updatedb', null);
-		$params->save();
 
 		return $this;
 	}
