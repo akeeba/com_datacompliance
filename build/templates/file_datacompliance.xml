@@ -17,6 +17,7 @@
 
             <!-- CLI scripts to run periodically to achieve compliance -->
             <file>gdpr-scheduled-remove-contactus-entries.php</file>
+            <file>gdpr-scheduled-remove-admintools-log.php</file>
         </files>
     </fileset>
 </extension>
