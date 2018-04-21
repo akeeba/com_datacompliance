@@ -16,20 +16,11 @@ class plgSystemDatacompliance extends JPlugin
 	 */
 	protected $app;
 
-	/**
-	 * The DataCompliance container
-	 *
-	 * @var \FOF30\Container\Container
-	 */
-	protected $container;
-
-	public function __construct(object $subject, array $config = array())
+	public function __construct($subject, array $config = array())
 	{
 		$this->autoloadLanguage = true;
 
 		parent::__construct($subject, $config);
-
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
 	}
 
 	public function onBeforeRender()
@@ -38,11 +29,16 @@ class plgSystemDatacompliance extends JPlugin
 	}
 
 	/**
-	 * Load the Cookie Consent JS and CSS when our page has HTML output
+	 * Load the Cookie Consent JS and CSS when our page has HTML output and we're in the site's frontend.
 	 */
 	private function loadCookieConsent()
 	{
 		if ($this->app->input->getCmd('format', 'html') != 'html')
+		{
+			return;
+		}
+
+		if ($this->app->isClient('administrator'))
 		{
 			return;
 		}
