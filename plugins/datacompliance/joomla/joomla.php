@@ -221,14 +221,55 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 * lifecycle policy depends on an external service's results (you could have, for example, LDAP fields to mark
 	 * ex-employee records as ripe for garbage collection).
 	 *
-	 * @param   DateTime  $date
+	 * @param   DateTime $date
 	 *
 	 * @return  int[]
+	 *
+	 * @throws Exception
 	 */
 	public function onDataComplianceGetEOLRecords(DateTime $date): array
 	{
-		// This plugin does not specify any lifecycle policies
-		return [];
+		if (!$this->params->get('lifecycle', 1))
+		{
+			return [];
+		}
+
+		$db    = $this->container->db;
+		$query = $db->getQuery(true)
+		            ->select('id')
+		            ->from($db->qn('#__users'))
+		;
+
+		// Users who have not been logged in for at least $threshold months
+		$threshold = (int) $this->params->get('threshold', 18);
+		$threshold = min(1, $threshold);
+		$jLastYear = $this->container->platform->getDate()->sub(new DateInterval("P{$threshold}M"));
+		$query->where($db->qn('block') . ' < ' . $db->qn($jLastYear->toSql()), 'OR');
+
+		// Users who have never visited the site
+		if ($this->params->get('nevervisted', 1))
+		{
+			$query->where($db->qn('lastvisitDate') . ' = ' . $db->qn($db->getNullDate()), 'OR');
+		}
+
+		// Blocked users
+		if ($this->params->get('blocked', 1))
+		{
+			$query
+				->where($db->qn('block') . ' = ' . $db->qn(1), 'OR');
+		}
+
+		// Users with pre-Joomla! 3.2 password format
+		if ($this->params->get('obsoletepassword', 1))
+		{
+			$query
+				->where('(' .
+					$db->qn('password') . ' LIKE ' . $db->qn('%:%') .
+					' AND NOT ' . $db->qn('password') . ' LIKE ' . $db->qn('$%')
+					. ')', 'OR');
+		}
+
+		return $db->setQuery($query)->loadColumn(0);
 	}
 
 	/**
