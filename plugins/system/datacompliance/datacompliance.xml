@@ -14,6 +14,11 @@
 		<filename plugin="datacompliance">datacompliance.php</filename>
 	</files>
 
+	<media folder="media" destination="plg_system_datacompliance">
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.plg_system_datacompliance.ini</language>
 		<language tag="en-GB">en-GB/en-GB.plg_system_datacompliance.sys.ini</language>
