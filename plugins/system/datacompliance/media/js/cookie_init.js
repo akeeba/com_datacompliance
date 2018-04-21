@@ -28,6 +28,15 @@ akeeba.DataCompliance.cookieConsentOptions = {
 	type: 'opt-in',
 	position: 'top',
 	revokable: true,
+	"palette": {
+		"popup": {
+			"background": "#edeff5",
+			"text": "#838391"
+		},
+		"button": {
+			"background": "#4b81e8"
+		}
+	},
 	onInitialise: function (status) {
 		var type = this.options.type;
 		var didConsent = this.hasConsented();
