@@ -34,7 +34,7 @@ akeeba.DataCompliance.cookieConsentOptions = {
 
 		if (type == 'opt-out' && !didConsent) {
 			// Disable cookies
-			akeeba.DataCompliance.killCookies();
+			akeeba.DataCompliance.disableCookies();
 		}
 	},
 
@@ -43,26 +43,22 @@ akeeba.DataCompliance.cookieConsentOptions = {
 		var didConsent = this.hasConsented();
 
 		if (type == 'opt-in' && didConsent) {
-			// Enable cookies
-			window.location.reload();
+			akeeba.DataCompliance.enableCookies();
 		}
 
 		if (type == 'opt-out' && !didConsent) {
-			// Disable cookies
-			akeeba.DataCompliance.killCookies();
+			akeeba.DataCompliance.disableCookies();
 		}
 	},
 
 	onRevokeChoice: function() {
 		var type = this.options.type;
 		if (type == 'opt-in') {
-			// Disable cookies
-			akeeba.DataCompliance.killCookies();
+			akeeba.DataCompliance.disableCookies();
 		}
 
 		if (type == 'opt-out') {
-			// Enable cookeis
-			window.location.reload();
+			akeeba.DataCompliance.enableCookies();
 		}
 	}
 };

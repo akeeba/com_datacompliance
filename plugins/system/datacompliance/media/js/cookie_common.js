@@ -20,7 +20,7 @@ if (typeof akeeba.DataCompliance == "undefined")
 /**
  * Removes cookies sent with the page and prevents JavaScript from setting new cookies
  */
-akeeba.DataCompliance.killCookies = function ()
+akeeba.DataCompliance.disableCookies = function ()
 {
 	// Delete all existing cookies
 	document.cookie.split(";").forEach(function (c)
@@ -53,3 +53,7 @@ akeeba.DataCompliance.killCookies = function ()
 	}
 };
 
+akeeba.DataCompliance.enableCookies = function()
+{
+	window.location.reload();
+};
