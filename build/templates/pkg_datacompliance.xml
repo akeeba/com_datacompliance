@@ -22,6 +22,7 @@
 
         <!-- Plugins: datacompliance -->
         <file type="plugin" group="datacompliance" id="joomla">plg_datacompliance_joomla.zip</file>
+        <file type="plugin" group="datacompliance" id="loginguard">plg_datacompliance_loginguard.zip</file>
     </files>
 
     <!-- Installation script -->
