@@ -17,10 +17,8 @@
         <!-- Component -->
         <file type="component" id="com_datacompliance">com_datacompliance.zip</file>
 
-        <!-- Plugins: ats -->
-        <file type="plugin" group="ats" id="deletenotes">plg_ats_deletenotes.zip</file>
-
         <!-- Plugins: datacompliance -->
+        <file type="plugin" group="datacompliance" id="ars">plg_datacompliance_ars.zip</file>
         <file type="plugin" group="datacompliance" id="joomla">plg_datacompliance_joomla.zip</file>
         <file type="plugin" group="datacompliance" id="loginguard">plg_datacompliance_loginguard.zip</file>
     </files>

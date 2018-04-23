@@ -12,9 +12,9 @@ use Joomla\CMS\User\UserHelper;
 defined('_JEXEC') or die;
 
 /**
- * Data Compliance plugin for Akeeba LoginGuard User Data
+ * Data Compliance plugin for Akeeba Release System User Data
  */
-class plgDatacomplianceLoginguard extends Joomla\CMS\Plugin\CMSPlugin
+class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 {
 	protected $container;
 
@@ -40,18 +40,18 @@ class plgDatacomplianceLoginguard extends Joomla\CMS\Plugin\CMSPlugin
 	 * any personally identifiable information.
 	 *
 	 * This plugin takes the following actions:
-	 * - Delete the user's LoginGuard TFA method entries
+	 * - Delete ARS log entries relevant to the user
 	 *
-	 * @param   int     $userID  The user ID we are asked to delete
-	 * @param   string  $type    The export type (user, admin, lifecycle)
+	 * @param   int    $userID The user ID we are asked to delete
+	 * @param   string $type   The export type (user, admin, lifecycle)
 	 *
 	 * @return  array
 	 */
 	public function onDataComplianceDeleteUser(int $userID, string $type): array
 	{
 		$ret = [
-			'loginguard' => [
-				'tfa' => [],
+			'ars' => [
+				'log' => [],
 			],
 		];
 
@@ -60,18 +60,18 @@ class plgDatacomplianceLoginguard extends Joomla\CMS\Plugin\CMSPlugin
 
 		$selectQuery = $db->getQuery(true)
 			->select($db->qn('id'))
-			->from($db->qn('#__loginguard_tfa'))
+			->from($db->qn('#__ars_log'))
 			->where($db->qn('user_id') . ' = ' . $db->q($userID));
 
 		$deleteQuery = $db->getQuery(true)
-			->delete($db->qn('#__loginguard_tfa'))
+			->delete($db->qn('#__ars_log'))
 			->where($db->qn('user_id') . ' = ' . $db->q($userID));
 
 		try
 		{
-			$ids                      = $db->setQuery($selectQuery)->loadColumn(0);
-			$ids                      = empty($ids) ? [] : implode(',', $ids);
-			$ret['loginguard']['tfa'] = $ids;
+			$ids               = $db->setQuery($selectQuery)->loadColumn(0);
+			$ids               = empty($ids) ? [] : implode(',', $ids);
+			$ret['ars']['log'] = $ids;
 
 			$db->setQuery($deleteQuery)->execute();
 		}
@@ -89,7 +89,7 @@ class plgDatacomplianceLoginguard extends Joomla\CMS\Plugin\CMSPlugin
 	 * data dump following the structure root > domain > item[...] > column[...].
 	 *
 	 * This plugin exports the following tables / models:
-	 * - #__loginguard_tfa
+	 * - #__ars_log
 	 *
 	 * @param $userID
 	 *
@@ -101,20 +101,19 @@ class plgDatacomplianceLoginguard extends Joomla\CMS\Plugin\CMSPlugin
 
 		$export = new SimpleXMLElement("<root></root>");
 
-		// #__loginguard_tfa
+		// #__ars_log
 		$domainTfa = $export->addChild('domain');
-		$domainTfa->addAttribute('name', 'loginguard_tfa');
-		$domainTfa->addAttribute('description', 'Akeeba LoginGuard TFA records');
+		$domainTfa->addAttribute('name', 'ars_log');
+		$domainTfa->addAttribute('description', 'Akeeba Release System download log');
 
-		$query = $db->getQuery(true)
-			->select('*')
-			->from('#__loginguard_tfa')
-			->where($db->qn('user_id') . ' = ' . $db->q($userID));
-		$records = $db->setQuery($query)->loadObjectList();
+		$arsContainer = \FOF30\Container\Container::getInstance('com_ars');
+		/** @var \Akeeba\ReleaseSystem\Admin\Model\Logs $logModel */
+		$logModel = $arsContainer->factory->model('Logs')->tmpInstance();
+		$logModel->setState('user_id', $userID);
 
-		foreach ($records as $record)
+		foreach ($logModel->getGenerator() as $record)
 		{
-			Export::adoptChild($domainTfa, Export::exportItemFromObject($record));
+			Export::adoptChild($domainTfa, Export::exportItemFromDataModel($record));
 		}
 
 		return $export;
