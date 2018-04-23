@@ -26,11 +26,24 @@ class Test extends Controller
 		parent::__construct($container, $config);
 
 		$this->predefinedTaskList = [
-			'test',
+			'export', 'wipe'
 		];
 	}
 
-	public function test()
+	public function export()
+	{
+		$userID = $this->input->getInt('id');
+		/** @var \Akeeba\DataCompliance\Admin\Model\Export $export */
+		$export = $this->container->factory->model('Export')->tmpInstance();
+		$result = $export->exportFormattedXML($userID);
+		$result = htmlentities($result);
+
+		echo "<pre>$result</pre>";
+
+		return;
+	}
+
+	public function wipe()
 	{
 		$userID = $this->input->getInt('id');
 		/** @var \Akeeba\DataCompliance\Admin\Model\Wipe $wipe */
