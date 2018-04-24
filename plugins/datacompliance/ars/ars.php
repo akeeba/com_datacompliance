@@ -6,6 +6,7 @@
  */
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
+use FOF30\Container\Container;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 
@@ -17,6 +18,10 @@ defined('_JEXEC') or die;
 class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 {
 	protected $container;
+
+	protected $releases = [];
+
+	protected $items = [];
 
 	/**
 	 * Constructor. Intializes the object:
@@ -97,8 +102,6 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	public function onDataComplianceExportUser($userID): SimpleXMLElement
 	{
-		$db   = $this->container->db;
-
 		$export = new SimpleXMLElement("<root></root>");
 
 		// #__ars_log
@@ -110,12 +113,83 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 		/** @var \Akeeba\ReleaseSystem\Admin\Model\Logs $logModel */
 		$logModel = $arsContainer->factory->model('Logs')->tmpInstance();
 		$logModel->setState('user_id', $userID);
+		$logModel->with([]);
 
-		foreach ($logModel->getGenerator() as $record)
+		foreach ($logModel->getGenerator(0, 0, true) as $record)
 		{
-			Export::adoptChild($domainTfa, Export::exportItemFromDataModel($record));
+			/** @var \Akeeba\ReleaseSystem\Admin\Model\Logs $record */
+			$data = $record->getData();
+
+			$data = array_merge($data, $this->getItemTitle($record->item_id));
+			$data = array_merge($data, $this->getReleaseInfo($data['release']));
+			unset($data['release']);
+
+			Export::adoptChild($domainTfa, Export::exportItemFromArray($data));
+
+			unset($data);
 		}
 
 		return $export;
+	}
+
+	protected function getItemTitle($item_id)
+	{
+		if (!isset($this->items[$item_id]))
+		{
+			/** @var \Akeeba\ReleaseSystem\Site\Model\Items $item */
+			$item = Container::getInstance('com_ars')->factory->model('Items');
+			$item->with([]);
+
+			try
+			{
+				$item->findOrFail($item_id);
+				$this->items[$item_id] = [
+					'title'   => $item->title,
+					'release' => $item->release_id,
+				];
+			}
+			catch (Exception $e)
+			{
+				$this->items[$item_id] = [
+					'title'   => "(deleted item)",
+					'release' => 0,
+				];
+			}
+		}
+
+		return $this->items[$item_id];
+	}
+
+	protected function getReleaseInfo($release_id)
+	{
+		if (!isset($this->releases[$release_id]))
+		{
+			/** @var \Akeeba\ReleaseSystem\Site\Model\Releases $release */
+			$release = Container::getInstance('com_ars')->factory->model('Releases');
+			$release->with(['category']);
+
+			try
+			{
+				if (empty($release_id))
+				{
+					throw new RuntimeException("Fall back to unknown data");
+				}
+
+				$release->findOrFail($release_id);
+				$this->releases[$release_id] = [
+					'version'  => $release->version,
+					'software' => $release->category->title,
+				];
+			}
+			catch (Exception $e)
+			{
+				$this->releases[$release_id] = [
+					'version'  => "(deleted version)",
+					'software' => "(unknown software)",
+				];
+			}
+		}
+
+		return $this->releases[$release_id];
 	}
 }
