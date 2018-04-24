@@ -35,7 +35,7 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 	 *
 	 * @var   string
 	 */
-	protected $componentName = 'com_datacompliane';
+	protected $componentName = 'com_datacompliance';
 
 	/**
 	 * The title of the component (printed on installation and uninstallation messages)
