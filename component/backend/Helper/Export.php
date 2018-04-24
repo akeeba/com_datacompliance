@@ -83,8 +83,17 @@ abstract class Export
 
 		foreach ($data as $k => $v)
 		{
-			$elCol = $elItem->addChild('column', $v);
-			$elCol->addAttribute('name', $k);
+			if (is_array($v))
+			{
+				$v = print_r($v, true);
+			}
+			elseif (is_object($v))
+			{
+				$v = (array)$v;
+			}
+
+			$elCol = $elItem->addChild('column', $v ?? '');
+			$elCol->addAttribute('name', $k ?? '');
 		}
 
 		return $elItem;

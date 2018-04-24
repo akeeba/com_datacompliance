@@ -32,11 +32,23 @@ class Test extends Controller
 
 	public function export()
 	{
+		$start = microtime(true);
+		$memStart = memory_get_usage();
 		$userID = $this->input->getInt('id');
 		/** @var \Akeeba\DataCompliance\Admin\Model\Export $export */
 		$export = $this->container->factory->model('Export')->tmpInstance();
 		$result = $export->exportFormattedXML($userID);
 		$result = htmlentities($result);
+		$end = microtime(true);
+		$memEnd = memory_get_usage();
+
+		$duration = $end - $start;
+		$mem = ($memEnd - $memStart) / 1024 / 1024;
+		$peakmem = memory_get_peak_usage() / 1024 / 1024;
+		echo "<h1>Export</h1>";
+		echo "<p>Time: $duration seconds</p>";
+		echo "<p>Memory: $mem MB (end usage: $memEnd)</p>";
+		echo "<p>Peak Memory: $peakmem MB</p>";
 
 		echo "<pre>$result</pre>";
 
