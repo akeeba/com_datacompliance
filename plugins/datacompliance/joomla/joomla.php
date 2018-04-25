@@ -48,6 +48,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	public function onDataComplianceCanDelete($userID)
 	{
+		// TODO Check a "lockdown" user profile field set by Administrators for user accounts for which an active dispute resolution is in progress.
+
 		$user = $this->getJoomlaUserObject($userID);
 
 		if (empty($user))

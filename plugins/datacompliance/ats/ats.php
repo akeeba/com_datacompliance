@@ -13,7 +13,7 @@ use Joomla\CMS\User\UserHelper;
 defined('_JEXEC') or die;
 
 /**
- * Data Compliance plugin for Akeeba Release System User Data
+ * Data Compliance plugin for Akeeba Ticket System User Data
  */
 class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 {
