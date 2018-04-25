@@ -10,6 +10,7 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
+use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
 
@@ -23,6 +24,13 @@ use FOF30\Utils\Ip;
  */
 class Consenttrails extends DataModel
 {
+	public function __construct(Container $container, array $config = array())
+	{
+		$config['idFieldName'] = 'created_by';
+
+		parent::__construct($container, $config);
+	}
+
 	/**
 	 * Checks the validity of the record. Also auto-fills the created* and requester_ip fields.
 	 *

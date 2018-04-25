@@ -51,7 +51,15 @@ class Options extends Controller
 	{
 		$this->csrfProtection();
 
-		// TODO
+		/** @var \Akeeba\DataCompliance\Site\Model\Options $model */
+		$model = $this->getModel();
+
+		$model->recordPreference($this->input->getBool('enabled', false));
+
+		$url = \JRoute::_('index.php?option=com_datacompliance&view=Options');
+		$message = \JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');
+		$this->setRedirect($url, $message);
+		$this->redirect();
 	}
 
 	/**

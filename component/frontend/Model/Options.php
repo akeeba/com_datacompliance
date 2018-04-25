@@ -9,7 +9,9 @@ namespace Akeeba\DataCompliance\Site\Model;
 
 defined('_JEXEC') or die;
 
+use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
+use FOF30\Utils\Ip;
 use JHtml;
 
 class Options extends Model
@@ -76,6 +78,36 @@ class Options extends Model
 		catch (\Exception $e)
 		{
 			return false;
+		}
+	}
+
+	/**
+	 * Record the user preference (or update their preference)
+	 *
+	 * @param   bool  $preference  Their data protection preference
+	 *
+	 * @throws  \Exception
+	 */
+	public function recordPreference($preference = false, \JUser $user = null)
+	{
+		if (is_null($user))
+		{
+			$user = $this->container->platform->getUser();
+		}
+
+		/** @var Consenttrails $consent */
+		$consent = $this->container->factory->model('Consenttrails')->tmpInstance();
+
+		try
+		{
+			$consent->findOrFail(['created_by' => $user->id])->bind([
+				'enabled'      => $preference,
+				'requester_ip' => Ip::getIp(),
+			])->save();
+		}
+		catch (RecordNotLoaded $e)
+		{
+			$consent->create(['enabled' => $preference]);
 		}
 	}
 }
