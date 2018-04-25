@@ -212,10 +212,8 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		/** @var Subscriptions $subsModel */
 		$subsModel = $container->factory->model('Subscriptions')->tmpInstance();
 
-		$subsModel->user_id($userID)->get(true);
-
 		/** @var Subscriptions $sub */
-		foreach ($subsModel as $sub)
+		foreach ($subsModel->user_id($userID)->get(true) as $sub)
 		{
 			Export::adoptChild($domainSubs, Export::exportItemFromDataModel($sub));
 
@@ -235,7 +233,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 
 		try
 		{
-			$user->user_id($userID)->firstOrFail();
+			$user->findOrFail(['user_id' => $userID]);
 
 			Export::adoptChild($domainUserInfo, Export::exportItemFromDataModel($user));
 		}
@@ -263,7 +261,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 
 		try
 		{
-			$user->user_id($user_id)->firstOrFail();
+			$user->findOrFail(['user_id' => $user_id]);
 
 			$user->save([
 				'isbusiness'     => 0,
