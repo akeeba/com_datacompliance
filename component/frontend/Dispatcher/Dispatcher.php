@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\DataCompliance\Admin\Dispatcher;
+namespace Akeeba\DataCompliance\Site\Dispatcher;
 
 defined('_JEXEC') or die;
 
@@ -18,7 +18,7 @@ class Dispatcher extends \FOF30\Dispatcher\Dispatcher
     }
 
     /** @var   string  The name of the default view, in case none is specified */
-    public $defaultView = 'ControlPanel';
+    public $defaultView = 'Options';
 
     public function onBeforeDispatch()
     {
@@ -31,7 +31,7 @@ class Dispatcher extends \FOF30\Dispatcher\Dispatcher
 
 		// FEF Renderer options. Used to load the common CSS file.
 		$this->container->renderer->setOptions([
-			//'custom_css' => 'admin://components/com_datacompliance/media/css/backend.min.css'
+			//'custom_css' => 'admin://components/com_datacompliance/media/css/frontend.min.css'
 		]);
 
 	    // Load the version file
