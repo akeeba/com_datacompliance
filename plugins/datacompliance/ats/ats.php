@@ -158,6 +158,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 
 	private function getPosts(array $ticketIDs)
 	{
+		if (empty($ticketIDs))
+		{
+			return [];
+		}
+
 		$db    = $this->container->db;
 		$query = $db->getQuery(true)
 			->select('*')
@@ -169,6 +174,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 
 	private function getAttachments(array $postIDs)
 	{
+		if (empty($postIDs))
+		{
+			return [];
+		}
+
 		$db    = $this->container->db;
 		$query = $db->getQuery(true)
 			->select('*')
