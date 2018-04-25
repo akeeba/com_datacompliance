@@ -97,7 +97,7 @@ $this->addJavascriptInline($js);
     </p>
     <div class="akeeba-container--50-50">
         <div>
-            <a href="@route('index.php?option=com_datacompliance&view=Options&task=export&' . $this->getContainer()->platform->getToken() . '=1')"
+            <a href="@route('index.php?option=com_datacompliance&view=Options&task=export&format=raw&' . $this->getContainer()->platform->getToken() . '=1')"
                class="akeeba-btn--success--block">
                 <span class="akion-android-download"></span>
                 @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT')

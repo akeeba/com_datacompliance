@@ -65,7 +65,37 @@ class Options extends Controller
 	{
 		$this->csrfProtection();
 
-		// TODO
+		// Make sure there's no buffered data
+		@ob_end_clean();
+
+		// Get the export data
+		$export  = $this->container->factory->model('Export')->tmpInstance();
+		$user_id = $this->container->platform->getUser()->id;
+		$result  = $export->exportFormattedXML($user_id);
+
+		// Disable caching
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: public", false);
+
+		// Send MIME headers
+		header("Content-Description: File Transfer");
+		header('Content-Type: application/xml');
+		header("Accept-Ranges: bytes");
+		header('Content-Disposition: attachment; filename=export.xml');
+		header('Content-Transfer-Encoding: binary');
+		header('Connection: close');
+		header('Content-Length: ' . (int)strlen($result));
+
+		// Send the data
+		echo $result;
+
+		// Make sure everything's spat to the browser and off we go.
+		@ob_flush();
+		flush();
+
+		$this->container->platform->closeApplication();
 	}
 
 	/**
