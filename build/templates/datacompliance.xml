@@ -11,6 +11,12 @@
 
 	<!-- Public front end files -->
 	<files folder="frontend">
+		<folder>Controller</folder>
+		<folder>Dispatcher</folder>
+		<folder>Helper</folder>
+		<folder>Model</folder>
+		<folder>View</folder>
+		<folder>ViewTemplates</folder>
         <filename>datacompliance.php</filename>
 	</files>
 

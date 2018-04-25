@@ -6,6 +6,39 @@
 -->
 <config>
 	<fieldset
+		name="consent"
+		label="COM_DATACOMPLIANCE_CONFIG_CONSENT_LABEL"
+		description="COM_DATACOMPLIANCE_CONFIG_CONSENT_DESC"
+		addfieldpath="/administrator/components/com_content/models/fields"
+	>
+		<field
+				name="policyarticle"
+				type="modal_article"
+				label="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_LABEL"
+				description="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_DESC"
+				select="true"
+				new="true"
+				edit="true"
+				clear="true"
+		/>
+
+		<field name="showexport" type="list" default="1"
+			   label="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_LABEL"
+			   description="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_DESC">
+			<option value="0">JNo</option>
+			<option value="1">JYes</option>
+		</field>
+
+		<field name="showwipe" type="list" default="1"
+			   label="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_LABEL"
+			   description="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_DESC">
+			<option value="0">JNo</option>
+			<option value="1">JYes</option>
+		</field>
+
+	</fieldset>
+
+	<fieldset
 			name="permissions"
 			label="JCONFIG_PERMISSIONS_LABEL"
 			description="JCONFIG_PERMISSIONS_DESC"

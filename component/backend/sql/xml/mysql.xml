@@ -44,5 +44,19 @@ PRIMARY KEY (`user_id`)
             ]]></query>
 		</action>
 
+		<!-- Processing consent audit trail -->
+		<action table="#__datacompliance_consenttrails" canfail="0">
+			<condition type="missing" value="" />
+			<query><![CDATA[
+CREATE TABLE `#__datacompliance_consenttrails` (
+`created_on` datetime NOT NULL,
+`created_by` bigint(20) NOT NULL,
+`requester_ip` varchar(255) NOT NULL,
+`enabled` int(1) NOT NULL DEFAULT 0,
+PRIMARY KEY (`created_by`)
+) DEFAULT COLLATE utf8_general_ci;
+            ]]></query>
+		</action>
+
 	</sql>
 </schema>
