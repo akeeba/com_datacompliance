@@ -111,25 +111,52 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		 *
 		 */
 		$container = Container::getInstance('com_akeebasubs', [], 'admin');
-
-		/** @var Subscriptions $subs */
-		$subs = $container->factory->model('Subscriptions')->tmpInstance();
-		$subs->user_id($userID);
+		$db = $container->db;
+		$query = $db->getQuery(true)->select('akeebasubs_subscription_id')
+			->from($db->qn('#__akeebasubs_subscriptions'))
+			->where($db->qn('user_id') . ' = ' . (int) $userID);
+		$subIDs = $db->setQuery($query)->loadColumn(0);
 
 		/** @var Subscriptions $sub */
-		foreach ($subs->getGenerator(0, 0, true) as $sub)
+		$sub = $container->factory->model('Subscriptions')->tmpInstance();
+
+		/** @var Subscriptions $sub */
+		foreach ($subIDs as $subID)
 		{
+			try
+			{
+				$sub->findOrFail($subID);
+			}
+			catch (Exception $e)
+			{
+				continue;
+			}
+
 			if (empty($sub))
 			{
 				continue;
 			}
 
 			// Delete credit notes and invoices
-			$invoice = $sub->invoice;
+			try
+			{
+				$invoice = $sub->invoice;
+			}
+			catch (Exception $e)
+			{
+				$invoice = null;
+			}
 
 			if (!empty($invoice))
 			{
-				$creditNote = $invoice->creditNote;
+				try
+				{
+					$creditNote = $invoice->creditNote;
+				}
+				catch (Exception $e)
+				{
+					$creditNote = null;
+				}
 
 				if (!empty($creditNote))
 				{
