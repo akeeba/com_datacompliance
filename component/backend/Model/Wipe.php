@@ -10,6 +10,7 @@ namespace Akeeba\DataCompliance\Admin\Model;
 defined('_JEXEC') or die;
 
 use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
+use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
 use RuntimeException;
 use SimpleXMLElement;
@@ -41,10 +42,10 @@ class Wipe extends Model
 		$auditRecord = $this->container->factory->model('Wipetrails')->tmpInstance();
 
 		// Do I have an existing data wipe record?
-		$auditRecord->load($userId);
-
-		if ($auditRecord->user_id == $userId)
+		try
 		{
+			$auditRecord->findOrFail(['user_id' => $userId]);
+
 			$isDebug     = defined('JDEBUG') && JDEBUG;
 			$isSuperUser = $this->container->platform->getUser()->authorise('core.admin');
 			$isCli       = $this->container->platform->isCli();
@@ -56,7 +57,7 @@ class Wipe extends Model
 
 			$auditRecord->type = $type;
 		}
-		else
+		catch (RecordNotLoaded $e)
 		{
 			$auditRecord->create([
 				'user_id' => $userId,
@@ -82,7 +83,6 @@ class Wipe extends Model
 		}
 
 		// Update audit record with $auditItems
-		$auditRecord->load($userId);
 		$auditRecord->items = $auditItems;
 		$auditRecord->save();
 

@@ -169,10 +169,8 @@ class Options extends Controller
 		// Log out the now erased user and redirect them to the home page
 		$this->container->platform->logoutUser();
 
-		$redirectUrl = \JRoute::_('index.php');
 		$message     = \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_MSG_ERASED');
-		$this->setRedirect($redirectUrl, $message);
-		$this->redirect();
+		\JFactory::getApplication()->enqueueMessage($message);
 	}
 
 	protected function onBeforeOptions($task)

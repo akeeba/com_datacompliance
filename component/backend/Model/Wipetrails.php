@@ -17,7 +17,8 @@ use FOF30\Utils\Ip;
 /**
  * Data wipe audit trails
  *
- * @property int    user_id                       Primary key and user ID which was wiped
+ * @property int    datacompliance_wipetrails_id  Primary key and user ID which was wiped
+ * @property int    user_id                       User ID which was wiped
  * @property string type                          Data wipe type (user, admin, lifecycle)
  * @property string created_on                    When the wipe was made
  * @property int    created_by                    Who initiated the wipe (0 is CRON task or CLI user)
@@ -26,19 +27,11 @@ use FOF30\Utils\Ip;
  */
 class Wipetrails extends DataModel
 {
-	public function __construct(Container $container, array $config = array())
-	{
-		$config['idFieldName'] = 'user_id';
-
-		parent::__construct($container, $config);
-	}
-
-
 	/**
 	 * Upload the audit trail under a unique name on Amazon S3 to ensure ability to reply in case of catastrophic
 	 * failure of the site and subsequent restoration from a backup.
 	 */
-	public function uploadToS3()
+	private function uploadToS3()
 	{
 		// TODO Remove this method call. Instead use a system plugin which hooks on the Model's onAfterSave event to implement the automatic upload to Amazon S3. The filename could be cached in the plugin, keyed by the user ID, to make sure we do not create double records.
 	}
