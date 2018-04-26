@@ -26,12 +26,12 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 * @param   object  $subject  Passed by Joomla
 	 * @param   array   $config   Passed by Joomla
 	 */
-	public function __construct($subject, array $config = array())
+	public function __construct(&$subject, array $config = array())
 	{
-		parent::__construct($subject, $config);
-
-		$this->loadLanguage('plg_datacompliance_' . $this->_name);
+		$this->autoloadLanguage = true;
 		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
+
+		parent::__construct($subject, $config);
 	}
 
 

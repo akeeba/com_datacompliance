@@ -104,7 +104,7 @@ $this->addJavascriptInline($js);
             </a>
         </div>
         <div>
-            <a href="@route('index.php?option=com_datacompliance&view=Options&task=wipeconfirm&' . $this->getContainer()->platform->getToken() . '=1')"
+            <a href="@route('index.php?option=com_datacompliance&view=Options&task=wipe&' . $this->getContainer()->platform->getToken() . '=1')"
                class="akeeba-btn--red--block">
                 <span class="akion-nuclear"></span>
                 @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_WIPE')

@@ -33,10 +33,10 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	public function __construct($subject, array $config = array())
 	{
-		parent::__construct($subject, $config);
-
-		$this->loadLanguage('plg_datacompliance_' . $this->_name);
+		$this->autoloadLanguage = true;
 		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
+
+		parent::__construct($subject, $config);
 	}
 
 	/**

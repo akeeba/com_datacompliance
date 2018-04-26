@@ -9,6 +9,7 @@ namespace Akeeba\DataCompliance\Site\Controller;
 
 defined('_JEXEC') or die;
 
+use Akeeba\DataCompliance\Admin\Model\Wipe;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Controller\Mixin\PredefinedTaskList;
@@ -27,7 +28,7 @@ class Options extends Controller
 	{
 		parent::__construct($container, $config);
 
-		$this->predefinedTaskList = ['options', 'consent', 'export', 'wipeconfirm', 'wipe'];
+		$this->predefinedTaskList = ['options', 'consent', 'export', 'wipe'];
 	}
 
 	/**
@@ -107,21 +108,7 @@ class Options extends Controller
 	}
 
 	/**
-	 * Ask the user for confirmation before wiping their profile
-	 *
-	 * @param   string  $tpl
-	 *
-	 * @throws  \Exception
-	 */
-	public function wipeconfirm($tpl = null)
-	{
-		$this->csrfProtection();
-
-		// TODO
-	}
-
-	/**
-	 * Wipe the user's profile
+	 * Wipe the user's profile (ask for confirmation first)
 	 *
 	 * @param   string  $tpl
 	 *
@@ -131,7 +118,58 @@ class Options extends Controller
 	{
 		$this->csrfProtection();
 
-		// TODO
+		$phrase = $this->input->getString('phrase', null);
+		$user   = $this->container->platform->getUser();
+		/** @var Wipe $wipeModel */
+		$wipeModel = $this->container->factory->model('Wipe')->tmpInstance();
+
+		// Can the user be wiped, at all?
+		if (!$wipeModel->checkWipeAbility($user->id))
+		{
+			$msg         = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $wipeModel->getError());
+			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options');
+			$this->setRedirect($redirectUrl, $msg, 'error');
+			$this->redirect();
+		}
+
+		// If 'phrase' is not set just skip to displaying the confirmation interface
+		if (is_null($phrase))
+		{
+			$this->display($tpl);
+
+			return;
+		}
+
+		// Confirm the phrase
+		if ($phrase != \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE'))
+		{
+			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe');
+			$this->setRedirect($redirectUrl, \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_BADPHRASE'), 'error');
+			$this->redirect();
+
+			return;
+		}
+
+		// Try to delete the user
+		$result = $wipeModel->wipe($user->id);
+
+		if (!$result)
+		{
+			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe');
+			$message     = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $wipeModel->getError());
+			$this->setRedirect($redirectUrl, $message, 'error');
+			$this->redirect();
+
+			return;
+		}
+
+		// Log out the now erased user and redirect them to the home page
+		$this->container->platform->logoutUser();
+
+		$redirectUrl = \JRoute::_('index.php');
+		$message     = \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_MSG_ERASED');
+		$this->setRedirect($redirectUrl, $message);
+		$this->redirect();
 	}
 
 	protected function onBeforeOptions($task)
@@ -139,7 +177,7 @@ class Options extends Controller
 		// Make sure there is a logged in user
 		if ($this->container->platform->getUser()->guest)
 		{
-			throw new \RuntimeException('JERROR_ALERTNOAUTHOR');
+			throw new \RuntimeException(\JText::_('JERROR_ALERTNOAUTHOR'), 403);
 		}
 	}
 
