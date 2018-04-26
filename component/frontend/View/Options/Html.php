@@ -9,6 +9,7 @@ namespace Akeeba\DataCompliance\Site\View\Options;
 
 defined('_JEXEC') or die();
 
+use Akeeba\DataCompliance\Site\Model\Options;
 use FOF30\View\DataView\Html as HtmlView;
 use Joomla\CMS\Factory;
 
@@ -35,12 +36,27 @@ class Html extends HtmlView
 	 */
 	public $siteName;
 
+	/**
+	 * The human readable list of actions to be taken upon deleting a user's account
+	 *
+	 * @var  array
+	 */
+	public $bulletPoints = [];
+
 	protected function onBeforeOptions()
 	{
+		$this->layout     = 'default';
 		$this->article    = $this->get('article');
 		$this->preference = $this->get('preference');
 		$this->siteName   = Factory::getApplication()->get('sitename', '');
 	}
 
+	protected function onBeforeWipe()
+	{
+		/** @var Options $model */
+		$model              = $this->getModel();
+		$this->layout       = 'wipe';
+		$this->bulletPoints = $model->getBulletPoints();
+	}
 
 }

@@ -110,4 +110,37 @@ class Options extends Model
 			$consent->create(['enabled' => $preference]);
 		}
 	}
+
+	/**
+	 * Get the human readable list of actions to be taken when deleting a user account
+	 *
+	 * @param   \JUser|null  $user  The user account we will be deleting
+	 * @param   string       $type  The deletion method (user, admin, lifecycle)
+	 *
+	 * @return  array  An array of strings representing the actions (bullet points) to show to the user
+	 */
+	public function getBulletPoints(\JUser $user = null, string $type = 'user')
+	{
+		if (is_null($user))
+		{
+			$user = $this->container->platform->getUser();
+		}
+
+		$this->container->platform->importPlugin('datacompliance');
+		$results = $this->container->platform->runPlugins('onDataComplianceGetWipeBulletpoints', [$user->id, $type]);
+
+		$ret = [];
+
+		foreach ($results as $result)
+		{
+			if (empty($result) || !is_array($result))
+			{
+				continue;
+			}
+
+			$ret = array_merge($ret, $result);
+		}
+
+		return $ret;
+	}
 }

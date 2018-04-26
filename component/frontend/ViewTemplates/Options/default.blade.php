@@ -73,7 +73,7 @@ $this->addJavascriptInline($js);
             </div>
         </div>
 
-        <input type="hidden" name="@token()" value="1" />
+        <input type="hidden" name="{{ $this->getContainer()->platform->getToken(true) }}" value="1" />
     </form>
     <p>
         <span class="akion-ios-information"></span>

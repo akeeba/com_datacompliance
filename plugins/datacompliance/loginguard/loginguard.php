@@ -83,6 +83,21 @@ class plgDatacomplianceLoginguard extends Joomla\CMS\Plugin\CMSPlugin
 		return $ret;
 	}
 
+	/**
+	 * Return a list of human readable actions which will be carried out by this plugin if the user proceeds with wiping
+	 * their user account.
+	 *
+	 * @param   int     $userID  The user ID we are asked to delete
+	 * @param   string  $type    The export type (user, admin, lifecycle)
+	 *
+	 * @return  string[]
+	 */
+	public function onDataComplianceGetWipeBulletpoints(int $userID, string $type)
+	{
+		return [
+			JText::_('PLG_DATACOMPLIANCE_LOGINGUARD_ACTIONS_1'),
+		];
+	}
 
 	/**
 	 * Used for exporting the user information in XML format. The returned data is a SimpleXMLElement document with a

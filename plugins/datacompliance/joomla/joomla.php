@@ -112,6 +112,31 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	}
 
 	/**
+	 * Return a list of human readable actions which will be carried out by this plugin if the user proceeds with wiping
+	 * their user account.
+	 *
+	 * @param   int     $userID  The user ID we are asked to delete
+	 * @param   string  $type    The export type (user, admin, lifecycle)
+	 *
+	 * @return  string[]
+	 */
+	public function onDataComplianceGetWipeBulletpoints(int $userID, string $type)
+	{
+		return [
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_10'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_1'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_2'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_3'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_4'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_5'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_6'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_7'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_8'),
+			JText::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_9'),
+		];
+	}
+
+	/**
 	 * Used for exporting the user information in XML format. The returned data is a SimpleXMLElement document with a
 	 * data dump following the structure root > domain > item[...] > column[...].
 	 *
