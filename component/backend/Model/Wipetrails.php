@@ -17,7 +17,7 @@ use FOF30\Utils\Ip;
 /**
  * Data wipe audit trails
  *
- * @property int    datacompliance_wipetrails_id  Primary key and user ID which was wiped
+ * @property int    datacompliance_wipetrail_id   Primary key and user ID which was wiped
  * @property int    user_id                       User ID which was wiped
  * @property string type                          Data wipe type (user, admin, lifecycle)
  * @property string created_on                    When the wipe was made

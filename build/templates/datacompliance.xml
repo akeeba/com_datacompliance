@@ -13,7 +13,6 @@
 	<files folder="frontend">
 		<folder>Controller</folder>
 		<folder>Dispatcher</folder>
-		<folder>Helper</folder>
 		<folder>Model</folder>
 		<folder>View</folder>
 		<folder>ViewTemplates</folder>
@@ -47,6 +46,7 @@
             <folder>sql</folder>
             <folder>Toolbar</folder>
             <folder>View</folder>
+            <folder>ViewTemplates</folder>
 
             <filename>access.xml</filename>
             <filename>datacompliance.php</filename>

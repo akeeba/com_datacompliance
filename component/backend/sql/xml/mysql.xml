@@ -40,7 +40,7 @@ CREATE TABLE `#__datacompliance_wipetrails` (
 `created_by` bigint(20) NOT NULL,
 `requester_ip` varchar(255) NOT NULL,
 `items` longtext,
-PRIMARY KEY (`datacompliance_wipetrails_id`)
+PRIMARY KEY (`datacompliance_wipetrail_id`)
 ) DEFAULT COLLATE utf8_general_ci;
             ]]></query>
 		</action>
