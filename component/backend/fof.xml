@@ -5,6 +5,11 @@
  * @license   GNU General Public License version 3, or later
 -->
 <fof>
+    <backend>
+        <container>
+            <option name="factoryClass">FOF30\Factory\SwitchFactory</option>
+        </container>
+    </backend>
     <common>
         <container>
             <option name="componentNamespace">Akeeba\DataCompliance</option>

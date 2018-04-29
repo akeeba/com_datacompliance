@@ -32,4 +32,9 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 
 		JToolbarHelper::preferences('com_datacompliance');
 	}
+
+	public function onOptions()
+	{
+		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_HEADER'), 'vcard');
+	}
 }
