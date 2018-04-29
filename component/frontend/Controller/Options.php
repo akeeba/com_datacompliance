@@ -58,7 +58,7 @@ class Options extends Controller
 
 		$model->recordPreference($this->input->getBool('enabled', false));
 
-		$url = \JRoute::_('index.php?option=com_datacompliance&view=Options');
+		$url = \JRoute::_('index.php?option=com_datacompliance&view=Options', false);
 		$message = \JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');
 		$this->setRedirect($url, $message);
 		$this->redirect();
@@ -128,7 +128,7 @@ class Options extends Controller
 		if (!$wipeModel->checkWipeAbility($user->id))
 		{
 			$msg         = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $wipeModel->getError());
-			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options');
+			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options', false);
 			$this->setRedirect($redirectUrl, $msg, 'error');
 			$this->redirect();
 		}
@@ -145,7 +145,7 @@ class Options extends Controller
 		if ($phrase != \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE'))
 		{
 			$token = $this->container->platform->getToken();
-			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1');
+			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1', false);
 			$this->setRedirect($redirectUrl, \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_BADPHRASE'), 'error');
 			$this->redirect();
 
@@ -158,7 +158,7 @@ class Options extends Controller
 		if (!$result)
 		{
 			$token = $this->container->platform->getToken();
-			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1');
+			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1', false);
 			$message     = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $wipeModel->getError());
 			$this->setRedirect($redirectUrl, $message, 'error');
 			$this->redirect();
