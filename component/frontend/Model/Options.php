@@ -109,6 +109,14 @@ class Options extends Model
 		{
 			$consent->create(['enabled' => $preference]);
 		}
+
+		/**
+		 * Finally, unset the session flag used by the system plugin.
+		 *
+		 * This means that if you go from Consent to Non-consent the plugin will evaluate your option again and redirect
+		 * you to the consent page, preventing you from using the site (as it should).
+		 */
+		$this->container->platform->setSessionVar('has_consented', 0, 'com_datacompliance');
 	}
 
 	/**
