@@ -175,7 +175,7 @@ class Options extends Controller
 		\JFactory::getApplication()->redirect(\JUri::base());
 	}
 
-	protected function onBeforeOptions($task)
+	protected function onBeforeOptions()
 	{
 		// Make sure there is a logged in user
 		if ($this->container->platform->getUser()->guest)

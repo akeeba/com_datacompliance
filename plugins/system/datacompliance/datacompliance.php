@@ -157,7 +157,7 @@ class PlgSystemDatacompliance extends JPlugin
 		$view   = strtolower($app->input->getCmd('view'));
 
 		// DO NOT kick in if we are in an exempt component / view / task
-		if (!$this->isExempt($option, $task, $view))
+		if ($this->isExempt($option, $task, $view))
 		{
 			return;
 		}
@@ -219,6 +219,9 @@ class PlgSystemDatacompliance extends JPlugin
 			}
 
 			// Redirect
+			$this->loadLanguage();
+			$message = JText::_('PLG_SYSTEM_DATACOMPLIANCE_MSG_MUSTACCEPT');
+			$app->enqueueMessage($message, 'warning');
 			$url = JRoute::_('index.php?option=com_datacompliance&view=Options', false);
 			$app->redirect($url, 307);
 
