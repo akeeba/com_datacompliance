@@ -71,6 +71,9 @@ class Pkg_DatacomplianceInstallerScript
 
 		// System plugins
 		array('plugin', 'datacompliance', 1, 'system'),
+
+		// User plugins
+		array('plugin', 'datacompliance', 1, 'user'),
 	);
 
 	/**
