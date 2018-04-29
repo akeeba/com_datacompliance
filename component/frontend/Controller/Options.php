@@ -58,9 +58,11 @@ class Options extends Controller
 
 		$model->recordPreference($this->input->getBool('enabled', false));
 
-		$url = \JRoute::_('index.php?option=com_datacompliance&view=Options', false);
+		$defaultUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options', false);
+		$returnUrl = $this->container->platform->getSessionVar('return_url', $defaultUrl, 'com_datacompliance');
+
 		$message = \JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');
-		$this->setRedirect($url, $message);
+		$this->setRedirect($returnUrl, $message);
 		$this->redirect();
 	}
 
