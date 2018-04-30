@@ -39,6 +39,8 @@ class PlgSystemDatacompliance extends JPlugin
 	 * Are we enabled, all requirements met etc?
 	 *
 	 * @var   bool
+	 *
+	 * @since   1.0.0
 	 */
 	public $enabled = true;
 
@@ -46,6 +48,8 @@ class PlgSystemDatacompliance extends JPlugin
 	 * The component's container
 	 *
 	 * @var   Container
+	 *
+	 * @since   1.0.0
 	 */
 	private $container = null;
 
@@ -56,6 +60,8 @@ class PlgSystemDatacompliance extends JPlugin
 	 * @param   array   $config    An optional associative array of configuration settings.
 	 *                             Recognized key values include 'name', 'group', 'params', 'language'
 	 *                             (this list is not meant to be comprehensive).
+	 *
+	 * @since   1.0.0
 	 */
 	public function __construct($subject, array $config = array())
 	{
@@ -85,6 +91,8 @@ class PlgSystemDatacompliance extends JPlugin
 	 * @return  void
 	 *
 	 * @throws Exception
+	 *
+	 * @since   1.0.0
 	 */
 	public function onAfterRoute()
 	{
@@ -199,6 +207,11 @@ class PlgSystemDatacompliance extends JPlugin
 		// We only kick in when the user has not consented already
 		$needsConsent = $this->needsConsent($user);
 
+		if ($needsConsent && $this->hasAkeebasubsConsent($user))
+		{
+			$needsConsent = false;
+		}
+
 		if ($needsConsent)
 		{
 			// Save the current URL, but only if we haven't saved a URL or if the saved URL is NOT internal to the site.
@@ -236,6 +249,8 @@ class PlgSystemDatacompliance extends JPlugin
 	 * Does the current user need to provide consent for processing their personal information?
 	 *
 	 * @return  bool
+	 *
+	 * @since   1.0.0
 	 */
 	private function needsConsent(JUser $user)
 	{
@@ -256,6 +271,18 @@ class PlgSystemDatacompliance extends JPlugin
 		return $consentModel->enabled != 1;
 	}
 
+	/**
+	 * Is the current option / view / task combination exempt from redirection? We use this to allow other captive
+	 * logins, such as LoginGuard, to work with Data Consent without causing an infinite redirection loop
+	 *
+	 * @param   string  $option  The current component
+	 * @param   string  $view    The current view
+	 * @param   string  $task    The current task
+	 *
+	 * @return  bool
+	 *
+     * @since   1.0.0
+	 */
 	private function isExempt($option, $view, $task)
 	{
 		$rawConfig = $this->params->get('exempt', '');
@@ -316,6 +343,149 @@ class PlgSystemDatacompliance extends JPlugin
 		}
 
 		// No match found.
+		return false;
+	}
+
+	/**
+	 * Do I have consent recorded by Akeeba Subscriptions? This returns true only when there is no Data Compliance
+	 * consent record and there is an Akeeba Subs consent recorded. In this case we transcribe the consent into Data
+	 * Compliance. If the user has withdrawn his consent through Data Compliance this method returns false.
+	 *
+	 * @param  JUser  $user  The user to check
+	 *
+	 * @return  bool
+	 *
+	 * @since   1.0.0
+	 */
+	private function hasAkeebasubsConsent(JUser $user)
+	{
+		// Is Akeeba Subs installed and enabled?
+		if (!JComponentHelper::isInstalled('com_akeebasubs') || !JComponentHelper::isEnabled('com_akeebasubs'))
+		{
+			return false;
+		}
+
+		// Only transcribe if there is no consent record yet
+		/** @var \Akeeba\DataCompliance\Admin\Model\Consenttrails $consentModel */
+		$consentModel = $this->container->factory->model('Consenttrails')->tmpInstance();
+
+		try
+		{
+			$consentModel->findOrFail(['created_by' => $user->id]);
+
+			return false;
+		}
+		catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+		{
+			// No consent record. AWESOME! That's what I need!
+		}
+
+		// Try to fetch the Akeeba Subs user record
+		$asContainer = Container::getInstance('com_akeebasubs');
+		/** @var \Akeeba\Subscriptions\Site\Model\Users $asUser */
+		$asUser = $asContainer->factory->model('Users')->tmpInstance();
+
+		try
+		{
+			$asUser->findOrFail(['user_id' => $user->id]);
+		}
+		catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+		{
+			// No record found. Bye bye.
+			return false;
+		}
+
+		// Get the user parameters and see if they have consented to EU data.
+		$params = $asUser->params;
+
+		if (!is_object($params) || !($params instanceof \JRegistry))
+		{
+			JLoader::import('joomla.registry.registry');
+			$params = new \JRegistry($params);
+		}
+
+		$confirmEUData = $this->isTruthism($params->get('confirm_eudata', false));
+
+		if (!$confirmEUData)
+		{
+			// Not consented (this means they subscribed before we ran the consent)
+			return false;
+		}
+
+		// They have consented. Record their consent as the date and IP of their latest subscription.
+		/** @var \Akeeba\Subscriptions\Site\Model\Subscriptions $subModel */
+		$subModel = $asContainer->factory->model('Subscriptions')->tmpInstance();
+		$jNow     = $asContainer->platform->getDate();
+		$jWhen    = $asContainer->platform->getDate('2010-01-01 00:00:00');
+		$ip       = '';
+		$allSubs  = $subModel->user_id($user->id)->paystate(['C'])->until($jNow->toSql())->get();
+
+		if (empty($allSubs))
+		{
+			// What? No subscriptions? They can't have possibly consented then :/
+			return false;
+		}
+
+		/** @var \Akeeba\Subscriptions\Site\Model\Subscriptions $sub */
+		foreach ($allSubs as $sub)
+		{
+			// Only take into account a newer subscription
+			$jThisSub = $asContainer->platform->getDate($sub->created_on);
+
+			if ($jThisSub->toUnix() <= $jWhen->toUnix())
+			{
+				continue;
+			}
+
+			// Do I have an IP address?
+			if (empty($sub->ip))
+			{
+				continue;
+			}
+
+			// Yup, found a subscription
+			$ip    = $sub->ip;
+			$jWhen = $jThisSub;
+		}
+
+		if (empty($ip))
+		{
+			return false;
+		}
+
+		// Transcribe the consent record from Akeeba Subscriptions to Data Compliance
+		$consentModel->create([
+			'enabled'      => 1,
+		]);
+
+		$consentModel
+			->findOrFail(['created_by' => $user->id])
+			->save([
+				'created_on'   => $jWhen->toSql(),
+				'requester_ip' => $ip,
+			]);
+
+		return true;
+	}
+
+	/**
+	 * Checks if a value set in Akeeba Subs is a truthism.
+	 *
+	 * @param   string  $value  The value to check
+	 *
+	 * @return  bool  THe value as a boolean
+	 *
+	 * @since   1.0.0
+	 */
+	private function isTruthism($value)
+	{
+		if ($value === 1) return true;
+
+		if (in_array($value, ['on', 'checked', 'true', '1', 'yes', 1, true], true))
+		{
+			return true;
+		}
+
 		return false;
 	}
 }
