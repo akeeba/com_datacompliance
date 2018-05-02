@@ -25,6 +25,9 @@
 
         <!-- Plugins: system -->
         <file type="plugin" group="system" id="ars">plg_system_datacompliance.zip</file>
+
+        <!-- Plugins: user -->
+        <file type="plugin" group="user" id="ars">plg_user_datacompliance.zip</file>
     </files>
 
     <!-- Installation script -->
