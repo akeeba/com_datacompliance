@@ -151,6 +151,9 @@ class PlgUserDatacompliance extends JPlugin
 		// Add the fields to the form.
 		JForm::addFormPath(dirname(__FILE__) . '/datacompliance');
 
+		// At this point we should load our language files.
+		$this->loadLanguage();
+
 		// Special handling for profile overview page
 		if ($layout == 'default')
 		{
