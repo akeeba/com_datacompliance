@@ -26,41 +26,23 @@ class JFormFieldDatacompliance extends JFormField
 			return JText::_('PLG_USER_DATACOMPLIANCE_ERR_NOUSER');
 		}
 
-		try
-		{
-			// Capture the output instead of pushing it to the browser
-			@ob_start();
+		/**
+		 * Why not use HMVC to display the Options page inside the user form just like we do with LoginGuard? The
+		 * answer is that Joomla sucks. Our page has a FORM element. This is rendered inside Joomla's own FORM element,
+		 * since all user fields are form fields, right? However, Joomla seems to have some magic JavaScript which
+		 * removes the nested form elements, moving their contents one level up. This of course completely breaks the
+		 * behaviour of our software. So instead I have to add a stupid link to the actual page. Too tired to battle
+		 * with Joomla.
+		 */
 
-			// Render the other component's view
-			FOF30\Container\Container::getInstance('com_datacompliance', array(
-				'tempInstance' => true,
-				'input' => [
-					'view'      => 'Options',
-					'returnurl' => base64_encode(JUri::getInstance()->toString()),
-					'user_id'   => $user_id
-				]
-			))->dispatcher->dispatch();
-
-			// Get the output...
-			$content = ob_get_contents();
-
-			// ...and close the output buffer
-			ob_end_clean();
-		}
-		catch (\Exception $e)
-		{
-			// Whoops! The component blew up. Close the output buffer...
-			ob_end_clean();
-			// ...and indicate that we have no content.
-			$content = JText::_('PLG_USER_DATACOMPLIANCE_ERR_NOCOMPONENT');
-		}
-
-		if (!class_exists('Akeeba\\DataCompliance\\Site\\View\\Options\\Html'))
-		{
-			$content = JText::_('PLG_USER_DATACOMPLIANCE_ERR_NOCOMPONENT');
-		}
+		$url       = JRoute::_('index.php?option=com_datacompliance&view=Options');
+		$labelText = JText::_('PLG_USER_DATACOMPLIANCE_FIELD_INFO');
+		$html      = <<< HTML
+<a href="$url">$labelText</a>
+ 
+HTML;
 
 		// Display the content
-		return $content;
+		return $html;
 	}
 }
