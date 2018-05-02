@@ -224,7 +224,7 @@ class PlgUserDatacompliance extends JPlugin
 		}
 
 		// Whatever. I am not the same person. Go away.
-		return true;
+		return false;
 	}
 
 }
