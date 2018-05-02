@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="datacompliance">
+		<fieldset name="datacompliance"
+			label="PLG_USER_DATACOMPLIANCE_HEADER"
+		>
+			<field
+				name="hasconsent"
+				id="hasconsent"
+				type="text"
+				label="PLG_USER_DATACOMPLIANCE_FIELD_HASCONSENT_LABEL"
+				required="false"
+				readonly="false"
+			/>
+		</fieldset>
+	</fields>
+</form>
