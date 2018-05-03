@@ -380,7 +380,7 @@ class PlgUserDatacompliance extends JPlugin
 	 *
 	 * @since  1.0.0
 	 */
-	private function getUserGroupChanges($oldUser, $newUser, $db, &$changes): void
+	private function getUserGroupChanges($oldUser, $newUser, $db, &$changes)
 	{
 		$groupsChanged = !(array_diff($oldUser['groups'], $newUser['groups']) === array_diff($newUser['groups'], $oldUser['groups']));
 
@@ -427,7 +427,7 @@ class PlgUserDatacompliance extends JPlugin
 	 *
 	 * @since  1.0.0
 	 */
-	private function getUserProfileChanges(&$newUser, $db, &$changes): void
+	private function getUserProfileChanges(&$newUser, $db, &$changes)
 	{
 		if (!isset($newUser['profile']))
 		{
@@ -506,7 +506,7 @@ class PlgUserDatacompliance extends JPlugin
 	 * @param   JDatabaseDriver  $db
 	 * @param   array            $changes
 	 */
-	private function getCustomFieldsChanges($newUser, $db, &$changes): void
+	private function getCustomFieldsChanges($newUser, $db, &$changes)
 	{
 		if (!isset($newUser['com_fields']))
 		{
