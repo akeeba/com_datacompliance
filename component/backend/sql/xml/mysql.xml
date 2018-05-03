@@ -59,5 +59,21 @@ PRIMARY KEY (`created_by`)
             ]]></query>
 		</action>
 
+		<!-- User profile changes audit trail -->
+		<action table="#__datacompliance_usertrails" canfail="0">
+			<condition type="missing" value="" />
+			<query><![CDATA[
+CREATE TABLE `#__datacompliance_usertrails` (
+`datacompliance_usertrail_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+`user_id` bigint(20) NOT NULL,
+`created_on` datetime NOT NULL,
+`created_by` bigint(20) NOT NULL,
+`requester_ip` varchar(255) NOT NULL,
+`items` longtext,
+PRIMARY KEY (`datacompliance_usertrail_id`)
+) DEFAULT COLLATE utf8_general_ci;
+            ]]></query>
+		</action>
+
 	</sql>
 </schema>

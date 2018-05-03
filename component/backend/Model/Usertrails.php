@@ -10,22 +10,20 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
-use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
 
 /**
  * Data wipe audit trails
  *
- * @property int    datacompliance_wipetrail_id   Primary key and user ID which was wiped
- * @property int    user_id                       User ID which was wiped
- * @property string type                          Data wipe type (user, admin, lifecycle)
- * @property string created_on                    When the wipe was made
- * @property int    created_by                    Who initiated the wipe (0 is CRON task or CLI user)
- * @property string requester_ip                  The IP of the person who requested the wipe
- * @property array  items                         The IDs of the items which were wiped
+ * @property int    datacompliance_usertrail_id   Primary key.
+ * @property int    user_id                       User ID whose information changed.
+ * @property string created_on                    When the changes were made.
+ * @property int    created_by                    Who initiated the changes (if it's 0 then it's a system / CLI change).
+ * @property string requester_ip                  The IP of the person who performed the change.
+ * @property array  items                         The changes made. The content of some changes is redacted for security reasons.
  */
-class Wipetrails extends DataModel
+class Usertrails extends DataModel
 {
 	/**
 	 * Checks the validity of the record. Also auto-fills the created* and requester_ip fields.
@@ -36,17 +34,7 @@ class Wipetrails extends DataModel
 	{
 		if (empty($this->user_id))
 		{
-			throw new \RuntimeException("Data wipe audit trail: cannot have an empty user ID");
-		}
-
-		if (empty($this->type))
-		{
-			throw new \RuntimeException("Data wipe audit trail: cannot have an empty type");
-		}
-
-		if (!in_array($this->type, ['user', 'admin', 'lifecycle']))
-		{
-			throw new \RuntimeException("Invalid data wipe type “{$this->type}”.");
+			throw new \RuntimeException("User change audit trail: cannot have an empty user ID");
 		}
 
 		if (empty($this->requester_ip))
