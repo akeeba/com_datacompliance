@@ -247,8 +247,8 @@ class PlgUserDatacompliance extends JPlugin
 		}
 
 		// Generate the log of user account changes
-		$changes     = [];
-		$db          = JFactory::getDbo();
+		$changes = [];
+		$db      = JFactory::getDbo();
 
 		/**
 		 * Check all the main user fields for changes. We exclude the following fields:
@@ -263,22 +263,26 @@ class PlgUserDatacompliance extends JPlugin
 		 * - com_fields: Custom fields require special handling.
 		 */
 		$exemptFields = [
+			'isRoot', 'userHelper', 'password1', 'password2', 'email1', 'email2',
 			'id', 'password', 'lastvisitDate', 'params', 'otpKey', 'otep', 'groups', 'profile',
 			'com_fields',
 		];
 		$allFields    = array_merge(array_keys($oldUser), array_keys($newUser));
-		array_diff($allFields, $exemptFields);
+		$allFields    = array_diff($allFields, $exemptFields);
 
 		foreach ($allFields as $k)
 		{
-			if ($oldUser[$k] == $newUser[$v])
+			$oldValue = isset($oldUser[$k]) ? $oldUser[$k] : null;
+			$newValue = isset($newUser[$k]) ? $newUser[$k] : null;
+
+			if ($oldValue == $newValue)
 			{
 				continue;
 			}
 
 			$changes[$k] = [
-				'from' => $oldUser[$k],
-				'to'   => $oldUser[$k],
+				'from' => $oldValue,
+				'to'   => $newValue,
 			];
 		}
 
@@ -362,7 +366,7 @@ class PlgUserDatacompliance extends JPlugin
 		$trail = $this->container->factory->model('Usertrails')->tmpInstance();
 		$trail->create([
 			'user_id' => $newUser['id'],
-			'items' => $changes
+			'items'   => $changes,
 		]);
 
 		return;
@@ -382,7 +386,9 @@ class PlgUserDatacompliance extends JPlugin
 	 */
 	private function getUserGroupChanges($oldUser, $newUser, $db, &$changes)
 	{
-		$groupsChanged = !(array_diff($oldUser['groups'], $newUser['groups']) === array_diff($newUser['groups'], $oldUser['groups']));
+		$oldGroupIDs   = array_map('intval', $oldUser['groups']);
+		$newGroupIDs   = array_map('intval', $newUser['groups']);
+		$groupsChanged = !(array_diff($oldGroupIDs, $newGroupIDs) === array_diff($newGroupIDs, $oldGroupIDs));
 
 		if (!$groupsChanged)
 		{
@@ -395,14 +401,14 @@ class PlgUserDatacompliance extends JPlugin
 			$query     = $db->getQuery(true)
 				->select($db->qn('title'))
 				->from($db->qn('#__usergroups'))
-				->where($db->qn('id') . 'IN (' . implode(',', $oldUser['groups']) . ')');
+				->where($db->qn('id') . 'IN (' . implode(',', $oldGroupIDs) . ')');
 			$oldGroups = $db->setQuery($query)->loadColumn();
 
 			// Get the names of old groups
 			$query     = $db->getQuery(true)
 				->select($db->qn('title'))
 				->from($db->qn('#__usergroups'))
-				->where($db->qn('id') . 'IN (' . implode(',', $newUser['groups']) . ')');
+				->where($db->qn('id') . 'IN (' . implode(',', $newGroupIDs) . ')');
 			$newGroups = $db->setQuery($query)->loadColumn();
 
 			$changes['usergroups'] = [
