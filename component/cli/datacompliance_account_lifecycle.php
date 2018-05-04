@@ -23,6 +23,11 @@ class DataComplianceLifecycleAutomation extends DataComplianceCliBase
 {
 	public function execute()
 	{
+		if  (!defined('JDEBUG'))
+		{
+			define('JDEBUG', false);
+		}
+
 		$container = \FOF30\Container\Container::getInstance('com_datacompliance', [], 'admin');
 
 		include_once $container->backEndPath . '/version.php';

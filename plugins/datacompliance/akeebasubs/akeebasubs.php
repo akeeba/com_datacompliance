@@ -74,12 +74,23 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			$since = $now->sub($interval);
 			$subs->since($since->toSql());
 		}
+		else
+		{
+			// Lifecycle deletion. Only look for subscriptions expiring after now and are paid for.
+			$now = $container->platform->getDate();
+			$subs->expires_from($now->toSql());
+		}
 
 		$numLatestSubs = $subs->get()->count();
 		
 		if ($numLatestSubs > 0)
 		{
-			throw new RuntimeException(JText::sprintf('PLG_DATACOMPLIANCE_AKEEBASUBS_ERR_HASSUBS', $numLatestSubs, $period));
+			if ($type != 'lifecycle')
+			{
+				throw new RuntimeException(JText::sprintf('PLG_DATACOMPLIANCE_AKEEBASUBS_ERR_HASSUBS', $numLatestSubs, $period));
+			}
+
+			throw new RuntimeException(JText::sprintf('PLG_DATACOMPLIANCE_AKEEBASUBS_ERR_HASSUBS_GENERAL', $numLatestSubs));
 		}
 	}
 
