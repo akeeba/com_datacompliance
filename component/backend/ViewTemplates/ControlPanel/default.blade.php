@@ -14,11 +14,10 @@ defined('_JEXEC') or die;
 <div>
 	<div class="akeeba-container--50-50">
 		<div>
-
+			@include('admin:com_datacompliance/ControlPanel/icons')
 		</div>
-
 		<div>
-
+			@include('admin:com_datacompliance/ControlPanel/stats')
 		</div>
 	</div>
 </div>

@@ -25,8 +25,8 @@ class Html extends BaseView
 	{
 		$this->formattedChangelog    = $this->formatChangelog();
 
-		$this->addJavascriptFile('admin://components/com_admintools/media/js/Modal.min.js');
-		$this->addJavascriptFile('admin://components/com_admintools/media/js/ControlPanel.min.js');
+		$this->addJavascriptFile('media://com_datacompliance/js/Modal.min.js');
+		$this->addJavascriptFile('media://com_datacompliance/js/Chart.bundle.min.js');
 
 	}
 

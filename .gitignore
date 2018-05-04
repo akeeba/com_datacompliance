@@ -21,3 +21,6 @@
 /component/language/*/en-GB
 /modules/*/*/language/en-GB
 /plugins/*/*/language/en-GB
+
+# Symlink to FEF to let phpStorm auto-complete the CSS class names
+/fef.min.css
