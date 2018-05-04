@@ -35,10 +35,10 @@
 					   label="PLG_DATACOMPLIANCE_JOOMLA_THRESHOLD_LABEL"
 					   description="PLG_DATACOMPLIANCE_JOOMLA_THRESHOLD_DESC" />
 
-				<field name="nevervisted" type="list"
+				<field name="nevervisited" type="list"
 					   default="1"
-					   label="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISTED_LABEL"
-					   description="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISTED_DESC">
+					   label="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISITED_LABEL"
+					   description="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISITED_DESC">
 					<option value="0">JNo</option>
 					<option value="1">JYes</option>
 				</field>

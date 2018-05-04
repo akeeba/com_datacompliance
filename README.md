@@ -1,13 +1,66 @@
-# Data Compliance (com_datacompliance)
+# Data Compliance
 
-A component to help us with the EU GDPR compliance.
+A tool to help comply with the European Union's General Data Protection Directive 
 
-The component allows the user to
-- export all data we have on them to a commonly machine readable format (XML)
-- exercise their right to be forgotten (account removal) with a concrete audit trail
+## What does it do?
 
-If the user has purchased a subscription within the last 2 months we cannot comply with the account removal immediately BUT we can include it as a planned, non-revokable removal. CRON jobs will ensure compliance with the planned removal.
+The component allows the site's visitors to:
 
-The audit trail records the user ID, IP address and timestamp the deletion took place. A copy of this information in JSON format is a. sent under a randomly generated filename to an S3 bucket and b. emailed to the admin for safekeeping. This allows replay of the audit log when restoring backups. 
+- give or revoke their consent for personal data processing (and prevent the user from using the site if they have not provided consent).
+- export all data we have on them to a commonly machine readable format (XML).
+- exercise their right to be forgotten (account removal) with a concrete audit trail.
 
-Moreover we include CLI scripts to prepare us for data compliance and for automating tasks.
+The component also keeps an audit log of all the user profile changes, data exports and account removal.
+
+The account removal audit log can be automatically exported to S3 (in a JSON format) or a filesystem location or email and replayed at a later time. This lets you comply with the GDPR when restoring older backups. Note that this audit log does NOT include any personally identifiable information, just the anonymous IDs of the information deleted.  
+
+There are CLI plugins included to schedule periodic removal of stale accounts (lifecycle management).
+
+## License 
+
+This component is distributed under the GNU General Public License version 3 or, at your option, any later version published by the Free Software Foundation.
+
+## Download
+
+No public downloads are currently available. You will need to build the package yourself (sorry).
+
+## Support policy
+
+This component is currently in an experimental / internal development phase. As a result we cannot provide any kind of end user support.
+
+## Prerequisites
+
+In order to build the installation packages of this component you will need to have the following tools:
+
+* A command line environment. Using Bash under Linux / Mac OS X works best. On Windows you will need to run most tools through an elevated privileges (administrator) command prompt on an NTFS filesystem due to the use of symlinks. Press WIN-X and click on "Command Prompt (Admin)" to launch an elevated command prompt.
+* A PHP CLI binary in your path
+* Command line Git executables
+* Phing
+
+You will also need the following path structure inside a folder on your system
+
+* **com_datacompliance** This repository
+* **buildfiles** [Akeeba Build Tools](https://github.com/akeeba/buildfiles)
+* **fof** [Framework on Framework](https://github.com/akeeba/fof)
+* **fef** [Akeeba Front-end Framework](https://github.com/akeeba/fef)
+* **translations** [Akeeba Translations](https://github.com/akeeba/translations)
+
+You will need to use the exact folder names specified here.
+
+## Building a dev release
+
+Go inside `com_datacompliance/build` and run `phing git -Dversion=0.0.1.a1` to create a development release. The installable Joomla! ZIP package file is output in the `com_datacompliance/release` directory.
+
+If you want to build a release with development versions of FOF and FEF you will need to do some preparatory work. **This is NOT RECOMMENDED for most people**. Development builds of FOF and FEF may affect how other Akeeba and / or third party software work on your site. As a result you MUST NOT distribute these packages or use them on a production site. The steps you need to do are (from the main directory where you checked out all the other repositories):
+```bash
+pushd fof/build
+phing git
+popd
+pushd fef/build
+phing compile
+popd
+pushd com_datacompliance/build
+phing git 
+popd 
+```
+This will create a dev release ZIP package in `com_datacompliance/release`.

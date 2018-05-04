@@ -333,4 +333,65 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 
 		return [$user_id];
 	}
+
+	/**
+	 * Returns a list of user IDs which are to be removed on $date due to the lifecycle policy. In other words, which
+	 * user IDs this plugin considers to be "expired" on $date.
+	 *
+	 * Not all plugins need to implement this method. Some plugins may implement _only_ this method, e.g. if your
+	 * lifecycle policy depends on an external service's results (you could have, for example, LDAP fields to mark
+	 * ex-employee records as ripe for garbage collection).
+	 *
+	 * @param   DateTime $date
+	 *
+	 * @return  int[]
+	 *
+	 * @throws Exception
+	 */
+	public function onDataComplianceGetEOLRecords(DateTime $date): array
+	{
+		// Should I run a lifecycle policy based on subscription expiration?
+		if (!$this->params->get('lifecycle', 1))
+		{
+			return [];
+		}
+
+		// Get the cutoff date (last subscription expired more than $threshold months ago)
+		$threshold      = (int) $this->params->get('threshold', 6);
+		$threshold      = min(1, $threshold);
+		$jThresholdDate = $this->container->platform->getDate()->sub(new DateInterval("P{$threshold}M"));
+
+		$db = $this->container->db;
+
+		// Subquery to get User IDs with active subscriptions
+		$jNow     = $this->container->platform->getDate();
+		$subQuery = $db->getQuery(true)
+			->select($db->qn('user_id'))
+			->from($db->qn('#__akeebasubs_subscriptions'))
+			->where($db->qn('state') . ' = ' . $db->q('C'))
+			->where($db->qn('publish_down') . ' > ' . $db->q($jNow->toSql()))
+			->group($db->qn('user_id'));
+
+		$query = $db->getQuery(true)
+			->select($db->qn('user_id'))
+			->from($db->qn('#__akeebasubs_subscriptions'))
+			->where($db->qn('state') . ' = ' . $db->qn('C'))
+			->where($db->qn('publish_down') . ' <= ' . $db->q($jThresholdDate->toSql()))
+			->where($db->qn('user_id') . ' NOT IN(' . $subQuery . ')')
+			->group($db->qn('user_id'));
+
+		// Remove people already logged into the site in the meantime?
+		if ($this->params->get('lastvisit', 1))
+		{
+			$activeUsersQuery = $db->getQuery(true)
+				->select('id')
+				->from($db->qn('#__users'))
+				->where($db->qn('lastvisitDate') . ' >= ' . $db->qn($jThresholdDate->toSql()), 'OR');
+			;
+			$query->where($db->qn('user_id') . ' NOT IN(' . $activeUsersQuery . ')');
+		}
+
+		return $db->setQuery($query)->loadColumn(0);
+	}
+
 }

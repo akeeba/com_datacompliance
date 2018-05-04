@@ -271,10 +271,10 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		$threshold = (int) $this->params->get('threshold', 18);
 		$threshold = min(1, $threshold);
 		$jLastYear = $this->container->platform->getDate()->sub(new DateInterval("P{$threshold}M"));
-		$query->where($db->qn('block') . ' < ' . $db->qn($jLastYear->toSql()), 'OR');
+		$query->where($db->qn('lastvisitDate') . ' < ' . $db->qn($jLastYear->toSql()), 'OR');
 
 		// Users who have never visited the site
-		if ($this->params->get('nevervisted', 1))
+		if ($this->params->get('nevervisited', 1))
 		{
 			$query->where($db->qn('lastvisitDate') . ' = ' . $db->qn($db->getNullDate()), 'OR');
 		}
