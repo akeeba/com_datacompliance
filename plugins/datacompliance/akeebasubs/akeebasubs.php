@@ -38,31 +38,44 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 	 * Checks whether a user is safe to be deleted. This plugin prevents deletion on the following conditions:
 	 * - The user has an active subscription created within the last X days (which means it's likely not yet reported for tax purposes)
 	 *
-	 * @param   int  $userID  The user ID we are asked for permission to delete
+	 * @param   int     $userID  The user ID we are asked for permission to delete
+	 * @param   string  $type    user, admin or lifecycle
 	 *
 	 * @return  void  No return value is expected. Throw exceptions when there is a problem.
 	 *
 	 * @throws  RuntimeException  The error which prevents us from deleting a user
 	 */
-	public function onDataComplianceCanDelete($userID)
+	public function onDataComplianceCanDelete($userID, $type)
 	{
-		// TODO Configurable. I am hardcoding it to PayPal's maximum dispute resolution period.
-		$period = 90;
-
-		if ($period < 1)
-		{
-			return;
-		}
-
 		$container = Container::getInstance('com_akeebasubs', [], 'admin');
-
-		$now = $container->platform->getDate();
-		$interval = new DateInterval('P' . (int)$period . 'D');
-		$since = $now->sub($interval);
 
 		/** @var Subscriptions $subs */
 		$subs = $container->factory->model('Subscriptions')->tmpInstance();
-		$numLatestSubs = $subs->user_id($userID)->paystate(['C'])->since($since->toSql())->get()->count();
+		$subs->user_id($userID)->paystate(['C']);
+
+		/**
+		 * On non-lifecycle deletion we only check for susbcriptions created within the last $period days.
+		 *
+		 * Corollary: on lifecycle deletion, any active subscription prevents deletion (since you're still in a business
+		 * relationship with us).
+		 */
+		if ($type != 'lifecycle')
+		{
+			// Configurable. The default is incidentally PayPal's maximum period for filing a payment dispute.
+			$period = (int) $this->params->get('guard_threshold', 90);
+
+			if ($period < 1)
+			{
+				return;
+			}
+
+			$now = $container->platform->getDate();
+			$interval = new DateInterval('P' . (int)$period . 'D');
+			$since = $now->sub($interval);
+			$subs->since($since->toSql());
+		}
+
+		$numLatestSubs = $subs->get()->count();
 		
 		if ($numLatestSubs > 0)
 		{

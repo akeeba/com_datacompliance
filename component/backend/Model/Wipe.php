@@ -33,7 +33,7 @@ class Wipe extends Model
 	 */
 	public function wipe($userId, string $type = 'user'): bool
 	{
-		if (!$this->checkWipeAbility($userId))
+		if (!$this->checkWipeAbility($userId, $type))
 		{
 			return false;
 		}
@@ -96,13 +96,13 @@ class Wipe extends Model
 	 *
 	 * @return  bool  True if we can wipe the user
 	 */
-	public function checkWipeAbility($userId): bool
+	public function checkWipeAbility(int $userId, string $type = 'user'): bool
 	{
 		$this->importPlugin('datacompliance');
 
 		try
 		{
-			$this->runPlugins('onDataComplianceCanDelete', [$userId]);
+			$this->runPlugins('onDataComplianceCanDelete', [$userId, $type]);
 		}
 		catch (RuntimeException $e)
 		{
