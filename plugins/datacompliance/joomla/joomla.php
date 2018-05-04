@@ -271,19 +271,25 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		$threshold = (int) $this->params->get('threshold', 18);
 		$threshold = min(1, $threshold);
 		$jLastYear = $this->container->platform->getDate()->sub(new DateInterval("P{$threshold}M"));
-		$query->where($db->qn('lastvisitDate') . ' < ' . $db->qn($jLastYear->toSql()), 'OR');
+		$query->where($db->qn('lastvisitDate') . ' < ' . $db->q($jLastYear->toSql()), 'OR');
 
 		// Users who have never visited the site
 		if ($this->params->get('nevervisited', 1))
 		{
-			$query->where($db->qn('lastvisitDate') . ' = ' . $db->qn($db->getNullDate()), 'OR');
+			$query->where($db->qn('lastvisitDate') . ' = ' . $db->q($db->getNullDate()), 'OR');
 		}
 
-		// Blocked users
+		// Blocked users (unless they were created or have visited the site during the threshold period)
 		if ($this->params->get('blocked', 1))
 		{
+			$condition = '(' .
+				'(' . $db->qn('block') . ' = 1) AND ' .
+				'NOT (' . $db->qn('lastvisitDate') . ' >= ' . $db->q($jLastYear->toSql()) . ') AND ' .
+				'NOT (' . $db->qn('registerDate') . ' >= ' . $db->q($jLastYear->toSql()) . ')' .
+			')';
+			// Blocked
 			$query
-				->where($db->qn('block') . ' = ' . $db->qn(1), 'OR');
+				->where($condition, 'OR');
 		}
 
 		// Users with pre-Joomla! 3.2 password format
@@ -291,8 +297,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		{
 			$query
 				->where('(' .
-					$db->qn('password') . ' LIKE ' . $db->qn('%:%') .
-					' AND NOT ' . $db->qn('password') . ' LIKE ' . $db->qn('$%')
+					$db->qn('password') . ' LIKE ' . $db->q('%:%') .
+					' AND NOT ' . $db->qn('password') . ' LIKE ' . $db->q('$%')
 					. ')', 'OR');
 		}
 

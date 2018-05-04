@@ -31,7 +31,7 @@
                     <option value="1">JYes</option>
                 </field>
 
-                <field name="threshold" type="number" default="18" size="5" min="1" max="1200" step="1"
+                <field name="threshold" type="number" default="6" size="5" min="1" max="1200" step="1"
                        label="PLG_DATACOMPLIANCE_AKEEBASUBS_THRESHOLD_LABEL"
                        description="PLG_DATACOMPLIANCE_AKEEBASUBS_THRESHOLD_DESC" />
 

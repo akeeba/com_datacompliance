@@ -25,7 +25,7 @@ class Wipe extends Model
 	/**
 	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
 	 *
-	 * @param   int  $userId  The user ID to export
+	 * @param   int $userId The user ID to export
 	 *
 	 * @return  bool  True on success.
 	 *
@@ -47,8 +47,9 @@ class Wipe extends Model
 			$auditRecord->findOrFail(['user_id' => $userId]);
 
 			$isDebug     = defined('JDEBUG') && JDEBUG;
-			$isSuperUser = $this->container->platform->getUser()->authorise('core.admin');
-			$isCli       = $this->container->platform->isCli();
+			$platform    = $this->container->platform;
+			$isSuperUser = $platform->getUser()->authorise('core.admin');
+			$isCli       = $platform->isCli();
 
 			if (!($isDebug && ($isCli || $isSuperUser)))
 			{
@@ -66,11 +67,10 @@ class Wipe extends Model
 		}
 
 		// Actually delete the records
-		$platform = $this->container->platform;
-		$platform->importPlugin('datacompliance');
+		$this->importPlugin('datacompliance');
 
 		$auditItems = [];
-		$results    = $platform->runPlugins('onDataComplianceDeleteUser', [$userId, $type]);
+		$results    = $this->runPlugins('onDataComplianceDeleteUser', [$userId, $type]);
 
 		foreach ($results as $result)
 		{
@@ -92,18 +92,17 @@ class Wipe extends Model
 	/**
 	 * Checks if we can wipe a user. If it returns FALSE use getError to retrieve the reason.
 	 *
-	 * @param   int  $userId
+	 * @param   int $userId
 	 *
 	 * @return  bool  True if we can wipe the user
 	 */
 	public function checkWipeAbility($userId): bool
 	{
-		$platform = $this->container->platform;
-		$platform->importPlugin('datacompliance');
+		$this->importPlugin('datacompliance');
 
 		try
 		{
-			$platform->runPlugins('onDataComplianceCanDelete', [$userId]);
+			$this->runPlugins('onDataComplianceCanDelete', [$userId]);
 		}
 		catch (RuntimeException $e)
 		{
@@ -116,6 +115,46 @@ class Wipe extends Model
 	}
 
 	/**
+	 * Get the user IDs which are to be deleted for lifecycle management reasons
+	 *
+	 * @return  array
+	 */
+	public function getLifecycleUserIDs(): array
+	{
+		// Load the plugins.
+		$this->importPlugin('datacompliance');
+
+		try
+		{
+			// Run the plugin events to get lifecycle user records
+			$jNow     = $this->container->platform->getDate();
+			$results  = $this->runPlugins('onDataComplianceGetEOLRecords', [$jNow]);
+		}
+		catch (RuntimeException $e)
+		{
+			$this->error = $e->getMessage();
+
+			return [];
+		}
+
+		// Merge the plugin results and make sure we do not have any duplicated records
+		$ret = [];
+
+		foreach ($results as $result)
+		{
+			if (!is_array($result))
+			{
+				continue;
+			}
+
+			$ret = array_merge($ret, $result);
+			$ret = array_unique($ret);
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Get the reason why wiping is not allowed
 	 *
 	 * @return  string
@@ -123,5 +162,39 @@ class Wipe extends Model
 	public function getError(): string
 	{
 		return $this->error;
+	}
+
+	/**
+	 * Load plugins of a specific type. Do not go through FOF; it does not run that under CLI.
+	 *
+	 * @param   string $type The type of the plugins to be loaded
+	 *
+	 * @return void
+	 */
+	public function importPlugin($type)
+	{
+		\JLoader::import('joomla.plugin.helper');
+		\JPluginHelper::importPlugin($type);
+	}
+
+	/**
+	 * Execute plugins (system-level triggers) and fetch back an array with their return values. Do not go through FOF;
+	 * it does not run that under CLI
+	 *
+	 * @param   string $event The event (trigger) name, e.g. onBeforeScratchMyEar
+	 * @param   array  $data  A hash array of data sent to the plugins as part of the trigger
+	 *
+	 * @return  array  A simple array containing the results of the plugins triggered
+	 *
+	 * @throws \Exception
+	 */
+	public function runPlugins($event, $data)
+	{
+		if (class_exists('JEventDispatcher'))
+		{
+			return \JEventDispatcher::getInstance()->trigger($event, $data);
+		}
+
+		return \JFactory::getApplication()->triggerEvent($event, $data);
 	}
 }

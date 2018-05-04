@@ -112,7 +112,8 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		 */
 		$container = Container::getInstance('com_akeebasubs', [], 'admin');
 		$db = $container->db;
-		$query = $db->getQuery(true)->select('akeebasubs_subscription_id')
+		$query = $db->getQuery(true)
+			->select($db->qn('akeebasubs_subscription_id'))
 			->from($db->qn('#__akeebasubs_subscriptions'))
 			->where($db->qn('user_id') . ' = ' . (int) $userID);
 		$subIDs = $db->setQuery($query)->loadColumn(0);
@@ -375,7 +376,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		$query = $db->getQuery(true)
 			->select($db->qn('user_id'))
 			->from($db->qn('#__akeebasubs_subscriptions'))
-			->where($db->qn('state') . ' = ' . $db->qn('C'))
+			->where($db->qn('state') . ' = ' . $db->q('C'))
 			->where($db->qn('publish_down') . ' <= ' . $db->q($jThresholdDate->toSql()))
 			->where($db->qn('user_id') . ' NOT IN(' . $subQuery . ')')
 			->group($db->qn('user_id'));
@@ -386,7 +387,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			$activeUsersQuery = $db->getQuery(true)
 				->select('id')
 				->from($db->qn('#__users'))
-				->where($db->qn('lastvisitDate') . ' >= ' . $db->qn($jThresholdDate->toSql()), 'OR');
+				->where($db->qn('lastvisitDate') . ' >= ' . $db->q($jThresholdDate->toSql()), 'OR');
 			;
 			$query->where($db->qn('user_id') . ' NOT IN(' . $activeUsersQuery . ')');
 		}
