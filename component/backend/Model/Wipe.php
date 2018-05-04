@@ -117,9 +117,11 @@ class Wipe extends Model
 	/**
 	 * Get the user IDs which are to be deleted for lifecycle management reasons
 	 *
+	 * @param   bool  $onlyNonWiped  If true, only return user IDs whose accounts have NOT been already wiped.
+	 *
 	 * @return  array
 	 */
-	public function getLifecycleUserIDs(): array
+	public function getLifecycleUserIDs(bool $onlyNonWiped = true): array
 	{
 		// Load the plugins.
 		$this->importPlugin('datacompliance');
@@ -149,6 +151,19 @@ class Wipe extends Model
 
 			$ret = array_merge($ret, $result);
 			$ret = array_unique($ret);
+		}
+
+		// Remove user IDs already wiped from the previous list?
+		if ($onlyNonWiped)
+		{
+			$db = $this->container->db;
+			$query = $db->getQuery(true)
+				->select('user_id')
+				->from($db->qn('#__datacompliance_wipetrails'))
+				->group($db->qn('user_id'));
+			$alreadyWiped = $db->setQuery($query)->loadColumn(0);
+
+			$ret = array_diff($ret, $alreadyWiped);
 		}
 
 		return $ret;
