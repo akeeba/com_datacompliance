@@ -24,6 +24,11 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
+				<field name="exemptgroups" type="usergrouplist"
+					   multiple="1" default=""
+					   label="PLG_DATACOMPLIANCE_JOOMLA_USERGROUPLIST_LABEL"
+					   description="PLG_DATACOMPLIANCE_JOOMLA_USERGROUPLIST_DESC" />
+
 				<field name="lifecycle" type="list"
 					   default="1"
 					   label="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_LABEL" description="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_DESC">

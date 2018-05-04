@@ -49,6 +49,16 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	public function onDataComplianceCanDelete($userID, $type)
 	{
+		$exemptGroups = $this->params->get('exemptgroups', []);
+		$jUser        = $this->container->platform->getUser($userID);
+		$userGroups   = $jUser->getAuthorisedGroups();
+		$foundGroups  = array_intersect($userGroups, $exemptGroups);
+
+		if ($foundGroups)
+		{
+			throw new RuntimeException(JText::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_EXEMPTGROUPS'));
+		}
+
 		// TODO Check a "lockdown" user profile field set by Administrators for user accounts for which an active dispute resolution is in progress.
 
 		$user = $this->getJoomlaUserObject($userID);
