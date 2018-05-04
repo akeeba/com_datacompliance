@@ -75,5 +75,34 @@ PRIMARY KEY (`datacompliance_usertrail_id`)
             ]]></query>
 		</action>
 
+		<action table="#__datacompliance_emailtemplates" canfail="0">
+			<condition type="missing" value="" />
+			<query><![CDATA[
+CREATE TABLE `#__datacompliance_emailtemplates` (
+    `datacompliance_emailtemplate_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+    `key` enum('user_user', 'user_admin', 'user_lifecycle', 'admin_user', 'admin_admin', 'admin_lifecycle') NOT NULL DEFAULT 'user_user',
+    `subject` varchar(255) NOT NULL DEFAULT '',
+    `body` text,
+    `language` varchar(10) NOT NULL DEFAULT '*',
+    `enabled` tinyint(4) NOT NULL DEFAULT '1',
+    `ordering` bigint(20) NOT NULL DEFAULT '0',
+    `created_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `created_by` bigint(20) NOT NULL DEFAULT '0',
+    `modified_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `modified_by` bigint(20) NOT NULL DEFAULT '0',
+    `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `locked_by` bigint(20) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`datacompliance_emailtemplate_id`)
+) DEFAULT COLLATE utf8_general_ci;
+            ]]></query>
+		</action>
+
+		<action table="#__akeebasubs_emailtemplates" canfail="1">
+		<condition type="equals" operator="not" value="1"><![CDATA[
+SELECT COUNT(*) FROM `#__datacompliance_emailtemplates` WHERE `datacompliance_emailtemplate_id` = 1;
+            ]]></condition>
+		<query>
+		</query>
+		</action>
 	</sql>
 </schema>

@@ -36,6 +36,7 @@
 			<option value="1">JYes</option>
 		</field>
 
+		<field name="siteurl" type="hidden" default=""/>
 	</fieldset>
 
 	<fieldset

@@ -59,8 +59,6 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 			throw new RuntimeException(JText::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_EXEMPTGROUPS'));
 		}
 
-		// TODO Check a "lockdown" user profile field set by Administrators for user accounts for which an active dispute resolution is in progress.
-
 		$user = $this->getJoomlaUserObject($userID);
 
 		if (empty($user))

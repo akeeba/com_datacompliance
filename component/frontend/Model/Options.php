@@ -122,10 +122,12 @@ class Options extends Model
 	/**
 	 * Get the human readable list of actions to be taken when deleting a user account
 	 *
-	 * @param   \JUser|null  $user  The user account we will be deleting
-	 * @param   string       $type  The deletion method (user, admin, lifecycle)
+	 * @param   \JUser|null $user The user account we will be deleting
+	 * @param   string      $type The deletion method (user, admin, lifecycle)
 	 *
 	 * @return  array  An array of strings representing the actions (bullet points) to show to the user
+	 *
+	 * @throws \Exception
 	 */
 	public function getBulletPoints(\JUser $user = null, string $type = 'user')
 	{
@@ -134,8 +136,8 @@ class Options extends Model
 			$user = $this->container->platform->getUser();
 		}
 
-		$this->container->platform->importPlugin('datacompliance');
-		$results = $this->container->platform->runPlugins('onDataComplianceGetWipeBulletpoints', [$user->id, $type]);
+		$this->importPlugin('datacompliance');
+		$results = $this->runPlugins('onDataComplianceGetWipeBulletpoints', [$user->id, $type]);
 
 		$ret = [];
 
@@ -150,5 +152,39 @@ class Options extends Model
 		}
 
 		return $ret;
+	}
+
+	/**
+	 * Load plugins of a specific type. Do not go through FOF; it does not run that under CLI.
+	 *
+	 * @param   string $type The type of the plugins to be loaded
+	 *
+	 * @return void
+	 */
+	public function importPlugin($type)
+	{
+		\JLoader::import('joomla.plugin.helper');
+		\JPluginHelper::importPlugin($type);
+	}
+
+	/**
+	 * Execute plugins (system-level triggers) and fetch back an array with their return values. Do not go through FOF;
+	 * it does not run that under CLI
+	 *
+	 * @param   string $event The event (trigger) name, e.g. onBeforeScratchMyEar
+	 * @param   array  $data  A hash array of data sent to the plugins as part of the trigger
+	 *
+	 * @return  array  A simple array containing the results of the plugins triggered
+	 *
+	 * @throws \Exception
+	 */
+	public function runPlugins($event, $data)
+	{
+		if (class_exists('JEventDispatcher'))
+		{
+			return \JEventDispatcher::getInstance()->trigger($event, $data);
+		}
+
+		return \JFactory::getApplication()->triggerEvent($event, $data);
 	}
 }
