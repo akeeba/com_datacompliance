@@ -132,6 +132,11 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 
 		foreach ($logModel->getGenerator(0, 0, true) as $record)
 		{
+			if (is_null($record))
+			{
+				continue;
+			}
+
 			/** @var \Akeeba\ReleaseSystem\Admin\Model\Logs $record */
 			$data = $record->getData();
 

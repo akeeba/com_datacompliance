@@ -74,6 +74,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 		/** @var \Akeeba\TicketSystem\Admin\Model\Tickets $ticket */
 		foreach ($tickets->getGenerator(0, 0, true) as $ticket)
 		{
+			if (is_null($ticket))
+			{
+				continue;
+			}
+
 			$ret['ats']['tickets'][] = $ticket->getId();
 			$ticket->delete();
 		}
