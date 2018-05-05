@@ -19,25 +19,25 @@ defined('_JEXEC') or die;
     <div class="akeeba-grid">
 
         <a class="akeeba-action--teal"
-           href="index.php?option=com_datacompliance&view=ConsentTrails" >
+           href="index.php?option=com_datacompliance&view=Consenttrails" >
             <span class="akion-ios-checkmark"></span>
             @lang('COM_DATACOMPLIANCE_CONSENTTRAILS')
         </a>
 
         <a class="akeeba-action--teal"
-           href="index.php?option=com_datacompliance&view=UserTrails" >
+           href="index.php?option=com_datacompliance&view=Usertrails" >
             <span class="akion-person"></span>
             @lang('COM_DATACOMPLIANCE_USERTRAILS')
         </a>
 
         <a class="akeeba-action--teal"
-           href="index.php?option=com_datacompliance&view=ExportTrails" >
+           href="index.php?option=com_datacompliance&view=Exporttrails" >
             <span class="akion-share"></span>
             @lang('COM_DATACOMPLIANCE_EXPORTTRAILS')
         </a>
 
         <a class="akeeba-action--teal"
-           href="index.php?option=com_datacompliance&view=WipeTrails" >
+           href="index.php?option=com_datacompliance&view=Wipetrails" >
             <span class="akion-android-delete"></span>
             @lang('COM_DATACOMPLIANCE_WIPETRAILS')
         </a>

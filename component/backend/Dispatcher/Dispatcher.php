@@ -31,8 +31,10 @@ class Dispatcher extends \FOF30\Dispatcher\Dispatcher
 
 		// FEF Renderer options. Used to load the common CSS file.
 		$this->container->renderer->setOptions([
+			// Classic linkbar for drop-down menu display
 			'linkbar_style' => 'classic',
-			//'custom_css' => 'admin://components/com_datacompliance/media/css/backend.min.css'
+			// Load custom CSS file, comma separated list
+			'custom_css' => 'media://com_datacompliance/css/backend.css'
 		]);
 
 	    // Load the version file

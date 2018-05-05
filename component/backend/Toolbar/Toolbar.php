@@ -205,6 +205,28 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_HEADER'), 'vcard');
 	}
 
+	public function onConsenttrailsBrowse()
+	{
+		// On frontend, buttons must be added specifically
+		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)
+		{
+			$this->renderSubmenu();
+		}
+
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
+		{
+			return;
+		}
+
+		// Setup
+		$option = $this->container->componentName;
+		$view   = $this->container->input->getCmd('view', 'cpanel');
+
+		// Set toolbar title
+		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
+		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
+	}
+
 	/**
 	 * Adds a link to the submenu (toolbar links)
 	 *
