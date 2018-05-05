@@ -12,7 +12,8 @@
 
     <fileset>
         <files target="cli">
-            <!--<file>YOURFILE.php</file>-->
+            <file>datacompliance_account_delete.php</file>
+            <file>datacompliance_account_lifecycle.php</file>
         </files>
     </fileset>
 </extension>
