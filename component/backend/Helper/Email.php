@@ -14,6 +14,7 @@ use JFactory;
 use JFile;
 use JHtml;
 use JLoader;
+use Joomla\Registry\Registry;
 use JText;
 use JUser;
 
@@ -117,7 +118,7 @@ abstract class Email
 
 		// Look for an override in the database
 		/** @var EmailTemplates $templatesModel */
-		$templatesModel = Container::getInstance('com_dataimport')->factory
+		$templatesModel = self::getContainer()->factory
 			->model('EmailTemplates')->tmpInstance();
 
 		$allTemplates = $templatesModel->key($key)->enabled(1)->get(true);
@@ -332,6 +333,11 @@ HTML;
 		}
 
 		// User fields
+		if (is_string($user->params))
+		{
+			$user->params = new Registry($user->params);
+		}
+
 		$customParams = $user->params->toArray();
 
 		foreach ($customParams as $k => $v)
@@ -358,7 +364,7 @@ HTML;
 		$sitename = $config->get('sitename');
 
 		// -- Site URL
-		$container = Container::getInstance('com_akeebasubs');
+		$container = self::getContainer();
 		$isCli     = $container->platform->isCli();
 
 		if ($isCli)
