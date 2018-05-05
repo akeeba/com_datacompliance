@@ -8,5 +8,8 @@
 	<section name="component">
 		<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC"/>
 		<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
+		<action name="com_datawipe.view_trail" title="COM_DATAWIPE_ACL_VIEW_TRAIL" description="COM_DATAWIPE_ACL_VIEW_TRAIL_DESC"/>
+		<action name="com_datawipe.wipe" title="COM_DATAWIPE_ACL_WIPE" description="COM_DATAWIPE_ACL_WIPE_DESC"/>
+		<action name="com_datawipe.export" title="COM_DATAWIPE_ACL_EXPORT" description="COM_DATAWIPE_ACL_EXPORT_DESC"/>
 	</section>
 </access>
