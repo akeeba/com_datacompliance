@@ -57,12 +57,14 @@ abstract class Email
 	public static function getEmailKeys(bool $jhtmlOptions = false)
 	{
 		$rawOptions = [
-			'user_user'       => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_USER'),
-			'user_admin'      => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_ADMIN'),
-			'user_lifecycle'  => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_LIFECYCLE'),
-			'admin_user'      => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_ADMIN_USER'),
-			'admin_admin'     => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_ADMIN_ADMIN'),
-			'admin_lifecycle' => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_ADMIN_LIFECYCLE'),
+			'user_user'           => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_USER'),
+			'user_admin'          => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_ADMIN'),
+			'user_lifecycle'      => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_LIFECYCLE'),
+			'user_warnlifecycle'  => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_WARNLIFECYCLE'),
+			'admin_user'          => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_ADMIN_USER'),
+			'admin_admin'         => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_ADMIN_ADMIN'),
+			'admin_lifecycle'     => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_ADMIN_LIFECYCLE'),
+			'admin_warnlifecycle' => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_ADMIN_WARNLIFECYCLE'),
 		];
 
 		static $htmlOptions = null;
