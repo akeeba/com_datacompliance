@@ -384,12 +384,12 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		// Get the cutoff date (last subscription expired more than $threshold months ago)
 		$threshold      = (int) $this->params->get('threshold', 6);
 		$threshold      = min(1, $threshold);
-		$jThresholdDate = $this->container->platform->getDate()->sub(new DateInterval("P{$threshold}M"));
+		$jThresholdDate = $this->container->platform->getDate($date)->sub(new DateInterval("P{$threshold}M"));
 
 		$db = $this->container->db;
 
 		// Subquery to get User IDs with active subscriptions
-		$jNow     = $this->container->platform->getDate();
+		$jNow     = $this->container->platform->getDate($date);
 		$subQuery = $db->getQuery(true)
 			->select($db->qn('user_id'))
 			->from($db->qn('#__akeebasubs_subscriptions'))
