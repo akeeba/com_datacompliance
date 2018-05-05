@@ -102,7 +102,9 @@ CREATE TABLE `#__datacompliance_emailtemplates` (
 SELECT COUNT(*) FROM `#__datacompliance_emailtemplates` WHERE `datacompliance_emailtemplate_id` = 1;
             ]]></condition>
 		<query><![CDATA[
-INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id`, `key`, `subject`, `body`, `language`, `enabled`, `ordering`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES(1, 'user_user', 'You have deleted your user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
+INSERT INTO `#__datacompliance_emailtemplates`
+(datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by)
+VALUES(1, 'user_user', 'You have deleted your user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
 <div style="background-color: #f9f9f9; border-radius: 10px; padding: 5px 10px;">
 <p>Hello [NAME],</p>
 <p><strong>KEEP THIS EMAIL FOR YOUR RECORDS</strong>.</p>
@@ -118,7 +120,9 @@ INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id
 </div>
 <p style="font-size: x-small; color: #667;">You are receiving this automatic email message because your user profile on <em>[SITENAME]</em> has been deleted. <span style="line-height: 1.3em;">Do not reply to this email, it''s sent from an unmonitored email address.</span></p>
 </div>', '*', 1, 0, '2018-05-05 15:04:44.000', 64, NULL, 0, NULL, 0);
-INSERT INTO abcom.abcom_datacompliance_emailtemplates (datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by) VALUES(2, 'user_admin', 'An administrator has deleted your user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
+INSERT INTO `#__datacompliance_emailtemplates`
+(datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by)
+VALUES(2, 'user_admin', 'An administrator has deleted your user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
 <div style="background-color: #f9f9f9; border-radius: 10px; padding: 5px 10px;">
 <p>Hello [NAME],</p>
 <p><strong>KEEP THIS EMAIL FOR YOUR RECORDS</strong>.</p>
@@ -134,7 +138,9 @@ INSERT INTO abcom.abcom_datacompliance_emailtemplates (datacompliance_emailtempl
 </div>
 <p style="font-size: x-small; color: #667;">You are receiving this automatic email message because your user profile on <em>[SITENAME]</em> has been deleted. <span style="line-height: 1.3em;">Do not reply to this email, it''s sent from an unmonitored email address.</span></p>
 </div>', '*', 1, 0, '2018-05-05 15:38:13.000', 64, '2018-05-05 15:43:45.000', 64, NULL, 0);
-INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id`, `key`, `subject`, `body`, `language`, `enabled`, `ordering`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES(3, 'user_lifecycle', 'Your user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
+INSERT INTO `#__datacompliance_emailtemplates`
+(datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by)
+VALUES(3, 'user_lifecycle', 'Your user profile on [SITENAME] has been deleted', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
 <div style="background-color: #f9f9f9; border-radius: 10px; padding: 5px 10px;">
 <p>Hello [NAME],</p>
 <p><strong>KEEP THIS EMAIL FOR YOUR RECORDS</strong>.</p>
@@ -155,8 +161,10 @@ INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id
 <p>The [SITENAME] team</p>
 </div>
 <p style="font-size: x-small; color: #667;">You are receiving this automatic email message because your user profile on <em>[SITENAME]</em> has been deleted. <span style="line-height: 1.3em;">Do not reply to this email, it''s sent from an unmonitored email address.</span></p>
-</div>', '*', 1, 0, '2018-05-05 15:44:11.000', 64, '2018-05-05 15:56:30.000', 64, NULL, 0);
-INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id`, `key`, `subject`, `body`, `language`, `enabled`, `ordering`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES(4, 'admin_user', 'A user has deleted their user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
+</div>', '*', 1, 0, '2018-05-05 15:44:11.000', 64, '2018-05-05 20:25:54.000', 64, NULL, 0);
+INSERT INTO `#__datacompliance_emailtemplates`
+(datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by)
+VALUES(4, 'admin_user', 'A user has deleted their user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
 <div style="background-color: #f9f9f9; border-radius: 10px; padding: 5px 10px;">
 <p>Hello [NAME],</p>
 <p>User #[ID] has deleted their user profile on [SITENAME].</p>
@@ -168,7 +176,9 @@ INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id
 </div>
 <p style="font-size: x-small; color: #667;">You are receiving this automatic email message because a user profile on <em>[SITENAME]</em> has been deleted. <span style="line-height: 1.3em;">Do not reply to this email, it''s sent from an unmonitored email address.</span></p>
 </div>', '*', 1, 0, '2018-05-05 15:56:41.000', 64, '2018-05-05 16:01:54.000', 64, NULL, 0);
-INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id`, `key`, `subject`, `body`, `language`, `enabled`, `ordering`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES(5, 'admin_admin', 'A administrator has deleted a user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
+INSERT INTO `#__datacompliance_emailtemplates`
+(datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by)
+VALUES(5, 'admin_admin', 'An administrator has deleted a user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
 <div style="background-color: #f9f9f9; border-radius: 10px; padding: 5px 10px;">
 <p>Hello [NAME],</p>
 <p>An administrator has deleted the user profile of user #[ID] on [SITENAME].</p>
@@ -179,8 +189,10 @@ INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id
 <p>The [SITENAME] team</p>
 </div>
 <p style="font-size: x-small; color: #667;">You are receiving this automatic email message because a user profile on <em>[SITENAME]</em> has been deleted. <span style="line-height: 1.3em;">Do not reply to this email, it''s sent from an unmonitored email address.</span></p>
-</div>', '*', 1, 0, '2018-05-05 15:58:35.000', 64, '2018-05-05 16:01:48.000', 64, NULL, 0);
-INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id`, `key`, `subject`, `body`, `language`, `enabled`, `ordering`, `created_on`, `created_by`, `modified_on`, `modified_by`, `locked_on`, `locked_by`) VALUES(6, 'admin_admin', 'Automatic deletion of a user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
+</div>', '*', 1, 0, '2018-05-05 15:58:35.000', 64, '2018-05-05 20:25:29.000', 64, NULL, 0);
+INSERT INTO `#__datacompliance_emailtemplates`
+(datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by)
+VALUES(6, 'admin_admin', 'Automatic deletion of a user profile on [SITENAME]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
 <div style="background-color: #f9f9f9; border-radius: 10px; padding: 5px 10px;">
 <p>Hello [NAME],</p>
 <p>The user profile of user #[ID] has been automatically deleted on [SITENAME] due to the account life cycle policy as defined by the Data Compliance plugins running on the site. The account was determined to be inactive.</p>
@@ -192,6 +204,29 @@ INSERT INTO `#__datacompliance_emailtemplates` (`datacompliance_emailtemplate_id
 </div>
 <p style="font-size: x-small; color: #667;">You are receiving this automatic email message because a user profile on <em>[SITENAME]</em> has been deleted. <span style="line-height: 1.3em;">Do not reply to this email, it''s sent from an unmonitored email address.</span></p>
 </div>', '*', 1, 0, '2018-05-05 15:59:38.000', 64, '2018-05-05 16:01:36.000', 64, NULL, 0);
+INSERT INTO `#__datacompliance_emailtemplates`
+(datacompliance_emailtemplate_id, `key`, subject, body, `language`, enabled, `ordering`, created_on, created_by, modified_on, modified_by, locked_on, locked_by)
+VALUES(7, 'user_lifecycle', 'Your user account on [SITENAME] will be deleted on [DELETEDATE]', '<div style="background-color: #e0e0e0; padding: 10px 20px;">
+<div style="background-color: #f9f9f9; border-radius: 10px; padding: 5px 10px;">
+<p>Hello [NAME],</p>
+<p><strong>PLEASE DO NOT IGNORE THIS EMAIL.</strong></p>
+<p>On May 25th, 2018 the European Union''s General Data Protection Regulation (GDPR) came into effect. According to the GDPR, inactive user accounts <em>and all their personally identifiable information</em> must be permanently deleted. Account inactivity is determined by several factors, such as when was the last time you logged into your account on our site.</p>
+<p>Your user account with the username “[USERNAME]” has been determined to be inactive and <strong>will be permanently deleted after [DELETEDATE]</strong>.</p>
+<p>If you wish to prevent the deletion of your user account and all of its information <strong>you can simply log into our site before [DELETEDATE]</strong>.</p>
+<p>If neither of these conditions are met, your account will be deleted on [DELETEDATE]. More specifically, the following actions will take place:</p>
+<p>[ACTIONS]</p>
+<p>After your account will have been deleted:</p>
+<ul>
+<li>you can no longer log in (your account has been <em>removed</em>)</li>
+<li>all your information has been deleted or anonymized per the actions listed above <em>permanently</em> and can <em>never be retrieved or restored again</em></li>
+<li>according to the provisions of the law you are no longer considered a client (past, current or prospective) of ours and we cannot even check whether you have ever been a client of ours</li>
+</ul>
+<p>We would like to kindly remind you that deleting your user account is the direct result of a <strong>LEGAL REQUIREMENT</strong>. We do not do this to inconvenience you. We will delete your information because we are forced to do so by the law (we have no choice). Moreover, it is <strong>ILLEGAL</strong> for us to keep a copy of your information after deleting it, therefore we will not be able to restore your deleted information even if you ask us.</p>
+<p>Best regards,</p>
+<p>The [SITENAME] team</p>
+</div>
+<p style="font-size: x-small; color: #667;">You are receiving this automatic email message because your user profile on <em>[SITENAME]</em> has been deleted. <span style="line-height: 1.3em;">Do not reply to this email, it''s sent from an unmonitored email address.</span></p>
+</div>', '*', 1, 0, '2018-05-05 20:24:27.000', 64, '2018-05-05 20:43:43.000', 64, NULL, 0);
 ]]>
 		</query>
 		</action>
