@@ -5,6 +5,9 @@
  * @license   GNU General Public License version 3, or later
  */
 
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\Log\LogEntry;
+
 define('_JEXEC', 1);
 
 $path = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
@@ -23,13 +26,48 @@ class DataComplianceLifecycleAutomation extends DataComplianceCliBase
 {
 	public function execute()
 	{
-		if  (!defined('JDEBUG'))
+		// Enable debug mode?
+		$debug = $this->input->getBool('debug', false);
+
+		if (!defined('JDEBUG'))
 		{
-			define('JDEBUG', false);
+			define('JDEBUG', $debug);
+		}
+
+		if (JDEBUG)
+		{
+			Log::addLogger([
+				// Logger format. "echo" passes the log message verbatim.
+				'logger'   => 'callback',
+				'callback' => function (LogEntry $entry) {
+					$priorities = array(
+						Log::EMERGENCY => 'EMERGENCY',
+						Log::ALERT     => 'ALERT',
+						Log::CRITICAL  => 'CRITICAL',
+						Log::ERROR     => 'ERROR',
+						Log::WARNING   => 'WARNING',
+						Log::NOTICE    => 'NOTICE',
+						Log::INFO      => 'INFO',
+						Log::DEBUG     => 'DEBUG',
+					);
+
+					$priority = $priorities[$entry->priority];
+					$date     = $entry->date->format(JText::_('DATE_FORMAT_FILTER_DATETIME'));
+
+					$this->out(sprintf("[%-9s] %20s -- %s", $priority, $date, $entry->message));
+				},
+
+			], Log::ALL, 'com_datacompliance');
+
+			Log::add('Test', Log::DEBUG, 'com_datacompliance');
 		}
 
 		$container = \FOF30\Container\Container::getInstance('com_datacompliance', [], 'admin');
 
+		// Load the translations for this component;
+		$container->platform->loadTranslations($container->componentName);
+
+		// Load the version information
 		include_once $container->backEndPath . '/version.php';
 
 		$version = DATACOMPLIANCE_VERSION;

@@ -6,6 +6,7 @@
  */
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 
@@ -107,6 +108,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 				'keys'   => [],
 			],
 		];
+
+		Log::add("Deleting user #$userID, type ‘{$type}’, Joomla! Core Data", Log::INFO, 'com_datacompliance');
 
 		$user = $this->getJoomlaUserObject($userID);
 
@@ -351,28 +354,45 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	private function pseudonymizeUser(User $user)
 	{
-		$jFake               = $this->container->platform->getDate('1999-01-01 00:00:00');
-		$user->name          = "User {$user->id}";
-		$user->username      = "user{$user->id}";
-		$user->email         = "user{$user->id}@example.com";
-		$user->password      = UserHelper::genRandomPassword(64);
-		$user->block         = 0;
-		$user->sendEmail     = 0;
-		$user->registerDate  = $jFake->toSql();
-		$user->lastvisitDate = $jFake->toSql();
-		$user->activation    = UserHelper::genRandomPassword(32);
-		if (!is_object($user->params) || !($user->params instanceof \Joomla\Registry\Registry))
+		Log::add("Pseudonymizing user", Log::DEBUG, 'com_datacompliance');
+
+		/** @var \Akeeba\DataCompliance\Admin\Model\JoomlaUsers $userModel */
+		$userModel = $this->container->factory->model('JoomlaUsers')->tmpInstance();
+
+		try
 		{
-			$user->params = '{}';
+			$userModel->findOrFail(['id' => $user->id]);
 		}
-		else
+		catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
 		{
-			$user->params->loadString('{}');
+			Log::add("Could not load user to pseudonymize: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 		}
-		$user->lastResetTime = $jFake->toSql();
-		$user->resetCount    = 0;
-		$user->requireReset  = 1;
-		$user->save(false);
+
+		$jFake                    = $this->container->platform->getDate('1999-01-01 00:00:00');
+		$userModel->name          = "User {$user->id}";
+		$userModel->username      = "user{$user->id}";
+		$userModel->email         = "user{$user->id}@example.com";
+		$userModel->password      = UserHelper::genRandomPassword(64);
+		$userModel->block         = 0;
+		$userModel->sendEmail     = 0;
+		$userModel->registerDate  = $jFake->toSql();
+		$userModel->lastvisitDate = $jFake->toSql();
+		$userModel->activation    = UserHelper::genRandomPassword(32);
+		$userModel->params        = '{}';
+		$userModel->lastResetTime = $jFake->toSql();
+		$userModel->resetCount    = 0;
+		$userModel->requireReset  = 1;
+
+		try
+		{
+			$userModel->save();
+		}
+		catch (Exception $e)
+		{
+			Log::add("Could not pseudonymize user: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
+		}
 	}
 
 	/**
@@ -384,6 +404,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	private function deleteNotes(User $user): array
 	{
+		Log::add("Deleting user notes", Log::DEBUG, 'com_datacompliance');
+
 		$db          = $this->container->db;
 		$ids         = [];
 		$selectQuery = $db->getQuery(true)
@@ -402,6 +424,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		}
 		catch (Exception $e)
 		{
+			Log::add("Could not delete user notes: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 			// Never mind...
 		}
 
@@ -417,6 +441,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	private function deleteFields(User $user): array
 	{
+		Log::add("Deleting user fields", Log::DEBUG, 'com_datacompliance');
+
 		$db = $this->container->db;
 		$ids         = [];
 
@@ -436,6 +462,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		}
 		catch (Exception $e)
 		{
+			Log::add("Could not delete user fields: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 			// Never mind...
 		}
 
@@ -451,6 +479,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	private function deleteKeys(User $user): array
 	{
+		Log::add("Deleting user keys", Log::DEBUG, 'com_datacompliance');
+
 		$db = $this->container->db;
 		$ids         = [];
 
@@ -470,6 +500,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		}
 		catch (Exception $e)
 		{
+			Log::add("Could not delete user keys: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 			// Never mind...
 		}
 
@@ -490,6 +522,8 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	private function deleteUserGroups(User $user)
 	{
+		Log::add("Deleting user groups", Log::DEBUG, 'com_datacompliance');
+
 		$db = $this->container->db;
 		$query = $db->getQuery(true)
 			->delete($db->qn('#__user_usergroup_map'))
@@ -501,6 +535,9 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		}
 		catch (Exception $e)
 		{
+			Log::add("Could not delete user groups: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
+
 			// Never mind...
 		}
 	}
