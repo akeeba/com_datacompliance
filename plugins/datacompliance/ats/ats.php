@@ -7,6 +7,7 @@
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
 use FOF30\Container\Container;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 
@@ -56,6 +57,8 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			],
 		];
 
+		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Ticket System data", Log::INFO, 'com_datacompliance');
+
 		$container = Container::getInstance('com_ats', [], 'admin');
 		/** @var \Akeeba\TicketSystem\Admin\Model\Tickets $tickets */
 		$tickets = $container->factory->model('Tickets');
@@ -79,9 +82,18 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 				continue;
 			}
 
+			Log::add("Deleting ticket #{$ticket->getId()}", Log::DEBUG, 'com_datacompliance');
+
 			$ret['ats']['tickets'][] = $ticket->getId();
 			$ticket->delete();
+
+			// TODO Delete #__ats_attempts entries
+			// TODO Delete #__ats_buckets entries
+			// TODO Delete #__ats_creditconsumptions entries
+			// TODO Delete #__ats_credittrasations entries
 		}
+
+		// TODO Delete #__ats_users_usertags entries
 
 		return $ret;
 	}
@@ -163,6 +175,12 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			$postIDs[] = $attachment->ats_post_id;
 		}, $attachments);
 
+		// TODO Export #__ats_attempts entries
+		// TODO Export #__ats_buckets entries
+		// TODO Export #__ats_creditconsumptions entries
+		// TODO Export #__ats_credittrasations entries
+
+		// TODO Export #__ats_users_usertags entries
 
 		return $export;
 	}

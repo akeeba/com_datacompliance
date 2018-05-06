@@ -8,6 +8,7 @@
 use Akeeba\DataCompliance\Admin\Helper\Export;
 use Akeeba\Subscriptions\Admin\Model\Subscriptions;
 use FOF30\Container\Container;
+use Joomla\CMS\Log\Log;
 
 defined('_JEXEC') or die;
 
@@ -125,6 +126,8 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			],
 		];
 
+		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Subscriptions data", Log::INFO, 'com_datacompliance');
+
 		/**
 		 * Remove invoices and credit notes.
 		 *
@@ -142,6 +145,9 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			->where($db->qn('user_id') . ' = ' . (int) $userID);
 		$subIDs = $db->setQuery($query)->loadColumn(0);
 
+		$count = count($subIDs);
+		Log::add("Found {$count} subscription(s)", Log::DEBUG, 'com_datacompliance');
+
 		/** @var Subscriptions $sub */
 		$sub = $container->factory->model('Subscriptions')->tmpInstance();
 
@@ -154,6 +160,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			}
 			catch (Exception $e)
 			{
+				Log::add("Subscription #$subID has gone away?!", Log::WARNING, 'com_datacompliance');
 				continue;
 			}
 
@@ -169,6 +176,8 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			}
 			catch (Exception $e)
 			{
+				Log::add("Subscription #$subID does not have an invoice.", Log::DEBUG, 'com_datacompliance');
+
 				$invoice = null;
 			}
 
@@ -181,14 +190,18 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 				catch (Exception $e)
 				{
 					$creditNote = null;
+					Log::add("Subscription #$subID does not have a credit note.", Log::DEBUG, 'com_datacompliance');
 				}
 
 				if (!empty($creditNote))
 				{
+					Log::add("Deleting credit note #{$creditNote->display_number}.", Log::DEBUG, 'com_datacompliance');
+
 					$ret['akeebasubs']['creditnotes'][] = $creditNote->display_number;
 					$creditNote->delete();
 				}
 
+				Log::add("Deleting invoice #{$invoice->display_number}.", Log::DEBUG, 'com_datacompliance');
 				$ret['akeebasubs']['invoices'][] = $invoice->display_number;
 				$invoice->delete();
 
@@ -197,6 +210,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			// Remove all subscriptions with paystate "N" (failed transactions).
 			if ($sub->paystate == 'N')
 			{
+				Log::add("Deleting UNPAID (state=N) subscription #{$sub->getId()}.", Log::DEBUG, 'com_datacompliance');
 				$ret['akeebasubs']['subscriptions_deleted'][] = $sub->getId();
 				$sub->delete();
 
@@ -204,6 +218,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 			}
 
 			// Anonymize the subscription if its payment state is other than "N".
+			Log::add("Anonymizing subscription #{$sub->getId()}.", Log::DEBUG, 'com_datacompliance');
 			$ret['akeebasubs']['subscriptions_anonymized'][] = $sub->getId();
 
 			$sub->save([
@@ -329,6 +344,8 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		/** @var \Akeeba\Subscriptions\Admin\Model\Users $user */
 		$user = $container->factory->model('Users')->tmpInstance();
 
+		Log::add("Anonymizing Akeeba Subscriptions user information for user #{$user_id}.", Log::DEBUG, 'com_datacompliance');
+
 		try
 		{
 			$user->findOrFail(['user_id' => $user_id]);
@@ -353,6 +370,9 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		}
 		catch (Exception $e)
 		{
+			Log::add("Could not anonymize Akeeba Subscriptions user #{$user_id}: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Debug Backtrace: {$e->getTraceAsString()}", Log::DEBUG, 'com_datacompliance');
+
 			return [];
 		}
 

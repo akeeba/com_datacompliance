@@ -7,6 +7,7 @@
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
 use FOF30\Container\Container;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 
@@ -60,6 +61,7 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 			],
 		];
 
+		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Release System data", Log::INFO, 'com_datacompliance');
 
 		$db = $this->container->db;
 
@@ -74,7 +76,10 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 
 		try
 		{
-			$ids               = $db->setQuery($selectQuery)->loadColumn(0);
+			$ids = $db->setQuery($selectQuery)->loadColumn(0);
+
+			Log::add(sprintf("Found %u ARS log entries", count($ids)), Log::DEBUG, 'com_datacompliance');
+
 			$ids               = empty($ids) ? [] : implode(',', $ids);
 			$ret['ars']['log'] = $ids;
 
@@ -82,6 +87,9 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 		}
 		catch (Exception $e)
 		{
+			Log::add("Could not delete ARS log data for user #$userID: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Debug backtrace: {$e->getTraceAsString()}", Log::DEBUG, 'com_datacompliance');
+
 			// No problem if deleting fails.
 		}
 
