@@ -53,7 +53,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 	{
 		$ret = [
 			'ats' => [
-				'tickets' => [],
+				'tickets'            => [],
+				'attempts'           => [],
+				'creditconsumptions' => [],
+				'credittransactions' => [],
+				'usertags'           => [],
 			],
 		];
 
@@ -82,18 +86,24 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 				continue;
 			}
 
-			Log::add("Deleting ticket #{$ticket->getId()}", Log::DEBUG, 'com_datacompliance');
+			$ticketID = $ticket->getId();
+			Log::add("Deleting ticket #{$ticketID}", Log::DEBUG, 'com_datacompliance');
 
-			$ret['ats']['tickets'][] = $ticket->getId();
+			$ret['ats']['tickets'][] = $ticketID;
 			$ticket->delete();
 
-			// TODO Delete #__ats_attempts entries
-			// TODO Delete #__ats_buckets entries
-			// TODO Delete #__ats_creditconsumptions entries
-			// TODO Delete #__ats_credittrasations entries
+			// Delete #__ats_attempts entries
+			$ret['ats']['atttempts'] = array_merge($ret['ats']['atttempts'], $this->deleteAttempts($ticketID));
 		}
 
-		// TODO Delete #__ats_users_usertags entries
+		// Delete #__ats_creditconsumptions entries
+		$ret['ats']['creditconsumptions'] = $this->deleteCreditConsumptions($userID);
+
+		// Delete #__ats_credittransactions entries
+		$ret['ats']['credittransactions'] = $this->deleteCreditTransactions($userID);
+
+		// Delete #__ats_users_usertags entries
+		$ret['ats']['usertags'] = $this->deleteUserTags($userID);
 
 		return $ret;
 	}
@@ -146,6 +156,23 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 		}, $tickets);
 		unset($tickets);
 
+		// Export #__ats_attempts entries
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', 'ats_attempts');
+		$domain->addAttribute('description', 'Akeeba Ticket System ticket filing attempts (successful), linked to each ticket');
+
+		$db = $this->container->db;
+		$selectQuery = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__ats_attempts'))
+			->where($db->qn('ats_ticket_id') . ' IN(' . implode(',', array_map('intval', $ticketIDs)) . ')');
+
+		$items = $db->setQuery($selectQuery)->loadObjectList();
+
+		array_map(function($item) {
+			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+		}, $items);
+
 		// Posts
 		$domainPosts = $export->addChild('domain');
 		$domainPosts->addAttribute('name', 'ats_posts');
@@ -175,12 +202,56 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			$postIDs[] = $attachment->ats_post_id;
 		}, $attachments);
 
-		// TODO Export #__ats_attempts entries
-		// TODO Export #__ats_buckets entries
-		// TODO Export #__ats_creditconsumptions entries
-		// TODO Export #__ats_credittrasations entries
+		// Export #__ats_creditconsumptions entries
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', 'ats_creditconsumptions');
+		$domain->addAttribute('description', 'Akeeba Ticket System credit consumption events, linked to each ticket');
 
-		// TODO Export #__ats_users_usertags entries
+		$db = $this->container->db;
+		$selectQuery = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__ats_creditconsumptions'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		$items = $db->setQuery($selectQuery)->loadObjectList();
+
+		array_map(function($item) {
+			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+		}, $items);
+
+		// Export #__ats_credittransactions entries
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', 'ats_credittransactions');
+		$domain->addAttribute('description', 'Akeeba Ticket System credit transactions (credit purchases)');
+
+		$db = $this->container->db;
+		$selectQuery = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__ats_credittransactions'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		$items = $db->setQuery($selectQuery)->loadObjectList();
+
+		array_map(function($item) {
+			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+		}, $items);
+
+		// Export #__ats_users_usertags entries
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', 'ats_user_usertags');
+		$domain->addAttribute('description', 'Akeeba Ticket System user tags');
+
+		$db = $this->container->db;
+		$selectQuery = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__ats_users_usertags'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		$items = $db->setQuery($selectQuery)->loadObjectList();
+
+		array_map(function($item) {
+			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+		}, $items);
 
 		return $export;
 	}
@@ -224,5 +295,129 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			->from('#__ats_attachments')
 			->where($db->qn('ats_post_id') . ' IN(' . implode(',', $postIDs) . ')');
 		return $db->setQuery($query)->loadObjectList();
+	}
+
+	private function deleteAttempts($ticketID)
+	{
+		Log::add("Deleting ticket attempts for ticket #{$ticketID}", Log::DEBUG, 'com_datacompliance');
+
+		$db = $this->container->db;
+		$ids         = [];
+
+		$selectQuery = $db->getQuery(true)
+			->select($db->qn('ats_attempt_id'))
+			->from($db->qn('#__ats_attempts'))
+			->where($db->qn('ats_ticket_id') . ' = ' . (int)$ticketID);
+
+		$deleteQuery = $db->getQuery(true)
+			->delete($db->qn('#__ats_attempts'))
+			->where($db->qn('ats_ticket_id') . ' = ' . (int)$ticketID);
+
+		try
+		{
+			$ids = $db->setQuery($selectQuery)->loadColumn(0);
+			$db->setQuery($deleteQuery)->execute();
+		}
+		catch (Exception $e)
+		{
+			Log::add("Could not delete ATS ticket attempts: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Debug trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
+			// Never mind...
+		}
+
+		return $ids;
+	}
+
+	private function deleteCreditConsumptions(int $userID): array
+	{
+		Log::add("Deleting credit consumptions", Log::DEBUG, 'com_datacompliance');
+
+		$db = $this->container->db;
+		$ids         = [];
+
+		$selectQuery = $db->getQuery(true)
+			->select($db->qn('ats_creditconsumption_id'))
+			->from($db->qn('#__ats_creditconsumptions'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		$deleteQuery = $db->getQuery(true)
+			->delete($db->qn('#__ats_creditconsumptions'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		try
+		{
+			$ids = $db->setQuery($selectQuery)->loadColumn(0);
+			$db->setQuery($deleteQuery)->execute();
+		}
+		catch (Exception $e)
+		{
+			Log::add("Could not delete ATS credit consumptions: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Debug trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
+			// Never mind...
+		}
+
+		return $ids;
+	}
+
+	private function deleteCreditTransactions(int $userID): array
+	{
+		Log::add("Deleting credit transactions", Log::DEBUG, 'com_datacompliance');
+
+		$db = $this->container->db;
+		$ids         = [];
+
+		$selectQuery = $db->getQuery(true)
+			->select($db->qn('ats_credittransaction_id'))
+			->from($db->qn('#__ats_credittransactions'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		$deleteQuery = $db->getQuery(true)
+			->delete($db->qn('#__ats_credittransactions'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		try
+		{
+			$ids = $db->setQuery($selectQuery)->loadColumn(0);
+			$db->setQuery($deleteQuery)->execute();
+		}
+		catch (Exception $e)
+		{
+			Log::add("Could not delete ATS credit transactions: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Debug trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
+			// Never mind...
+		}
+
+		return $ids;
+	}
+
+	private function deleteUserTags(int $userID): array
+	{
+		Log::add("Deleting ATS user tags", Log::DEBUG, 'com_datacompliance');
+
+		$db = $this->container->db;
+		$ids         = [];
+
+		$selectQuery = $db->getQuery(true)
+			->select($db->qn('id'))
+			->from($db->qn('#__ats_users_usertags'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		$deleteQuery = $db->getQuery(true)
+			->delete($db->qn('#__ats_users_usertags'))
+			->where($db->qn('user_id') . ' = ' . (int)$userID);
+
+		try
+		{
+			$ids = $db->setQuery($selectQuery)->loadColumn(0);
+			$db->setQuery($deleteQuery)->execute();
+		}
+		catch (Exception $e)
+		{
+			Log::add("Could not delete ATS user tags: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Debug trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
+			// Never mind...
+		}
+
+		return $ids;
 	}
 }
