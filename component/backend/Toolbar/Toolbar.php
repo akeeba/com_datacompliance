@@ -59,7 +59,9 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 	}
 
 	/**
-	 * Renders the toolbar for the component's Browse pages (the plural views)
+	 * Renders the toolbar for the component's Browse pages (the plural views).
+	 *
+	 * This is forked off FOF to add a Copy button
 	 *
 	 * @return  void
 	 */
@@ -146,51 +148,6 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 		}
 	}
 
-	/**
-	 * Renders the toolbar for the component's Add pages
-	 *
-	 * @return  void
-	 */
-	public function onAdd()
-	{
-		// On frontend, buttons must be added specifically
-		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
-		{
-			return;
-		}
-
-		$option = $this->container->componentName;
-		$componentName = str_replace('com_', '', $option);
-		$view = $this->container->input->getCmd('view', 'cpanel');
-
-		// Set toolbar title
-		$subtitle_key = strtoupper($option . '_TITLE_' . $this->container->inflector->pluralize($view)) . '_EDIT';
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
-
-		if (!$this->isDataView())
-		{
-			return;
-		}
-
-		// Set toolbar icons
-		if ($this->perms->edit || $this->perms->editown)
-		{
-			// Show the apply button only if I can edit the record, otherwise I'll return to the edit form and get a
-			// 403 error since I can't do that
-			JToolBarHelper::apply();
-		}
-
-		JToolBarHelper::save();
-
-		if ($this->perms->create)
-		{
-			JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
-		}
-
-		JToolBarHelper::cancel();
-	}
-
-
 	public function onControlPanels()
 	{
 		$this->renderSubmenu();
@@ -207,24 +164,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 
 	public function onConsenttrailsBrowse()
 	{
-		// On frontend, buttons must be added specifically
-		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)
-		{
-			$this->renderSubmenu();
-		}
-
-		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
-		{
-			return;
-		}
-
-		// Setup
-		$option = $this->container->componentName;
-		$view   = $this->container->input->getCmd('view', 'cpanel');
-
-		// Set toolbar title
-		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
+		$this->_browseWithoutActions();
 	}
 
 	/**
@@ -281,4 +221,25 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 		$this->appendLink($name, $link, $active, null, $parent);
 	}
 
+	private function _browseWithoutActions()
+	{
+		// On frontend, buttons must be added specifically
+		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)
+		{
+			$this->renderSubmenu();
+		}
+
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
+		{
+			return;
+		}
+
+		// Setup
+		$option = $this->container->componentName;
+		$view   = $this->container->input->getCmd('view', 'cpanel');
+
+		// Set toolbar title
+		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
+		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
+	}
 }

@@ -5,10 +5,13 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\DataCompliance\Admin\Controller;
 
-defined('_JEXEC') or die;
+namespace Akeeba\DataCompliance\Admin\View\Usertrail;
 
-class Consenttrails extends AbstractBrowseOnly
+
+use FOF30\View\DataView\Html as BaseView;
+
+class Html extends BaseView
 {
+
 }

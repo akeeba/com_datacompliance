@@ -14,7 +14,7 @@ use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
 
 /**
- * Data wipe audit trails
+ * User profile changes audit trails
  *
  * @property int    datacompliance_usertrail_id   Primary key.
  * @property int    user_id                       User ID whose information changed.

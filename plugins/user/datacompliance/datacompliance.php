@@ -240,6 +240,18 @@ class PlgUserDatacompliance extends JPlugin
 	 */
 	public function onUserBeforeSave($oldUser, $isNew, $newUser)
 	{
+		/**
+		 * Are we wiping a user data profile? If so, we have to NOT log anything.
+		 *
+		 * If we were not to do that, the use profile wipe would result in all of the personal information being logged
+		 * in the user changes audit trail, beating the purpose of the data wipe and possibly being a reason for GDRP
+		 * fines if a data breach occurs.
+		 */
+		if ($this->container->platform->getSessionVar('wiping', false, 'com_datacompliance'))
+		{
+			return;
+		}
+
 		// We do not take any actions for new users
 		if ($isNew)
 		{

@@ -69,6 +69,10 @@ class Wipe extends Model
 		// Actually delete the records
 		$this->importPlugin('datacompliance');
 
+		// Set a session variable indicating we are wiping a profile, therefore no change audit trail should be preserved
+		$this->container->platform->setSessionVar('wiping', true, 'com_datacompliance');
+
+		// Run the user account removal
 		$auditItems = [];
 		$results    = $this->runPlugins('onDataComplianceDeleteUser', [$userId, $type]);
 
@@ -85,6 +89,9 @@ class Wipe extends Model
 		// Update audit record with $auditItems
 		$auditRecord->items = $auditItems;
 		$auditRecord->save();
+
+		// Unset the session variable indicating we are wiping a profile
+		$this->container->platform->setSessionVar('wiping', false, 'com_datacompliance');
 
 		return true;
 	}

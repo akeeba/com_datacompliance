@@ -9,6 +9,6 @@ namespace Akeeba\DataCompliance\Admin\Controller;
 
 defined('_JEXEC') or die;
 
-class Consenttrails extends AbstractBrowseOnly
+class Usertrails extends AbstractBrowseOnly
 {
 }

@@ -9,12 +9,9 @@ namespace Akeeba\DataCompliance\Admin\Controller;
 
 defined('_JEXEC') or die;
 
-use Akeeba\DataCompliance\Admin\Controller\Mixin\PredefinedTaskList;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
-use JFactory;
-use JText;
-use JUri;
+use FOF30\Controller\Mixin\PredefinedTaskList;
 
 class ControlPanel extends Controller
 {
