@@ -79,7 +79,7 @@ $model = $this->getModel();
         </td>
         {{-- Requester IP --}}
         <td>
-            {{ $row->requester_ip }}
+            {{{ $row->requester_ip }}}
         </td>
 
         {{-- Enabled --}}

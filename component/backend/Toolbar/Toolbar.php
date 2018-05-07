@@ -16,6 +16,8 @@ use JToolbarHelper;
 
 class Toolbar extends \FOF30\Toolbar\Toolbar
 {
+	const icon = 'vcard';
+
 	/**
 	 * Renders the submenu (toolbar links) for all defined views of this component
 	 *
@@ -84,7 +86,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
+		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), self::icon);
 
 		if (!$this->isDataView())
 		{
@@ -146,23 +148,31 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 		{
 			// Yeah. Let's not add the button if we can't load the model...
 		}
+
+		JToolbarHelper::divider();
+		JToolbarHelper::link('index.php?option=com_datacompliance', JText::_('COM_DATACOMPLIANCE_TITLE_DASHBOARD_SHORT'), 'back');
 	}
 
 	public function onControlPanels()
 	{
 		$this->renderSubmenu();
 
-		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_TITLE_DASHBOARD') . ' <small>' . DATACOMPLIANCE_DATE . '</small>', 'vcard');
+		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_TITLE_DASHBOARD') . ' <small>' . DATACOMPLIANCE_DATE . '</small>', self::icon);
 
 		JToolbarHelper::preferences('com_datacompliance');
 	}
 
 	public function onOptions()
 	{
-		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_HEADER'), 'vcard');
+		JToolbarHelper::title(JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_HEADER'), self::icon);
 	}
 
 	public function onConsenttrailsBrowse()
+	{
+		$this->_browseWithoutActions();
+	}
+
+	public function onUsertrailsBrowse()
 	{
 		$this->_browseWithoutActions();
 	}
@@ -182,9 +192,9 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 			$activeView = $this->container->input->getCmd('view', 'cpanel');
 		}
 
-		if ($activeView == 'cpanels')
+		if ($activeView == 'ControlPanels')
 		{
-			$activeView = 'cpanel';
+			$activeView = 'Controlpanel';
 		}
 
 		$key = $this->container->componentName . '_TITLE_' . $view;
@@ -192,7 +202,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 		// Exceptions to avoid introduction of a new language string
 		if ($view == 'ControlPanel')
 		{
-			$key = $this->container->componentName . '_TITLE_CPANEL';
+			$key = $this->container->componentName . '_TITLE_DASHBOARD_SHORT';
 		}
 
 		if (strtoupper(\JText::_($key)) == strtoupper($key))
@@ -240,6 +250,10 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
+		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), self::icon);
+
+		JToolbarHelper::divider();
+		JToolbarHelper::link('index.php?option=com_datacompliance', JText::_('COM_DATACOMPLIANCE_TITLE_DASHBOARD_SHORT'), 'back');
+
 	}
 }
