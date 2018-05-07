@@ -12,6 +12,7 @@ defined('_JEXEC') or die();
 use Akeeba\DataCompliance\Site\Model\Options;
 use FOF30\View\DataView\Html as HtmlView;
 use Joomla\CMS\Factory;
+use Joomla\CMS\User\User;
 
 class Html extends HtmlView
 {
@@ -37,6 +38,20 @@ class Html extends HtmlView
 	public $siteName;
 
 	/**
+	 * The Joomla! user object of the user we are going to be managing
+	 *
+	 * @var  User
+	 */
+	public $user;
+
+	/**
+	 * User profile deletion type
+	 *
+	 * @var  string
+	 */
+	public $type = 'user';
+
+	/**
 	 * The human readable list of actions to be taken upon deleting a user's account
 	 *
 	 * @var  array
@@ -45,6 +60,8 @@ class Html extends HtmlView
 
 	protected function onBeforeOptions()
 	{
+		$this->populateUser();
+
 		$this->layout     = 'default';
 		$this->article    = $this->get('article');
 		$this->preference = $this->get('preference');
@@ -53,10 +70,19 @@ class Html extends HtmlView
 
 	protected function onBeforeWipe()
 	{
+		$this->populateUser();
+
 		/** @var Options $model */
 		$model              = $this->getModel();
 		$this->layout       = 'wipe';
-		$this->bulletPoints = $model->getBulletPoints();
+		$this->bulletPoints = $model->getBulletPoints($this->user, $this->type);
 	}
 
+	private function populateUser()
+	{
+		$userID      = $this->input->getInt('user_id', null);
+
+		$this->user = $this->container->platform->getUser($userID);
+		$this->type = ($this->user->id == $this->container->platform->getUser()->id) ? 'user' : 'admin';
+	}
 }

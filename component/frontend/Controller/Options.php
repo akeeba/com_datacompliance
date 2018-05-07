@@ -77,13 +77,21 @@ class Options extends Controller
 	{
 		$this->csrfProtection();
 
+		$currentUser = $this->container->platform->getUser();
+		$userID      = $this->input->getInt('user_id', $currentUser->id);
+
+		// You can only export your own data unless you have the 'com_datawipe.export' privilege
+		if (($userID != $currentUser->id) && !$currentUser->authorise('export', 'com_datacompliance'))
+		{
+			$this->container->platform->raiseError(403, \JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+		}
+
 		// Make sure there's no buffered data
 		@ob_end_clean();
 
 		// Get the export data
-		$export  = $this->container->factory->model('Export')->tmpInstance();
-		$user_id = $this->container->platform->getUser()->id;
-		$result  = $export->exportFormattedXML($user_id);
+		$export = $this->container->factory->model('Export')->tmpInstance();
+		$result = $export->exportFormattedXML($userID);
 
 		// Disable caching
 		header("Pragma: public");
@@ -98,7 +106,7 @@ class Options extends Controller
 		header('Content-Disposition: attachment; filename=export.xml');
 		header('Content-Transfer-Encoding: binary');
 		header('Connection: close');
-		header('Content-Length: ' . (int)strlen($result));
+		header('Content-Length: ' . (int) strlen($result));
 
 		// Send the data
 		echo $result;
@@ -121,8 +129,18 @@ class Options extends Controller
 	{
 		$this->csrfProtection();
 
+		$currentUser = $this->container->platform->getUser();
+		$userID      = $this->input->getInt('user_id', $currentUser->id);
+		$isCurrent   = $userID == $currentUser->id;
+
+		// You can only delete your own data unless you have the 'com_datawipe.wipe' privilege
+		if (!$isCurrent && !$currentUser->authorise('wipe', 'com_datacompliance'))
+		{
+			$this->container->platform->raiseError(403, \JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+		}
+
 		$phrase = $this->input->getString('phrase', null);
-		$user   = $this->container->platform->getUser();
+		$user   = $this->container->platform->getUser($userID);
 		/** @var Wipe $wipeModel */
 		$wipeModel = $this->container->factory->model('Wipe')->tmpInstance();
 
@@ -130,7 +148,9 @@ class Options extends Controller
 		if (!$wipeModel->checkWipeAbility($user->id))
 		{
 			$msg         = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $wipeModel->getError());
-			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options', false);
+			$url         = 'index.php?option=com_datacompliance&view=Options';
+			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
+			$redirectUrl = \JRoute::_($url, false);
 			$this->setRedirect($redirectUrl, $msg, 'error');
 			$this->redirect();
 		}
@@ -146,8 +166,10 @@ class Options extends Controller
 		// Confirm the phrase
 		if ($phrase != \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE'))
 		{
-			$token = $this->container->platform->getToken();
-			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1', false);
+			$token       = $this->container->platform->getToken();
+			$url         = 'index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1';
+			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
+			$redirectUrl = \JRoute::_($url, false);
 			$this->setRedirect($redirectUrl, \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_BADPHRASE'), 'error');
 			$this->redirect();
 
@@ -159,8 +181,10 @@ class Options extends Controller
 
 		if (!$result)
 		{
-			$token = $this->container->platform->getToken();
-			$redirectUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1', false);
+			$token       = $this->container->platform->getToken();
+			$url         = 'index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1';
+			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
+			$redirectUrl = \JRoute::_($url, false);
 			$message     = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $wipeModel->getError());
 			$this->setRedirect($redirectUrl, $message, 'error');
 			$this->redirect();
@@ -168,10 +192,15 @@ class Options extends Controller
 			return;
 		}
 
-		// Log out the now erased user and redirect them to the home page
-		\JFactory::getApplication()->getSession()->close();
-		\JFactory::getApplication()->getSession()->restart();
 
+		// Log out the now erased user
+		if ($isCurrent)
+		{
+			\JFactory::getApplication()->getSession()->close();
+			\JFactory::getApplication()->getSession()->restart();
+		}
+
+		// Redirect them to the home page
 		$message     = \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_MSG_ERASED');
 		\JFactory::getApplication()->enqueueMessage($message);
 		\JFactory::getApplication()->redirect(\JUri::base());

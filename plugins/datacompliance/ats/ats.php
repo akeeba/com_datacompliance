@@ -161,17 +161,20 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 		$domain->addAttribute('name', 'ats_attempts');
 		$domain->addAttribute('description', 'Akeeba Ticket System ticket filing attempts (successful), linked to each ticket');
 
-		$db = $this->container->db;
-		$selectQuery = $db->getQuery(true)
-			->select('*')
-			->from($db->qn('#__ats_attempts'))
-			->where($db->qn('ats_ticket_id') . ' IN(' . implode(',', array_map('intval', $ticketIDs)) . ')');
+		if (!empty($ticketIDs))
+		{
+			$db = $this->container->db;
+			$selectQuery = $db->getQuery(true)
+				->select('*')
+				->from($db->qn('#__ats_attempts'))
+				->where($db->qn('ats_ticket_id') . ' IN(' . implode(',', array_map('intval', $ticketIDs)) . ')');
 
-		$items = $db->setQuery($selectQuery)->loadObjectList();
+			$items = $db->setQuery($selectQuery)->loadObjectList();
 
-		array_map(function($item) {
-			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-		}, $items);
+			array_map(function($item) {
+				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+			}, $items);
+		}
 
 		// Posts
 		$domainPosts = $export->addChild('domain');

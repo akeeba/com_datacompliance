@@ -56,7 +56,7 @@ class AbstractBrowseOnly extends DataController
 	protected function onBeforeExecute(&$task)
 	{
 		// Require the com_datawipe.view_trail privilege to display this view
-		if (!$this->container->platform->getUser()->authorise('com_datawipe.view_trail'))
+		if (!$this->container->platform->getUser()->authorise('view_trail', 'com_datacompliance'))
 		{
 			throw new \RuntimeException(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}

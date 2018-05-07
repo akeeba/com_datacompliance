@@ -139,7 +139,7 @@ class PlgUserDatacompliance extends JPlugin
 		// Make sure the loaded user is the correct one
 		if ($user->id != $id)
 		{
-			return true;
+			$currentUser = $this->container->platform->getUser();
 		}
 
 		// Make sure I am either editing myself (you can NOT make choices on behalf of another user).
@@ -175,8 +175,8 @@ class PlgUserDatacompliance extends JPlugin
 			 * cannot use a list field to display it in a human readable format, Joomla! just dumps the raw value if you
 			 * use such a field. So all I can do is pass raw text. Um, whatever.
 			 */
-			$data->loginguard = array(
-				'hastfa' => $hasConsent ? JText::_('JYES') : JText::_('JNO')
+			$data->datacompliance = array(
+				'hasconsent' => $hasConsent ? JText::_('JYES') : JText::_('JNO')
 			);
 
 			$form->loadFile('list', false);
@@ -208,7 +208,7 @@ class PlgUserDatacompliance extends JPlugin
 			return true;
 		}
 
-		// Guests can't have TFA
+		// Guests can't have data complaince preferences
 		if ($user->guest)
 		{
 			return false;
@@ -223,7 +223,19 @@ class PlgUserDatacompliance extends JPlugin
 			return true;
 		}
 
-		// Whatever. I am not the same person. Go away.
+		// Can I export users?
+		if ($myUser->authorise('export', 'com_datacompliance'))
+		{
+			return true;
+		}
+
+		// Can I delete users?
+		if ($myUser->authorise('wipe', 'com_datacompliance'))
+		{
+			return true;
+		}
+
+		// Nope. I am not authorized.
 		return false;
 	}
 

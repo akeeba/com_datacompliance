@@ -58,17 +58,5 @@ defined('_JEXEC') or die;
             @lang('COM_DATACOMPLIANCE_LIFECYCLE')
         </a>
 
-        <a class="akeeba-action--grey"
-           href="index.php?option=com_datacompliance&view=Export" >
-            <span class="akion-share"></span>
-            @lang('COM_DATACOMPLIANCE_EXPORT')
-        </a>
-
-        <a class="akeeba-action--red"
-           href="index.php?option=com_datacompliance&view=Wipe" >
-            <span class="akion-android-delete"></span>
-            @lang('COM_DATACOMPLIANCE_WIPE')
-        </a>
-
     </div>
 </div>

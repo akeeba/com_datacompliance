@@ -24,8 +24,10 @@ function datacompliance_toggle_article()
 JS;
 
 $this->addJavascriptInline($js);
+$myUser = $this->getContainer()->platform->getUser();
 ?>
 
+@if($this->type == 'user')
 <div class="akeeba-panel--teal">
     <header class="akeeba-block-header">
         <h1>
@@ -82,33 +84,90 @@ $this->addJavascriptInline($js);
         </a>
     </p>
 </div>
+@else
+    <div class="akeeba-panel--teal">
+        <header class="akeeba-block-header">
+            <h1>
+                @sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MANAGE_HEADER', $this->user->username))
+            </h1>
+        </header>
+        <p class="akeeba-block--info">
+            @sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_CONSENT_WARN', $this->user->username)
+        </p>
+        <p>
+            @lang('COM_DATACOMPLIANCE_OPTIONS_MANAGE_CONSENT_CURRENTPREFERENCE') <span class="akeeba-label--{{ $this->preference ? 'green' : 'red' }}"><strong>
+                @lang($this->preference ? 'JYES' : 'JNO')
+            </strong></span>
+        </p>
+
+    </div>
+@endif
 
 <div class="akeeba-panel--orange">
-    <header class="akeeba-block-header">
-        <h1>
-            @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_HEADER')
-        </h1>
-    </header>
-    <p>
-        @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_INFOBLOCK')
-    </p>
-    <p class="akeeba-block--warning">
-        @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_WARNING')
-    </p>
-    <div class="akeeba-container--50-50">
-        <div>
-            <a href="@route('index.php?option=com_datacompliance&view=Options&task=export&format=raw&' . $this->getContainer()->platform->getToken() . '=1')"
-               class="akeeba-btn--success--block">
-                <span class="akion-android-download"></span>
-                @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT')
-            </a>
+    @if($this->type == 'user')
+        <header class="akeeba-block-header">
+            <h1>
+                @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_HEADER')
+            </h1>
+        </header>
+        <p>
+            @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_INFOBLOCK')
+        </p>
+        <p class="akeeba-block--warning">
+            @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_WARNING')
+        </p>
+        <div class="akeeba-container--50-50">
+            @if(($this->type == 'user') || $myUser->authorise('export', 'com_datacompliance'))
+                <div>
+                    <a href="@route('index.php?option=com_datacompliance&view=Options&task=export&format=raw&' . $this->getContainer()->platform->getToken() . '=1')"
+                       class="akeeba-btn--success--block">
+                        <span class="akion-android-download"></span>
+                        @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT')
+                    </a>
+                </div>
+            @endif
+            @if(($this->type == 'user') || $myUser->authorise('wipe', 'com_datacompliance'))
+                <div>
+                    <a href="@route('index.php?option=com_datacompliance&view=Options&task=wipe&' . $this->getContainer()->platform->getToken() . '=1')"
+                       class="akeeba-btn--red--block">
+                        <span class="akion-nuclear"></span>
+                        @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_WIPE')
+                    </a>
+                </div>
+            @endif
         </div>
-        <div>
-            <a href="@route('index.php?option=com_datacompliance&view=Options&task=wipe&' . $this->getContainer()->platform->getToken() . '=1')"
-               class="akeeba-btn--red--block">
-                <span class="akion-nuclear"></span>
-                @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_WIPE')
-            </a>
+    @else
+        <header class="akeeba-block-header">
+            <h1>
+                @sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_HEADER', $this->user->username)
+            </h1>
+        </header>
+        <p>
+            @sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_INFOBLOCK', $this->user->username)
+        </p>
+        <p class="akeeba-block--warning">
+            @sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_WARNING', $this->user->username)
+        </p>
+        <div class="akeeba-container--50-50">
+            @if(($this->type == 'user') || $myUser->authorise('export', 'com_datacompliance'))
+                <div>
+                    <a href="@route('index.php?option=com_datacompliance&view=Options&task=export&user_id=' . $this->user->id . '&format=raw&' . $this->getContainer()->platform->getToken() . '=1')"
+                       class="akeeba-btn--success--block">
+                        <span class="akion-android-download"></span>
+                        @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT_ADMIN')
+                    </a>
+                </div>
+            @endif
+            @if(($this->type == 'user') || $myUser->authorise('wipe', 'com_datacompliance'))
+                <div>
+                    <a href="@route('index.php?option=com_datacompliance&view=Options&task=wipe&user_id=' . $this->user->id . '&' . $this->getContainer()->platform->getToken() . '=1')"
+                       class="akeeba-btn--red--block">
+                        <span class="akion-nuclear"></span>
+                        @lang('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_WIPE_ADMIN')
+                    </a>
+                </div>
+            @endif
         </div>
-    </div>
+    @endif
+
 </div>
