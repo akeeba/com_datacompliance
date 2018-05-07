@@ -25,9 +25,17 @@ class Html extends BaseView
 	{
 		$this->formattedChangelog    = $this->formatChangelog();
 
-		$this->addJavascriptFile('media://com_datacompliance/js/Modal.min.js');
+		$this->addJavascriptFile('media://com_datacompliance/js/ControlPanel.js');
 		$this->addJavascriptFile('media://com_datacompliance/js/Chart.bundle.min.js');
 
+		$js = <<< JS
+window.jQuery(document).ready(function(){
+	akeeba.DataCompliance.ControlPanel.loadUserGraphs();
+});
+
+JS;
+
+		$this->addJavascriptInline($js);
 	}
 
 	protected function formatChangelog($onlyLast = false)

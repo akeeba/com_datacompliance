@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Controller\Mixin\PredefinedTaskList;
+use Joomla\CMS\Cache\Controller\CallbackController;
 
 class ControlPanel extends Controller
 {
@@ -24,6 +25,7 @@ class ControlPanel extends Controller
 		$this->predefinedTaskList = [
 			'browse',
 			'changelog',
+			'userstats',
 		];
 	}
 
@@ -45,5 +47,25 @@ class ControlPanel extends Controller
 		$view->setLayout('changelog');
 
 		$this->display(true);
+	}
+
+	/**
+	 * Get user statistics (active / inactive users) for graphs
+	 */
+	public function userstats()
+	{
+		/** @var CallbackController $cache */
+		$cache = \JFactory::getCache($this->container->componentName, 'callback');
+		$stats = $cache->get(function () {
+			/** @var \Akeeba\DataCompliance\Admin\Model\ControlPanel $model */
+			$model = $this->getModel();
+
+			return $model->getUserStats();
+
+		}, [], 'userstats');
+		
+		echo json_encode($stats);
+
+		$this->container->platform->closeApplication();
 	}
 }

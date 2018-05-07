@@ -163,12 +163,7 @@ class Wipe extends Model
 		// Remove user IDs already wiped from the previous list?
 		if ($onlyNonWiped)
 		{
-			$db = $this->container->db;
-			$query = $db->getQuery(true)
-				->select('user_id')
-				->from($db->qn('#__datacompliance_wipetrails'))
-				->group($db->qn('user_id'));
-			$alreadyWiped = $db->setQuery($query)->loadColumn(0);
+			$alreadyWiped = $this->getWipedUserIDs();
 
 			$ret = array_diff($ret, $alreadyWiped);
 		}
@@ -218,5 +213,22 @@ class Wipe extends Model
 		}
 
 		return \JFactory::getApplication()->triggerEvent($event, $data);
+	}
+
+	/**
+	 * Get the IDs of the users we have already deleted
+	 *
+	 * @return  array
+	 */
+	public function getWipedUserIDs(): array
+	{
+		$db           = $this->container->db;
+		$query        = $db->getQuery(true)
+			->select('user_id')
+			->from($db->qn('#__datacompliance_wipetrails'))
+			->group($db->qn('user_id'));
+		$alreadyWiped = $db->setQuery($query)->loadColumn(0);
+
+		return $alreadyWiped;
 	}
 }

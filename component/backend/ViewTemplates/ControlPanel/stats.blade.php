@@ -21,27 +21,3 @@ defined('_JEXEC') or die;
         <canvas id="adcExpiredUsers"></canvas>
     </div>
 </div>
-
-<script>
-	var ctx = document.getElementById("adcExpiredUsers").getContext('2d');
-	var myChart = new Chart(ctx, {
-		type: 'pie',
-		data: {
-			labels: ["Inactive", "Active"],
-			datasets: [{
-				data: [12000, 8000],
-				backgroundColor: [
-					'#ff0000',
-					'#009900',
-				],
-				borderWidth: 4
-			}]
-		},
-		options: {
-			cutoutPercentage: 50,
-			legend: {
-				display: false
-			}
-		}
-	});
-</script>

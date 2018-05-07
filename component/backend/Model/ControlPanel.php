@@ -44,4 +44,32 @@ class ControlPanel extends Model
 		$this->container->params->set('siteurl', str_replace('/administrator', '', \JUri::base()));
 		$this->container->params->save();
 	}
+
+	public function getUserStats()
+	{
+		$ret = [
+			'active'  => 0,
+			'deleted' => 0,
+			'expired' => 0,
+		];
+
+		// Total number of users
+		$db         = $this->container->db;
+		$query      = $db->getQuery(true)
+			->select('COUNT(id)')
+			->from($db->qn('#__users'));
+		$totalUsers = $db->setQuery($query)->loadResult();
+
+		// Lifecycle (inactive) users
+		/** @var Wipe $wipeModel */
+		$wipeModel      = $this->container->factory->model('Wipe')->tmpInstance();
+		$lifeCycleUsers = $wipeModel->getLifecycleUserIDs(true);
+		$wipedUsers     = $wipeModel->getWipedUserIDs();
+
+		$ret['deleted'] = count($wipedUsers);
+		$ret['expired'] = count($lifeCycleUsers);
+		$ret['active']  = $totalUsers - $ret['expired'] - $ret['deleted'];
+
+		return $ret;
+	}
 }
