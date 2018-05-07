@@ -403,7 +403,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 
 		// Get the cutoff date (last subscription expired more than $threshold months ago)
 		$threshold      = (int) $this->params->get('threshold', 6);
-		$threshold      = min(1, $threshold);
+		$threshold      = max(1, $threshold);
 		$jThresholdDate = $this->container->platform->getDate($date)->sub(new DateInterval("P{$threshold}M"));
 
 		$db = $this->container->db;
