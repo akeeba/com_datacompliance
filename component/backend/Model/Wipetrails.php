@@ -10,6 +10,7 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\DataCompliance\Admin\Model\Mixin\FilterByUser;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
@@ -27,6 +28,16 @@ use FOF30\Utils\Ip;
  */
 class Wipetrails extends DataModel
 {
+	use FilterByUser;
+
+	public function __construct(Container $container, array $config = array())
+	{
+		parent::__construct($container, $config);
+
+		$this->addBehaviour('filters');
+		$this->blacklistFilters(['user_id', 'created_by']);
+	}
+
 	/**
 	 * Checks the validity of the record. Also auto-fills the created* and requester_ip fields.
 	 *
@@ -129,5 +140,12 @@ class Wipetrails extends DataModel
 		$value = json_encode($value);
 
 		return $value;
+	}
+
+	protected function onBeforeBuildQuery(\JDatabaseQuery &$query)
+	{
+		// Apply filtering by user. This is a relation filter, it needs to go before the main query builder fires.
+		$this->filterByUser($query, 'user_id', 'user_id');
+		$this->filterByUser($query, 'created_by', 'created_by');
 	}
 }

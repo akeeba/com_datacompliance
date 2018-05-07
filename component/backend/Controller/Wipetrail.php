@@ -9,7 +9,7 @@ namespace Akeeba\DataCompliance\Admin\Controller;
 
 defined('_JEXEC') or die;
 
-class Exporttrail extends Exporttrails
+class Wipetrail extends Wipetrails
 {
 
 }

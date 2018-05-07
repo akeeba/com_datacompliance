@@ -19,10 +19,20 @@ trait FilterByUser
 	 *
 	 * @return  void
 	 */
-	protected function filterByUser(\JDatabaseQuery &$query)
+	protected function filterByUser(\JDatabaseQuery &$query, $searchField = null, $userField = null)
 	{
+		if (is_null($searchField))
+		{
+			$searchField = $this->filterByUserSearchField;
+		}
+
+		if (is_null($userField))
+		{
+			$userField = $this->filterByUserField;
+		}
+
 		// User search feature
-		$search = $this->getState($this->filterByUserSearchField, null, 'string');
+		$search = $this->getState($searchField, null, 'string');
 
 		if ($search)
 		{
@@ -31,10 +41,17 @@ trait FilterByUser
 			$users = $this->container->factory->model('JoomlaUsers')->tmpInstance();
 			$userIDs = $users->search($search)->with([])->get(true)->modelKeys();
 
+			// If we were given an integer let's append it to the results
+			if (is_numeric($search))
+			{
+				$userIDs[] = $search;
+				asort($userIDs);
+			}
+
 			// If there are user IDs, we need to filter by them
 			if (!empty($userIDs))
 			{
-				$query->where($query->qn($this->filterByUserField) . ' IN (' . implode(',', array_map(array($query, 'q'), $userIDs)) . ')');
+				$query->where($query->qn($userField) . ' IN (' . implode(',', array_map(array($query, 'q'), $userIDs)) . ')');
 			}
 		}
 	}

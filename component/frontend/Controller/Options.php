@@ -155,7 +155,7 @@ class Options extends Controller
 		}
 
 		// Try to delete the user
-		$result = $wipeModel->wipe($user->id);
+		$result = $wipeModel->wipe($user->id, 'user');
 
 		if (!$result)
 		{
