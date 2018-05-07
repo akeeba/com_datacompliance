@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use FOF30\Container\Container;
 use FOF30\Controller\DataController;
+use FOF30\Controller\Mixin\PredefinedTaskList;
 
 /**
  * Abstract controller which only allows Browse views
@@ -19,9 +20,13 @@ use FOF30\Controller\DataController;
  */
 class AbstractBrowseOnly extends DataController
 {
+	use PredefinedTaskList;
+
 	public function __construct(Container $container, array $config = array())
 	{
 		parent::__construct($container, $config);
+
+		$this->predefinedTaskList = ['browse', 'read'];
 
 		// Map all ACLs to false to prevent modifying the audit trail
 		$this->taskPrivileges = [
