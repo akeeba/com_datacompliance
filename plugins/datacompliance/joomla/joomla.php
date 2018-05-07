@@ -281,7 +281,7 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 
 		// Users who have not been logged in for at least $threshold months
 		$threshold = (int) $this->params->get('threshold', 18);
-		$threshold = min(1, $threshold);
+		$threshold = max(1, $threshold);
 		$jLastYear = $this->container->platform->getDate($date)->sub(new DateInterval("P{$threshold}M"));
 		$query->where($db->qn('lastvisitDate') . ' < ' . $db->q($jLastYear->toSql()), 'OR');
 
