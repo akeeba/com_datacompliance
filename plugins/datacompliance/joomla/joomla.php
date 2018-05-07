@@ -304,16 +304,6 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 				->where($condition, 'OR');
 		}
 
-		// Users with pre-Joomla! 3.2 password format
-		if ($this->params->get('obsoletepassword', 1))
-		{
-			$query
-				->where('(' .
-					$db->qn('password') . ' LIKE ' . $db->q('%:%') .
-					' AND NOT ' . $db->qn('password') . ' LIKE ' . $db->q('$%')
-					. ')', 'OR');
-		}
-
 		return $db->setQuery($query)->loadColumn(0);
 	}
 

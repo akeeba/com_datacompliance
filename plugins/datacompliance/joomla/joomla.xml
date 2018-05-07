@@ -56,14 +56,6 @@
 					<option value="1">JYes</option>
 				</field>
 
-				<field name="obsoletepassword" type="list"
-					   default="1"
-					   label="PLG_DATACOMPLIANCE_JOOMLA_OBSOLETEPASSWORD_LABEL"
-					   description="PLG_DATACOMPLIANCE_JOOMLA_OBSOLETEPASSWORD_DESC">
-					<option value="0">JNo</option>
-					<option value="1">JYes</option>
-				</field>
-
 			</fieldset>
 		</fields>
 	</config>
