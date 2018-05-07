@@ -177,6 +177,31 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 		$this->_browseWithoutActions();
 	}
 
+	public function onExporttrailsBrowse()
+	{
+		$this->_browseWithoutActions();
+	}
+
+	public function onWipetrailsBrowse()
+	{
+		$this->_browseWithoutActions();
+	}
+
+	public function onLifecyclesBrowse()
+	{
+		$this->_browseWithoutActions();
+	}
+
+	public function onExportsBrowse()
+	{
+		$this->_browseWithoutActions();
+	}
+
+	public function onWipesBrowse()
+	{
+		$this->_browseWithoutActions();
+	}
+
 	/**
 	 * Adds a link to the submenu (toolbar links)
 	 *

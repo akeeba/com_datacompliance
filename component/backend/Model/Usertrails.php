@@ -10,6 +10,8 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\DataCompliance\Admin\Model\Mixin\FilterByUser;
+use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
 
@@ -25,6 +27,16 @@ use FOF30\Utils\Ip;
  */
 class Usertrails extends DataModel
 {
+	use FilterByUser;
+
+	public function __construct(Container $container, array $config = array())
+	{
+		parent::__construct($container, $config);
+
+		$this->filterByUserField       = 'user_id';
+		$this->filterByUserSearchField = 'user_id';
+	}
+
 	/**
 	 * Checks the validity of the record. Also auto-fills the created* and requester_ip fields.
 	 *
@@ -117,5 +129,11 @@ class Usertrails extends DataModel
 		$value = json_encode($value);
 
 		return $value;
+	}
+
+	protected function onBeforeBuildQuery(\JDatabaseQuery &$query)
+	{
+		// Apply filtering by user. This is a relation filter, it needs to go before the main query builder fires.
+		$this->filterByUser($query);
 	}
 }

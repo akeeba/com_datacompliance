@@ -10,6 +10,7 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\DataCompliance\Admin\Model\Mixin\FilterByUser;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
@@ -24,6 +25,8 @@ use FOF30\Utils\Ip;
  */
 class Consenttrails extends DataModel
 {
+	use FilterByUser;
+
 	public function __construct(Container $container, array $config = array())
 	{
 		$config['idFieldName'] = 'created_by';
@@ -61,30 +64,4 @@ class Consenttrails extends DataModel
 		// Apply filtering by user. This is a relation filter, it needs to go before the main query builder fires.
 		$this->filterByUser($query);
 	}
-
-	/**
-	 * Apply select query filtering by username, email, business name or VAT / tax ID number
-	 *
-	 * @return  void
-	 */
-	protected function filterByUser(\JDatabaseQuery &$query)
-	{
-		// User search feature
-		$search = $this->getState('search', null, 'string');
-
-		if ($search)
-		{
-			// First get the Joomla! users fulfilling the criteria
-			/** @var JoomlaUsers $users */
-			$users = $this->container->factory->model('JoomlaUsers')->tmpInstance();
-			$userIDs = $users->search($search)->with([])->get(true)->modelKeys();
-
-			// If there are user IDs, we need to filter by them
-			if (!empty($userIDs))
-			{
-				$query->where($query->qn('created_by') . ' IN (' . implode(',', array_map(array($query, 'q'), $userIDs)) . ')');
-			}
-		}
-	}
-
 }
