@@ -131,11 +131,14 @@ class Wipe extends Model
 	/**
 	 * Get the user IDs which are to be deleted for lifecycle management reasons
 	 *
-	 * @param   bool  $onlyNonWiped  If true, only return user IDs whose accounts have NOT been already wiped.
+	 * @param   bool      $onlyNonWiped  If true, only return user IDs whose accounts have NOT been already wiped.
+	 * @param   DateTime  $when          Get lifecycle IDs for which date / time?
 	 *
 	 * @return  array
+	 *
+	 * @throws \Exception
 	 */
-	public function getLifecycleUserIDs(bool $onlyNonWiped = true): array
+	public function getLifecycleUserIDs(bool $onlyNonWiped = true, DateTime $when): array
 	{
 		// Load the plugins.
 		$this->importPlugin('datacompliance');
@@ -143,8 +146,8 @@ class Wipe extends Model
 		try
 		{
 			// Run the plugin events to get lifecycle user records
-			$jNow     = $this->container->platform->getDate();
-			$results  = $this->runPlugins('onDataComplianceGetEOLRecords', [$jNow]);
+			$jNow    = $this->container->platform->getDate(empty($when) ? 'now' : $when);
+			$results = $this->runPlugins('onDataComplianceGetEOLRecords', [$jNow]);
 		}
 		catch (RuntimeException $e)
 		{
@@ -195,7 +198,7 @@ class Wipe extends Model
 	 *
 	 * @return void
 	 */
-	public function importPlugin($type)
+	public function importPlugin(string $type)
 	{
 		\JLoader::import('joomla.plugin.helper');
 		\JPluginHelper::importPlugin($type);
@@ -212,7 +215,7 @@ class Wipe extends Model
 	 *
 	 * @throws \Exception
 	 */
-	public function runPlugins($event, $data)
+	public function runPlugins(string $event, array $data = [])
 	{
 		if (class_exists('JEventDispatcher'))
 		{
@@ -237,5 +240,87 @@ class Wipe extends Model
 		$alreadyWiped = $db->setQuery($query)->loadColumn(0);
 
 		return $alreadyWiped;
+	}
+
+	/**
+	 * Mark a user as notified a user that their account will be deleted. This method does NOT send an email or perform
+	 * any other kind of notification. It only marks the user account as notified. If it returns false you MUST NOT
+	 * send any emails to the user.
+	 *
+	 * @param   int       $userId  Which user should be notified?
+	 * @param   DateTime  $when    When is their account going to be deleted?
+	 *
+	 * @return  bool  False if the user should NOT be notified (can't be deleted on $when or already notified)
+	 *
+	 * @throws \Exception
+	 */
+	public function notifyUser(int $userId, DateTime $when): bool
+	{
+		// Can the user really be deleted on the date and time specified by $when?
+		if (!$this->checkWipeAbility($userId, $when))
+		{
+			return false;
+		}
+
+		// Is the user already notified?
+		$db = $this->container->db;
+		$query = $db->getQuery(true)
+			->select([
+				$db->qn('profile_key'),
+				$db->qn('profile_value'),
+			])->from($db->qn('#__user_profiles'))
+			->where($db->qn('user_id') . ' = ' . $userId)
+			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
+		$fields = $db->setQuery($query)->loadObjectList('profile_key');
+
+		if (isset($fields['datacompliance.notified']) && $fields['datacompliance.notified']->profile_value == 1)
+		{
+			return false;
+		}
+
+		// Mark the user notified
+		// -- Delete old records
+		$this->resetUserNotification($userId);
+
+		// -- Yes, they have been notified
+		$o = (object)[
+			'user_id' => $userId,
+			'profile_key' => 'datacompliance.notified',
+			'profile_value' => 1
+		];
+		$db->insertObject('#__user_profiles', $o);
+
+		// -- This is when we notified them on
+		$o = (object)[
+			'user_id' => $userId,
+			'profile_key' => 'datacompliance.notified_on',
+			'profile_value' => $this->container->platform->getDate()->toSql()
+		];
+		$db->insertObject('#__user_profiles', $o);
+
+		// -- This is when we notified them for
+		$o = (object)[
+			'user_id' => $userId,
+			'profile_key' => 'datacompliance.notified_for',
+			'profile_value' => $this->container->platform->getDate()->toSql()
+		];
+		$db->insertObject('#__user_profiles', $o);
+
+		return true;
+	}
+
+	/**
+	 * Reset the status of the notifications we have sent to the user regarding their profile deletion.
+	 *
+	 * @param   int  $userId
+	 */
+	public function resetUserNotification($userId)
+	{
+		$db    = $this->container->db;
+		$query = $db->getQuery(true)
+			->delete($db->qn('#__user_profiles'))
+			->where($db->qn('user_id') . ' = ' . $userId)
+			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
+		$db->setQuery($query)->execute();
 	}
 }
