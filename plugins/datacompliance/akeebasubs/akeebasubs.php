@@ -39,16 +39,26 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 	 * Checks whether a user is safe to be deleted. This plugin prevents deletion on the following conditions:
 	 * - The user has an active subscription created within the last X days (which means it's likely not yet reported for tax purposes)
 	 *
-	 * @param   int     $userID  The user ID we are asked for permission to delete
-	 * @param   string  $type    user, admin or lifecycle
+	 * @param   int       $userID  The user ID we are asked for permission to delete
+	 * @param   string    $type    user, admin or lifecycle
+	 * @param   DateTime  $when    When is the deletion going to take place? Leaving null means "right now"
 	 *
 	 * @return  void  No return value is expected. Throw exceptions when there is a problem.
 	 *
 	 * @throws  RuntimeException  The error which prevents us from deleting a user
+	 *
+	 * @throws  Exception
 	 */
-	public function onDataComplianceCanDelete($userID, $type)
+	public function onDataComplianceCanDelete(int $userID, string $type, DateTime $when = null)
 	{
 		$container = Container::getInstance('com_akeebasubs', [], 'admin');
+
+		if (empty($when))
+		{
+			$when = 'now';
+		}
+
+		$when = $container->platform->getDate($when);
 
 		/** @var Subscriptions $subs */
 		$subs = $container->factory->model('Subscriptions')->tmpInstance();
@@ -70,20 +80,20 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 				return;
 			}
 
-			$now = $container->platform->getDate();
-			$interval = new DateInterval('P' . (int)$period . 'D');
-			$since = $now->sub($interval);
+			$now      = $container->platform->getDate($when);
+			$interval = new DateInterval('P' . (int) $period . 'D');
+			$since    = $now->sub($interval);
 			$subs->since($since->toSql());
 		}
 		else
 		{
 			// Lifecycle deletion. Only look for subscriptions expiring after now and are paid for.
-			$now = $container->platform->getDate();
+			$now = $container->platform->getDate($when);
 			$subs->expires_from($now->toSql());
 		}
 
 		$numLatestSubs = $subs->get()->count();
-		
+
 		if ($numLatestSubs > 0)
 		{
 			if ($type != 'lifecycle')

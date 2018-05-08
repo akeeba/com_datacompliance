@@ -10,6 +10,7 @@ namespace Akeeba\DataCompliance\Admin\Model;
 defined('_JEXEC') or die;
 
 use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
+use DateTime;
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
 use RuntimeException;
@@ -25,11 +26,13 @@ class Wipe extends Model
 	/**
 	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
 	 *
-	 * @param   int $userId The user ID to export
+	 * @param   int     $userId  The user ID to export
+	 * @param   string  $type    user, admin or lifecycle
 	 *
 	 * @return  bool  True on success.
 	 *
 	 * @throws  RuntimeException  If wipe is not possible
+	 * @throws \Exception
 	 */
 	public function wipe($userId, string $type = 'user'): bool
 	{
@@ -99,17 +102,21 @@ class Wipe extends Model
 	/**
 	 * Checks if we can wipe a user. If it returns FALSE use getError to retrieve the reason.
 	 *
-	 * @param   int $userId
+	 * @param   int       $userId  The user ID we are asked for permission to delete
+	 * @param   string    $type    user, admin or lifecycle
+	 * @param   DateTime  $when    When is the deletion going to take place? Leaving null means "right now"
 	 *
 	 * @return  bool  True if we can wipe the user
+	 *
+	 * @throws  \Exception
 	 */
-	public function checkWipeAbility(int $userId, string $type = 'user'): bool
+	public function checkWipeAbility(int $userId, string $type = 'user', DateTime $when = null): bool
 	{
 		$this->importPlugin('datacompliance');
 
 		try
 		{
-			$this->runPlugins('onDataComplianceCanDelete', [$userId, $type]);
+			$this->runPlugins('onDataComplianceCanDelete', [$userId, $type, $when]);
 		}
 		catch (RuntimeException $e)
 		{

@@ -41,14 +41,15 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 	 * - The user is a Super User
 	 * - The user has backend access
 	 *
-	 * @param   int     $userID  The user ID we are asked for permission to delete
-	 * @param   string  $type    user, admin or lifecycle
+	 * @param   int       $userID  The user ID we are asked for permission to delete
+	 * @param   string    $type    user, admin or lifecycle
+	 * @param   DateTime  $when    When is the deletion going to take place? Leaving null means "right now"
 	 *
 	 * @return  void  No return value is expected. Throw exceptions when there is a problem.
 	 *
 	 * @throws  RuntimeException  The error which prevents us from deleting a user
 	 */
-	public function onDataComplianceCanDelete($userID, $type)
+	public function onDataComplianceCanDelete(int $userID, string $type, DateTime $when = null)
 	{
 		$exemptGroups = $this->params->get('exemptgroups', []);
 		$jUser        = $this->container->platform->getUser($userID);
