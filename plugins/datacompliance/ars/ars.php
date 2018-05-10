@@ -138,6 +138,8 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 		$logModel->setState('user_id', $userID);
 		$logModel->with([]);
 
+		$recordCount = 0;
+
 		foreach ($logModel->getGenerator(0, 0, true) as $record)
 		{
 			if (is_null($record))
@@ -155,7 +157,17 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 			Export::adoptChild($domainTfa, Export::exportItemFromArray($data));
 
 			unset($data);
+
+			$recordCount++;
 		}
+
+		// After the generator is done we need to recycle the MySQL connection
+		if ($recordCount)
+		{
+			$this->container->db->disconnect();
+			$this->container->db->connect();
+		}
+
 
 		return $export;
 	}

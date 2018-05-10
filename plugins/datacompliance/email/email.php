@@ -82,8 +82,12 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 			try
 			{
 				$mailer = \Akeeba\DataCompliance\Admin\Helper\Email::getPreloadedMailer('user_' . $type, $userID, $extras);
-				$mailer->addRecipient($user->email, $user->name);
-				$mailer->Send();
+
+				if ($mailer !== false)
+				{
+					$mailer->addRecipient($user->email, $user->name);
+					$mailer->Send();
+				}
 			}
 			catch (Exception $e)
 			{
@@ -116,8 +120,13 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 				try
 				{
 					$mailer = \Akeeba\DataCompliance\Admin\Helper\Email::getPreloadedMailer('admin_' . $type, $userID, $newExtras);
-					$mailer->addRecipient($sa->email, $sa->name);
-					$mailer->Send();
+
+					if ($mailer !== false)
+					{
+						$mailer->addRecipient($sa->email, $sa->name);
+						$mailer->Send();
+					}
+
 				}
 				catch (Exception $e)
 				{

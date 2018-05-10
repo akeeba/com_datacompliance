@@ -79,7 +79,7 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 
 		// Loop through the tickets
 		/** @var \Akeeba\TicketSystem\Admin\Model\Tickets $ticket */
-		foreach ($tickets->getGenerator(0, 0, true) as $ticket)
+		foreach ($tickets->get(0, 0, true) as $ticket)
 		{
 			if (is_null($ticket))
 			{
@@ -93,7 +93,7 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			$ticket->delete();
 
 			// Delete #__ats_attempts entries
-			$ret['ats']['atttempts'] = array_merge($ret['ats']['atttempts'], $this->deleteAttempts($ticketID));
+			$ret['ats']['attempts'] = array_merge($ret['ats']['attempts'], $this->deleteAttempts($ticketID));
 		}
 
 		// Delete #__ats_creditconsumptions entries
@@ -328,6 +328,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			// Never mind...
 		}
 
+		if (empty($ids))
+		{
+			$ids = [];
+		}
+
 		return $ids;
 	}
 
@@ -357,6 +362,16 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			Log::add("Could not delete ATS credit consumptions: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Debug trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 			// Never mind...
+		}
+
+		if (empty($ids))
+		{
+			return [];
+		}
+
+		if (empty($ids))
+		{
+			return [];
 		}
 
 		return $ids;
@@ -390,6 +405,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			// Never mind...
 		}
 
+		if (empty($ids))
+		{
+			return [];
+		}
+
 		return $ids;
 	}
 
@@ -419,6 +439,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 			Log::add("Could not delete ATS user tags: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Debug trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 			// Never mind...
+		}
+
+		if (empty($ids))
+		{
+			return [];
 		}
 
 		return $ids;
