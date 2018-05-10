@@ -138,7 +138,7 @@ class Wipe extends Model
 	 *
 	 * @throws \Exception
 	 */
-	public function getLifecycleUserIDs(bool $onlyNonWiped = true, DateTime $when): array
+	public function getLifecycleUserIDs(bool $onlyNonWiped = true, DateTime $when = null): array
 	{
 		// Load the plugins.
 		$this->importPlugin('datacompliance');
@@ -263,22 +263,14 @@ class Wipe extends Model
 		}
 
 		// Is the user already notified?
-		$db = $this->container->db;
-		$query = $db->getQuery(true)
-			->select([
-				$db->qn('profile_key'),
-				$db->qn('profile_value'),
-			])->from($db->qn('#__user_profiles'))
-			->where($db->qn('user_id') . ' = ' . $userId)
-			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
-		$fields = $db->setQuery($query)->loadObjectList('profile_key');
-
-		if (isset($fields['datacompliance.notified']) && $fields['datacompliance.notified']->profile_value == 1)
+		if (!$this->isUserNotified($userId))
 		{
 			return false;
 		}
 
 		// Mark the user notified
+		$db = $this->container->db;
+
 		// -- Delete old records
 		$this->resetUserNotification($userId);
 
@@ -322,5 +314,32 @@ class Wipe extends Model
 			->where($db->qn('user_id') . ' = ' . $userId)
 			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
 		$db->setQuery($query)->execute();
+	}
+
+	/**
+	 * Is the user already notified for their account deletion?
+	 *
+	 * @param   int  $userId  The user to check
+	 *
+	 * @return  bool  True if they are already notified.
+	 */
+	public function isUserNotified(int $userId): bool
+	{
+		$db     = $this->container->db;
+		$query  = $db->getQuery(true)
+			->select([
+				$db->qn('profile_key'),
+				$db->qn('profile_value'),
+			])->from($db->qn('#__user_profiles'))
+			->where($db->qn('user_id') . ' = ' . $userId)
+			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
+		$fields = $db->setQuery($query)->loadObjectList('profile_key');
+
+		if (isset($fields['datacompliance.notified']) && $fields['datacompliance.notified']->profile_value == 1)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }
