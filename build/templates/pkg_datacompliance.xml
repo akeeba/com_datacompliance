@@ -25,6 +25,7 @@
         <file type="plugin" group="datacompliance" id="ars">plg_datacompliance_ars.zip</file>
         <file type="plugin" group="datacompliance" id="ats">plg_datacompliance_ats.zip</file>
         <file type="plugin" group="datacompliance" id="loginguard">plg_datacompliance_loginguard.zip</file>
+        <file type="plugin" group="datacompliance" id="s3">plg_datacompliance_s3.zip</file>
 
         <!-- Plugins: system -->
         <file type="plugin" group="system" id="ars">plg_system_datacompliance.zip</file>

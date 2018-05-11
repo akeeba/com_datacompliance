@@ -15,6 +15,8 @@
 /component/media/images
 /component/media/uncompressed/js/tabs.js
 
+/component/backend/vendor
+
 /release/*
 
 # Internal language symlinks

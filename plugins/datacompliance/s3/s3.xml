@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.7" type="plugin" group="datacompliance" method="upgrade">
+    <name>PLG_DATACOMPLIANCE_S3</name>
+    <author>Nicholas K. Dionysopoulos</author>
+    <authorEmail>nicholas@akeebabackup.com</authorEmail>
+    <authorUrl>http://www.akeebabackup.com</authorUrl>
+    <copyright>Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
+    <license>GNU General Public License version 3, or later</license>
+    <creationDate>2018-04-19</creationDate>
+    <version>1.0</version>
+    <description>PLG_DATACOMPLIANCE_S3_DESCRIPTION</description>
+
+    <files>
+        <filename plugin="s3">s3.php</filename>
+    </files>
+
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_s3.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_s3.sys.ini</language>
+    </languages>
+
+    <scriptfile>script.php</scriptfile>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="access" type="text" default="" label="PLG_DATACOMPLIANCE_S3_ACCESS_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_ACCESS_DESC" size="50" filter="raw"/>
+
+                <field name="secret" type="password" default="" label="PLG_DATACOMPLIANCE_S3_SECRET_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_SECRET_DESC" size="50" filter="raw"/>
+
+                <field name="ssl" type="list" default="1" label="PLG_DATACOMPLIANCE_S3_SSL_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_SSL_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+                <field name="bucket" type="text" default="" label="PLG_DATACOMPLIANCE_S3_BUCKET_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_BUCKET_DESC"/>
+
+                <field name="path" type="text" default="" label="PLG_DATACOMPLIANCE_S3_PATH_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_PATH_DESC"/>
+
+                <field name="method" type="list" default="v2" label="PLG_DATACOMPLIANCE_S3_METHOD_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_METHOD_DESC">
+                    <option value="v2">PLG_DATACOMPLIANCE_S3_SIGNATURE_V2</option>
+                    <option value="v4">PLG_DATACOMPLIANCE_S3_SIGNATURE_V4</option>
+                </field>
+
+                <field name="region" type="list" default="us-east-1"
+                       label="PLG_DATACOMPLIANCE_S3_REGION_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_REGION_DESC">
+                    <option value="">PLG_DATACOMPLIANCE_S3_REGION_NONE</option>
+                    <option value="us-east-1">PLG_DATACOMPLIANCE_S3_REGION_USEAST1</option>
+                    <option value="us-east-2">PLG_DATACOMPLIANCE_S3_REGION_USEAST2</option>
+                    <option value="us-west-2">PLG_DATACOMPLIANCE_S3_REGION_USWEST2</option>
+                    <option value="us-west-1">PLG_DATACOMPLIANCE_S3_REGION_USWEST1</option>
+                    <option value="eu-west-1">PLG_DATACOMPLIANCE_S3_REGION_EUWEST1</option>
+                    <option value="eu-west-2">PLG_DATACOMPLIANCE_S3_REGION_EUWEST2</option>
+                    <option value="eu-central-1">PLG_DATACOMPLIANCE_S3_REGION_EUCENTRAL1</option>
+                    <option value="eu-central-2">PLG_DATACOMPLIANCE_S3_REGION_EUCENTRAL2</option>
+                    <option value="ap-southeast-1">PLG_DATACOMPLIANCE_S3_REGION_APSE1</option>
+                    <option value="ap-southeast-2">PLG_DATACOMPLIANCE_S3_REGION_APSE2</option>
+                    <option value="ap-northeast-1">PLG_DATACOMPLIANCE_S3_REGION_APNE1</option>
+                    <option value="ap-northeast-2">PLG_DATACOMPLIANCE_S3_REGION_APNE2</option>
+                    <option value="sa-east-1">PLG_DATACOMPLIANCE_S3_REGION_SAEAST1</option>
+                    <option value="sa-east-2">PLG_DATACOMPLIANCE_S3_REGION_SAEAST2</option>
+                    <option value="sa-west-1">PLG_DATACOMPLIANCE_S3_REGION_SAWEST1</option>
+                    <option value="sa-west-2">PLG_DATACOMPLIANCE_S3_REGION_SAWEST2</option>
+                </field>
+
+                <field name="class" type="list" default="0" label="PLG_DATACOMPLIANCE_S3_CLASS_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_CLASS_DESC">
+                    <option value="STANDARD">PLG_DATACOMPLIANCE_S3_CLASS_STANDARD</option>
+                    <option value="REDUCED_REDUNDANCY">PLG_DATACOMPLIANCE_S3_CLASS_REDUCED_REDUNDANCY</option>
+                    <option value="STANDARD_IA">PLG_DATACOMPLIANCE_S3_CLASS_STANDARD_IA</option>
+                    <option value="ONEZONE_IA">PLG_DATACOMPLIANCE_S3_CLASS_ONEZONE_IA</option>
+                </field>
+
+            </fieldset>
+        </fields>
+    </config>
+
+</extension>
