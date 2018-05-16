@@ -6,6 +6,7 @@
  */
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 
@@ -55,6 +56,8 @@ class plgDatacomplianceLoginguard extends Joomla\CMS\Plugin\CMSPlugin
 			],
 		];
 
+
+		Log::add("Deleting user #$userID, type ‘{$type}’, LoginGuard data", Log::INFO, 'com_datacompliance');
 
 		$db = $this->container->db;
 
