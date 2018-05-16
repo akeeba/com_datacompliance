@@ -7,6 +7,7 @@
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
 use FOF30\Container\Container;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 
@@ -56,6 +57,8 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 			return [];
 		}
 
+		Log::add("Sending email about deleting user #$userID, type ‘{$type}’", Log::INFO, 'com_datacompliance');
+
 		// Get the actions
 		$user = $this->container->platform->getUser($userID);
 
@@ -79,6 +82,8 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 		// Send an email to the user
 		if ($emailUser)
 		{
+			Log::add("Emailing the user", Log::DEBUG, 'com_datacompliance');
+
 			try
 			{
 				$mailer = \Akeeba\DataCompliance\Admin\Helper\Email::getPreloadedMailer('user_' . $type, $userID, $extras);
@@ -98,6 +103,8 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 		// Send the admin emails
 		if ($emailAdmin)
 		{
+			Log::add("Emailing the admins", Log::DEBUG, 'com_datacompliance');
+
 			$adminEmails = trim($this->params->get('adminemails', ''));
 			$adminEmails = explode("\n", $adminEmails);
 			$adminEmails = empty($adminEmails) ? [] : array_map('trim', $adminEmails);
