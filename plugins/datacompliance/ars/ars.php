@@ -57,13 +57,16 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 	{
 		$ret = [
 			'ars' => [
-				'log' => [],
+				'log'  => [],
+				'dlid' => [],
 			],
 		];
 
 		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Release System data", Log::INFO, 'com_datacompliance');
 
 		$db = $this->container->db;
+
+		// ======================================== Log entries ========================================
 
 		$selectQuery = $db->getQuery(true)
 			->select($db->qn('id'))
@@ -88,6 +91,36 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 		catch (Exception $e)
 		{
 			Log::add("Could not delete ARS log data for user #$userID: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Debug backtrace: {$e->getTraceAsString()}", Log::DEBUG, 'com_datacompliance');
+
+			// No problem if deleting fails.
+		}
+
+		// ======================================== Download IDs ========================================
+
+		$selectQuery = $db->getQuery(true)
+			->select($db->qn('ars_dlidlabel_id'))
+			->from($db->qn('#__ars_dlidlabels'))
+			->where($db->qn('user_id') . ' = ' . $db->q($userID));
+
+		$deleteQuery = $db->getQuery(true)
+			->delete($db->qn('#__ars_dlidlabels'))
+			->where($db->qn('user_id') . ' = ' . $db->q($userID));
+
+		try
+		{
+			$ids = $db->setQuery($selectQuery)->loadColumn(0);
+
+			Log::add(sprintf("Found %u ARS Download IDs", count($ids)), Log::DEBUG, 'com_datacompliance');
+
+			$ids                = empty($ids) ? [] : implode(',', $ids);
+			$ret['ars']['dlid'] = $ids;
+
+			$db->setQuery($deleteQuery)->execute();
+		}
+		catch (Exception $e)
+		{
+			Log::add("Could not delete ARS Download ID data for user #$userID: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Debug backtrace: {$e->getTraceAsString()}", Log::DEBUG, 'com_datacompliance');
 
 			// No problem if deleting fails.
@@ -127,47 +160,43 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 	{
 		$export = new SimpleXMLElement("<root></root>");
 
-		// #__ars_log
-		$domainTfa = $export->addChild('domain');
-		$domainTfa->addAttribute('name', 'ars_log');
-		$domainTfa->addAttribute('description', 'Akeeba Release System download log');
-
 		$arsContainer = \FOF30\Container\Container::getInstance('com_ars');
-		/** @var \Akeeba\ReleaseSystem\Admin\Model\Logs $logModel */
-		$logModel = $arsContainer->factory->model('Logs')->tmpInstance();
-		$logModel->setState('user_id', $userID);
-		$logModel->with([]);
+		$db           = $arsContainer->db;
 
-		$recordCount = 0;
+		// #__ars_log
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', 'ars_log');
+		$domain->addAttribute('description', 'Akeeba Release System download log');
 
-		foreach ($logModel->getGenerator(0, 0, true) as $record)
+		$selectQuery = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__ars_log'))
+			->where($db->qn('user_id') . ' = ' . $db->q($userID));
+
+
+		foreach ($db->setQuery($selectQuery)->getIterator() as $record)
 		{
-			if (is_null($record))
-			{
-				continue;
-			}
+			Export::adoptChild($domain, Export::exportItemFromObject($record));
 
-			/** @var \Akeeba\ReleaseSystem\Admin\Model\Logs $record */
-			$data = $record->getData();
-
-			$data = array_merge($data, $this->getItemTitle($record->item_id));
-			$data = array_merge($data, $this->getReleaseInfo($data['release']));
-			unset($data['release']);
-
-			Export::adoptChild($domainTfa, Export::exportItemFromArray($data));
-
-			unset($data);
-
-			$recordCount++;
+			unset($record);
 		}
 
-		// After the generator is done we need to recycle the MySQL connection
-		if ($recordCount)
-		{
-			$this->container->db->disconnect();
-			$this->container->db->connect();
-		}
+		// #__ars_dlidlables
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', 'ars_dlidlables');
+		$domain->addAttribute('description', 'Akeeba Release System download IDs (main and add-on)');
 
+		$selectQuery = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__ars_dlidlabels'))
+			->where($db->qn('user_id') . ' = ' . $db->q($userID));
+
+		foreach ($db->setQuery($selectQuery)->getIterator() as $record)
+		{
+			Export::adoptChild($domain, Export::exportItemFromObject($record));
+
+			unset($record);
+		}
 
 		return $export;
 	}
