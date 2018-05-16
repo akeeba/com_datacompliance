@@ -8,8 +8,6 @@
 use Akeeba\DataCompliance\Admin\Helper\Export;
 use FOF30\Container\Container;
 use Joomla\CMS\Log\Log;
-use Joomla\CMS\User\User;
-use Joomla\CMS\User\UserHelper;
 
 defined('_JEXEC') or die;
 
@@ -54,6 +52,8 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 		$ret = [
 			'ats' => [
 				'tickets'            => [],
+				'posts'              => [],
+				'attachments'        => [],
 				'attempts'           => [],
 				'creditconsumptions' => [],
 				'credittransactions' => [],
@@ -64,46 +64,123 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Ticket System data", Log::INFO, 'com_datacompliance');
 
 		$container = Container::getInstance('com_ats', [], 'admin');
-		/** @var \Akeeba\TicketSystem\Admin\Model\Tickets $tickets */
-		$tickets = $container->factory->model('Tickets');
-		$tickets->created_by($userID);
+		$db        = $container->db;
 
-		// If we are doing a lifecycle deletion we are going to only delete PRIVATE tickets, not public tickets
+		// ============================== tickets, posts, attachments ==============================
+
+		// Query for the ticket IDs
+		$ticketsQuery = $db->getQuery(true)
+		                   ->select($db->qn('ats_ticket_id'))
+		                   ->from($db->qn('#__ats_tickets'))
+		                   ->where($db->qn('created_by') . ' = ' . $userID)
+		;
+
 		if ($type == 'lifecycle')
 		{
-			$tickets->public([
-				'method' => 'exact',
-				'value'  => 0,
-			]);
+			$ticketsQuery->where($db->qn('public') . ' = 0');
 		}
 
-		// Loop through the tickets
-		/** @var \Akeeba\TicketSystem\Admin\Model\Tickets $ticket */
-		foreach ($tickets->get(0, 0, true) as $ticket)
-		{
-			if (is_null($ticket))
-			{
-				continue;
-			}
+		$ticketIDs             = $db->setQuery($ticketsQuery)->loadColumn(0);
+		$ret['ats']['tickets'] = $ticketIDs;
 
-			$ticketID = $ticket->getId();
-			Log::add("Deleting ticket #{$ticketID}", Log::DEBUG, 'com_datacompliance');
+		// Query for the post IDs
+		$postsQuery = $db->getQuery(true)
+		                 ->select($db->qn('ats_post_id'))
+		                 ->from($db->qn('#__ats_posts'))
+		                 ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
+		;
 
-			$ret['ats']['tickets'][] = $ticketID;
-			$ticket->delete();
+		$postIDs             = $db->setQuery($postsQuery)->loadColumn(0);
+		$ret['ats']['posts'] = $postIDs;
 
-			// Delete #__ats_attempts entries
-			$ret['ats']['attempts'] = array_merge($ret['ats']['attempts'], $this->deleteAttempts($ticketID));
-		}
+		// Query for the attachment IDs
+		$attachmentsQuery = $db->getQuery(true)
+		            ->select($db->qn('ats_attachment_id'))
+		            ->from($db->qn('#__ats_attachments'))
+		            ->where($db->qn('ats_post_id') . ' IN(' . implode(',', array_map('intval', $postIDs)) . ')')
+		;
+		$ret['ats']['attachments'] = $db->setQuery($attachmentsQuery)->loadColumn(0);
 
-		// Delete #__ats_creditconsumptions entries
-		$ret['ats']['creditconsumptions'] = $this->deleteCreditConsumptions($userID);
+		// Delete attachments
+		$query = $db->getQuery(true)
+		            ->delete($db->qn('#__ats_attachments'))
+		            ->where($db->qn('ats_post_id') . ' IN(' . implode(',', array_map('intval', $postIDs)) . ')')
+		;
+		$db->setQuery($query)->execute();
+		unset($postIDs);
 
-		// Delete #__ats_credittransactions entries
-		$ret['ats']['credittransactions'] = $this->deleteCreditTransactions($userID);
+		// Delete posts
+		$query = $db->getQuery(true)
+		            ->delete($db->qn('#__ats_posts'))
+		            ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
+		;
+		$db->setQuery($query)->execute();
 
-		// Delete #__ats_users_usertags entries
-		$ret['ats']['usertags'] = $this->deleteUserTags($userID);
+		// Delete tickets
+		$query = $db->getQuery(true)
+		            ->delete($db->qn('#__ats_tickets'))
+		            ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
+		;
+		$db->setQuery($query)->execute();
+
+		// ============================== attempts ==============================
+		$query                  = $db->getQuery(true)
+		                             ->select($db->qn('ats_attempt_id'))
+		                             ->from($db->qn('#__ats_attempts'))
+		                             ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
+		;
+		$ret['ats']['attempts'] = $db->setQuery($query)->loadColumn();
+
+		$query = $db->getQuery(true)
+		            ->delete($db->qn('#__ats_attempts'))
+		            ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
+		;
+		$db->setQuery($query)->execute();
+
+		unset($ticketIDs);
+
+		// ============================== creditconsumptions ==============================
+		$query                            = $db->getQuery(true)
+		                                       ->select($db->qn('ats_creditconsumption_id'))
+		                                       ->from($db->qn('#__ats_creditconsumptions'))
+		                                       ->where($db->qn('user_id') . ' = ' . $userID)
+		;
+		$ret['ats']['creditconsumptions'] = $db->setQuery($query)->loadColumn();
+
+		$query = $db->getQuery(true)
+		            ->delete($db->qn('#__ats_creditconsumptions'))
+		            ->where($db->qn('user_id') . ' = ' . $userID)
+		;
+		$db->setQuery($query)->execute();
+
+		// ============================== credittransactions ==============================
+		$query                            = $db->getQuery(true)
+		                                       ->select($db->qn('ats_credittransaction_id'))
+		                                       ->from($db->qn('#__ats_credittransactions'))
+		                                       ->where($db->qn('user_id') . ' = ' . $userID)
+		;
+		$ret['ats']['credittransactions'] = $db->setQuery($query)->loadColumn();
+
+		$query = $db->getQuery(true)
+		            ->delete($db->qn('#__ats_credittransactions'))
+		            ->where($db->qn('user_id') . ' = ' . $userID)
+		;
+		$db->setQuery($query)->execute();
+
+
+		// ============================== usertags ==============================
+		$query                            = $db->getQuery(true)
+		                                       ->select($db->qn('id'))
+		                                       ->from($db->qn('#__ats_users_usertags'))
+		                                       ->where($db->qn('user_id') . ' = ' . $userID)
+		;
+		$ret['ats']['usertags'] = $db->setQuery($query)->loadColumn();
+
+		$query = $db->getQuery(true)
+		            ->delete($db->qn('#__ats_users_usertags'))
+		            ->where($db->qn('user_id') . ' = ' . $userID)
+		;
+		$db->setQuery($query)->execute();
 
 		return $ret;
 	}
