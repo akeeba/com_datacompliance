@@ -70,10 +70,9 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 
 		// Query for the ticket IDs
 		$ticketsQuery = $db->getQuery(true)
-		                   ->select($db->qn('ats_ticket_id'))
-		                   ->from($db->qn('#__ats_tickets'))
-		                   ->where($db->qn('created_by') . ' = ' . $userID)
-		;
+			->select($db->qn('ats_ticket_id'))
+			->from($db->qn('#__ats_tickets'))
+			->where($db->qn('created_by') . ' = ' . $userID);
 
 		if ($type == 'lifecycle')
 		{
@@ -82,105 +81,110 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 
 		$ticketIDs             = $db->setQuery($ticketsQuery)->loadColumn(0);
 		$ret['ats']['tickets'] = $ticketIDs;
+		$postIDs               = [];
 
-		// Query for the post IDs
-		$postsQuery = $db->getQuery(true)
-		                 ->select($db->qn('ats_post_id'))
-		                 ->from($db->qn('#__ats_posts'))
-		                 ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
-		;
+		if (!empty($ticketIDs))
+		{
+			// Query for the post IDs
+			$postsQuery = $db->getQuery(true)
+				->select($db->qn('ats_post_id'))
+				->from($db->qn('#__ats_posts'))
+				->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')');
 
-		$postIDs             = $db->setQuery($postsQuery)->loadColumn(0);
-		$ret['ats']['posts'] = $postIDs;
+			$postIDs             = $db->setQuery($postsQuery)->loadColumn(0);
+			$ret['ats']['posts'] = $postIDs;
+		}
 
-		// Query for the attachment IDs
-		$attachmentsQuery = $db->getQuery(true)
-		            ->select($db->qn('ats_attachment_id'))
-		            ->from($db->qn('#__ats_attachments'))
-		            ->where($db->qn('ats_post_id') . ' IN(' . implode(',', array_map('intval', $postIDs)) . ')')
-		;
-		$ret['ats']['attachments'] = $db->setQuery($attachmentsQuery)->loadColumn(0);
+		if (!empty($postIDs))
+		{
+			// Query for the attachment IDs
+			$attachmentsQuery          = $db->getQuery(true)
+				->select($db->qn('ats_attachment_id'))
+				->from($db->qn('#__ats_attachments'))
+				->where($db->qn('ats_post_id') . ' IN(' . implode(',', array_map('intval', $postIDs)) . ')');
+			$ret['ats']['attachments'] = $db->setQuery($attachmentsQuery)->loadColumn(0);
 
-		// Delete attachments
-		$query = $db->getQuery(true)
-		            ->delete($db->qn('#__ats_attachments'))
-		            ->where($db->qn('ats_post_id') . ' IN(' . implode(',', array_map('intval', $postIDs)) . ')')
-		;
-		$db->setQuery($query)->execute();
-		unset($postIDs);
+			// Delete attachments
+			$query = $db->getQuery(true)
+				->delete($db->qn('#__ats_attachments'))
+				->where($db->qn('ats_post_id') . ' IN(' . implode(',', array_map('intval', $postIDs)) . ')');
+			$db->setQuery($query)->execute();
+			unset($postIDs);
 
-		// Delete posts
-		$query = $db->getQuery(true)
-		            ->delete($db->qn('#__ats_posts'))
-		            ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
-		;
-		$db->setQuery($query)->execute();
+			// Delete posts
+			$query = $db->getQuery(true)
+				->delete($db->qn('#__ats_posts'))
+				->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')');
+			$db->setQuery($query)->execute();
+		}
 
 		// Delete tickets
-		$query = $db->getQuery(true)
-		            ->delete($db->qn('#__ats_tickets'))
-		            ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
-		;
-		$db->setQuery($query)->execute();
+		if (!empty($ticketIDs))
+		{
+			$query = $db->getQuery(true)
+				->delete($db->qn('#__ats_tickets'))
+				->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')');
+			$db->setQuery($query)->execute();
 
-		// ============================== attempts ==============================
-		$query                  = $db->getQuery(true)
-		                             ->select($db->qn('ats_attempt_id'))
-		                             ->from($db->qn('#__ats_attempts'))
-		                             ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
-		;
-		$ret['ats']['attempts'] = $db->setQuery($query)->loadColumn();
+			// ============================== attempts ==============================
+			$query                  = $db->getQuery(true)
+				->select($db->qn('ats_attempt_id'))
+				->from($db->qn('#__ats_attempts'))
+				->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')');
+			$ret['ats']['attempts'] = $db->setQuery($query)->loadColumn();
 
-		$query = $db->getQuery(true)
-		            ->delete($db->qn('#__ats_attempts'))
-		            ->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')')
-		;
-		$db->setQuery($query)->execute();
+			$query = $db->getQuery(true)
+				->delete($db->qn('#__ats_attempts'))
+				->where($db->qn('ats_ticket_id') . ' IN (' . implode(',', array_map('intval', $ticketIDs)) . ')');
+			$db->setQuery($query)->execute();
+		}
 
 		unset($ticketIDs);
 
 		// ============================== creditconsumptions ==============================
 		$query                            = $db->getQuery(true)
-		                                       ->select($db->qn('ats_creditconsumption_id'))
-		                                       ->from($db->qn('#__ats_creditconsumptions'))
-		                                       ->where($db->qn('user_id') . ' = ' . $userID)
-		;
+			->select($db->qn('ats_creditconsumption_id'))
+			->from($db->qn('#__ats_creditconsumptions'))
+			->where($db->qn('user_id') . ' = ' . $userID);
 		$ret['ats']['creditconsumptions'] = $db->setQuery($query)->loadColumn();
 
-		$query = $db->getQuery(true)
-		            ->delete($db->qn('#__ats_creditconsumptions'))
-		            ->where($db->qn('user_id') . ' = ' . $userID)
-		;
-		$db->setQuery($query)->execute();
+		if (!empty($ret['ats']['creditconsumptions']))
+		{
+			$query = $db->getQuery(true)
+				->delete($db->qn('#__ats_creditconsumptions'))
+				->where($db->qn('user_id') . ' = ' . $userID);
+			$db->setQuery($query)->execute();
+		}
 
 		// ============================== credittransactions ==============================
 		$query                            = $db->getQuery(true)
-		                                       ->select($db->qn('ats_credittransaction_id'))
-		                                       ->from($db->qn('#__ats_credittransactions'))
-		                                       ->where($db->qn('user_id') . ' = ' . $userID)
-		;
+			->select($db->qn('ats_credittransaction_id'))
+			->from($db->qn('#__ats_credittransactions'))
+			->where($db->qn('user_id') . ' = ' . $userID);
 		$ret['ats']['credittransactions'] = $db->setQuery($query)->loadColumn();
 
-		$query = $db->getQuery(true)
-		            ->delete($db->qn('#__ats_credittransactions'))
-		            ->where($db->qn('user_id') . ' = ' . $userID)
-		;
-		$db->setQuery($query)->execute();
-
+		if (!empty($ret['ats']['credittransactions']))
+		{
+			$query = $db->getQuery(true)
+				->delete($db->qn('#__ats_credittransactions'))
+				->where($db->qn('user_id') . ' = ' . $userID);
+			$db->setQuery($query)->execute();
+		}
 
 		// ============================== usertags ==============================
-		$query                            = $db->getQuery(true)
-		                                       ->select($db->qn('id'))
-		                                       ->from($db->qn('#__ats_users_usertags'))
-		                                       ->where($db->qn('user_id') . ' = ' . $userID)
-		;
+		$query                  = $db->getQuery(true)
+			->select($db->qn('id'))
+			->from($db->qn('#__ats_users_usertags'))
+			->where($db->qn('user_id') . ' = ' . $userID);
 		$ret['ats']['usertags'] = $db->setQuery($query)->loadColumn();
 
-		$query = $db->getQuery(true)
-		            ->delete($db->qn('#__ats_users_usertags'))
-		            ->where($db->qn('user_id') . ' = ' . $userID)
-		;
-		$db->setQuery($query)->execute();
+		if (!empty($ret['ats']['usertags']))
+		{
+			$query = $db->getQuery(true)
+				->delete($db->qn('#__ats_users_usertags'))
+				->where($db->qn('user_id') . ' = ' . $userID);
+			$db->setQuery($query)->execute();
+		}
 
 		return $ret;
 	}
