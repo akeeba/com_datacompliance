@@ -28,6 +28,8 @@ class DataComplianceLifecycleAutomation extends DataComplianceCliBase
 	{
 		// Enable debug mode?
 		$debug = $this->input->getBool('debug', false);
+		// Enable memory consumption debug mode?
+		$memDebug = $this->input->getBool('memdebug', false);
 		// Force deletion of non-notified users (this is useful for the first run on a site with tons of legacy data)?
 		$force = $this->input->getBool('force', false);
 
@@ -61,9 +63,17 @@ class DataComplianceLifecycleAutomation extends DataComplianceCliBase
 				},
 
 			], Log::ALL, 'com_datacompliance');
-
-			Log::add('Test', Log::DEBUG, 'com_datacompliance');
 		}
+
+		if ($memDebug)
+		{
+			Log::addLogger([
+				// Logger format. "echo" passes the log message verbatim.
+				'logger'   => 'echo',
+			], Log::ALL, 'com_datacompliance.memory');
+		}
+
+		JFactory::getDbo()->setDebug(false);
 
 		$container = \FOF30\Container\Container::getInstance('com_datacompliance', [], 'admin');
 
@@ -188,11 +198,24 @@ TEXT
 				$result = $wipeModel->wipe($id, 'lifecycle');
 			}
 
+			/**
+			 * Every time we use JFactory::getUser the User class is storing the user object in memory. We have to
+			 * uncache it to prevent running out of memory.
+			 */
+			$this->uncacheUser($id);
+
 			if ($result)
 			{
 				$this->out('[OK]');
 
 				$deleted++;
+
+				if ($memDebug)
+				{
+					$end = microtime(true);
+					$timeElapsed = $this->timeago($start, $end, 's', false);
+					JLog::add(sprintf('TIME %10s -- RAM %s', $timeElapsed, $this->memUsage()), Log::INFO, 'com_datacompliance.memory');
+				}
 
 				continue;
 			}
@@ -218,6 +241,31 @@ TEXT
 		$this->out(sprintf('Skipped (not notified): %u', $notNotified));
 
 		parent::execute();
+	}
+
+	private function uncacheUser($id)
+	{
+		static $reflectionProperty = null;
+
+		if (is_null($reflectionProperty))
+		{
+			$user = JFactory::getUser();
+			$reflectionClass = new ReflectionClass(get_class($user));
+			$reflectionProperty = $reflectionClass->getProperty('instances');
+			$reflectionProperty->setAccessible(true);
+		}
+
+		$instances = $reflectionProperty->getValue(null);
+
+		if (!isset($instances[$id]))
+		{
+			unset($instances);
+
+			return;
+		}
+
+		unset($instances[$id]);
+		$reflectionProperty->setValue(null, $instances);
 	}
 }
 

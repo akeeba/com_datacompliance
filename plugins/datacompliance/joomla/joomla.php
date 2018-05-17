@@ -12,30 +12,16 @@ use Joomla\CMS\User\UserHelper;
 
 defined('_JEXEC') or die;
 
+if (!include_once (JPATH_ADMINISTRATOR . '/components/com_datacompliance/assets/plugin/AbstractPlugin.php'))
+{
+	return;
+}
+
 /**
  * Data Compliance plugin for Core Joomla! User Data
  */
-class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
+class plgDatacomplianceJoomla extends plgDatacomplianceAbstractPlugin
 {
-	protected $container;
-
-	/**
-	 * Constructor. Intializes the object:
-	 * - Load the plugin's language strings
-	 * - Get the com_datacompliance container
-	 *
-	 * @param   object  $subject  Passed by Joomla
-	 * @param   array   $config   Passed by Joomla
-	 */
-	public function __construct(&$subject, array $config = array())
-	{
-		$this->autoloadLanguage = true;
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
-
-		parent::__construct($subject, $config);
-	}
-
-
 	/**
 	 * Checks whether a user is safe to be deleted. This plugin prevents deletion on the following conditions:
 	 * - The user is a Super User
@@ -111,6 +97,7 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		];
 
 		Log::add("Deleting user #$userID, type ‘{$type}’, Joomla! Core Data", Log::INFO, 'com_datacompliance');
+		Log::add(sprintf('Joomla -- RAM %s', $this->memUsage()), Log::INFO, 'com_datacompliance.memory');
 
 		$user = $this->getJoomlaUserObject($userID);
 
@@ -398,6 +385,7 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		Log::add("Deleting user notes", Log::DEBUG, 'com_datacompliance');
 
 		$db          = $this->container->db;
+		$db->setDebug(false);
 		$ids         = [];
 		$selectQuery = $db->getQuery(true)
 			->select('*')
@@ -435,6 +423,7 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		Log::add("Deleting user fields", Log::DEBUG, 'com_datacompliance');
 
 		$db = $this->container->db;
+		$db->setDebug(false);
 		$ids         = [];
 
 		$selectQuery = $db->getQuery(true)
@@ -473,6 +462,7 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		Log::add("Deleting user keys", Log::DEBUG, 'com_datacompliance');
 
 		$db = $this->container->db;
+		$db->setDebug(false);
 		$ids         = [];
 
 		$selectQuery = $db->getQuery(true)
@@ -516,6 +506,7 @@ class plgDatacomplianceJoomla extends Joomla\CMS\Plugin\CMSPlugin
 		Log::add("Deleting user groups", Log::DEBUG, 'com_datacompliance');
 
 		$db = $this->container->db;
+		$db->setDebug(false);
 		$query = $db->getQuery(true)
 			->delete($db->qn('#__user_usergroup_map'))
 			->where($db->qn('user_id') . ' = ' . $db->q($user->id));

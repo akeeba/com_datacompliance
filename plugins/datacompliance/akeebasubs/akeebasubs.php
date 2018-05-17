@@ -12,29 +12,16 @@ use Joomla\CMS\Log\Log;
 
 defined('_JEXEC') or die;
 
+if (!include_once (JPATH_ADMINISTRATOR . '/components/com_datacompliance/assets/plugin/AbstractPlugin.php'))
+{
+	return;
+}
+
 /**
  * Data Compliance plugin for Akeeba Release System User Data
  */
-class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
+class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 {
-	protected $container;
-
-	/**
-	 * Constructor. Intializes the object:
-	 * - Load the plugin's language strings
-	 * - Get the com_datacompliance container
-	 *
-	 * @param   object  $subject  Passed by Joomla
-	 * @param   array   $config   Passed by Joomla
-	 */
-	public function __construct($subject, array $config = array())
-	{
-		$this->autoloadLanguage = true;
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
-
-		parent::__construct($subject, $config);
-	}
-
 	/**
 	 * Checks whether a user is safe to be deleted. This plugin prevents deletion on the following conditions:
 	 * - The user has an active subscription created within the last X days (which means it's likely not yet reported for tax purposes)
@@ -137,6 +124,7 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		];
 
 		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Subscriptions data", Log::INFO, 'com_datacompliance');
+		Log::add(sprintf('AkeebaSubs -- RAM %s', $this->memUsage()), Log::INFO, 'com_datacompliance.memory');
 
 		/**
 		 * Remove invoices and credit notes.
@@ -149,6 +137,8 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 		 */
 		$container = Container::getInstance('com_akeebasubs', [], 'admin');
 		$db = $container->db;
+		$db->setDebug(false);
+
 		$query = $db->getQuery(true)
 			->select($db->qn('akeebasubs_subscription_id'))
 			->from($db->qn('#__akeebasubs_subscriptions'))
@@ -242,7 +232,6 @@ class plgDatacomplianceAkeebasubs extends Joomla\CMS\Plugin\CMSPlugin
 
 		// Remove user information
 		$ret['akeebasubs']['users'] = $this->anonymizeUser($userID);
-
 
 		return $ret;
 	}

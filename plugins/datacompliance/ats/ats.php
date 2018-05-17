@@ -11,29 +11,16 @@ use Joomla\CMS\Log\Log;
 
 defined('_JEXEC') or die;
 
+if (!include_once (JPATH_ADMINISTRATOR . '/components/com_datacompliance/assets/plugin/AbstractPlugin.php'))
+{
+	return;
+}
+
 /**
  * Data Compliance plugin for Akeeba Ticket System User Data
  */
-class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
+class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 {
-	protected $container;
-
-	/**
-	 * Constructor. Intializes the object:
-	 * - Load the plugin's language strings
-	 * - Get the com_datacompliance container
-	 *
-	 * @param   object  $subject  Passed by Joomla
-	 * @param   array   $config   Passed by Joomla
-	 */
-	public function __construct($subject, array $config = array())
-	{
-		$this->autoloadLanguage = true;
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
-
-		parent::__construct($subject, $config);
-	}
-
 	/**
 	 * Performs the necessary actions for deleting a user. Returns an array of the information categories and any
 	 * applicable IDs which were deleted in the process. This information is stored in the audit log. DO NOT include
@@ -62,9 +49,11 @@ class plgDatacomplianceAts extends Joomla\CMS\Plugin\CMSPlugin
 		];
 
 		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Ticket System data", Log::INFO, 'com_datacompliance');
+		Log::add(sprintf('ATS -- RAM %s', $this->memUsage()), Log::INFO, 'com_datacompliance.memory');
 
 		$container = Container::getInstance('com_ats', [], 'admin');
 		$db        = $container->db;
+		$db->setDebug(false);
 
 		// ============================== tickets, posts, attachments ==============================
 

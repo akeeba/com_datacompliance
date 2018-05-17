@@ -13,32 +13,19 @@ use Joomla\CMS\User\UserHelper;
 
 defined('_JEXEC') or die;
 
+if (!include_once (JPATH_ADMINISTRATOR . '/components/com_datacompliance/assets/plugin/AbstractPlugin.php'))
+{
+	return;
+}
+
 /**
  * Data Compliance plugin for Akeeba Release System User Data
  */
-class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
+class plgDatacomplianceArs extends plgDatacomplianceAbstractPlugin
 {
-	protected $container;
-
 	protected $releases = [];
 
 	protected $items = [];
-
-	/**
-	 * Constructor. Intializes the object:
-	 * - Load the plugin's language strings
-	 * - Get the com_datacompliance container
-	 *
-	 * @param   object  $subject  Passed by Joomla
-	 * @param   array   $config   Passed by Joomla
-	 */
-	public function __construct($subject, array $config = array())
-	{
-		$this->autoloadLanguage = true;
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
-
-		parent::__construct($subject, $config);
-	}
 
 	/**
 	 * Performs the necessary actions for deleting a user. Returns an array of the infomration categories and any
@@ -63,8 +50,10 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 		];
 
 		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Release System data", Log::INFO, 'com_datacompliance');
+		Log::add(sprintf('ARS -- RAM %s', $this->memUsage()), Log::INFO, 'com_datacompliance.memory');
 
 		$db = $this->container->db;
+		$db->setDebug(false);
 
 		// ======================================== Log entries ========================================
 
@@ -83,8 +72,9 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 
 			Log::add(sprintf("Found %u ARS log entries", count($ids)), Log::DEBUG, 'com_datacompliance');
 
-			$ids               = empty($ids) ? [] : implode(',', $ids);
 			$ret['ars']['log'] = $ids;
+
+			unset($ids);
 
 			$db->setQuery($deleteQuery)->execute();
 		}
@@ -95,6 +85,9 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 
 			// No problem if deleting fails.
 		}
+
+		unset($selectQuery);
+		unset($deleteQuery);
 
 		// ======================================== Download IDs ========================================
 
@@ -113,8 +106,9 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 
 			Log::add(sprintf("Found %u ARS Download IDs", count($ids)), Log::DEBUG, 'com_datacompliance');
 
-			$ids                = empty($ids) ? [] : implode(',', $ids);
 			$ret['ars']['dlid'] = $ids;
+
+			unset($ids);
 
 			$db->setQuery($deleteQuery)->execute();
 		}
@@ -125,6 +119,13 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 
 			// No problem if deleting fails.
 		}
+
+		unset($selectQuery);
+		unset($deleteQuery);
+		unset($db);
+
+		$this->releases = [];
+		$this->items = [];
 
 		return $ret;
 	}
@@ -201,7 +202,7 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 		return $export;
 	}
 
-	protected function getItemTitle($item_id)
+	private function getItemTitle($item_id)
 	{
 		if (!isset($this->items[$item_id]))
 		{
@@ -229,7 +230,7 @@ class plgDatacomplianceArs extends Joomla\CMS\Plugin\CMSPlugin
 		return $this->items[$item_id];
 	}
 
-	protected function getReleaseInfo($release_id)
+	private function getReleaseInfo($release_id)
 	{
 		if (!isset($this->releases[$release_id]))
 		{
