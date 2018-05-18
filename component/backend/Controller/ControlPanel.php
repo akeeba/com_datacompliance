@@ -9,6 +9,8 @@ namespace Akeeba\DataCompliance\Admin\Controller;
 
 defined('_JEXEC') or die;
 
+use Akeeba\DataCompliance\Admin\Model\Stats;
+use DateInterval;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Controller\Mixin\PredefinedTaskList;
@@ -26,6 +28,7 @@ class ControlPanel extends Controller
 			'browse',
 			'changelog',
 			'userstats',
+			'wipedstats',
 		];
 	}
 
@@ -65,6 +68,23 @@ class ControlPanel extends Controller
 		}, [], 'userstats');
 		
 		echo json_encode($stats);
+
+		$this->container->platform->closeApplication();
+	}
+
+	public function wipedstats()
+	{
+		$to = $this->container->platform->getDate();
+		$to->setTime(0, 0, 0);
+		$from = $this->container->platform->getDate();
+		$from->sub(new DateInterval('P1M'));
+		$from->setTime(0, 0, 0);
+		$to->setTime(23, 59, 59);
+
+		/** @var Stats $statsModel */
+		$statsModel          = $this->container->factory->model('Stats')->tmpInstance();
+
+		echo json_encode($statsModel->wipeStats($from, $to));
 
 		$this->container->platform->closeApplication();
 	}

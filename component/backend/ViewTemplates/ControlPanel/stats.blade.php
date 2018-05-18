@@ -11,7 +11,6 @@
 defined('_JEXEC') or die;
 
 ?>
-{{--- TODO Graphs ---}}
 <div class="akeeba-panel--default">
     <header class="akeeba-block-header">
         <h3><?php echo \JText::_('COM_DATACOMPLIANCE_CONTROLPANEL_DASHBOARD_INACTIVE'); ?></h3>
@@ -19,5 +18,15 @@ defined('_JEXEC') or die;
 
     <div style="width: 100%; max-width: 350px; max-height: 350px; margin-left: auto; margin-right: auto">
         <canvas id="adcExpiredUsers"></canvas>
+    </div>
+</div>
+
+<div class="akeeba-panel--default">
+    <header class="akeeba-block-header">
+        <h3><?php echo \JText::_('COM_DATACOMPLIANCE_CONTROLPANEL_DASHBOARD_WIPED'); ?></h3>
+    </header>
+
+    <div style="width: 100%;">
+        <canvas id="adcWipedUsers"></canvas>
     </div>
 </div>

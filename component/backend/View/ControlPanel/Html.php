@@ -31,6 +31,7 @@ class Html extends BaseView
 		$js = <<< JS
 window.jQuery(document).ready(function(){
 	akeeba.DataCompliance.ControlPanel.loadUserGraphs();
+	akeeba.DataCompliance.ControlPanel.loadWipedGraphs();
 });
 
 JS;

@@ -48,3 +48,61 @@ akeeba.DataCompliance.ControlPanel.loadUserGraphs = function()
 		});
 	});
 };
+
+
+akeeba.DataCompliance.ControlPanel.loadWipedGraphs = function()
+{
+	let url = 'index.php?option=com_datacompliance&view=ControlPanel&task=wipedstats';
+
+	window.jQuery.getJSON(url, function(data)
+	{
+		let ctx = document.getElementById("adcWipedUsers").getContext('2d');
+		let myChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				datasets: [
+					{
+						label: 'User',
+						backgroundColor: '#009900',
+						data: data.user
+					},
+					{
+						label: 'Admin',
+						backgroundColor: '#ff0000',
+						data: data.admin
+					},
+					{
+						label: 'Lifecycle',
+						backgroundColor: '#666666',
+						data: data.lifecycle
+					},
+				],
+			},
+			options: {
+				scales: {
+					xAxes: [{
+						stacked: true,
+						type: 'time',
+						time: {
+							unit: 'day'
+						},
+						distribution: 'linear'
+					}],
+					yAxes: [{
+						type: 'linear',
+						stacked: true,
+						ticks: {
+							callback: function(value, index, values) {
+								return '' + value;
+							}
+						}
+					}]
+				},
+				legend: {
+					display: true,
+					position: 'right'
+				}
+			}
+		});
+	});
+};
