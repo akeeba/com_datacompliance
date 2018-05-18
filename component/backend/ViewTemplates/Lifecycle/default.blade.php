@@ -18,9 +18,11 @@ defined('_JEXEC') or die();
  * @var  Wipe                     $wipeModel
  */
 
-$model     = $this->getModel();
-$wipeModel = $this->getContainer()->factory->model('Wipe')->tmpInstance();
-$when      = $this->getContainer()->platform->getDate($model->when);
+$model       = $this->getModel();
+$wipeModel   = $this->getContainer()->factory->model('Wipe')->tmpInstance();
+$when        = $this->getContainer()->platform->getDate($model->when);
+$currentUser = $this->getContainer()->platform->getUser();
+$canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $currentUser->authorise('export', 'com_datacompliance');
 ?>
 
 @extends('admin:com_datacompliance/Common/browse')
@@ -58,6 +60,11 @@ $when      = $this->getContainer()->platform->getDate($model->when);
     <th>
         @lang('COM_DATACOMPLIANCE_LIFECYCLE_FIELD_CANDELETE')
     </th>
+    @if($canManage)
+    <th>
+        @lang('COM_DATACOMPLIANCE_LIFECYCLE_FIELD_OPTIONS')
+    </th>
+    @endif
 </tr>
 @stop
 
@@ -81,8 +88,16 @@ $when      = $this->getContainer()->platform->getDate($model->when);
         </td>
         <td>
             @jhtml('FEFHelper.browse.published', $canDelete, $i, '', false)
-            {{--@lang($canDelete ? 'JYES' : 'JNO')--}}
         </td>
+        @if($canManage)
+        <td>
+            <a href="index.php?option=com_datacompliance&view=Options&user_id={{{ $row->id }}}"
+                class="akeeba-btn--orange">
+                <span class="akion-person-stalker"></span>
+                @lang('COM_DATACOMPLIANCE_LIFECYCLE_BTN_OPTIONS_MANAGE')
+            </a>
+        </td>
+        @endif
     </tr>
 @endforeach
 @stop
