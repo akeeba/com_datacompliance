@@ -617,4 +617,42 @@ class PlgUserDatacompliance extends JPlugin
 		];
 	}
 
+	/**
+	 * Resets the user's notification for lifecycle removal flag from their account.
+	 *
+	 * @param   array  $response
+	 * @param   array  $options
+	 *
+	 * @return  bool
+	 */
+	public function onUserLogin($response, $options)
+	{
+		if (!$this->enabled)
+		{
+			return true;
+		}
+
+		/**
+		 * Do not go through the model as it ends up destroying the session when the Remember Me plugin tries to log you
+		 * back in.
+		 */
+		$userid = JUserHelper::getUserId($response['username']);
+		$db     = JFactory::getDbo();
+		$query  = $db->getQuery(true)
+			->delete($db->qn('#__user_profiles'))
+			->where($db->qn('user_id') . ' = ' . $userid)
+			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
+
+		try
+		{
+			$db->setQuery($query)->execute();
+		}
+		catch (\Exception $e)
+		{
+			// Ignore it
+		}
+
+		return true;
+	}
+
 }
