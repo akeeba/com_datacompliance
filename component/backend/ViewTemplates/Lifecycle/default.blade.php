@@ -27,6 +27,13 @@ $model = $this->getModel();
         @searchfilter('user_id', 'user_id', 'COM_DATACOMPLIANCE_LIFECYCLE_FIELD_USER_ID')
     </div>
 
+    <div class="akeeba-filter-element akeeba-form-group">
+        @jhtml('calendar', $model->when, 'when', 'when', '%Y-%m-%d', [
+        'placeholder' => JText::_('COM_DATACOMPLIANCE_LIFECYCLE_FILTER_WHEN'),
+        'onChange' => 'document.forms.adminForm.submit();']
+        )
+    </div>
+
 @stop
 
 @section('browse-table-header')

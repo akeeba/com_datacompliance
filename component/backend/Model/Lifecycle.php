@@ -7,6 +7,7 @@
 
 
 namespace Akeeba\DataCompliance\Admin\Model;
+use DateTime;
 use Joomla\CMS\Cache\Controller\CallbackController;
 
 /**
@@ -34,11 +35,13 @@ class Lifecycle extends JoomlaUsers
 
 		if ($lifecycle)
 		{
-			$lifecycleUserIDs = $this->getLifecycleUserIDs();
+			$when             = $this->container->platform->getDate($this->getState('when', 'now', 'string'));
+			$lifecycleUserIDs = $this->getLifecycleUserIDs($when);
 			$db               = $this->container->db;
 
 			$query->where($db->qn('id') . ' IN (' . implode(',', $lifecycleUserIDs) . ')');
 		}
+
 	}
 
 	/**
@@ -46,18 +49,18 @@ class Lifecycle extends JoomlaUsers
 	 *
 	 * @return  array
 	 */
-	public function getLifecycleUserIDs(): array
+	public function getLifecycleUserIDs(DateTime $when): array
 	{
 		if (is_null(self::$lifeCycleUserIDs))
 		{
 			/** @var CallbackController $cache */
 			$cache = \JFactory::getCache($this->container->componentName, 'callback');
 
-			self::$lifeCycleUserIDs = $cache->get(function () {
+			self::$lifeCycleUserIDs = $cache->get(function () use($when) {
 				/** @var Wipe $mWipe */
 				$mWipe = $this->container->factory->model('Wipe')->tmpInstance();
 
-				return $mWipe->getLifecycleUserIDs(true);
+				return $mWipe->getLifecycleUserIDs(true, $when);
 
 			}, [], 'lifecycleUserIDs');
 		}
