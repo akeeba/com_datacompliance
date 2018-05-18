@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
 use DateTime;
+use FOF30\Date\Date;
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
 use RuntimeException;
@@ -263,7 +264,7 @@ class Wipe extends Model
 		}
 
 		// Is the user already notified?
-		if (!$this->isUserNotified($userId))
+		if ($this->isUserNotified($userId))
 		{
 			return false;
 		}
@@ -319,11 +320,16 @@ class Wipe extends Model
 	/**
 	 * Is the user already notified for their account deletion?
 	 *
-	 * @param   int  $userId  The user to check
+	 * If $when is specified and datacompliance.notified_for is AFTER the specified date we return false. The idea is
+	 * that the user was told their account will be deleted on a date in the future, so we should NOT delete their
+	 * account while they think they can take an action to prevent deletion of their account.
+	 *
+	 * @param   int   $userId  The user to check
+	 * @param   Date  $when    When the account deletion takes place.
 	 *
 	 * @return  bool  True if they are already notified.
 	 */
-	public function isUserNotified(int $userId): bool
+	public function isUserNotified(int $userId, $when = null): bool
 	{
 		$db     = $this->container->db;
 		$query  = $db->getQuery(true)
@@ -335,9 +341,34 @@ class Wipe extends Model
 			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
 		$fields = $db->setQuery($query)->loadObjectList('profile_key');
 
-		if (isset($fields['datacompliance.notified']) && $fields['datacompliance.notified']->profile_value == 1)
+		// Not notified at all
+		if (!isset($fields['datacompliance.notified']) || $fields['datacompliance.notified']->profile_value != 1)
+		{
+			return false;
+		}
+
+		// Don't care about when they are notified?
+		if (empty($when))
 		{
 			return true;
+		}
+
+		// We have not recorded when they are told their account expires, therefore we consider them notified.
+		if (!isset($fields['datacompliance.notified_for']))
+		{
+			return true;
+		}
+
+		$notifiedFor = new DateTime($fields['datacompliance.notified_for']);
+
+		/**
+		 * If the user was told their account will be deleted after the current deletion date ($when) consider them
+		 * not notified. This prevents deletion of a user account before the date the user knows they can no longer
+		 * take any action to prevent account deletion.
+         */
+		if ($notifiedFor->getTimestamp() > $when->getTimestamp())
+		{
+			return false;
 		}
 
 		return false;

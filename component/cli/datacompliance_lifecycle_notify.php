@@ -5,8 +5,11 @@
  * @license   GNU General Public License version 3, or later
  */
 
+use FOF30\Container\Container;
+use FOF30\Date\Date;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
+use Joomla\Registry\Registry;
 
 define('_JEXEC', 1);
 
@@ -27,6 +30,13 @@ else
  */
 class DataComplianceLifecycleNotify extends DataComplianceCliBase
 {
+	/**
+	 * The component container
+	 *
+	 * @var  Container
+	 */
+	protected $container;
+
 	public function execute()
 	{
 		// Enable debug mode?
@@ -69,13 +79,13 @@ class DataComplianceLifecycleNotify extends DataComplianceCliBase
 		// Disable the database driver's debug mode (logging of all queries)
 		JFactory::getDbo()->setDebug(false);
 
-		$container = \FOF30\Container\Container::getInstance('com_datacompliance', [], 'admin');
+		$this->container = Container::getInstance('com_datacompliance', [], 'admin');
 
 		// Load the translations for this component;
-		$container->platform->loadTranslations($container->componentName);
+		$this->container->platform->loadTranslations($this->container->componentName);
 
 		// Load the version information
-		include_once $container->backEndPath . '/version.php';
+		include_once $this->container->backEndPath . '/version.php';
 
 		$version = DATACOMPLIANCE_VERSION;
 		$year    = gmdate('Y');
@@ -133,7 +143,7 @@ END;
 			$this->close(102);
 		}
 
-		$when = $container->platform->getDate();
+		$when = $this->container->platform->getDate();
 		$when->add($interval);
 
 		$this->out(<<< END
@@ -143,7 +153,7 @@ END
 		);
 
 		/** @var \Akeeba\DataCompliance\Admin\Model\Wipe $wipeModel */
-		$wipeModel = $container->factory->model('Wipe')->tmpInstance();
+		$wipeModel = $this->container->factory->model('Wipe')->tmpInstance();
 		$userIDs   = $wipeModel->getLifecycleUserIDs(true, $when);
 
 		if (empty($userIDs))
@@ -242,12 +252,16 @@ END
 
 			$this->out("Notifying user $id... ", false);
 
-
 			if (!$dryRun)
 			{
-				// TODO Send the email
+				// Send the email
+				$result = $this->sendEmail($id, $when);
 
-				$result = $wipeModel->notifyUser($id, $when);
+				// Mark the user notified
+				if ($result)
+				{
+					$result = $wipeModel->notifyUser($id, $when);
+				}
 			}
 			else
 			{
@@ -292,7 +306,7 @@ END
 		parent::execute();
 	}
 
-	private function uncacheUser($id)
+	private function uncacheUser(int $id)
 	{
 		static $reflectionProperty = null;
 
@@ -315,6 +329,58 @@ END
 
 		unset($instances[$id]);
 		$reflectionProperty->setValue(null, $instances);
+	}
+
+	/**
+	 * Send the email notification to the user
+	 *
+	 * @param   int       $userID  The user to notify
+	 * @param   DateTime  $when    When their account will be deleted
+	 *
+	 * @return  bool  True if the email sent successfully
+	 */
+	private function sendEmail(int $userID, DateTime $when): bool
+	{
+		$user       = $this->container->platform->getUser($userID);
+		$registry   = is_object($user->params) ? $user->params : new Registry($user->params);
+		$tzString   = $registry->get('timezone', 'GMT');
+
+		try
+		{
+			$tz = new DateTimeZone($tzString);
+		}
+		catch (Exception $e)
+		{
+			$tz = new DateTimeZone('GMT');
+		}
+
+		$deleteDate = new Date($when);
+		$format     = JText::_('DATE_FORMAT_LC2') . ' T';
+		$deleteDate->setTimezone($tz);
+		$extras = [
+			'[DELETEDATE]' => $deleteDate->format($format, true),
+		];
+
+		Log::add("Emailing the user", Log::DEBUG, 'com_datacompliance');
+
+		try
+		{
+			$mailer = \Akeeba\DataCompliance\Admin\Helper\Email::getPreloadedMailer('user_warnlifecycle', $userID, $extras);
+
+			if ($mailer !== false)
+			{
+				$mailer->addRecipient($user->email, $user->name);
+				$mailer->Send();
+			}
+
+			return true;
+		}
+		catch (Exception $e)
+		{
+			Log::add("Emailing user $userID has failed", Log::ERROR, 'com_datacompliance');
+		}
+
+		return false;
 	}
 }
 

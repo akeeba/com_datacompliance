@@ -150,6 +150,10 @@ TEXT
 			}
 		}
 
+		// Current deletion date, used to confirm that the user has been notified
+		$deletionDate = $container->platform->getDate();
+
+		// Loop all users to be deleted
 		foreach ($userIDs as $id)
 		{
 			$freeMemory = $this->getFreeMemory();
@@ -180,7 +184,7 @@ TEXT
 
 			$this->out("Removing user $id... ", false);
 
-			if (!$force && !$wipeModel->isUserNotified($id))
+			if (!$force && !$wipeModel->isUserNotified($id, $deletionDate))
 			{
 				$this->out('[SKIPPING - NOT NOTIFIED]');
 
