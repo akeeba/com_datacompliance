@@ -337,9 +337,9 @@ class Wipe extends Model
 
 		if (isset($fields['datacompliance.notified']) && $fields['datacompliance.notified']->profile_value == 1)
 		{
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 }

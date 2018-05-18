@@ -14,6 +14,7 @@
         <files target="cli">
             <file>datacompliance_account_delete.php</file>
             <file>datacompliance_account_lifecycle.php</file>
+            <file>datacompliance_lifecycle_notify.php</file>
         </files>
     </fileset>
 </extension>
