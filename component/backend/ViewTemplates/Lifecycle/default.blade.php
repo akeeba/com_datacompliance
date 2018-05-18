@@ -80,7 +80,8 @@ $when      = $this->getContainer()->platform->getDate($model->when);
             {{ \Akeeba\DataCompliance\Admin\Helper\Format::date($row->lastvisitDate) }}
         </td>
         <td>
-            @lang($canDelete ? 'JYES' : 'JNO')
+            @jhtml('FEFHelper.browse.published', $canDelete, $i, '', false)
+            {{--@lang($canDelete ? 'JYES' : 'JNO')--}}
         </td>
     </tr>
 @endforeach
