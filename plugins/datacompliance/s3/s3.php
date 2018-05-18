@@ -10,6 +10,7 @@ use Akeeba\Engine\Postproc\Connector\S3v4\Acl;
 use Akeeba\Engine\Postproc\Connector\S3v4\Configuration;
 use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
 use Akeeba\Engine\Postproc\Connector\S3v4\Input;
+use Joomla\CMS\Log\Log;
 
 defined('_JEXEC') or die;
 
@@ -48,6 +49,8 @@ class plgDatacomplianceS3 extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	public function onComDatacomplianceModelWipetrailsAfterSave($model)
 	{
+		Log::add("Preparing to upload audit trail to S3", Log::DEBUG, 'com_datacompliance');
+
 		$data = $model->getData();
 
 		if (isset($data['datacompliance_wipetrail_id']))
@@ -66,6 +69,8 @@ class plgDatacomplianceS3 extends Joomla\CMS\Plugin\CMSPlugin
 		catch (Exception $e)
 		{
 			// Ugh, the user has not provided adequate connection information. Abort.
+			Log::add("Could not create a connector for S3: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 
 			return;
 		}
@@ -101,6 +106,8 @@ class plgDatacomplianceS3 extends Joomla\CMS\Plugin\CMSPlugin
 		catch (\Exception $e)
 		{
 			// Oops. It failed. But I cannot die.
+			Log::add("Could not upload audit log to S3: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 		}
 	}
 

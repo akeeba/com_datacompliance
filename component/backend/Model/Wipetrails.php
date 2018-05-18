@@ -83,6 +83,19 @@ class Wipetrails extends DataModel
 		return $static;
 	}
 
+	protected function onAfterSave()
+	{
+		/**
+		 * FOF does not call plugin events in CLI scripts. So we have to do it ourselves.
+		 */
+		if ($this->container->platform->isCli())
+		{
+			$this->importPlugin('datacompliance');
+			$event = 'onComDatacomplianceModelWipetrailsAfterSave';
+			$this->runPlugins($event, [$this]);
+		}
+	}
+
 
 	protected function setItemsAttribute($value)
 	{
@@ -147,5 +160,39 @@ class Wipetrails extends DataModel
 		// Apply filtering by user. This is a relation filter, it needs to go before the main query builder fires.
 		$this->filterByUser($query, 'user_id', 'user_id');
 		$this->filterByUser($query, 'created_by', 'created_by');
+	}
+
+	/**
+	 * Load plugins of a specific type. Do not go through FOF; it does not run that under CLI.
+	 *
+	 * @param   string $type The type of the plugins to be loaded
+	 *
+	 * @return void
+	 */
+	public function importPlugin(string $type)
+	{
+		\JLoader::import('joomla.plugin.helper');
+		\JPluginHelper::importPlugin($type);
+	}
+
+	/**
+	 * Execute plugins (system-level triggers) and fetch back an array with their return values. Do not go through FOF;
+	 * it does not run that under CLI
+	 *
+	 * @param   string $event The event (trigger) name, e.g. onBeforeScratchMyEar
+	 * @param   array  $data  A hash array of data sent to the plugins as part of the trigger
+	 *
+	 * @return  array  A simple array containing the results of the plugins triggered
+	 *
+	 * @throws \Exception
+	 */
+	public function runPlugins(string $event, array $data = [])
+	{
+		if (class_exists('JEventDispatcher'))
+		{
+			return \JEventDispatcher::getInstance()->trigger($event, $data);
+		}
+
+		return \JFactory::getApplication()->triggerEvent($event, $data);
 	}
 }
