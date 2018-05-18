@@ -79,7 +79,7 @@ class DataComplianceLifecycleNotify extends DataComplianceCliBase
 		// Disable the database driver's debug mode (logging of all queries)
 		JFactory::getDbo()->setDebug(false);
 
-		$this->container = Container::getInstance('com_datacompliance', [], 'admin');
+		$this->container = Container::getInstance('com_datacompliance', [], 'site');
 
 		// Load the translations for this component;
 		$this->container->platform->loadTranslations($this->container->componentName);
@@ -254,13 +254,17 @@ END
 
 			if (!$dryRun)
 			{
-				// Send the email
-				$result = $this->sendEmail($id, $when);
-
 				// Mark the user notified
-				if ($result)
+				$result = $wipeModel->notifyUser($id, $when);
+				$error  = $wipeModel->getError();
+
+				// Send the email
+				if ($result && !$this->sendEmail($id, $when))
 				{
-					$result = $wipeModel->notifyUser($id, $when);
+					// If the email failed, reset the user's notification
+					$wipeModel->resetUserNotification($id);
+					$error  = "Cannot send email";
+					$result = false;
 				}
 			}
 			else
@@ -283,7 +287,6 @@ END
 				continue;
 			}
 
-			$error = $wipeModel->getError();
 			$this->out('[FAILED]');
 			$this->out("\t$error");
 
@@ -341,9 +344,9 @@ END
 	 */
 	private function sendEmail(int $userID, DateTime $when): bool
 	{
-		$user       = $this->container->platform->getUser($userID);
-		$registry   = is_object($user->params) ? $user->params : new Registry($user->params);
-		$tzString   = $registry->get('timezone', 'GMT');
+		$user     = $this->container->platform->getUser($userID);
+		$registry = is_object($user->params) ? $user->params : new Registry($user->params);
+		$tzString = $registry->get('timezone', 'GMT');
 
 		try
 		{
@@ -357,8 +360,24 @@ END
 		$deleteDate = new Date($when);
 		$format     = JText::_('DATE_FORMAT_LC2') . ' T';
 		$deleteDate->setTimezone($tz);
+
+		// Get the actions carried out for the user
+		/** @var \Akeeba\DataCompliance\Site\Model\Options $optionsModel */
+		$optionsModel = $this->container->factory->model('Options')->tmpInstance();
+		$actionsList  = $optionsModel->getBulletPoints($user, 'lifecycle');
+		$actionsHtml  = "<ul>\n";
+
+		foreach ($actionsList as $action)
+		{
+			$actionsHtml .= "<li>$action</li>";
+		}
+
+		$actionsHtml .= "</ul>\n";
+
 		$extras = [
 			'[DELETEDATE]' => $deleteDate->format($format, true),
+			'[ACTIONS]'    => $actionsHtml,
+
 		];
 
 		Log::add("Emailing the user", Log::DEBUG, 'com_datacompliance');
