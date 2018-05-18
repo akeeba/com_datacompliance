@@ -109,3 +109,13 @@ div.akeeba-filter-bar select.custom-select{
 	vertical-align: middle;
 	padding-top: 0.35em;
 }
+
+/**
+ * Lifecycle page
+ */
+tbody > tr.akeeba-datacompliance-lifecycle-row-cantdelete:nth-child(2n+1) > td {
+	background-color: lightpink !important;
+}
+tbody > tr.akeeba-datacompliance-lifecycle-row-cantdelete:nth-child(2n) > td {
+	background-color: #fadfe0;
+}

@@ -6,7 +6,7 @@
  */
 
 use Akeeba\DataCompliance\Admin\Model\Lifecycle;
-use FOF30\Utils\FEFHelper\BrowseView;
+use Akeeba\DataCompliance\Admin\Model\Wipe;use FOF30\Utils\FEFHelper\BrowseView;
 use FOF30\Utils\SelectOptions;
 
 defined('_JEXEC') or die();
@@ -15,9 +15,12 @@ defined('_JEXEC') or die();
  * @var  FOF30\View\DataView\Html $this
  * @var  Lifecycle                $row
  * @var  Lifecycle                $model
+ * @var  Wipe                     $wipeModel
  */
 
-$model = $this->getModel();
+$model     = $this->getModel();
+$wipeModel = $this->getContainer()->factory->model('Wipe')->tmpInstance();
+$when      = $this->getContainer()->platform->getDate($model->when);
 ?>
 
 @extends('admin:com_datacompliance/Common/browse')
@@ -52,6 +55,9 @@ $model = $this->getModel();
     <th>
         @sortgrid('lastVisitDate')
     </th>
+    <th>
+        @lang('COM_DATACOMPLIANCE_LIFECYCLE_FIELD_CANDELETE')
+    </th>
 </tr>
 @stop
 
@@ -59,7 +65,8 @@ $model = $this->getModel();
 {{-- Table body shown when records are present. --}}
 <?php $i = 0; ?>
 @foreach($this->items as $row)
-    <tr>
+    <?php $canDelete = $wipeModel->checkWipeAbility($row->id, 'lifecycle', $when) ?>
+    <tr class="{{ $canDelete ? '' : 'akeeba-datacompliance-lifecycle-row-cantdelete' }}">
         <td>
             @jhtml('FEFHelper.browse.id', ++$i, $row->getId())
         </td>
@@ -71,6 +78,9 @@ $model = $this->getModel();
         </td>
         <td>
             {{ \Akeeba\DataCompliance\Admin\Helper\Format::date($row->lastvisitDate) }}
+        </td>
+        <td>
+            @lang($canDelete ? 'JYES' : 'JNO')
         </td>
     </tr>
 @endforeach
