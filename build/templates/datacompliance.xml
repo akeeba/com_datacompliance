@@ -15,6 +15,7 @@
 		<folder>Dispatcher</folder>
 		<folder>Model</folder>
 		<folder>View</folder>
+		<folder>views</folder>
 		<folder>ViewTemplates</folder>
         <filename>datacompliance.php</filename>
 	</files>

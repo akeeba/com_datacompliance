@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+@package AkeebaSubs
+@copyright Copyright (c)2010-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
+@license GNU General Public License version 3, or later
+-->
+<metadata>
+        <view title="COM_DATACOMPLIANCE_MENUMANAGER_VIEW_OPTIONS_LABEL">
+			<message><![CDATA[COM_DATACOMPLIANCE_MENUMANAGER_VIEW_OPTIONS_DESC]]></message>
+        </view>
+</metadata>
