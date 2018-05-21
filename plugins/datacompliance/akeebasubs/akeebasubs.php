@@ -271,7 +271,7 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 	public function onDataComplianceExportUser(int $userID): SimpleXMLElement
 	{
 		$export    = new SimpleXMLElement("<root></root>");
-		$container = Container::getInstance('com_akeebasubs');
+		$container = Container::getInstance('com_akeebasubs', [], 'admin');
 
 		// Subscriptions
 		$domainSubs = $export->addChild('domain');
