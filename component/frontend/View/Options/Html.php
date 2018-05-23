@@ -82,7 +82,9 @@ class Html extends HtmlView
 	{
 		$userID      = $this->input->getInt('user_id', null);
 
-		$this->user = $this->container->platform->getUser($userID);
-		$this->type = ($this->user->id == $this->container->platform->getUser()->id) ? 'user' : 'admin';
+		$this->showExport = $this->container->params->get('showexport', 0);
+		$this->showWipe   = $this->container->params->get('showwipe', 0);
+		$this->user       = $this->container->platform->getUser($userID);
+		$this->type       = ($this->user->id == $this->container->platform->getUser()->id) ? 'user' : 'admin';
 	}
 }
