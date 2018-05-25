@@ -103,7 +103,7 @@ $myUser = $this->getContainer()->platform->getUser();
     </div>
 @endif
 
-@if($this->showExport || $this->showWipe)
+@if ($this->showExport || $this->showWipe)
     <div class="akeeba-panel--orange">
         @if($this->type == 'user')
             <header class="akeeba-block-header">
