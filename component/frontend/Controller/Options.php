@@ -13,6 +13,7 @@ use Akeeba\DataCompliance\Admin\Model\Wipe;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Controller\Mixin\PredefinedTaskList;
+use RuntimeException;
 
 class Options extends Controller
 {
@@ -23,6 +24,8 @@ class Options extends Controller
 	 *
 	 * @param   Container  $container
 	 * @param   array      $config
+	 *
+	 * @since   1.0.0
 	 */
 	public function __construct(Container $container, array $config = array())
 	{
@@ -36,9 +39,13 @@ class Options extends Controller
 	 * Default task, shows a page for the user to make their data protection options.
 	 *
 	 * @param   string  $tpl
+	 *
+	 * @since   1.0.0
 	 */
 	public function options($tpl = null)
 	{
+		$this->assertUserAccess();
+
 		$this->display(false, false, $tpl);
 	}
 
@@ -48,6 +55,8 @@ class Options extends Controller
 	 * @param   string  $tpl
 	 *
 	 * @throws  \Exception
+	 *
+	 * @since   1.0.0
 	 */
 	public function consent($tpl = null)
 	{
@@ -72,10 +81,13 @@ class Options extends Controller
 	 * @param   string  $tpl
 	 *
 	 * @throws  \Exception
+	 *
+	 * @since   1.0.0
 	 */
 	public function export($tpl = null)
 	{
 		$this->csrfProtection();
+		$this->assertUserAccess();
 
 		$currentUser = $this->container->platform->getUser();
 		$userID      = $this->input->getInt('user_id', $currentUser->id);
@@ -124,10 +136,13 @@ class Options extends Controller
 	 * @param   string  $tpl
 	 *
 	 * @throws  \Exception
+	 *
+	 * @since   1.0.0
 	 */
 	public function wipe($tpl = null)
 	{
 		$this->csrfProtection();
+		$this->assertUserAccess();
 
 		$currentUser = $this->container->platform->getUser();
 		$userID      = $this->input->getInt('user_id', $currentUser->id);
@@ -206,11 +221,47 @@ class Options extends Controller
 		\JFactory::getApplication()->redirect(\JUri::base());
 	}
 
-	protected function onBeforeOptions()
+	/**
+	 * Ensures that the user has adequate access to fulfil the request.
+	 *
+	 * @return   void
+	 *
+	 * @since    1.0.0
+	 *
+	 * @throws   RuntimeException  If access is not allowed
+	 */
+	private function assertUserAccess()
 	{
 		// Make sure there is a logged in user
-		if ($this->container->platform->getUser()->guest)
+		$user = $this->container->platform->getUser();
+
+		if ($user->guest)
 		{
+			throw new \RuntimeException(\JText::_('JERROR_ALERTNOAUTHOR'), 403);
+		}
+
+		// Get the user_id from the URL
+		$user_id = $this->input->getInt('user_id', null);
+
+		// No user ID specified? Good!
+		if (is_null($user_id))
+		{
+			return;
+		}
+
+		// The user ID is ourselves? Good!
+		if ($user_id == $user->id)
+		{
+			return;
+		}
+
+		// Wait. You are asking to access another user. Do you have permission to do so?
+		$canExport = $user->authorise('export', 'com_datacompliance');
+		$canWipe   = $user->authorise('wipe', 'com_datacompliance');
+
+		if (!$canExport && !$canExport)
+		{
+			// Neither privilege is granted. You are trying to do something naughty.
 			throw new \RuntimeException(\JText::_('JERROR_ALERTNOAUTHOR'), 403);
 		}
 	}
