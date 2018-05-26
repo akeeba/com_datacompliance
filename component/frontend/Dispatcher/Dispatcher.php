@@ -29,8 +29,14 @@ class Dispatcher extends \FOF30\Dispatcher\Dispatcher
 	    $lang->load('lib_fof30', JPATH_ADMINISTRATOR, 'en-GB', true, true);
 	    $lang->load('lib_fof30', JPATH_ADMINISTRATOR, null, true, false);
 
+	    // Renderer options (0=none, 1=frontend, 2=backend, 3=both)
+	    $useFEF   = $this->container->params->get('load_fef', 3);
+	    $fefReset = $this->container->params->get('fef_reset', 3);
+
 		// FEF Renderer options. Used to load the common CSS file.
 		$this->container->renderer->setOptions([
+           'load_fef'      => in_array( $useFEF, [ 1, 3 ] ),
+           'fef_reset'     => in_array( $fefReset, [ 1, 3 ] )
 			//'custom_css' => 'admin://components/com_datacompliance/media/css/frontend.min.css'
 		]);
 
