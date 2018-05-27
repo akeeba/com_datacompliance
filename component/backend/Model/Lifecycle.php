@@ -39,9 +39,7 @@ class Lifecycle extends JoomlaUsers
 			$lifecycleUserIDs = $this->getLifecycleUserIDs($when);
 			$db               = $this->container->db;
 
-			if ($lifecycleUserIDs) {
 				$query->where( $db->qn( 'id' ) . ' IN (' . implode( ',', $lifecycleUserIDs ) . ')' );
-			}
 		}
 
 	}
