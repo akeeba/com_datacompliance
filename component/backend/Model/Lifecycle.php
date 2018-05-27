@@ -67,5 +67,4 @@ class Lifecycle extends JoomlaUsers
 
 		return self::$lifeCycleUserIDs;
 	}
-
 }
