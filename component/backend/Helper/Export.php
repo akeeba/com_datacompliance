@@ -29,7 +29,8 @@ abstract class Export
 	 */
 	public static function adoptChild(SimpleXMLElement &$root, SimpleXMLElement $child)
 	{
-		$node = $root->addChild($child->getName(), (string) $child);
+		$root->{$child->getName()} = (string) $child;
+		$node = $root->{$child->getName()};
 
 		foreach ($child->attributes() as $attr => $value)
 		{
