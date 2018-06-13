@@ -295,7 +295,7 @@ class Wipe extends Model
 		$o = (object)[
 			'user_id' => $userId,
 			'profile_key' => 'datacompliance.notified_for',
-			'profile_value' => $this->container->platform->getDate()->toSql()
+			'profile_value' => $this->container->platform->getDate($when->getTimestamp())->toSql()
 		];
 		$db->insertObject('#__user_profiles', $o);
 
@@ -359,7 +359,7 @@ class Wipe extends Model
 			return true;
 		}
 
-		$notifiedFor = new DateTime($fields['datacompliance.notified_for']);
+		$notifiedFor = new DateTime($fields['datacompliance.notified_for']->profile_value);
 
 		/**
 		 * If the user was told their account will be deleted after the current deletion date ($when) consider them
