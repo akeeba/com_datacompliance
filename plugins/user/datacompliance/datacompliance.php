@@ -319,6 +319,14 @@ class PlgUserDatacompliance extends JPlugin
 			];
 		}
 
+		if (isset($newUser['password_clear']))
+		{
+			$changes['password_clear'] = [
+				'from' => '(plaintext passwords are not logged for security reasons)',
+				'to'   => '(plaintext passwords are not logged for security reasons)',
+			];
+		}
+
 		// Two factor authentication
 		if (
 			(isset($oldUser['otpKey']) && isset($newUser['otpKey']) && ($oldUser['otpKey'] != $newUser['otpKey'])) ||
