@@ -1,0 +1,1410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:m="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <info>
+    <title>Akeeba Data Compliance</title>
+
+    <authorgroup>
+      <author>
+        <personname><firstname>Nicholas</firstname><othername>K.</othername><surname>Dionysopoulos</surname></personname>
+      </author>
+    </authorgroup>
+
+    <copyright>
+      <year>2018</year>
+
+      <holder>Akeeba Ltd</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>Permission is granted to copy, distribute and/or modify this
+      document under the terms of the GNU Free Documentation License, Version
+      1.3 or any later version published by the Free Software Foundation; with
+      no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+      copy of the license is included in the appendix entitled "The GNU Free
+      Documentation License".</para>
+    </legalnotice>
+  </info>
+
+  <part xml:id="part1-users-guide">
+    <title>User's Guide</title>
+
+    <chapter xml:id="introduction">
+      <title>Introduction</title>
+
+      <section>
+        <title>Introducing Akeeba Data Compliance</title>
+
+        <para><application>Akeeba Data Compliance</application> is a simple to
+        use solution for compliance with the European Union's General Data
+        Protection Regulation (GDPR) which came into effect May 25th, 2018. It
+        allows you to easily handle users giving or revoking their consent to
+        data processing, as well as provide a self-service approach to data
+        export and user profile deletion. Further to that it can help you with
+        the data minimization requirements of GDPR by deleting inactive user
+        profiles automatically, after users are suitably notified.</para>
+      </section>
+
+      <section xml:id="requirements">
+        <title>Server environment requirements</title>
+
+        <para>In order to work, <application>Akeeba Data Compliance
+        </application>requires the following server software
+        environment:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><trademark>Joomla!</trademark> and PHP version
+            compatibilities are detailed in <link
+            xlink:href="https://www.akeebabackup.com/compatibility.html">our
+            Compatibility page</link>. At the time of this writing the minimum
+            requirements are PHP 7.1 or later and Joomla! 3.8 or later.</para>
+          </listitem>
+
+          <listitem>
+            <para><productname>MySQL</productname> 5.6 or later. Akeeba
+            DataCompliance does not support PostgreSQL and Microsoft SQL
+            Server / Azure SQL Server databases.</para>
+          </listitem>
+
+          <listitem>
+            <para>32MB of PHP memory_limit. At least 128MB recommended for
+            best performance.</para>
+          </listitem>
+
+          <listitem>
+            <para>Ability to run <emphasis role="bold">command line</emphasis>
+            CRON jobs. If your host only allows you to call a URL you will not
+            be able to use the data minimization features.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>As far as the browser is concerned, you can use any modern
+        version (i.e. published within the last year) of Microsoft Edge,
+        Safari, Opera, Firefox or Google Chrome. We no longer support Internet
+        Explorer; our software will display incorrectly or not work at all on
+        this old, buggy and obsolete browser.</para>
+
+        <para>In any case, you must make sure that Javascript is enabled on
+        your browser for the backup to work. If you are using AVG antivirus,
+        please disable its Link Checker feature (and reboot your computer) as
+        it is known to cause problems.</para>
+
+        <para>You are very strongly advised to disable Internet firewalls,
+        antivirus applications and browser extensions which interfere with the
+        site's loading such as script blockers (such as NoScript) and ad
+        blockers (such as AdBlockPlus) <emphasis>only for the domains you are
+        using the software on</emphasis>. Remember that these applications and
+        browser extensions are designed to protect you against third party
+        sites. As a result they are very aggressive and WILL break your own
+        sites. We can't do anything about it: your computer and your browser
+        are under your control alone.</para>
+      </section>
+
+      <section xml:id="technology-overview">
+        <title>Technology overview</title>
+
+        <para><application>Akeeba DataCompliance </application>is more than
+        just a component. In fact, its component is only used to render the
+        interface and handle some common work. Most of the features are
+        implemented as plugins to ensure extensibility, even by third
+        parties.</para>
+
+        <para>The System - Data Compliance plugin is used to implement the
+        captive login page which requires your clients to give their consent
+        to data processing before continuing to use your site.</para>
+
+        <para>The User - Data Compliance plugin is used to add links to Data
+        Compliance in user profiles and handle other aspects of data
+        processing consent.</para>
+
+        <para>There are a number of plugins of the <code>datacompliance</code>
+        type. These are the integrations with personal information data
+        sources, i.e. Joomla itself and third party components. Each of these
+        plugins informs Data Compliance of the personal information kept for
+        each user, lets it delete this information, informs Data Compliance
+        whether a user profile can be deleted and provides information about
+        which profiles are to be considered expired. Data Compliance ships
+        with a number of plugins for core Joomla! and Akeeba extensions. The
+        API is open and any third party developer can create their own plugins
+        for their software.</para>
+      </section>
+    </chapter>
+
+    <chapter xml:id="installation-updates-upgrades">
+      <title>Installation, updates and upgrades</title>
+
+      <section xml:id="installing">
+        <title>Installing Akeeba Data Compliance</title>
+
+        <para>Installing <application>Akeeba Data Compliance</application> is
+        no different than installing any other <trademark>Joomla!</trademark>
+        extension on your site. You can read the complete instructions for
+        installing <trademark>Joomla!</trademark> extensions on the <link
+        xlink:href="https://docs.joomla.org/Installing_an_extension">official
+        help page</link>. Throughout this chapter we assume that you are
+        familiar with these instructions and we will try not to duplicate
+        them.</para>
+
+        <section>
+          <title>Installing or manually updating the extension</title>
+
+          <para>Just like with most Joomla! extensions there are two ways to
+          install or manually update Akeeba Data Compliance on your
+          site:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Install from URL. It is the easiest and fastest one, if
+              your server supports it. Most servers do support this
+              method.</para>
+            </listitem>
+
+            <listitem>
+              <para>Upload and install. That's the typical extension
+              installation method for Joomla! extensions. It rarely
+              fails.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Please note that installing and updating Akeeba Data
+          Compliance (and almost all Joomla! extensions) is actually the same
+          thing. If you want to update Akeeba Data Compliance please remember
+          that you <emphasis role="bold">MUST NOT</emphasis> uninstall it
+          before installing the new version! When you uninstall Akeeba Data
+          Compliance you will lose all your settings. This is definitely
+          something you do not want to happen! Instead, simply install the new
+          version on top of the old one. Joomla! will figure out that you are
+          doing an update and will treat it as such, automatically.</para>
+
+          <tip>
+            <para>If you find that after installing or updating Akeeba Data
+            Compliance it is missing some features or doesn't work, please try
+            installing the same version a second time, without uninstalling
+            the component. The reason is that very few times the Joomla!
+            extensions installer infrastructure gets confused and fails to
+            copy some files or entire folders. By repeating the installation
+            you force it to copy the missing files and folders, solving the
+            problem.</para>
+          </tip>
+
+          <section xml:id="installing-from-url">
+            <title>Install from URL</title>
+
+            <para>The easiest way to install Akeeba Data Compliance is using
+            the Install from URL feature in Joomla!.</para>
+
+            <important>
+              <para>This Joomla! feature requires that your server supports
+              fopen() URL wrappers (<option>allow_url_fopen</option> is set to
+              1 in your server's <filename>php.ini</filename> file) or has the
+              PHP cURL extension enabled. Moreover, if your server has a
+              firewall, it has to allow TCP connections over ports 80 and 443
+              to GitHub's servers where the file is stored. If you don't see
+              any updates or if they fail to download please ask your host to
+              check that these conditions are met. If they are met but you
+              still do not see the updates please file a bug report in the
+              <link xlink:href="http://forum.joomla.org/">official Joomla!
+              forum</link>.</para>
+            </important>
+
+            <para>First, go to <link
+            xlink:href="http://github.com/akeeba/com_datacompliance/releases">the
+            download page for Akeeba Data Compliance</link>. Find the latest
+            version (at the top of the page). Right click the ZIP file and
+            copy the URL.</para>
+
+            <para>Now go to your site's administator page and click on
+            <guimenu>Extensions</guimenu>,<guimenuitem> Manage</guimenuitem>.
+            Click on the <guilabel>Install from URL</guilabel> tab. Clear the
+            contents of the <guilabel>Install URL</guilabel> field and paste
+            the URL you copied from our site's download page. Then click on
+            the <guibutton>Install</guibutton> button. Joomla! will download
+            and install the Akeeba Data Compliance update.</para>
+
+            <para>If Joomla! cannot download the package, please use one of
+            the methods described in this section of the documentation. If,
+            however you get an error about copying files, folder not found or
+            a cryptic "-1" error please follow <link
+            xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+            installation troubleshooting instructions</link>.</para>
+          </section>
+
+          <section xml:id="installing-upload">
+            <title>Upload and install.</title>
+
+            <para>You can download the latest installation packages from <link
+            xlink:href="http://github.com/akeeba/com_datacompliance/releases">the
+            download page for Akeeba Data Compliance</link>. Please note that
+            the latest version is always on top. Click on the ZIP file version
+            you want to download and install.</para>
+
+            <para>All Akeeba Data Compliance installation packages contain the
+            component and all of its associated extensions. Installing it will
+            install all of these items automatically. It can also be used to
+            upgrade Akeeba Data Compliance; just install it
+            <emphasis>without</emphasis> uninstalling the previous
+            release.</para>
+
+            <para>In any case, do not extract the ZIP files yet!</para>
+
+            <warning>
+              <para><emphasis role="bold">Attention Mac OS X users</emphasis>!
+              Safari, the default web server provided to you by Apple, is
+              automatically extracting the ZIP file into a directory and
+              removes the ZIP file. In order to install the extension through
+              Joomla!'s extensions installer you must select that directory,
+              right-click on it and select Compress to get a ZIP file of its
+              contents. This behaviour was changed in Mac OS X Mountain Lion,
+              but people upgrading from older versions of Mac OS X (Mac OS X
+              Lion and earlier) will witness the old, automatic ZIP
+              extraction, behaviour.</para>
+            </warning>
+
+            <para>Log in to your site's administrator section. Click on
+            <guimenu>Extensions</guimenu>, <guimenuitem>Manage</guimenuitem>
+            link on the top menu. Please click on the <guilabel>Upload Package
+            File</guilabel> tab. Drag and drop the installation ZIP file you
+            had previously downloaded to start the upload and the
+            installation. After a short while, <trademark>Joomla!</trademark>
+            will tell you that the component has been installed.</para>
+
+            <warning>
+              <para>Akeeba Data Compliance is a big extension. Some servers do
+              not allow you to upload files that big. If this is the case you
+              can ask your host to follow <link
+              xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+              installation troubleshooting instructions</link> under "You get
+              an error about the package not being uploaded to the
+              server".</para>
+
+              <para>If you have WAMPServer (or any other prepackaged local
+              server), please note that its default configuration does not
+              allow files over 2Mb to be uploaded. To work around that you
+              will need to modify your php.ini and restart the server. On
+              WAMPserver left-click on the WAMP icon (the green W), click on
+              <guimenu>PHP</guimenu>, <guimenuitem>php.ini</guimenuitem>. Find
+              the line beginning with <code>upload_max_filesize</code>. Change
+              it so that it reads:</para>
+
+              <programlisting>upload_max_filesize = 6M</programlisting>
+
+              <para>Save this file. Now, left-click on the WAMP icon, click on
+              <guimenu>Apache</guimenu>, <guisubmenu>Service</guisubmenu>,
+              <guimenuitem>Restart Service</guimenuitem> and you can now
+              install the component. Editing the <filename>php.ini</filename>
+              file should also work on all other servers, local and live
+              alike.</para>
+            </warning>
+
+            <para>If the installation did not work, please take a look at
+            <link
+            xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+            installation troubleshooting instructions</link>.</para>
+          </section>
+        </section>
+      </section>
+
+      <section xml:id="update">
+        <title>Automatic updates</title>
+
+        <para>Akeeba Data Compliance can be updated just like any other
+        Joomla! extension, using the Joomla! extensions update feature. Please
+        note that Joomla! is fully responsible for discovering available
+        updates and installing them on your site. Akeeba Ltd does not have any
+        control of the update process.</para>
+
+        <note>
+          <para>This Joomla! feature requires that your server supports
+          fopen() URL wrappers (<option>allow_url_fopen</option> is set to 1
+          in your server's <filename>php.ini</filename> file) or has the PHP
+          cURL extension enabled. Moreover, if your server has a firewall, it
+          has to allow TCP connections over ports 80 and 443 to GitHub's
+          servers. If you don't see any updates or if they fail to download
+          please ask your host to check that these conditions are met. If they
+          are met but you still do not see the updates please file a bug
+          report in the <link xlink:href="http://forum.joomla.org/">official
+          Joomla! forum</link>. In the meantime you can use the manual update
+          methods discussed further below this page.</para>
+        </note>
+
+        <para>You can access the extensions update feature in two different
+        ways:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>From the icon your Joomla! administrator control panel page.
+            You will find the icon in the left-hand sidebar, under the
+            <guilabel>Maintenance</guilabel> header. When there are updates
+            found for any of your extensions you will see the
+            <guilabel>Updates are available</guilabel> message. Clicking on it
+            will get you to the Update page of Joomla! Extensions
+            Manager.</para>
+          </listitem>
+
+          <listitem>
+            <para>From the top menu of your Joomla! administrator click on
+            <guimenu>Extensions</guimenu>, <guimenuitem>Manager</guimenuitem>.
+            From that page click on the <guilabel>Update</guilabel> tab found
+            in the left-hand sidebar. Clicking on it will get you to the
+            Update page of Joomla! Extensions Manager.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>If you do not see the updates try clicking on the
+        <guibutton>Find Updates</guibutton> button in the toolbar. If you do
+        not see the updates still you may want to wait up to 24 hours before
+        retrying. This has to do with the way Joomla! caches the update
+        information.</para>
+
+        <para>If there is an update available for Akeeba Data Compliance tick
+        the box to the left of its row and then click on the
+        <guibutton>Update</guibutton> button in the toolbar. Joomla! will now
+        download and install the update.</para>
+
+        <para>If Joomla! cannot download the package, please use one of the
+        manual update methods described below. If, however you get an error
+        about copying files, folder not found or a cryptic "-1" error please
+        follow <link
+        xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+        installation troubleshooting instructions</link>.</para>
+
+        <para>If you get a white page while installing the update please try
+        either the Built-in method (described above) or the manual update
+        method (described below).</para>
+
+        <bridgehead>Updating manually</bridgehead>
+
+        <para>As noted in the <link linkend="installing">installation
+        section</link>, installing and updating Akeeba Data Compliance is
+        actually the same thing. If the automatic update using Joomla!'s
+        extensions update feature does not work, please install the update
+        manually following the instructions in the <link
+        linkend="installing">installation section of this
+        documentation</link>.</para>
+
+        <important>
+          <para>When installing an update manually you MUST NOT uninstall your
+          existing version of Akeeba Data Compliance.</para>
+        </important>
+
+        <para>Sometimes Joomla! may forget to copy some files when updating
+        extensions. If you find Akeeba Data Compliance suddenly not working or
+        if you get a warning that your installation is corrupt you need to
+        download the latest version's ZIP file and install it
+        <emphasis>twice</emphasis> on your site, <emphasis>without</emphasis>
+        uninstalling it before or in-between these installations. This will
+        most certainly fix this issue.</para>
+
+        <para>If the error occurs again after a while, without you updating
+        our software, please contact your host. Some hosts will delete or
+        rename files automatically and without any confirmation as part of a
+        (broken and unfit for purpose) "malware scanner / antivirus".
+        Unfortunately, these scanners return a lot of false positives
+        -innocent files mistakenly marked as malicious- but rename / delete
+        them nonetheless, breaking software installed on the server. If you
+        are on such a host we very strongly recommend that you move to a
+        decent host, run by people who actually know what they are doing. It
+        will be far less headache for you and would actually improve your
+        site's security.</para>
+      </section>
+    </chapter>
+
+    <chapter xml:id="using">
+      <title>Using Akeeba Data Compliance</title>
+
+      <para>In this chapter you are going to find detailed reference of all
+      the pages, options and features of the <application>Akeeba Data
+      Compliance </application>component. </para>
+
+      <section xml:id="initial-setup">
+        <title>Initial setup</title>
+
+        <para>After installing Akeeba Data Compliance there are a few things
+        you need to do to get up to speed. In this section we are going to set
+        up the minimum required features for the component to make
+        sense.</para>
+
+        <tip>
+          <para>We strongly recommend trying Data Compliance on a copy of your
+          site first. If you do not know how to make a copy of your site we
+          suggest that you take a look at our <link
+          xlink:href="https://www.akeebabackup.com/products/akeeba-backup.html">Akeeba
+          Backup</link> software. The free of charge Akeeba Backup Core
+          version can be easily used to create copies of your site, e.g.
+          running them on a local server such as MAMP, XAMPP or
+          WAMPserver.</para>
+        </tip>
+
+        <para>Before you take any further steps, you need to have a Privacy
+        Statement saved as a Joomla! article. Per the GDPR it has to be
+        written in plain and simple language, just like the rest of your site.
+        If you are not sure what to write in there you can search for "GDPR
+        privacy statement template" in your favourite search engine. Here's
+        <link
+        xlink:href="https://www.itgovernance.co.uk/blog/how-to-write-a-gdpr-privacy-notice-with-documentation-template-example/">an
+        example</link>. Or you could even take a look at what other companies
+        have. For example. here is <link
+        xlink:href="https://www.akeebabackup.com/privacy">our Privacy
+        Statement</link>. It's best to publish the article in the
+        Uncategorized section of your site.</para>
+
+        <para>After doing that go to <guimenu>Components</guimenu>,
+        <guimenuitem>Akeeba Data Compliance</guimenuitem> and click on the
+        <guibutton>Options</guibutton> button. Find the <guilabel>Policy
+        article</guilabel> option and click <guibutton>Select</guibutton>.
+        Choose the article you have just created. Finally, click on
+        <guibutton>Save &amp; Close</guibutton> button in the toolbar.</para>
+
+        <para>Now go to Extensions, Plugins and publish the following plugins
+        <emphasis>in this order</emphasis>:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Data Compliance - Joomla! Core User Data</para>
+          </listitem>
+
+          <listitem>
+            <para>User - Data Compliance</para>
+          </listitem>
+
+          <listitem>
+            <para>System - Data Compliance</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>After publishing the last plugin you will immediately see a page
+        asking you to consent to processing of your personal data and / or
+        exercise your data rights. This is Data Compliance's <link
+        linkend="self-service">self-service page</link>. This is the same page
+        your site's users will see the first time they log into your site.
+        </para>
+
+        <para>You need to select <guilabel>Yes</guilabel> and click on
+        <guibutton>Apply my preference</guibutton> to continue using your
+        site. You are taken back to the Plugins page.</para>
+
+        <para>This is really all you need to do if the only personal
+        information you are collecting is through Joomla! itself. </para>
+
+        <para>If you are collecting information through other components you
+        will need to <link linkend="data-sources">activate and configure the
+        relevant plugin of the <code>datacompliance</code> type</link>. Please
+        note that Data Compliance only ships with a small number of plugins.
+        You can always ask the developer of the third party extension you are
+        using (e.g. VirtueMart, HikaShop, AcyMailing etc) to make Data
+        Compliance plugins using our <link
+        xlink:href="create-data-source-plugins">open, documented
+        API</link>.</para>
+
+        <para>While optional, we recommend that you <link
+        linkend="email-templates">set up the email templates</link>. These are
+        used to send out emails to your users. The default template is
+        intentionally very generic.</para>
+
+        <para>The next logical step is to <link
+        linkend="component-config">configure the component</link> to choose
+        who can see sensitive personal information in Data Compliance.</para>
+
+        <para>Finally, you may want to set up CRON jobs for <link
+        linkend="data-minimization">automating data minimization</link>
+        (deletion of expired data profiles).</para>
+      </section>
+
+      <section xml:id="managing-pii">
+        <title>Managing personal information</title>
+
+        <para>The whole point of Data Compliance is to allow users to manage
+        their Personally Identifiable Information (PII) they have stored with
+        you. This means that they can:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>give or withdraw their explicit consent to your processing
+            of their PII;</para>
+          </listitem>
+
+          <listitem>
+            <para>export the PII you have on file for them;</para>
+          </listitem>
+
+          <listitem>
+            <para>request that you remove or anonymize their PII profile (user
+            profile) from your site.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>This allows your site to meet the GDPR requirements without
+        taxing the site's administrators with the laborious tasks associated
+        with users exercising their data rights.</para>
+
+        <bridgehead renderas="sect2">Frequently asked questions</bridgehead>
+
+        <para>Please read these questions before filing GitHub issues or
+        feature requests. There's a reason why we have implemented certain
+        things in a certain way.</para>
+
+        <bridgehead>Can I change the default PII processing preference to be
+        "consent has been given"?</bridgehead>
+
+        <para>No. This is illegal. The GPDR requires you to obtain explicit
+        consent and also record the date, time and IP address of the user
+        giving or revoking their explicit consent. Implied consent is no
+        longer admissible.</para>
+
+        <bridgehead>Can I change the default option of the slider to Yes
+        instead of No?</bridgehead>
+
+        <para>No. The GPDR requires the users to take explicit action to
+        provide their consent. According to most analysts this means that the
+        default state of a slider / radio selection must be No and the default
+        state of a checkbox must be unchecked.</para>
+
+        <bridgehead>Can I limit the consent only to people coming from the EU
+        (GeoIP detection)?</bridgehead>
+
+        <para>No. The GDPR applies to natural persons based on their
+        <emphasis>nationality</emphasis>, not their current location. For
+        example, a German citizen currently in the United States of America
+        enjoys the same protection under the GDPR as a German citizen
+        currently in Berlin. This makes using GeoIP detection to determine the
+        nationality of an individual legally unsound.</para>
+
+        <para>Things are even more interesting with individuals having dual
+        (or multiple) citizenship. A person who's both a US citizen and a
+        Czech citizen enjoys the protections of the GDPR regardless of whether
+        they have ever set foot in the Czech Republic because they are EU
+        citizens (the Czech Republic is in the EU).</para>
+
+        <bridgehead>Can an administrator change the PII processing consent of
+        a user?</bridgehead>
+
+        <para>No. This is illegal. The GDPR requires you to obtain explicit
+        consent and also record the date, time and IP address of the user
+        giving or revoking their explicit consent. As a result you cannot give
+        consent on behalf of a user.</para>
+
+        <para>While in theory you could be given written permissions or
+        otherwise indisputable evidence of being given the power to change the
+        user's consent setting we consider it beyond the scope of Data
+        Compliance. These are very rare cases and they hardly make sense for a
+        web site. Data Compliance is meant to be used by online-only
+        businesses.</para>
+
+        <bridgehead>Can an administrator export the PII of a user or delete
+        their profile?</bridgehead>
+
+        <para>Yes, they can. Their actions are also stored in the audit trail.
+        The rationale behind this decision is that a user may have lost access
+        to their email address and no longer remember their username or
+        password. They can, however, contact you and provide evidence of their
+        identity (e.g. a government issued photo ID) along with their request
+        that you exercise their data rights on their behalf. In this case you
+        are allowed to export the PII or delete the user profile of a user per
+        their request.</para>
+
+        <para>After reading both this and the previous question you might
+        wonder why this rationale doesn't apply to the processing consent.
+        Instead of applying their consent preference on their behalf you can
+        simply change their email address, username and / or password so they
+        can log back into your site and apply their consent preference. This
+        means that you are legally covered: you only changed the user's data
+        on their behalf, something which is also stored in the audit log, and
+        they get to apply their processing preference -after logging in- per
+        the GDPR requirements.</para>
+
+        <bridgehead>Can you create a plugin for a third party extension? It
+        shouldn't be too hard...</bridgehead>
+
+        <para>No. We do not have the necessary time to analyze how a third
+        party extensions works, figure out what PII it stores and how. Then we
+        would have to create and test the plugin. And then we would have to
+        maintain it forever, even when the third party extension changes
+        substantially. This is a cost of several thousand Euros per year. It's
+        not easy and it's not a cost we can afford for an extensions that
+        makes us no money. Selling integrations would require putting a price
+        of several hundred Euros per year on each to break even, a price
+        everyone would complain about and few would pay.</para>
+
+        <para>We made this mistake with Akeeba Subscriptions and its payment
+        plugins. We would create new plugins for just the initial cost of
+        development. However, the maintenance cost started racking up. We
+        ultimately had to discontinue Akeeba Subscriptions as a paid product
+        and remove most of the payment plugins since we could no longer afford
+        maintaining them. Instead of going through the same agony all over
+        again we prefer to be honest and tell you upfront that we can't do
+        that. No, we cannot make an exception for you. No, really, even if you
+        pay us.</para>
+
+        <section xml:id="captive-login">
+          <title>Captive login (consent page) in the front-end</title>
+
+          <important>
+            <para>This feature requires that the System and User plugins of
+            Data Compliance are published on your site and their access level
+            is set to Public.</para>
+          </important>
+
+          <para>Akeeba Data Compliance allows users to give or withdraw their
+          explicit consent to your processing of their Personally Identifiable
+          Information. Per the GDPR, the default state is that no consent is
+          given.</para>
+
+          <para>When the user has not provided their consent for their PII to
+          be processed by you they cannot use the logged in section of the
+          site. The reasoning is that being logged in inherently means that
+          they have a cookie in their browser (Joomla's session cookie) which
+          identifies them as a specific person. Therefore any action they take
+          on the site can be attributed to them, the individual, which
+          requires processing of their PII. The only action allowed in these
+          circumstances is for them to exercise their data rights. That's why
+          Data Compliance implements a “captive login” in this case.</para>
+
+          <para>Explicitly: the “captive login” kicks in when the user has not
+          yet consented to you processing their PII <emphasis>or</emphasis> if
+          they have explicitly withdrawn their consent.</para>
+
+          <para>The captive login takes the user to <link
+          linkend="self-service">the Self-Service page</link> where they can
+          exercise their data rights (review their consent, export their PII
+          or delete their user profile). They will not be able to visit any
+          other page unless they either log out first or consent to processing
+          their PII.</para>
+        </section>
+
+        <section xml:id="self-service">
+          <title>Self-service page</title>
+
+          <para>The self-service page is where the users can manage their
+          consent to your processing their Personally Identifiable Information
+          (PII), export their PII in a machine readable format or remove their
+          user profile.</para>
+
+          <para><bridgehead>How to get there?</bridgehead></para>
+
+          <para>There are several ways to get to that page.</para>
+
+          <para>If you have enabled Data Compliance's User plugin, you can
+          edit your Joomla! user profile using the built-in Joomla! Users
+          component. Please note that this method does not work with third
+          party extensions which implement their own user profile, such as
+          Community Builder. When a user is editing their profile they will
+          see a <guilabel>Manage your personal data options</guilabel> link.
+          Clicking on it leads you to the self-service page. This also applies
+          in the backend of the site.</para>
+
+          <para>If you are a Super User you can click edit any user's profile
+          and you will see the same link. This will take you to the same page
+          with a slightly different interface: it will tell you which user's
+          personal data preferences you are managing and you won't be able to
+          change their consent settings (because it's disallowed by the
+          GDPR).</para>
+
+          <para>Finally, you can create a Joomla frontend menu link to that
+          page from Joomla's menu manager. It is recommended that you put this
+          on your site's footer or the site's user menu (if applicable) to let
+          users find their personal data options page more easily, fulfilling
+          the GDPR requirement for easy access to the options to exercise your
+          data rights.</para>
+
+          <bridgehead>Managing the consent</bridgehead>
+
+          <para>The top half of the self-service page allows you to manage
+          your consent for processing the personal data. You can see the
+          current setting for the consent preference and the controls to
+          change it. Please note that the default option in the controls is
+          always set to No, per the GDPR requirement for explicit action to
+          provide consent. If you want to give your consent set it to
+          <guilabel>Yes</guilabel>, then click on <guibutton>Apply My
+          Preference</guibutton>. Conversely, if you want to revoke your
+          consent set this to <guilabel>No</guilabel> and then click on
+          <guibutton>Apply My Preference</guibutton>.</para>
+
+          <para>Above the controls there is a link which reads <guilabel>Click
+          here to read the Privacy Statement</guilabel>. Clicking on it opens
+          a slider with the Privacy Statement article, as selected in the
+          component's Options page.</para>
+
+          <para>Below the controls there is the <guilabel>Learn more about
+          your data rights here</guilabel> link. This opens a new browser tab
+          or window to the European Union portal for Data protection. This
+          link cannot be removed as you are required by GDPR to provide a link
+          to this or a similar resource to your users.</para>
+
+          <bridgehead>Exporting the PII</bridgehead>
+
+          <para/>
+
+          <bridgehead>Deleting the user profile</bridgehead>
+
+          <para/>
+        </section>
+
+        <section xml:id="backend-pii-management">
+          <title>Managing users' personal information from the backend</title>
+
+          <para/>
+        </section>
+      </section>
+
+      <section xml:id="control-panel">
+        <title>Overview / Control Panel page</title>
+
+        <para/>
+      </section>
+
+      <section xml:id="email-templates">
+        <title>Setting up the email templates</title>
+
+        <para/>
+      </section>
+
+      <section xml:id="audit-trails">
+        <title>Managing audit trails</title>
+
+        <para/>
+
+        <section xml:id="user-consents">
+          <title>User Consents</title>
+
+          <para/>
+        </section>
+
+        <section xml:id="profile-changes">
+          <title>Profile Changes</title>
+
+          <para/>
+        </section>
+
+        <section xml:id="data-exports">
+          <title>Data Exports</title>
+
+          <para/>
+        </section>
+
+        <section xml:id="profile-deletions">
+          <title>Profile Deletions</title>
+
+          <para/>
+        </section>
+      </section>
+
+      <section xml:id="data-actions">
+        <title>Managing data actions</title>
+
+        <para/>
+
+        <section xml:id="expired-profiles">
+          <title>Expired user profiles</title>
+
+          <para/>
+        </section>
+      </section>
+
+      <section xml:id="data-minimization">
+        <title>Automating data minimization actions</title>
+
+        <para/>
+
+        <section xml:id="cron-notify">
+          <title>Notify users before their profile is automatically
+          deleted</title>
+
+          <para/>
+        </section>
+
+        <section xml:id="cron-delete-expired">
+          <title>Automatically delete expired user profiles</title>
+
+          <para/>
+        </section>
+      </section>
+
+      <section xml:id="configuration">
+        <title>Configuration</title>
+
+        <para/>
+
+        <section xml:id="component-config">
+          <title>Component configuration</title>
+
+          <para/>
+        </section>
+
+        <section xml:id="system-config">
+          <title>System plugin configuration</title>
+
+          <para/>
+        </section>
+
+        <section xml:id="data-sources">
+          <title>Data sources configuration (<code>datacompliance</code>
+          plugins)</title>
+
+          <para/>
+
+          <section xml:id="source-joomla">
+            <title>Joomla! Core User Data</title>
+
+            <para/>
+          </section>
+
+          <section xml:id="source-akeebasubs">
+            <title>Akeeba Subscriptions</title>
+
+            <para/>
+          </section>
+
+          <section xml:id="source-ars">
+            <title>Akeeba Release System</title>
+
+            <para/>
+          </section>
+
+          <section xml:id="source-ats">
+            <title>Akeeba Ticket System</title>
+
+            <para/>
+          </section>
+
+          <section xml:id="source-loginguard">
+            <title>Akeeba LoginGuard</title>
+
+            <para/>
+          </section>
+        </section>
+
+        <section xml:id="other-plugins">
+          <title>Other plugins</title>
+
+          <para/>
+
+          <section xml:id="user-plugin">
+            <title>The User plugin</title>
+
+            <para/>
+          </section>
+
+          <section xml:id="plugin-email">
+            <title>Send emails on account deletion</title>
+
+            <para/>
+          </section>
+
+          <section xml:id="plugin-s3">
+            <title>Upload user deletion audit trail to Amazon S3</title>
+
+            <para/>
+          </section>
+        </section>
+      </section>
+
+      <section xml:id="cli-tools">
+        <title>Other CLI tools</title>
+
+        <para/>
+
+        <section xml:id="delete-user-cli">
+          <title>Delete a user from the CLI</title>
+
+          <para/>
+        </section>
+      </section>
+    </chapter>
+
+    <chapter xml:id="dev-reference">
+      <title>Developer's reference</title>
+
+      <section xml:id="translating">
+        <title>Translating</title>
+
+        <para/>
+      </section>
+
+      <section xml:id="templating">
+        <title>Interface customization / templating</title>
+
+        <para/>
+      </section>
+
+      <section xml:id="create-data-source-plugins">
+        <title>Creating data source plugins</title>
+
+        <para/>
+      </section>
+
+      <section xml:id="create-misc-plugins">
+        <title>Creating other integration plugins</title>
+
+        <para/>
+      </section>
+    </chapter>
+  </part>
+
+  <part xml:id="appendices">
+    <title>Appendices</title>
+
+    <appendix version="5.0" xml:id="gnu-fdl">
+      <title>GNU Free Documentation License</title>
+
+      <para>Copyright (C) 2000, 2001, 2002 Free Software Foundation,
+      <abbrev>Inc.</abbrev> 51 Franklin <abbrev>St</abbrev> , Fifth Floor,
+      Boston, <abbrev>MA</abbrev> 02110-1301 <abbrev
+      role="initialism">USA</abbrev> . Everyone is permitted to copy and
+      distribute verbatim copies of this license document, but changing it is
+      not allowed.</para>
+
+      <bridgehead renderas="sect1">0. PREAMBLE</bridgehead>
+
+      <para>The purpose of this License is to make a manual, textbook, or
+      other functional and useful document "free" in the sense of freedom: to
+      assure everyone the effective freedom to copy and redistribute it, with
+      or without modifying it, either commercially or noncommercially.
+      Secondarily, this License preserves for the author and publisher a way
+      to get credit for their work, while not being considered responsible for
+      modifications made by others.</para>
+
+      <para>This License is a kind of "copyleft", which means that derivative
+      works of the document must themselves be free in the same sense. It
+      complements the GNU General Public License, which is a copyleft license
+      designed for free software.</para>
+
+      <para>We have designed this License in order to use it for manuals for
+      free software, because free software needs free documentation: a free
+      program should come with manuals providing the same freedoms that the
+      software does. But this License is not limited to software manuals; it
+      can be used for any textual work, regardless of subject matter or
+      whether it is published as a printed book. We recommend this License
+      principally for works whose purpose is instruction or reference.</para>
+
+      <bridgehead renderas="sect1">1. APPLICABILITY AND
+      DEFINITIONS</bridgehead>
+
+      <para>This License applies to any manual or other work, in any medium,
+      that contains a notice placed by the copyright holder saying it can be
+      distributed under the terms of this License. Such a notice grants a
+      world-wide, royalty-free license, unlimited in duration, to use that
+      work under the conditions stated herein. The "Document", below, refers
+      to any such manual or work. Any member of the public is a licensee, and
+      is addressed as "you". You accept the license if you copy, modify or
+      distribute the work in a way requiring permission under copyright
+      law.</para>
+
+      <para>A "Modified Version" of the Document means any work containing the
+      Document or a portion of it, either copied verbatim, or with
+      modifications and/or translated into another language.</para>
+
+      <para>A "Secondary Section" is a named appendix or a front-matter
+      section of the Document that deals exclusively with the relationship of
+      the publishers or authors of the Document to the Document's overall
+      subject (or to related matters) and contains nothing that could fall
+      directly within that overall subject. (Thus, if the Document is in part
+      a textbook of mathematics, a Secondary Section may not explain any
+      mathematics.) The relationship could be a matter of historical
+      connection with the subject or with related matters, or of legal,
+      commercial, philosophical, ethical or political position regarding
+      them.</para>
+
+      <para>The "Invariant Sections" are certain Secondary Sections whose
+      titles are designated, as being those of Invariant Sections, in the
+      notice that says that the Document is released under this License. If a
+      section does not fit the above definition of Secondary then it is not
+      allowed to be designated as Invariant. The Document may contain zero
+      Invariant Sections. If the Document does not identify any Invariant
+      Sections then there are none.</para>
+
+      <para>The "Cover Texts" are certain short passages of text that are
+      listed, as Front-Cover Texts or Back-Cover Texts, in the notice that
+      says that the Document is released under this License. A Front-Cover
+      Text may be at most 5 words, and a Back-Cover Text may be at most 25
+      words.</para>
+
+      <para>A "Transparent" copy of the Document means a machine-readable
+      copy, represented in a format whose specification is available to the
+      general public, that is suitable for revising the document
+      straightforwardly with generic text editors or (for images composed of
+      pixels) generic paint programs or (for drawings) some widely available
+      drawing editor, and that is suitable for input to text formatters or for
+      automatic translation to a variety of formats suitable for input to text
+      formatters. A copy made in an otherwise Transparent file format whose
+      markup, or absence of markup, has been arranged to thwart or discourage
+      subsequent modification by readers is not Transparent. An image format
+      is not Transparent if used for any substantial amount of text. A copy
+      that is not "Transparent" is called "Opaque".</para>
+
+      <para>Examples of suitable formats for Transparent copies include plain
+      ASCII without markup, Texinfo input format, LaTeX input format, SGML or
+      XML using a publicly available DTD, and standard-conforming simple HTML,
+      PostScript or PDF designed for human modification. Examples of
+      transparent image formats include PNG, XCF and JPG. Opaque formats
+      include proprietary formats that can be read and edited only by
+      proprietary word processors, SGML or XML for which the DTD and/or
+      processing tools are not generally available, and the machine-generated
+      HTML, PostScript or PDF produced by some word processors for output
+      purposes only.</para>
+
+      <para>The "Title Page" means, for a printed book, the title page itself,
+      plus such following pages as are needed to hold, legibly, the material
+      this License requires to appear in the title page. For works in formats
+      which do not have any title page as such, "Title Page" means the text
+      near the most prominent appearance of the work's title, preceding the
+      beginning of the body of the text.</para>
+
+      <para>A section "Entitled XYZ" means a named subunit of the Document
+      whose title either is precisely XYZ or contains XYZ in parentheses
+      following text that translates XYZ in another language. (Here XYZ stands
+      for a specific section name mentioned below, such as "Acknowledgements",
+      "Dedications", "Endorsements", or "History".) To "Preserve the Title" of
+      such a section when you modify the Document means that it remains a
+      section "Entitled XYZ" according to this definition.</para>
+
+      <para>The Document may include Warranty Disclaimers next to the notice
+      which states that this License applies to the Document. These Warranty
+      Disclaimers are considered to be included by reference in this License,
+      but only as regards disclaiming warranties: any other implication that
+      these Warranty Disclaimers may have is void and has no effect on the
+      meaning of this License.</para>
+
+      <bridgehead renderas="sect1">2. VERBATIM COPYING</bridgehead>
+
+      <para>You may copy and distribute the Document in any medium, either
+      commercially or noncommercially, provided that this License, the
+      copyright notices, and the license notice saying this License applies to
+      the Document are reproduced in all copies, and that you add no other
+      conditions whatsoever to those of this License. You may not use
+      technical measures to obstruct or control the reading or further copying
+      of the copies you make or distribute. However, you may accept
+      compensation in exchange for copies. If you distribute a large enough
+      number of copies you must also follow the conditions in section
+      3.</para>
+
+      <para>You may also lend copies, under the same conditions stated above,
+      and you may publicly display copies.</para>
+
+      <bridgehead renderas="sect1">3. COPYING IN QUANTITY</bridgehead>
+
+      <para>If you publish printed copies (or copies in media that commonly
+      have printed covers) of the Document, numbering more than 100, and the
+      Document's license notice requires Cover Texts, you must enclose the
+      copies in covers that carry, clearly and legibly, all these Cover Texts:
+      Front-Cover Texts on the front cover, and Back-Cover Texts on the back
+      cover. Both covers must also clearly and legibly identify you as the
+      publisher of these copies. The front cover must present the full title
+      with all words of the title equally prominent and visible. You may add
+      other material on the covers in addition. Copying with changes limited
+      to the covers, as long as they preserve the title of the Document and
+      satisfy these conditions, can be treated as verbatim copying in other
+      respects.</para>
+
+      <para>If the required texts for either cover are too voluminous to fit
+      legibly, you should put the first ones listed (as many as fit
+      reasonably) on the actual cover, and continue the rest onto adjacent
+      pages.</para>
+
+      <para>If you publish or distribute Opaque copies of the Document
+      numbering more than 100, you must either include a machine-readable
+      Transparent copy along with each Opaque copy, or state in or with each
+      Opaque copy a computer-network location from which the general
+      network-using public has access to download using public-standard
+      network protocols a complete Transparent copy of the Document, free of
+      added material. If you use the latter option, you must take reasonably
+      prudent steps, when you begin distribution of Opaque copies in quantity,
+      to ensure that this Transparent copy will remain thus accessible at the
+      stated location until at least one year after the last time you
+      distribute an Opaque copy (directly or through your agents or retailers)
+      of that edition to the public.</para>
+
+      <para>It is requested, but not required, that you contact the authors of
+      the Document well before redistributing any large number of copies, to
+      give them a chance to provide you with an updated version of the
+      Document.</para>
+
+      <bridgehead renderas="sect1">4. MODIFICATIONS</bridgehead>
+
+      <para>You may copy and distribute a Modified Version of the Document
+      under the conditions of sections 2 and 3 above, provided that you
+      release the Modified Version under precisely this License, with the
+      Modified Version filling the role of the Document, thus licensing
+      distribution and modification of the Modified Version to whoever
+      possesses a copy of it. In addition, you must do these things in the
+      Modified Version:</para>
+
+      <orderedlist numeration="upperalpha">
+        <listitem>
+          <simpara>Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of previous
+          versions (which should, if there were any, be listed in the History
+          section of the Document). You may use the same title as a previous
+          version if the original publisher of that version gives
+          permission.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in the
+          Modified Version, together with at least five of the principal
+          authors of the Document (all of its principal authors, if it has
+          fewer than five), unless they release you from this
+          requirement.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Preserve all the copyright notices of the
+          Document.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified Version
+          under the terms of this License, in the form shown in the Addendum
+          below.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's license
+          notice.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Include an unaltered copy of this License.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Preserve the section Entitled "History", Preserve its
+          Title, and add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on the Title
+          Page. If there is no section Entitled "History" in the Document,
+          create one stating the title, year, authors, and publisher of the
+          Document as given on its Title Page, then add an item describing the
+          Modified Version as stated in the previous sentence.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Preserve the network location, if any, given in the
+          Document for public access to a Transparent copy of the Document,
+          and likewise the network locations given in the Document for
+          previous versions it was based on. These may be placed in the
+          "History" section. You may omit a network location for a work that
+          was published at least four years before the Document itself, or if
+          the original publisher of the version it refers to gives
+          permission.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>For any section Entitled "Acknowledgements" or
+          "Dedications", Preserve the Title of the section, and preserve in
+          the section all the substance and tone of each of the contributor
+          acknowledgements and/or dedications given therein.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles. Section numbers or the
+          equivalent are not considered part of the section titles.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Delete any section Entitled "Endorsements". Such a section
+          may not be included in the Modified Version.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Do not retitle any existing section to be Entitled
+          "Endorsements" or to conflict in title with any Invariant
+          Section.</simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Preserve any Warranty Disclaimers.</simpara>
+        </listitem>
+      </orderedlist>
+
+      <para>If the Modified Version includes new front-matter sections or
+      appendices that qualify as Secondary Sections and contain no material
+      copied from the Document, you may at your option designate some or all
+      of these sections as invariant. To do this, add their titles to the list
+      of Invariant Sections in the Modified Version's license notice. These
+      titles must be distinct from any other section titles.</para>
+
+      <para>You may add a section Entitled "Endorsements", provided it
+      contains nothing but endorsements of your Modified Version by various
+      parties--for example, statements of peer review or that the text has
+      been approved by an organization as the authoritative definition of a
+      standard.</para>
+
+      <para>You may add a passage of up to five words as a Front-Cover Text,
+      and a passage of up to 25 words as a Back-Cover Text, to the end of the
+      list of Cover Texts in the Modified Version. Only one passage of
+      Front-Cover Text and one of Back-Cover Text may be added by (or through
+      arrangements made by) any one entity. If the Document already includes a
+      cover text for the same cover, previously added by you or by arrangement
+      made by the same entity you are acting on behalf of, you may not add
+      another; but you may replace the old one, on explicit permission from
+      the previous publisher that added the old one.</para>
+
+      <para>The author(s) and publisher(s) of the Document do not by this
+      License give permission to use their names for publicity for or to
+      assert or imply endorsement of any Modified Version.</para>
+
+      <bridgehead renderas="sect1">5. COMBINING DOCUMENTS</bridgehead>
+
+      <para>You may combine the Document with other documents released under
+      this License, under the terms defined in section 4 above for modified
+      versions, provided that you include in the combination all of the
+      Invariant Sections of all of the original documents, unmodified, and
+      list them all as Invariant Sections of your combined work in its license
+      notice, and that you preserve all their Warranty Disclaimers.</para>
+
+      <para>The combined work need only contain one copy of this License, and
+      multiple identical Invariant Sections may be replaced with a single
+      copy. If there are multiple Invariant Sections with the same name but
+      different contents, make the title of each such section unique by adding
+      at the end of it, in parentheses, the name of the original author or
+      publisher of that section if known, or else a unique number. Make the
+      same adjustment to the section titles in the list of Invariant Sections
+      in the license notice of the combined work.</para>
+
+      <para>In the combination, you must combine any sections Entitled
+      "History" in the various original documents, forming one section
+      Entitled "History"; likewise combine any sections Entitled
+      "Acknowledgements", and any sections Entitled "Dedications". You must
+      delete all sections Entitled "Endorsements".</para>
+
+      <bridgehead renderas="sect1">6. COLLECTIONS OF DOCUMENTS</bridgehead>
+
+      <para>You may make a collection consisting of the Document and other
+      documents released under this License, and replace the individual copies
+      of this License in the various documents with a single copy that is
+      included in the collection, provided that you follow the rules of this
+      License for verbatim copying of each of the documents in all other
+      respects.</para>
+
+      <para>You may extract a single document from such a collection, and
+      distribute it individually under this License, provided you insert a
+      copy of this License into the extracted document, and follow this
+      License in all other respects regarding verbatim copying of that
+      document.</para>
+
+      <bridgehead renderas="sect1">7. AGGREGATION WITH INDEPENDENT
+      WORKS</bridgehead>
+
+      <para>A compilation of the Document or its derivatives with other
+      separate and independent documents or works, in or on a volume of a
+      storage or distribution medium, is called an "aggregate" if the
+      copyright resulting from the compilation is not used to limit the legal
+      rights of the compilation's users beyond what the individual works
+      permit. When the Document is included in an aggregate, this License does
+      not apply to the other works in the aggregate which are not themselves
+      derivative works of the Document.</para>
+
+      <para>If the Cover Text requirement of section 3 is applicable to these
+      copies of the Document, then if the Document is less than one half of
+      the entire aggregate, the Document's Cover Texts may be placed on covers
+      that bracket the Document within the aggregate, or the electronic
+      equivalent of covers if the Document is in electronic form. Otherwise
+      they must appear on printed covers that bracket the whole
+      aggregate.</para>
+
+      <bridgehead renderas="sect1">8. TRANSLATION</bridgehead>
+
+      <para>Translation is considered a kind of modification, so you may
+      distribute translations of the Document under the terms of section 4.
+      Replacing Invariant Sections with translations requires special
+      permission from their copyright holders, but you may include
+      translations of some or all Invariant Sections in addition to the
+      original versions of these Invariant Sections. You may include a
+      translation of this License, and all the license notices in the
+      Document, and any Warranty Disclaimers, provided that you also include
+      the original English version of this License and the original versions
+      of those notices and disclaimers. In case of a disagreement between the
+      translation and the original version of this License or a notice or
+      disclaimer, the original version will prevail.</para>
+
+      <para>If a section in the Document is Entitled "Acknowledgements",
+      "Dedications", or "History", the requirement (section 4) to Preserve its
+      Title (section 1) will typically require changing the actual
+      title.</para>
+
+      <bridgehead renderas="sect1">9. TERMINATION</bridgehead>
+
+      <para>You may not copy, modify, sublicense, or distribute the Document
+      except as expressly provided for under this License. Any other attempt
+      to copy, modify, sublicense or distribute the Document is void, and will
+      automatically terminate your rights under this License. However, parties
+      who have received copies, or rights, from you under this License will
+      not have their licenses terminated so long as such parties remain in
+      full compliance.</para>
+
+      <bridgehead renderas="sect1">10. FUTURE REVISIONS OF THIS
+      LICENSE</bridgehead>
+
+      <para>The Free Software Foundation may publish new, revised versions of
+      the GNU Free Documentation License from time to time. Such new versions
+      will be similar in spirit to the present version, but may differ in
+      detail to address new problems or concerns. See <link
+      xlink:href="http://www.gnu.org/copyleft/">
+      http://www.gnu.org/copyleft/</link> .</para>
+
+      <para>Each version of the License is given a distinguishing version
+      number. If the Document specifies that a particular numbered version of
+      this License "or any later version" applies to it, you have the option
+      of following the terms and conditions either of that specified version
+      or of any later version that has been published (not as a draft) by the
+      Free Software Foundation. If the Document does not specify a version
+      number of this License, you may choose any version ever published (not
+      as a draft) by the Free Software Foundation.</para>
+
+      <bridgehead renderas="sect1">ADDENDUM: How to use this License for your
+      documents</bridgehead>
+
+      <para>To use this License in a document you have written, include a copy
+      of the License in the document and put the following copyright and
+      license notices just after the title page:</para>
+
+      <blockquote>
+        <para>Copyright (C) YEAR YOUR NAME.</para>
+
+        <para>Permission is granted to copy, distribute and/or modify this
+        document under the terms of the GNU Free Documentation License,
+        Version 1.2 or any later version published by the Free Software
+        Foundation; with no Invariant Sections, no Front-Cover Texts, and no
+        Back-Cover Texts. A copy of the license is included in the section
+        entitled "GNU Free Documentation License".</para>
+      </blockquote>
+
+      <para>If you have Invariant Sections, Front-Cover Texts and Back-Cover
+      Texts, replace the "with...Texts." line with this:</para>
+
+      <blockquote>
+        <para>with the Invariant Sections being LIST THEIR TITLES, with the
+        Front-Cover Texts being LIST, and with the Back-Cover Texts being
+        LIST.</para>
+      </blockquote>
+
+      <para>If you have Invariant Sections without Cover Texts, or some other
+      combination of the three, merge those two alternatives to suit the
+      situation.</para>
+
+      <para>If your document contains nontrivial examples of program code, we
+      recommend releasing these examples in parallel under your choice of free
+      software license, such as the GNU General Public License, to permit
+      their use in free software.</para>
+    </appendix>
+  </part>
+</book>
