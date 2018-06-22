@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.3.0" type="package" method="upgrade">
-    <name>Akeea Data Compliance package</name>
+    <name>Akeeba Data Compliance package</name>
     <author>Nicholas K. Dionysopoulos</author>
     <creationDate>##DATE##</creationDate>
     <packagename>compliance</packagename>
