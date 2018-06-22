@@ -420,7 +420,7 @@
 
       <para>In this chapter you are going to find detailed reference of all
       the pages, options and features of the <application>Akeeba Data
-      Compliance </application>component. </para>
+      Compliance </application>component.</para>
 
       <section xml:id="initial-setup">
         <title>Initial setup</title>
@@ -482,15 +482,15 @@
         asking you to consent to processing of your personal data and / or
         exercise your data rights. This is Data Compliance's <link
         linkend="self-service">self-service page</link>. This is the same page
-        your site's users will see the first time they log into your site.
-        </para>
+        your site's users will see the first time they log into your
+        site.</para>
 
         <para>You need to select <guilabel>Yes</guilabel> and click on
         <guibutton>Apply my preference</guibutton> to continue using your
         site. You are taken back to the Plugins page.</para>
 
         <para>This is really all you need to do if the only personal
-        information you are collecting is through Joomla! itself. </para>
+        information you are collecting is through Joomla! itself.</para>
 
         <para>If you are collecting information through other components you
         will need to <link linkend="data-sources">activate and configure the
@@ -685,6 +685,17 @@
           (PII), export their PII in a machine readable format or remove their
           user profile.</para>
 
+          <screenshot>
+            <title>The self-service page</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/self_service_page.png" scalefit="0"
+                           width="90%"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
           <para><bridgehead>How to get there?</bridgehead></para>
 
           <para>There are several ways to get to that page.</para>
@@ -733,22 +744,165 @@
           <para>Below the controls there is the <guilabel>Learn more about
           your data rights here</guilabel> link. This opens a new browser tab
           or window to the European Union portal for Data protection. This
-          link cannot be removed as you are required by GDPR to provide a link
-          to this or a similar resource to your users.</para>
+          link should not be removed as you are required by GDPR to provide a
+          link to this or a similar resource to your users. </para>
 
           <bridgehead>Exporting the PII</bridgehead>
 
-          <para/>
+          <para>The bottom half section of the self-service page has two
+          buttons. The first button allows you to export your user profile in
+          a common, machine-readable format (XML). This lets you exercise your
+          Data Portability Rights under the GDPR. Click on <guibutton>Export
+          your Data</guibutton> to download an XML file to your computer. This
+          contains all the PII about you which is currently known to Akeeba
+          Data Compliance through its plugins.</para>
 
           <bridgehead>Deleting the user profile</bridgehead>
 
-          <para/>
+          <para>The bottom half section of the self-service page has two
+          buttons. The second button allows you to wipe your user profile.
+          Depending on the options made in the various Akeeba Data Compliance
+          plugins this will either completely remove or at the very least
+          completely pseudonymize the PII stored on record for you on the
+          site. Please note that this process is <emphasis
+          role="bold">irreversible</emphasis>. Furthermore, once it's complete
+          it will be impossible to restore your user account and its PII.
+          Therefore, clicking the <guibutton>Delete your user account
+          button</guibutton> exercises your Right To Be Forgotten under the
+          GDPR.</para>
+
+          <para>Sometimes it's not possible to exercise your right to be
+          forgotten. This depends on the settings of the various Akeeba Data
+          Compliance through its plugins. For example, people belonging to a
+          privileged group (by default: Super Users) or who have bought a
+          subscription within the last few days may be denied this right. You
+          are told exactly why deletion is not possible though a standard
+          Joomla error message. Having an administrator of the site resolve
+          that condition is necessary before wiping the user account is
+          possible. Administrators should look at the settings of the various
+          Akeeba Data Compliance plugins to understand why th deletion is
+          prevented.</para>
+
+          <para>If the deletion can proceed you are taken to the confirmation
+          page. Here you are informed that the deletion is irreversible.
+          Moreover, all the steps which will be carried out by Akeeba Data
+          Compliance are explicitly stated. These bullet points come from the
+          various Akeeba Data Compliance plugins. You are also informed about
+          the information which exists outside the scope of Joomla and which
+          cannot be deleted by Akeeba Data Compliance. At the bottom of the
+          page you are asked to type a phrase (“<emphasis>I
+          UNDERSTAND</emphasis>” in all caps) and click on the
+          <guibutton>DELETE MY USER ACCOUNT</guibutton> button. This is your
+          last chance to abort! Navigate anywhere else or close the browser
+          tab to abort. If the phrase was entered correctly and the button is
+          clicked the user account is wiped forever and can not be
+          restored.</para>
+
+          <para><bridgehead>Customization of the page</bridgehead></para>
+
+          <para>Akeeba Data Compliance uses Joomla! view templates which
+          follow <link
+          xlink:href="https://github.com/akeeba/fof/wiki/Blade-Templates">FOF
+          3's Blade template language syntax</link>. You can use <link
+          xlink:href="https://docs.joomla.org/How_to_override_the_output_from_the_Joomla!_core">standard
+          Joomla template overrides</link> to modify the look, feel and
+          functionality of this page. By default, the HTML structure follows
+          our Akeeba Frontend Framework which provides a unified look and feel
+          for all of our extensions. If you need to use a different template
+          framework, such as Bootstrap, you will have to do template
+          overrides.</para>
+
+          <important>
+            <para>Do not change the URLs, the hidden fields or remove form
+            elements when doing overrides. This could cause Akeeba Data
+            Compliance to behave erratically with your overrides.</para>
+
+            <para>You may remove or change static links, i.e. the link to
+            "Learn more about your data rights".</para>
+
+            <para>Do NOT make template overrides to modify the text on the
+            page. Use <link
+            xlink:href="https://docs.joomla.org/J3.x:Language_Overrides_in_Joomla">language
+            overrides</link> instead.</para>
+          </important>
+
+          <para>The view template files you need to override is located
+          in:</para>
+
+          <para><filename>PATH_TO_JOOMLA/components/com_datacompliance/ViewTemplates/Options/default.blade.php</filename>
+          The self-service page</para>
+
+          <para><filename>PATH_TO_JOOMLA/components/com_datacompliance/ViewTemplates/Options/wipe.blade.php</filename>
+          The confirmation page for wiping your user account</para>
+
+          <para>You can create frontend (public site) overrides for these
+          files in:</para>
+
+          <para><filename>PATH_TO_JOOMLA/templates/YOUR_TEMPLATE/html/com_datacompliance/Options/default.blade.php</filename>
+          The self-service page</para>
+
+          <para><filename>PATH_TO_JOOMLA/templates/YOUR_TEMPLATE/html/com_datacompliance/Options/wipe.blade.php</filename>
+          The confirmation page for wiping your user account</para>
+
+          <para>You can create backend (administrator) overrides for these
+          files in:</para>
+
+          <para><filename>PATH_TO_JOOMLA/administrator/templates/YOUR_TEMPLATE/html/com_datacompliance/Options/default.blade.php</filename>
+          The self-service page</para>
+
+          <para><filename>PATH_TO_JOOMLA/administrator/templates/YOUR_TEMPLATE/html/com_datacompliance/Options/wipe.blade.php</filename>
+          The confirmation page for wiping your user account</para>
+
+          <para>Please note that Blade templates are compiled and cached as
+          PHP view templates. If you do not see your changes taking effect
+          please go to your site's backend, Cache and clear your frontend or
+          backend cache.</para>
         </section>
 
         <section xml:id="backend-pii-management">
           <title>Managing users' personal information from the backend</title>
 
-          <para/>
+          <para>So far we have seen how Akeeba Data Compliance can be used by
+          a user of your site to manage their own Personally Identifiable
+          Information. While this is what is mostly required, sometimes an
+          administrator may have to be involved. For example, a user may no
+          longer remember their username or password and have lost access to
+          their email address associated with it. In these cases they might
+          have to contact you through different means, such as a contact form,
+          email or even by an old-fashioned letter, to seek your assistance in
+          exercising their data rights. Per the GDPR, you are required to
+          respond to them within thirty days since the receipt of their
+          request.</para>
+
+          <tip>
+            <para>If a user contacts you to exercise their data rights it's a
+            good idea to ask them for some form of identification which is
+            legally acceptable in case of a dispute over who authorized this
+            action. Typically that's a government issued photo ID such as an
+            identity card or passport, or a business ID / signed form from
+            their manager if it's a company site and your user is an employee.
+            There are many different cases. WE ARE NOT LAWYERS. Ask your
+            lawyer if you are not sure.</para>
+          </tip>
+
+          <para>From the backend of your site you can go to Joomla's User,
+          Manage (Users) page. Click on a user you want to manage and click on
+          the Personal Data Options tab. There is a link here which takes you
+          to a version of the Self-Service Page. </para>
+
+          <important>
+            <para>If you do not see the link to this page in the User profile
+            please make sure that you have published and enabled both the
+            System and the User plugin of Akeeba Data Compliance. They are
+            both required for this feature to work.</para>
+          </important>
+
+          <para>Please note that you CAN NOT change the consent preferences
+          for personal data processing on behalf of your user. It's illegal to
+          do so. See the FAQ earlier in this documentation. You can, however,
+          export their profile and / or delete their user account. The same
+          notes regarding the possibility to delete their account apply as
+          noted in the previous section.</para>
         </section>
       </section>
 
