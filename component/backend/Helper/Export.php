@@ -29,8 +29,9 @@ abstract class Export
 	 */
 	public static function adoptChild(SimpleXMLElement &$root, SimpleXMLElement $child)
 	{
-		$root->{$child->getName()} = (string) $child;
-		$node = $root->{$child->getName()};
+		$v = (string) $child;
+		$v = htmlspecialchars($v, ENT_QUOTES);
+		$node   = $root->addChild($child->getName(), $v);
 
 		foreach ($child->attributes() as $attr => $value)
 		{
@@ -93,6 +94,7 @@ abstract class Export
 				$v = (array)$v;
 			}
 
+			$v = htmlspecialchars($v, ENT_QUOTES);
 			$elCol = $elItem->addChild('column', $v ?? '');
 			$elCol->addAttribute('name', $k ?? '');
 		}

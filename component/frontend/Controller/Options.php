@@ -105,6 +105,9 @@ class Options extends Controller
 		$export = $this->container->factory->model('Export')->tmpInstance();
 		$result = $export->exportFormattedXML($userID);
 
+		// DEBUG
+		header('Content-Type: text/plain'); echo $result; $this->container->platform->closeApplication();
+
 		// Disable caching
 		header("Pragma: public");
 		header("Expires: 0");
