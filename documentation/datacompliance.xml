@@ -48,6 +48,24 @@
         export and user profile deletion. Further to that it can help you with
         the data minimization requirements of GDPR by deleting inactive user
         profiles automatically, after users are suitably notified.</para>
+
+        <para><application>Akeeba Data Compliance</application> is Free
+        Software. You can redistribute it and/or modify it under the terms of
+        the GNU General Public License as published by the Free Software
+        Foundation, either version 3 of the License, or (at your option) any
+        later version. This program is distributed in the hope that it will be
+        useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+        General Public License for more details. You should have received a
+        copy of the GNU General Public License along with this program. If
+        not, see <link
+        xlink:href="https://www.gnu.org/licenses/gpl-3.0.en.html">the text of
+        GPL v3.0 on the GNU site</link>.</para>
+
+        <para>Akeeba Ltd has chosen not to charge a fee for this software and
+        its documentation. However, we cannot guarantee user support or
+        customization (including implementation of features we don't need on
+        our own site). Thank you for your understanding!</para>
       </section>
 
       <section xml:id="requirements">
@@ -745,7 +763,7 @@
           your data rights here</guilabel> link. This opens a new browser tab
           or window to the European Union portal for Data protection. This
           link should not be removed as you are required by GDPR to provide a
-          link to this or a similar resource to your users. </para>
+          link to this or a similar resource to your users.</para>
 
           <bridgehead>Exporting the PII</bridgehead>
 
@@ -888,7 +906,7 @@
           <para>From the backend of your site you can go to Joomla's User,
           Manage (Users) page. Click on a user you want to manage and click on
           the Personal Data Options tab. There is a link here which takes you
-          to a version of the Self-Service Page. </para>
+          to a version of the Self-Service Page.</para>
 
           <important>
             <para>If you do not see the link to this page in the User profile
@@ -907,129 +925,768 @@
       </section>
 
       <section xml:id="control-panel">
-        <title>Overview / Control Panel page</title>
+        <title>Dashboard (a.k.a. Control Panel) page</title>
 
-        <para/>
+        <screenshot>
+          <title>The Dashboard page</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/control_panel.png" scalefit="0"
+                         width="90%"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>This is the main backend page of Data Compliance. It allows you
+        to quickly access its features.</para>
+
+        <para>The top part of the page is Joomla's toolbar. Clicking on the
+        Options button will take you to the <link
+        linkend="component-config">component configuration page</link>.</para>
+
+        <para>There is a tab bar below the toolbar. This lets you view the
+        <link linkend="email-templates">Email Templates</link> setup page and
+        get back to the Dashboard.</para>
+
+        <para>The buttons in the left hand side of the main are of the page
+        allow you to access the various logs and management features of Akeeba
+        Data Compliance. They are covered further ahead in this
+        documentation.</para>
+
+        <para>The right hand site contains a set of graphs for quick overview
+        of actions taken with Akeeba Data Compliance.</para>
+
+        <para>The <guilabel>Active / Inactive Profiles</guilabel> doughnut
+        chart gives you a quick glance of the user profiles status on your
+        site. Active (non-expired) profiles are shown in green. <link
+        linkend="expired-profiles">Expired profiles</link> which have not been
+        deleted are shown in red. Expired profiles which have already been
+        deleted are shown in grey. To conform with the GDPR data minimization
+        rules the red area of this graph needs to be minimized and converted
+        to grey. Not all red can disappear: some expired profiles are not
+        allowed to be deleted according to the rules applied by the Data
+        Compliance plugins, e.g. you can't remove Super User accounts even if
+        they haven't logged into your site in years.</para>
+
+        <para>The <guilabel>Deleted User Profiles</guilabel> stacked bar chart
+        gives you more insight into when and how user profiles have been
+        deleted. For each day on the last calendar month you will see a
+        stacked bar with the number of profiles deleted on that day. Profiles
+        deleted by the users themselves are shown in green. Profiles deleted
+        by an administrator are shown in red. Profiles deleted automatically,
+        using the <link linkend="data-minimization">lifecycle policy CRON
+        job</link> are shown in grey.</para>
       </section>
 
       <section xml:id="email-templates">
         <title>Setting up the email templates</title>
 
-        <para/>
+        <screenshot>
+          <title>Email templates</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/control_panel.png" scalefit="0"
+                         width="90%"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Akeeba Data Compliance can send out emails to the user or the
+        administrator on different occasions. More specifically, it can send
+        out emails when a user profile is deleted by the user themselves, when
+        an administrator deletes a user profile, when the profile is deleted
+        by the <link linkend="data-minimization">lifecycle policy CRON
+        job</link> or as a notification before the profile is deleted by the
+        lifecycle policy.</para>
+
+        <important>
+          <para>The Akeeba Data Compliance - Emails plugin must be activated
+          and have the access level Public for emails to work.</para>
+        </important>
+
+        <para>Each template can be customized <emphasis>per
+        language</emphasis>. Akeeba Data Compliance will determine the correct
+        language to use by looking at the user profile. If no language
+        preference is set for the user's site (frontend) language, it will use
+        the site's default language as defined in Joomla's Languages page.
+        Then it will try to find the email template in this language. If this
+        is not possible, it will try to fall back to the en-GB (English, Great
+        Britain) email template. If that's not found either it will try to
+        fall back to the email template marked as "(All languages)". If none
+        is found still no email will be sent. Only enabled email templates are
+        used.</para>
+
+        <para>While Data Compliance comes with built in email templates we
+        strongly advise you to customize them to match your site's branding
+        and the tone of language you commonly use. All email templates fully
+        support HTML.</para>
+
+        <warning>
+          <para>All URLs in your emails, be it links to your site or static
+          media files such as images, <emphasis>must</emphasis> be absolute –
+          they must contain the protocol and domain name to your site. Some
+          Joomla editors will convert absolute links to relative on saving and
+          convert them back to absolute when you try to edit the content. For
+          example, JCE (JoomlaContentEditor.net) does this. This will NOT work
+          with emails.</para>
+
+          <para>We recommend that you use CodeMirror, the HTML source code
+          editor shipped with Joomla, to edit email templates.</para>
+        </warning>
+
+        <para>The Subject and Email body of each email template can contain
+        the following variables, in square brackets and all capital letters.
+        They are expanded to the correct text right before the email is
+        sent.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>[NAME] The full name of the user on whom the action is
+            taken</para>
+          </listitem>
+
+          <listitem>
+            <para>[EMAIL] The email address of the user</para>
+          </listitem>
+
+          <listitem>
+            <para>[USERNAME] The Joomla username of the user</para>
+          </listitem>
+
+          <listitem>
+            <para>[REGISTERDATE] The date the user account was registered on
+            the site</para>
+          </listitem>
+
+          <listitem>
+            <para>[LASTVISITDATE] The last time the user logged into their
+            user account on the site</para>
+          </listitem>
+
+          <listitem>
+            <para>[REQUIRERESET] Is a password reset required (0/1)</para>
+          </listitem>
+
+          <listitem>
+            <para>[RESETCOUNT] How many times the password has been reset in
+            the past</para>
+          </listitem>
+
+          <listitem>
+            <para>[LASTRESETTIME] Last date and time (GMT) the password was
+            reset</para>
+          </listitem>
+
+          <listitem>
+            <para>[ACTIVATION] Activation code (there's no point using it,
+            it's hashed)</para>
+          </listitem>
+
+          <listitem>
+            <para>[BLOCK] Is the user account blocked? (Yes/No)</para>
+          </listitem>
+
+          <listitem>
+            <para>[ID] The user's numeric account ID</para>
+          </listitem>
+
+          <listitem>
+            <para>[PARAM:<replaceable>param_name</replaceable>] The value of
+            the user profile parameter <replaceable>param_name</replaceable>.
+            For advanced users.</para>
+          </listitem>
+
+          <listitem>
+            <para>[SITENAME] The name of your site, as configured in
+            Joomla</para>
+          </listitem>
+
+          <listitem>
+            <para>[SITEURL] The URL to your site</para>
+          </listitem>
+
+          <listitem>
+            <para>[ACTIONS] A bullet list of the actions which will be taken
+            when the account is wiped</para>
+          </listitem>
+
+          <listitem>
+            <para>[ADMIN:NAME] The administrator's full name, when sending
+            emails to an administrator</para>
+          </listitem>
+
+          <listitem>
+            <para>[ADMIN:USERNAME] The administrator's username, when sending
+            emails to an administrator</para>
+          </listitem>
+
+          <listitem>
+            <para>[ADMIN:EMAIL] The administrator's email address, when
+            sending emails to an administrator</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>You can take a look at the default email templates to see how
+        these variables can be used inside a template.</para>
       </section>
 
       <section xml:id="audit-trails">
         <title>Managing audit trails</title>
 
-        <para/>
+        <para>One of the fundamental requirements in GDPR is that you keep an
+        audit log of all of the actions taken when your users are exercising
+        their data rights. This tells us who did what, removing any doubt over
+        who and why exported or removed a user's PII – or when this
+        information changes. Akeeba Data Compliance can help with all of that
+        by keeping audit trails.</para>
 
         <section xml:id="user-consents">
           <title>User Consents</title>
 
-          <para/>
+          <para>This audit log keeps track of the <emphasis>last</emphasis>
+          time the user modified their consent to processing of their
+          Personally Identifiable Information (PII). It records the user
+          account, the consent date, the IP address the consent came from and
+          whether consent was given or withdrawn.</para>
+
+          <para>You can search by consent status ("Enabled") and by user. The
+          user search box allows you to type a numeric user ID or a partial
+          username, full name or email address.</para>
         </section>
 
         <section xml:id="profile-changes">
           <title>Profile Changes</title>
 
-          <para/>
+          <para>This audit log keeps track of every change in the core Joomla!
+          user data and the user profile parameters. It records the profile
+          being modified, who modified it, the date and time this took place,
+          the IP address where this change was initiated as well as the
+          changes made.</para>
+
+          <para>You can search by the user being modified. The user search box
+          allows you to type a numeric user ID or a partial username, full
+          name or email address.</para>
+
+          <para>If you click on the profile being modified you can see a
+          detail page with all the information which was changed in the
+          profile. The From column contains the old values, the To value
+          contains the new values.</para>
+
+          <important>
+            <para>This audit log's records are deleted when a user account is
+            wiped trough Data Compliance since it contains Personally
+            Identifiable Information.</para>
+          </important>
         </section>
 
         <section xml:id="data-exports">
           <title>Data Exports</title>
 
-          <para/>
+          <para>This audit log keeps track of who and when exported the PII
+          for a user. It records the profile the data was exported for, who
+          exported the profile, when the profile was exported and the IP
+          address which initiated the export. The exported data is NOT logged
+          for privacy reasons.</para>
+
+          <para>You can search by the user whose profile was exported. The
+          user search box allows you to type a numeric user ID or a partial
+          username, full name or email address.</para>
         </section>
 
         <section xml:id="profile-deletions">
           <title>Profile Deletions</title>
 
-          <para/>
+          <para>This audit log keeps track of the user profiles which have
+          been deleted from the site. It records which user profile has been
+          deleted, who initiated the deletion, what kind of deletion it was
+          (user initiated, administrator initiated or lifecycle management),
+          when the deletion took place and the IP address which initiated the
+          deletion (or the text CLI when it was initiated by the lifecycle
+          management CRON job).</para>
+
+          <para>You can search by the user whose profile was deleted and by
+          who initiated the deletion. The user search boxes allow you to type
+          a numeric user ID or a partial username, full name or email
+          address.</para>
         </section>
       </section>
 
       <section xml:id="data-actions">
         <title>Managing data actions</title>
 
-        <para/>
+        <para>As <link linkend="backend-pii-management">already
+        explained</link>, exporting and deleting users is possible through the
+        Joomla! User Manager. However, this is not a convenient interface to
+        find out which profiles are expired and so on. This is why Data
+        Compliance comes with its own pages to manage data actions.</para>
 
         <section xml:id="expired-profiles">
           <title>Expired user profiles</title>
 
-          <para/>
+          <para>This page displays all users whose profiles have expired.
+          Expired profiles are determined by your Data Compliance plugin
+          settings. Some of the profiles cannot be deleted even though they
+          are expired, e.g. when they belong to a privileged user group. These
+          profiles appear in pink background color.</para>
+
+          <note>
+            <para>Why not hide the profiles which cannot be deleted? For
+            performance reasons.</para>
+
+            <para>Identifying expired profiles is a relatively fast query with
+            the same criteria for all users. This means that we can get
+            thousands of users matching these criteria and paginate the
+            results for display.</para>
+
+            <para>Finding the exceptions, which expired profiles cannot be
+            deleted, is a set of slow queries which have to be run per user.
+            On sites with thousands of users, like our own business site,
+            executing these queries would take a lot of time and memory. In
+            fact, it would end up crashing either PHP or the server
+            itself.</para>
+
+            <para>When we display a page of a few dozen expired profiles we
+            can run these slow queries. Even though the page takes a while to
+            display it doesn't crash PHP or the server. The difference is that
+            in this case we run the slow queries to a fraction of all the
+            expired profiles at a time, therefore taking a fraction of the
+            processing power required. The only drawback is that we cannot
+            exclude the exceptions from the display.</para>
+          </note>
+
+          <para>Each profile has a Manage Data Options button at the right
+          hand corner. This takes you to the page to manage data options, i.e.
+          export the user's profile or delete it.</para>
+
+          <para>You can search by the maximum expiration date and by user. The
+          user search box allows you to type a numeric user ID or a partial
+          username, full name or email address.</para>
         </section>
       </section>
 
       <section xml:id="data-minimization">
         <title>Automating data minimization actions</title>
 
-        <para/>
+        <para>The GDPR calls for data minimization, i.e. removing the
+        personally identifiable information of users when it's no longer
+        needed for business purposes. While there are no hard limits in the
+        law, it's generally agreed that a reasonable amount of time for
+        needing PII for business purposes is around 6 months after the client
+        last had an active business relationship with you. On most sites this
+        means about 6 months after the last time the user logged in, had an
+        active subscription and so on.</para>
+
+        <para>Akeeba Data Compliance lets you automatically notify users with
+        expired profiles that their profile will be deleted after a specific
+        date unless they log in or take another action to affirm a business
+        relation with you before that date. After that date and only if the
+        notification email has been sent these expired profiles will be
+        deleted in the same way as if the user chose to delete their profile.
+        This is called a “lifecycle policy” deletion. These actions take place
+        through command line scripts which can be automated with CRON
+        jobs.</para>
+
+        <important>
+          <para>Your host must support real CRON jobs which lets you run PHP
+          scripts on the command line. If you can only set up a URL in your
+          “CRON jobs” it will NOT work with Akeeba Data Compliance. We are not
+          trying to be difficult about this. We know how to write a web
+          interface alternative, as evidenced by doing the same with Akeeba
+          Backup, it's just that we haven't found the time yet to do
+          so.</para>
+        </important>
+
+        <para>The conditions to consider a profile “expired”, i.e. the user
+        account lifecycle policies for your site, are controlled by the
+        options of the Data Compliance plugins.</para>
 
         <section xml:id="cron-notify">
           <title>Notify users before their profile is automatically
           deleted</title>
 
-          <para/>
+          <para>Script location:
+          <filename><replaceable>JOOMLA_ROOT</replaceable>/cli/datacompliance_lifecycle_notify.php</filename></para>
+
+          <para>This script notifies users that their account is going to be
+          deleted due to user account lifecycle policies on your site and
+          gives them information to prevent that. The Akeeba Data Compliance -
+          Email plugin must be enabled for this to work correctly. Your site
+          must be configured to be able to send out email. Check your Joomla
+          Global Configuration if you are not sure.</para>
+
+          <para>You can schedule this script using the following command line
+          to your host's CRON interface:</para>
+
+          <programlisting><replaceable>/usr/local/bin/php</replaceable> <replaceable>JOOMLA_ROOT</replaceable>/cli/datacompliance_lifecycle_notify.php --confirm=0</programlisting>
+
+          <para>where <replaceable>/usr/local/bin/php</replaceable> is the
+          path to your PHP CLI executable and
+          <replaceable>JOOMLA_ROOT</replaceable> is the absolute path to your
+          web site's root. You can get this information from your host.</para>
+
+          <para>The script accepts the following parameters</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><option>--debug</option> When present it turns on debug
+              mode. Only for developers. Do not use on live sites.</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--period interval_spec</option> How long before
+              the account expiration date should users be notified? The
+              interval_spec is a <link
+              xlink:href="http://php.net/manual/en/dateinterval.construct.php">PHP
+              DateInterval interval specification</link>. The default value is
+              <parameter>P1M</parameter> which means one month.</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--confirm</option> Should I ask for confirmation
+              before sending out each email? Default is 1 (ask for
+              confirmation, expecting input from the keyboard). When using in
+              CRON scripts use <option>--confirm=0</option> to prevent this
+              behaviour. </para>
+            </listitem>
+
+            <listitem>
+              <para><option>--dry-run</option> No emails will be sent. The
+              script will run normally and output all actions it would be
+              taking without really sending out the emails. Useful for the
+              first few runs while you're getting things set up.</para>
+            </listitem>
+          </itemizedlist>
         </section>
 
         <section xml:id="cron-delete-expired">
           <title>Automatically delete expired user profiles</title>
 
-          <para/>
+          <para>Script location:
+          <filename><replaceable>JOOMLA_ROOT</replaceable>/cli/datacompliance_account_lifecycle.php</filename></para>
+
+          <para>This script deletes expired user accounts as long as they have
+          already been notified. The Akeeba Data Compliance - Email plugin
+          must be enabled for emails to be sent out to users when their
+          accounts are being deleted. In this case your site must be
+          configured to be able to send out email. Check your Joomla Global
+          Configuration if you are not sure.</para>
+
+          <para>You can schedule this script using the following command line
+          to your host's CRON interface:</para>
+
+          <programlisting><replaceable>/usr/local/bin/php</replaceable> <replaceable>JOOMLA_ROOT</replaceable>/cli/datacompliance_account_lifecycle.php --confirm=0</programlisting>
+
+          <para>where <replaceable>/usr/local/bin/php</replaceable> is the
+          path to your PHP CLI executable and
+          <replaceable>JOOMLA_ROOT</replaceable> is the absolute path to your
+          web site's root. You can get this information from your host.</para>
+
+          <para>The script accepts the following parameters</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><option>--debug</option> When present it turns on debug
+              mode. Only for developers. Do not use on live sites.</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--memdebug</option> Displays additional
+              information about memory consumption. For developers and power
+              users.</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--force</option> Delete expired user accounts even
+              if they have not been notified. This is useful for the first run
+              on a site with thousands of expired accounts you do not want to
+              notify before deleting. <emphasis role="bold">THIS IS EXTREMELY
+              DANGEROUS!</emphasis> Use it with --dry-run first to make sure
+              that it does what you think it should be doing.</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--confirm</option> Should I ask for confirmation
+              before deleting each user? Default is 1 (ask for confirmation,
+              expecting input from the keyboard). When using in CRON scripts
+              use <option>--confirm=0</option> to prevent this
+              behaviour.</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--dry-run</option> No deletions will take place.
+              The script will run normally and output all actions it would be
+              taking without really deleting any user account. Useful for the
+              first few runs while you're getting things set up.</para>
+            </listitem>
+          </itemizedlist>
         </section>
       </section>
 
       <section xml:id="configuration">
         <title>Configuration</title>
 
-        <para/>
+        <para>GDPR compliance is most definitely not a one-size-fits-all
+        affair. It is tied to the way your site is collecting and using
+        personally identifiable information. Decisions about how to delete
+        this data or when a profile is expired, or when it shouldn't be
+        deleted, may also vary depending on your business needs and what your
+        lawyer has consulted you.</para>
+
+        <para>Akeeba Data Compliance gives you plenty of options to tailor it
+        to your needs. These options can be found either at the component
+        itself or its plugins.</para>
 
         <section xml:id="component-config">
           <title>Component configuration</title>
 
-          <para/>
+          <para>Component configuration is accessible from the backend of your
+          site in the same way that's customary for all Joomla! components.
+          The easiest way is going to <guimenu>Components</guimenu>,
+          <guimenuitem>Akeeba Data Compliance</guimenuitem> and clicking the
+          <guibutton>Options</guibutton> button in the toolbar.</para>
+
+          <para>Alternatively, you can go to <guimenu>System</guimenu>,
+          <guimenuitem>Global Configuration</guimenuitem> and click on
+          <guilabel>Akeeba Data Compliance</guilabel> from the left-hand list
+          of Components.</para>
+
+          <bridgehead>Consent Page Options</bridgehead>
+
+          <para>The first tab is called <guilabel>Consent Page
+          Options</guilabel> and it controls the way the self-service page of
+          Data Compliance works on your site.</para>
+
+          <para>The <guilabel>Policy Article</guilabel> options lets you
+          choose a Joomla article which contains your site's Privacy Statement
+          per the GDPR requirements. Remember that when the self-service page
+          is shown to a user who has not yet provided their consent they
+          cannot navigate outside of that page. Therefore it's advisable to
+          not include any links to other pages on your site in this article as
+          they will be inaccessible to the user.</para>
+
+          <para>The <guilabel>Show Export Button</guilabel> and <guilabel>Show
+          Delete Button</guilabel> options control whether the button to
+          export the personal information to XML and to delete the user
+          profile, respectively, will be shown to the user. If they are not
+          shown you will have to take and fulfil these requests
+          manually.</para>
+
+          <bridgehead>FEF Handling</bridgehead>
+
+          <para>Our software is using Akeeba Frontend Framework (FEF) to style
+          its output in the frontend (public site) and backend (administrator)
+          of your site. If you would rather provide your own styling by doing
+          template overrides and / or loading your own CSS it's recommended
+          that you disable loading of FEF's CSS files. You can control this
+          behavior with these options.</para>
+
+          <para><guilabel>Load Akeeba FEF</guilabel> controls when the FEF CSS
+          will be loaded: Never, Frontend Only, Backend Only or Both (frontend
+          and backend). Kindly note that the backend interface will look
+          broken if you do not load FEF and you do not supply template
+          overrides for every single backend page.</para>
+
+          <para><guilabel>Load CSS reset with Akeeba FEF</guilabel> controls
+          an optional behavior of FEF. We load a CSS reset (forcing the values
+          of several CSS attributes to predictable values) inside the DIV that
+          contains Akeeba Data Compliance's output. This is done to prevent
+          third party CSS, such as the Joomla-supplied Bootstrap 2 files, from
+          interfering with the layout. If you are going to be overriding the
+          layout with your own CSS you should not be loading the CSS reset.
+          The options here are the same as for the previous setting.</para>
+
+          <bridgehead>Permissions</bridgehead>
+
+          <para>This is the standard Joomla! ACL configuration page for the
+          component. Apart from Joomla's typical permissions, Akeeba Data
+          Compliance comes with its own, special permissions.</para>
+
+          <para><guilabel>Audit trails</guilabel> controls whether the backend
+          user can view any of the audit trails kept by Akeeba Data
+          Compliance. Please note that this is a unique case of a permission
+          in that it controls <emphasis>viewing information</emphasis>, not
+          taking an action on it.</para>
+
+          <para><guilabel>Delete profiles</guilabel> controls whether the user
+          is allowed to delete the profiles of other users.</para>
+
+          <para><guilabel>Export profiles</guilabel> controls whether the user
+          is allowed to export the personal information of other users.</para>
+
+          <para>Due to the way Joomla! works, Super Users (that is: any user
+          belonging to a group with the Super User privilege) has all of these
+          privileges and <emphasis>they can not be taken away from
+          them</emphasis>. For better GDPR compliance it's advisable to create
+          a new user group with more permissions than Administrator but less
+          than Super User for those administrators who need extended
+          privileges on the site but who should not be able to take actions or
+          view personally identifiable information of other users. Doing that
+          is outside the scope of Akeeba Data Compliance: the tools to do that
+          (Permissions) are given to you by Joomla itself!</para>
         </section>
 
         <section xml:id="system-config">
           <title>System plugin configuration</title>
 
-          <para/>
+          <para>The <guilabel>System - Data Compliance</guilabel> plugin makes
+          it possible to capture the login of users who have not yet consented
+          to processing of their personal information. It's advisable to keep
+          it published at all times.</para>
+
+          <para>The captive login works by means of redirections. If the
+          current user has not provided their consent (or has withdrawn their
+          consent) they are immediately redirected to Data Compliance's self
+          service page. Trying to navigate to another page causes another
+          redirection. This way the user is captured in the self-service page
+          until they provide consent (they can also log out of the site if
+          they want to).</para>
+
+          <para>The same trick may be used by other components to provide a
+          captive login. For example, Akeeba LoginGuard (our Two Step
+          Verification component for Joomla) does the same thing. To prevent a
+          redirection loop you must let Data Compliance know which third party
+          components are allowed to be accessed without the user providing
+          their consent. Moreover, you can specify other components here which
+          don't collect personal information and are therefore allowed (e.g.
+          com_content which is the Joomla articles component).</para>
+
+          <para>The Exempt components / views / tasks takes one specification
+          on each line. Each specification consists of a component, view and
+          task separated by dots. When you want to match any value in a
+          position using <code>*</code>. For example, to allow access to
+          single article views in com_content use the specification
+          <code>com_content.article.*</code> </para>
+
+          <para>By default, only Akeeba LoginGuard is allowed to be accessed:
+          <code>com_loginguard.*.*</code></para>
         </section>
 
         <section xml:id="data-sources">
           <title>Data sources configuration (<code>datacompliance</code>
           plugins)</title>
 
-          <para/>
+          <para>Akeeba Data Compliance, the component, does not know what
+          personally identifiable information looks like, where to find it and
+          where to handle it. This is the job of the plugins of the
+          <code>datacompliance</code> type. These provide the interface to the
+          personally identifiable data sources and take actions on that
+          data.</para>
 
           <section xml:id="source-joomla">
             <title>Joomla! Core User Data</title>
 
-            <para/>
+            <para>Plugin: Data Compliance - Joomla! Core User Data</para>
+
+            <para>It allows Data Compliance to handle information stored by
+            Joomla! itself, as well as any profile fields managed by third
+            party components and plugins.</para>
+
+            <para><bridgehead>Options</bridgehead></para>
+
+            <para><guilabel>Exempt user groups</guilabel>. The users who
+            belong in these user groups cannot be deleted, either manually or
+            automatically (lifecycle policies). Please note that users who
+            belong in any group which has the Super User privilege are always
+            exempt, regardless of this setting.</para>
+
+            <para><guilabel>User account lifecycle</guilabel>. Do you want
+            this plugin to tell Akeeba Data Compliance which user records are
+            considered expired according to the options below? If you set this
+            to No the following options are ignored.</para>
+
+            <para><guilabel>Last login threshold (months)</guilabel>. User
+            accounts which have not logged into your site for at least this
+            many months are considered expired.</para>
+
+            <para><guilabel>Never visited</guilabel>. User accounts who have
+            never visited your site after the user account creation are
+            considered expired.</para>
+
+            <para><guilabel>Blocked accounts</guilabel>. User accounts marked
+            as Blocked are considered expired. <emphasis role="bold">THIS IS
+            DANGEROUS</emphasis>! Joomla will also mark user accounts as
+            blocked when the user tries to reset their password and until they
+            do so. This may result in active user accounts being deleted
+            because they were trying to reset their password. We recommend
+            AGAINST using this option.</para>
           </section>
 
           <section xml:id="source-akeebasubs">
             <title>Akeeba Subscriptions</title>
 
-            <para/>
+            <para>Plugin: Data Compliance - Akeeba Subscriptions</para>
+
+            <para>It allows Data Compliance to handle information stored by
+            Akeeba Subscriptions.</para>
+
+            <para><bridgehead>Options</bridgehead></para>
+
+            <para><guilabel>User account lifecycle</guilabel>. Do you want
+            this plugin to tell Akeeba Data Compliance which user records are
+            considered expired according to the options below? If you set this
+            to No the following options are ignored.</para>
+
+            <para><guilabel>Last expired subscription this many months
+            ago</guilabel>. User accounts whose last subscription expired at
+            least this many months ago are considered expired.</para>
+
+            <para><guilabel>Exclude users who have visited the site in the
+            meantime</guilabel>. Modifies the above option. If the user with
+            the expired subscription has visited the site after their
+            subscription expires they are not considered expired accounts. For
+            most sites it's recommended to set this to Yes and use the “Last
+            login threshold (months)” option in the Data Compliance - Joomla!
+            Core User Data plugin to handle expiration of these user
+            accounts.</para>
+
+            <para><guilabel>Non-lifecycle deletion exemption threshold
+            (days)</guilabel>. Users who created a subscription within this
+            many days ago will not be allowed to be deleted. It's recommended
+            to set this to the maximum chargeback period allowed by the
+            payment services you are using on your site. For example, if they
+            allow chargebacks for up to 90 days since the transaction was made
+            you should put 90 in here.</para>
           </section>
 
           <section xml:id="source-ars">
             <title>Akeeba Release System</title>
 
-            <para/>
+            <para>Plugin: Data Compliance - Akeeba Release System</para>
+
+            <para>It allows Data Compliance to handle information stored by
+            Akeeba Release System.</para>
+
+            <para><bridgehead>Options</bridgehead></para>
+
+            <para>There are no options for this plugin.</para>
           </section>
 
           <section xml:id="source-ats">
             <title>Akeeba Ticket System</title>
 
-            <para/>
+            <para>Plugin: Data Compliance - Akeeba Ticket System</para>
+
+            <para>It allows Data Compliance to handle information stored by
+            Akeeba Ticket System.</para>
+
+            <para><bridgehead>Options</bridgehead></para>
+
+            <para>There are no options for this plugin.</para>
           </section>
 
           <section xml:id="source-loginguard">
             <title>Akeeba LoginGuard</title>
 
-            <para/>
+            <para>Plugin: Data Compliance - Akeeba LoginGuard</para>
+
+            <para>It allows Data Compliance to handle information stored by
+            Akeeba LoginGuard.</para>
+
+            <para><bridgehead>Options</bridgehead></para>
+
+            <para>There are no options for this plugin.</para>
           </section>
         </section>
 
