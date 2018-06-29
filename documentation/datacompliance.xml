@@ -1348,7 +1348,7 @@
               before sending out each email? Default is 1 (ask for
               confirmation, expecting input from the keyboard). When using in
               CRON scripts use <option>--confirm=0</option> to prevent this
-              behaviour. </para>
+              behaviour.</para>
             </listitem>
 
             <listitem>
@@ -1557,7 +1557,7 @@
           task separated by dots. When you want to match any value in a
           position using <code>*</code>. For example, to allow access to
           single article views in com_content use the specification
-          <code>com_content.article.*</code> </para>
+          <code>com_content.article.*</code></para>
 
           <para>By default, only Akeeba LoginGuard is allowed to be accessed:
           <code>com_loginguard.*.*</code></para>
@@ -1693,24 +1693,223 @@
         <section xml:id="other-plugins">
           <title>Other plugins</title>
 
-          <para/>
+          <para>Akeeba Data Compliance comes with optional plugins. They add
+          functionality to Akeeba Data Compliance.</para>
 
           <section xml:id="user-plugin">
             <title>The User plugin</title>
 
-            <para/>
+            <para>Plugin: User - Data Compliance</para>
+
+            <warning>
+              <para>If you disable this plugin logging into the site may
+              result in user accounts being deleted by the Lifecycle Policy
+              feature <emphasis>WITHOUT</emphasis> being sent a warning email
+              first! If unsure, publish the plugin.</para>
+            </warning>
+
+            <para>This plugin is responsible for the following features of
+            Akeeba Data Compliance:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Add the <guilabel>Manage your personal data
+                options</guilabel> link to the user profile edit page.</para>
+              </listitem>
+
+              <listitem>
+                <para>Log any changes to the user's personal information
+                (Joomla! core user profile information, user group changes,
+                user profile field changes, user custom field changes).</para>
+              </listitem>
+
+              <listitem>
+                <para>When a user logs in remove the information from the user
+                profile which indicates that the user has already received
+                warning about their account being ready to be removed due to
+                the Lifecycle Policy. This means that next time their account
+                is eligible for Lifecycle Policy deletion they will receive a
+                new email. If this information is not removed they will not
+                receive any further email in the future if their user account
+                becomes expired again BUT their account will be deleted by
+                Lifecycle Policy!</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>It allows Data Compliance to handle information stored by
+            Joomla! itself, as well as any profile fields managed by third
+            party components and plugins.</para>
           </section>
 
           <section xml:id="plugin-email">
             <title>Send emails on account deletion</title>
 
-            <para/>
+            <para>Plugin: Akeeba Data Compliance - Send emails on account
+            deletion</para>
+
+            <para>Enables all email features for Akeeba Data Compliance. It's
+            recommended that you always enable this plugin.</para>
+
+            <para><bridgehead>Options</bridgehead></para>
+
+            <para><guilabel>Email users</guilabel>. Should emails be sent to
+            users when their account is being deleted?</para>
+
+            <para><guilabel>Email administrators</guilabel>. Should
+            administrators (Super Users) receive emails when a user's account
+            is being deleted?</para>
+
+            <para><guilabel>Administrator emails</guilabel>. A list of email
+            addresses to be emailed. One email per line. The emails must
+            correspond to the email used by Super User accounts on your site,
+            otherwise they will not receive any emails. If you leave it blank
+            all Super Users on the site will be emailed.</para>
           </section>
 
           <section xml:id="plugin-s3">
             <title>Upload user deletion audit trail to Amazon S3</title>
 
-            <para/>
+            <para>Plugin: Data Compliance - Upload user deletion audit trail
+            to Amazon S3</para>
+
+            <para>Uploads the user deletion audit log records to Amazon S3.
+            One JSON file per deleted user account is uploaded. You should
+            configure it to use an Amazon S3 bucket with a suitable policy
+            which disallows deletion of files. This helps you positively
+            fulfill the recommendation of having an immutable audit log for
+            data deletion actions on your site.</para>
+
+            <bridgehead>Options</bridgehead>
+
+            <variablelist>
+              <varlistentry>
+                <term>Access Key</term>
+
+                <listitem>
+                  <para>Your Amazon S3 Access Key</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Secret Key</term>
+
+                <listitem>
+                  <para>Your Amazon S3 Secret Key</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Use HTTPS</term>
+
+                <listitem>
+                  <para>If enabled, HTTPS will be used to connect to Amazon
+                  S3. Strongly recommended.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Bucket</term>
+
+                <listitem>
+                  <para>The name of your Amazon S3 bucket where your files
+                  will be stored in. The bucket must be already created; the
+                  application can not create buckets.</para>
+
+                  <warning>
+                    <para><emphasis role="bold">DO NOT CREATE BUCKETS WITH
+                    NAMES CONTAINING UPPERCASE LETTERS. AMAZON CLEARLY WARNS
+                    AGAINST DOING THAT</emphasis>. If you use a bucket with
+                    uppercase letters in its name it is very possible that the
+                    application will not be able to upload anything to
+                    it.</para>
+
+                    <para>Please note that this is a limitation imposed by
+                    Amazon itself. It is not something we can "fix" in the
+                    application. If this is the case with your site, please
+                    create a new bucket whose name only consists of lowercase
+                    unaccented latin characters (a-z), numbers (0-9), dashes
+                    and dots.</para>
+
+                    <para>Moreover, you cannot use a bucket name with a dot in
+                    its filename together with the Use HTTPS option. This is a
+                    limitation of the HTTPS setup in Amazon S3 servers and
+                    cannot be worked around.</para>
+                  </warning>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Amazon S3 Region</term>
+
+                <listitem>
+                  <para>Please select which S3 Region you have created your
+                  bucket in. This is MANDATORY for using the newer, more
+                  secure, v4 signature method. You can see the region of your
+                  bucket in your Amazon S3 management console. Right click on
+                  a bucket and click on Properties. A new pane opens to the
+                  left. The second row is labelled Region. This is where your
+                  bucket was created in. Go back to Akeeba Data Compliance and
+                  select the corresponding option from the drop-down.</para>
+
+                  <important>
+                    <para>If you choose the wrong region the connection WILL
+                    fail.</para>
+                  </important>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Signature method</term>
+
+                <listitem>
+                  <para>This option determines the authentication API which
+                  will be used to "log in" the backup engine to your Amazon S3
+                  bucket. You have two options:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><emphasis role="bold">v4 (preferred for Amazon
+                      S3)</emphasis>. Recommended. You MUST specify the Amazon
+                      S3 Region in the option above. This option implements
+                      the newer AWS4 (v4) authentication API. Buckets created
+                      in Amazon S3 regions brought online after January 2014
+                      (e.g. Frankfurt) will only accept this option. Older
+                      buckets will work with either option.</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><emphasis role="bold">v2 (legacy mode, third party
+                      storage providers)</emphasis>. Legacy option. We
+                      strongly advise against using it unless you have a
+                      specific reason we can't think of.</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Directory</term>
+
+                <listitem>
+                  <para>The directory inside your Amazon S3 bucket where your
+                  files will be stored in. If you want to use subdirectories,
+                  you have to use a forward slash, e.g.
+                  <filename>directory/subdirectory/subsubdirectory</filename>.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Storage Class</term>
+
+                <listitem>
+                  <para>This determines how Amazon will store your files. We
+                  recommend using Standard - Infrequent Access. This offers
+                  decent data durability and results in smaller storage costs
+                  if you don't retrieve the files too often, as is the case
+                  with the audit log files.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
           </section>
         </section>
       </section>
@@ -1718,12 +1917,66 @@
       <section xml:id="cli-tools">
         <title>Other CLI tools</title>
 
-        <para/>
+        <para>Akeeba Data Compliance offers some optional command line
+        interface (CLI) tools. CLI tools are meant for advanced users only who
+        manage their sites using the command line, e.g. through an SSH
+        console. Most people should use the administrator web interface in
+        Joomla! instead.</para>
 
         <section xml:id="delete-user-cli">
           <title>Delete a user from the CLI</title>
 
-          <para/>
+          <para>Script location:
+          <filename><replaceable>JOOMLA_ROOT</replaceable>/cli/datacompliance_account_delete.php</filename></para>
+
+          <para>This script deletes any user account. It's equivalent to using
+          the Delete option from the self-service page of that account.</para>
+
+          <warning>
+            <para>THIS IS IRREVERSIBLE. Once you delete it with this script,
+            the user's personal information is gone forever.</para>
+          </warning>
+
+          <para>You can call this script using the following command
+          line:</para>
+
+          <programlisting><replaceable>/usr/local/bin/php</replaceable> <replaceable>JOOMLA_ROOT</replaceable>/cli/datacompliance_account_lifecycle.php --username=foobar</programlisting>
+
+          <para>where <replaceable>/usr/local/bin/php</replaceable> is the
+          path to your PHP CLI executable and
+          <replaceable>JOOMLA_ROOT</replaceable> is the absolute path to your
+          web site's root. You can get this information from your host.</para>
+
+          <para>The script accepts the following parameters</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><option>--debug</option> When present it turns on debug
+              mode. Only for developers. Do not use on live sites.</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--username</option> The username you want to
+              delete, e.g. <option>--username=foobar</option></para>
+            </listitem>
+
+            <listitem>
+              <para><option>--id</option> The numeric user ID you want to
+              delete, e.g. <option>--id=123</option></para>
+            </listitem>
+
+            <listitem>
+              <para><option>--force</option> Do not ask for confirmation,
+              delete the user anyway. DANGEROUS!!!</para>
+            </listitem>
+
+            <listitem>
+              <para><option>--dry-run</option> No deletions will take place.
+              The script will run normally and output all actions it would be
+              taking without really deleting any user account. Useful to test
+              what will happen.</para>
+            </listitem>
+          </itemizedlist>
         </section>
       </section>
     </chapter>
@@ -1734,25 +1987,27 @@
       <section xml:id="translating">
         <title>Translating</title>
 
-        <para/>
+        <para>(Translations have not been set up yet - This section will be
+        updated in the future)</para>
       </section>
 
       <section xml:id="templating">
         <title>Interface customization / templating</title>
 
-        <para/>
+        <para>See the <link linkend="self-service">Self-service page
+        documentation</link>.</para>
       </section>
 
       <section xml:id="create-data-source-plugins">
         <title>Creating data source plugins</title>
 
-        <para/>
+        <para>(TODO - This section has not been written yet)</para>
       </section>
 
       <section xml:id="create-misc-plugins">
         <title>Creating other integration plugins</title>
 
-        <para/>
+        <para>(TODO - This section has not been written yet)</para>
       </section>
     </chapter>
   </part>
