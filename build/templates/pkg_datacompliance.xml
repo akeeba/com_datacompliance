@@ -39,4 +39,9 @@
 
     <!-- Installation script -->
     <scriptfile>script.datacompliance.php</scriptfile>
+
+    <!-- Update servers -->
+    <updateservers>
+        <server type="extension" priority="1" name="Akeeba Subscriptions">https://raw.githubusercontent.com/akeeba/com_akeebasubs/master/update/pkg_datacompliance_updates.xml</server>
+    </updateservers>
 </extension>
