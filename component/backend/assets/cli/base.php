@@ -29,11 +29,6 @@ if (!isset($curdir))
 	}
 }
 
-if (!file_exists($curdir . '/includes/defines.php'))
-{
-	$curdir = getcwd();
-}
-
 if (file_exists($curdir . '/defines.php'))
 {
 	include_once $curdir . '/defines.php';
