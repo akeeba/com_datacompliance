@@ -65,7 +65,7 @@
 
         <!-- Upload the release files -->
         <GitHubAsset token="${github.token}" organization="${github.organization}" repository="${github.repository}"
-                     file="${dirs.release}/pkg_akeebasubs-${version}.zip"
+                     file="${dirs.release}/pkg_datacompliance-${version}.zip"
                      releaseId="${github.release.id}" />
 
         <!-- Upload the documentation files -->
