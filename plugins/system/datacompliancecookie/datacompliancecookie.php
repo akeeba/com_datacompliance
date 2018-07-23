@@ -1,0 +1,251 @@
+<?php
+/**
+ * @package   Akeeba Data Compliance
+ * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 3, or later
+ */
+
+use FOF30\Container\Container;
+use plgSystemDataComplianceCookieHelper as CookieHelper;
+
+// Prevent direct access
+defined('_JEXEC') or die;
+
+// Minimum PHP version check
+if (!version_compare(PHP_VERSION, '7.0.0', '>='))
+{
+	return;
+}
+
+// Make sure Akeeba DataCompliance is installed
+if (!file_exists(JPATH_ADMINISTRATOR . '/components/com_datacompliance'))
+{
+	return;
+}
+
+// Load FOF
+if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+{
+	return;
+}
+
+/**
+ * Akeeba DataCompliance Cookie Conformance System Plugin
+ *
+ * Removes cookies unless explicitly allowed
+ */
+class PlgSystemDatacompliancecookie extends JPlugin
+{
+	/**
+	 * Are we enabled, all requirements met etc?
+	 *
+	 * @var   bool
+	 *
+	 * @since   1.0.0
+	 */
+	public $enabled = true;
+
+	/**
+	 * The component's container
+	 *
+	 * @var   Container
+	 *
+	 * @since   1.0.0
+	 */
+	private $container = null;
+
+	/**
+	 * Constructor
+	 *
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An optional associative array of configuration settings.
+	 *                             Recognized key values include 'name', 'group', 'params', 'language'
+	 *                             (this list is not meant to be comprehensive).
+	 *
+	 * @since   1.0.0
+	 */
+	public function __construct($subject, array $config = array())
+	{
+		parent::__construct($subject, $config);
+
+		// Self-disable on admin pages.
+		try
+		{
+			if (JFactory::getApplication()->isClient('administrator'))
+			{
+				throw new RuntimeException("This plugin should not load on administrator pages.");
+			}
+		}
+		catch (Exception $e)
+		{
+			// This code block also catches the case where JFactory::getApplication() crashes, e.g. CLI applications.
+			$this->enabled = false;
+
+			return;
+		}
+
+		// Self-disable if our component is not enabled.
+		try
+		{
+			if (!JComponentHelper::isInstalled('com_datacompliance') || !JComponentHelper::isEnabled('com_datacompliance'))
+			{
+				$this->enabled = false;
+			}
+			else
+			{
+				$this->container = Container::getInstance('com_datacompliance');
+			}
+		}
+		catch (Exception $e)
+		{
+			$this->enabled = false;
+		}
+
+		if (!$this->enabled)
+		{
+			return;
+		}
+
+		// Load the helper class. Self-disable if it's not available.
+		if (!class_exists('plgSystemDataComplianceHelper'))
+		{
+			include_once __DIR__ . '/helper/helper.php';
+		}
+
+		if (!class_exists('plgSystemDataComplianceHelper'))
+		{
+			$this->enabled = false;
+
+			return;
+		}
+	}
+
+	public function onXXXXXXX()
+	{
+		// Am I already disabled...?
+		if (!$this->enabled)
+		{
+			return;
+		}
+
+		// TODO Create an AJAX handler for the cookie preference.
+
+		// TODO I will need to call CookieHelper::setAcceptedCookies to record the user's preference
+	}
+
+	public function onAfterInitialize()
+	{
+		// Am I already disabled...?
+		if (!$this->enabled)
+		{
+			return;
+		}
+
+		if (!CookieHelper::hasAcceptedCookies())
+		{
+			// TODO Add the user to the "No cookies" user group
+		}
+		else
+		{
+			// TODO Add the user to the "Accepted cookies" user group
+		}
+
+	}
+
+	/**
+	 * Called after Joomla! has routed the application (figured out SEF redirections and is about to load the component)
+	 *
+	 * @see  \Joomla\CMS\Application\CMSApplication::route()
+	 *
+	 * @return  void
+	 */
+	public function onAfterRoute()
+	{
+		// Am I already disabled...?
+		if (!$this->enabled)
+		{
+			return;
+		}
+
+		// If the format is not 'html' or the tmpl is not one of the allowed values we should not run.
+		try
+		{
+			$app = JFactory::getApplication();
+
+			if ($app->input->getCmd('format', 'html') != 'html')
+			{
+				throw new RuntimeException("This plugin should not run in non-HTML application formats.");
+			}
+
+			if (!in_array($app->input->getCmd('tmpl', ''), ['', 'index', 'component'], true))
+			{
+				throw new RuntimeException("This plugin should not run for application templates which do not predictably result in HTML output.");
+			}
+		}
+		catch (Exception $e)
+		{
+			$this->enabled = false;
+
+			return;
+		}
+
+		if (!CookieHelper::hasAcceptedCookies())
+		{
+			// TODO Create plugin options for the allow session cookie and additional domain names parameters
+			CookieHelper::unsetAllCookies(true, []);
+
+			// TODO Add the user to the "No cookies" user group
+
+			// TODO Load the JavaScript to show the cookie consent modal
+		}
+		else
+		{
+			// TODO Add the user to the "Accepted cookies" user group
+
+			// TODO Load the JavaScript to show the manage cookie options controls
+		}
+	}
+
+	/**
+	 * Called after Joomla! has rendered the document and before it is sent to the browser.
+	 *
+	 * @see \Joomla\CMS\Application\CMSApplication::execute()
+	 *
+	 * @return  void
+	 */
+	public function onAfterRender()
+	{
+		// Am I already disabled...?
+		if (!$this->enabled)
+		{
+			return;
+		}
+
+		// TODO Is our JavaScript in the output? If yes, return.
+
+		if (!CookieHelper::hasAcceptedCookies())
+		{
+			// TODO Load the JavaScript to show the cookie consent modal
+		}
+		else
+		{
+			// TODO Load the JavaScript to show the manage cookie options controls
+		}
+	}
+
+	/**
+	 * Has the user accepted cookies from our site?
+	 *
+	 * If there is a preference cookie set on the user's browser we use the preference recorded there (as long as it's
+	 * not expired). Otherwise we use the value of the impliedAccept (Implicitly accept cookies) plugin option.
+	 *
+	 * @return  bool
+	 */
+	private function hasAcceptedCookies(): bool
+	{
+		// TODO Create a configuration option 'impliedAccept' "Implicitly accept cookies", boolean, default 0 (NO).
+		$impliedAcceptance = $this->params->get('impliedAccept', 0) != 0;
+
+		return CookieHelper::hasAcceptedCookies($impliedAcceptance);
+	}
+}
