@@ -107,7 +107,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			include_once __DIR__ . '/helper/helper.php';
 		}
 
-		if (!class_exists('plgSystemDataComplianceHelper'))
+		if (!class_exists('plgSystemDataComplianceCookieHelper'))
 		{
 			$this->enabled = false;
 
