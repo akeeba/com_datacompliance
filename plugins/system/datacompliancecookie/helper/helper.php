@@ -180,6 +180,7 @@ abstract class plgSystemDataComplianceCookieHelper
 		if ($allowSessionCookie)
 		{
 			$whiteList[] = self::getSessionCookieName();
+			$whiteList[] = 'joomla_user_state';
 		}
 
 		/**
@@ -195,8 +196,8 @@ abstract class plgSystemDataComplianceCookieHelper
 		 * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
 		 */
 
-		self::unsetExistingCookies($whiteList, $domainNames);
 		self::unsetNewCookies($whiteList);
+		self::unsetExistingCookies($whiteList, $domainNames);
 	}
 
 	/**
@@ -209,6 +210,12 @@ abstract class plgSystemDataComplianceCookieHelper
 	 */
 	private static function unsetExistingCookies(array $whiteList, array $domainNames)
 	{
+		/**
+		 * First get the cookie names using PHP's $_COOKIE superglobal.
+		 *
+		 * This works and is more reliable BUT if there are cookies in array notation (foo[bar]) the get converted into
+		 * an array which kinda sucks for us. See below.
+		 */
 		$cookieInput = new \FOF30\Input\Input($_COOKIE);
 		$cookies = $cookieInput->getData();
 
@@ -219,6 +226,28 @@ abstract class plgSystemDataComplianceCookieHelper
 
 		$cookieNames = array_keys($cookies);
 
+		/**
+		 * For the second pass I will use $_SERVER['HTTP_COOKIE'] which lets me unset cookies also in array notation.
+		 */
+		if (isset($_SERVER['HTTP_COOKIE']))
+		{
+			$cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+
+			foreach ($cookies as $cookie)
+			{
+				$parts = explode('=', $cookie);
+				$cookieNames[] = trim($parts[0]);
+			}
+		}
+
+		/**
+		 * Now I need to get the unique cookie names
+		 */
+		$cookieNames = array_unique($cookieNames);
+
+		/**
+		 * Loop through all the cookies and unset them.
+		 */
 		foreach ($cookieNames as $cookieName)
 		{
 			$cookieName = trim($cookieName);
@@ -453,19 +482,54 @@ abstract class plgSystemDataComplianceCookieHelper
 	 */
 	private static function getDefaultCookieDomainNames(): array
 	{
-		$defaultDomain = filter_input(INPUT_SERVER, 'HTTP_HOST');
+		$domainNames = [];
 
+		/**
+		 * First, we are going to add the current domain name as defined in the HOST header.
+		 *
+		 * We add the full domain (e.g. www.example.com), its base domain (example.com) and the dotter base domain
+		 * (.example.com). The latter catches all other subdomains and is commonly used with things like Google
+		 * Analytics.
+		 */
+		$defaultDomain = filter_input(INPUT_SERVER, 'HTTP_HOST');
+		$domainNames[] = $defaultDomain;
+		$domainNames[] = self::getBaseDomain($defaultDomain);
+		$domainNames[] = '.' . self::getBaseDomain($defaultDomain);
+
+		/**
+		 * Next up, we're going to get Joomla's cookie domain name which might be different.
+		 *
+		 * We add the full domain (e.g. www.example.com), its base domain (example.com) and the dotter base domain
+		 * (.example.com). The latter catches all other subdomains and is commonly used with things like Google
+		 * Analytics.
+		 */
 		try
 		{
 			$app           = JFactory::getApplication();
-			$defaultDomain = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
+			$jCookieDomain = $app->get('cookie_domain', $defaultDomain);
+			$domainNames[] = $jCookieDomain;
+			$domainNames[] = self::getBaseDomain($jCookieDomain);
+			$domainNames[] = '.' . self::getBaseDomain($jCookieDomain);
 		}
 		catch (Exception $e)
 		{
 		}
 
-		$domainNames = [$defaultDomain];
+		return array_unique($domainNames);
+	}
 
-		return $domainNames;
+	private static function getBaseDomain(string $subdomain): string
+	{
+		$domainParts = explode('.', $subdomain);
+
+		if (count($domainParts) > 2)
+		{
+			$ret = array_pop($domainParts);
+			$ret = array_pop($domainParts) . '.' . $ret;
+
+			return $ret;
+		}
+
+		return $subdomain;
 	}
 }

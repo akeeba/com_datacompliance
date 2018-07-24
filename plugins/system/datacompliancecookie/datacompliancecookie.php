@@ -280,9 +280,17 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private function removeAllCookies()
 	{
 		$allowSessionCookie      = $this->params->get('allowSessionCookie', 1) !== 0;
-		$additionalCookieDomains = array_map(function ($x) {
-			return trim($x);
-		}, explode("\n", trim($this->params->get('additionalCookieDomains', ''))));
+		$additionalCookieDomains = trim($this->params->get('additionalCookieDomains', ''));
+
+		if (!empty($additionalCookieDomains))
+		{
+			$additionalCookieDomains = array_map(function ($x) {
+				return trim($x);
+			}, explode("\n", $additionalCookieDomains));
+		}
+
+		$additionalCookieDomains = is_array($additionalCookieDomains) ? $additionalCookieDomains : [];
+
 		CookieHelper::unsetAllCookies($allowSessionCookie, $additionalCookieDomains);
 	}
 

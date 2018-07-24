@@ -3,10 +3,15 @@ var AkeebaDataComplianceCookies = function (options)
 	var me = this;
 
 	this.vars = {
+		// The cookie domain and path to use when unsetting cookies
 		cookie: {
 			domain: null,
 			path:   null
 		},
+		// Additional domain names to use when unsetting cookies
+		additionalCookieDomains: [],
+		// Whitelisted cookie names
+		whitelisted: []
 	};
 
 	var construct = function (options)
@@ -26,6 +31,15 @@ var AkeebaDataComplianceCookies = function (options)
 		me.disableLocalStorage();
 
 		me.disableSessionStorage();
+	};
+
+	/**
+	 * Find the cookies which are currently known to the browser and unset them
+	 */
+	this.unsetCurrentCookies = function ()
+	{
+		var rawCookie = document.cookie;
+		// TODO
 	};
 
 	/**
