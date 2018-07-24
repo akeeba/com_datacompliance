@@ -280,6 +280,18 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private function removeAllCookies()
 	{
 		$allowSessionCookie      = $this->params->get('allowSessionCookie', 1) !== 0;
+		$additionalCookieDomains = $this->getAdditionalCookieDomains();
+
+		CookieHelper::unsetAllCookies($allowSessionCookie, $additionalCookieDomains);
+	}
+
+	/**
+	 * Get the additional cookie domains as an array
+	 *
+	 * @return array
+	 */
+	private function getAdditionalCookieDomains(): array
+	{
 		$additionalCookieDomains = trim($this->params->get('additionalCookieDomains', ''));
 
 		if (!empty($additionalCookieDomains))
@@ -291,7 +303,12 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 		$additionalCookieDomains = is_array($additionalCookieDomains) ? $additionalCookieDomains : [];
 
-		CookieHelper::unsetAllCookies($allowSessionCookie, $additionalCookieDomains);
+		if (empty($additionalCookieDomains))
+		{
+			$additionalCookieDomains = CookieHelper::getDefaultCookieDomainNames();
+		}
+
+		return $additionalCookieDomains;
 	}
 
 	/**
@@ -304,18 +321,37 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	{
 		$path   = $app->get('cookie_path', '/');
 		$domain = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
-		$js     = <<< JS
+
+		$whiteList          = [CookieHelper::getCookieName()];
+		$allowSessionCookie = $this->params->get('allowSessionCookie', 1) !== 0;
+
+		// If the session cookie is allowed I need to whitelist it too.
+		if ($allowSessionCookie)
+		{
+			$whiteList[] = CookieHelper::getSessionCookieName();
+			$whiteList[] = 'joomla_user_state';
+		}
+
+		$defaultOptions = [
+			'cookie'                  => [
+				'domain' => $domain,
+				'path'   => $path,
+			],
+			'additionalCookieDomains' => $this->getAdditionalCookieDomains(),
+			'whitelisted'             => $whiteList,
+		];
+
+		$options     = array_merge_recursive($defaultOptions, $options);
+		$optionsJSON = json_encode($options, JSON_PRETTY_PRINT);
+
+		$js = <<< JS
 ; //
-var AkeebaDataComplianceCookiesOptions = {
-	cookie: {
-		domain: '$domain',
-		path:   '$path',
-	}
-};
+var AkeebaDataComplianceCookiesOptions = $optionsJSON;
+
 JS;
 
 		$this->container->template->addJSInline($js);
-		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, true, $this->container->mediaVersion);
+		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', false, false, $this->container->mediaVersion);
 
 		// TODO Add language strings which should be made known to JS
 	}

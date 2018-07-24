@@ -44,6 +44,16 @@ abstract class plgSystemDataComplianceCookieHelper
 	}
 
 	/**
+	 * Gets the name of our helper cookie. This is set on the client's browser to record their cookie preference.
+	 *
+	 * @return  string
+	 */
+	public static function getCookieName(): string
+	{
+		return self::$helperCookieName;
+	}
+
+	/**
 	 * Returns the contents of the helper cookie. If the cookie is not set or is invalid we return boolean false.
 	 *
 	 * @return  bool|array
@@ -456,7 +466,7 @@ abstract class plgSystemDataComplianceCookieHelper
 	 *
 	 * @return  string
 	 */
-	private static function getSessionCookieName(): string
+	public static function getSessionCookieName(): string
 	{
 		if (is_null(self::$sessionCookieName))
 		{
@@ -480,7 +490,7 @@ abstract class plgSystemDataComplianceCookieHelper
 	 *
 	 * @return array
 	 */
-	private static function getDefaultCookieDomainNames(): array
+	public static function getDefaultCookieDomainNames(): array
 	{
 		$domainNames = [];
 
