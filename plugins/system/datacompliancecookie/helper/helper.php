@@ -99,7 +99,7 @@ abstract class plgSystemDataComplianceCookieHelper
 			try
 			{
 				// If the user does not have a recorded preference I will return the supplied default state
-				$hasCookie = self::getDecodedCookieValue();
+				$hasCookie = self::getDecodedCookieValue() !== false;
 
 				self::$hasAcceptedCookies = $hasCookie ? self::decodeAcceptanceFromHelperCookie() : $defaultState;
 			}

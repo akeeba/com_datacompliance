@@ -6,6 +6,7 @@
  */
 
 use FOF30\Container\Container;
+use Joomla\CMS\Application\CMSApplication;
 use plgSystemDataComplianceCookieHelper as CookieHelper;
 
 // Prevent direct access
@@ -39,20 +40,38 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	/**
 	 * Are we enabled, all requirements met etc?
 	 *
-	 * @var   bool
+	 * @var    bool
 	 *
-	 * @since   1.0.0
+	 * @since  1.1.0
 	 */
 	public $enabled = true;
 
 	/**
 	 * The component's container
 	 *
-	 * @var   Container
+	 * @var    Container
 	 *
-	 * @since   1.0.0
+	 * @since  1.1.0
 	 */
 	private $container = null;
+
+	/**
+	 * Has the user accepted cookies from this site?
+	 *
+	 * @var    bool
+	 *
+	 * @since  1.1.0
+	 */
+	private $hasAcceptedCookies = false;
+
+	/**
+	 * Has the user recorded his preference regarding cookies?
+	 *
+	 * @var    bool
+	 *
+	 * @since  1.1.0
+	 */
+	private $hasCookiePreference = false;
 
 	/**
 	 * Constructor
@@ -114,9 +133,16 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
+		// Get some options
+		$cookieName        = $this->params->get('cookieName', 'plg_system_datacompliancecookie');
+		$impliedAcceptance = $this->params->get('impliedAccept', 0) != 0;
+
 		// Set up the name of the user preference (helper) cookie we are going to use in this plugin
-		$cookieName = $this->params->get('cookieName', 'plg_system_datacompliancecookie');
 		CookieHelper::setCookieName($cookieName);
+
+		// Get the user's cookie acceptance preferences
+		$this->hasAcceptedCookies  = CookieHelper::hasAcceptedCookies($impliedAcceptance);
+		$this->hasCookiePreference = CookieHelper::getDecodedCookieValue() !== false;
 	}
 
 	public function onAjaxDatacompliancecookie()
@@ -148,7 +174,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		if (!$this->hasAcceptedCookies())
+		if (!$this->hasAcceptedCookies)
 		{
 			// Remove all cookies
 			$this->removeAllCookies();
@@ -199,7 +225,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		if (!$this->hasAcceptedCookies())
+		$jsOptions = [];
+
+		if (!$this->hasAcceptedCookies)
 		{
 			// Remove all cookies before the component is loaded
 			$this->removeAllCookies();
@@ -210,6 +238,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		{
 			// TODO Load the JavaScript to show the manage cookie options controls
 		}
+
+		$this->loadCommonJavascript($app, $jsOptions);
 	}
 
 	/**
@@ -229,7 +259,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 		// TODO Is our JavaScript in the output? If yes, return.
 
-		if (!$this->hasAcceptedCookies())
+		if (!$this->hasAcceptedCookies)
 		{
 			// Remove any cookies which may have been set by the component and modules
 			$this->removeAllCookies();
@@ -240,21 +270,6 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		{
 			// TODO Load the JavaScript to show the manage cookie options controls
 		}
-	}
-
-	/**
-	 * Has the user accepted cookies from our site?
-	 *
-	 * If there is a preference cookie set on the user's browser we use the preference recorded there (as long as it's
-	 * not expired). Otherwise we use the value of the impliedAccept (Implicitly accept cookies) plugin option.
-	 *
-	 * @return  bool
-	 */
-	private function hasAcceptedCookies(): bool
-	{
-		$impliedAcceptance = $this->params->get('impliedAccept', 0) != 0;
-
-		return CookieHelper::hasAcceptedCookies($impliedAcceptance);
 	}
 
 	/**
@@ -269,5 +284,31 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return trim($x);
 		}, explode("\n", trim($this->params->get('additionalCookieDomains', ''))));
 		CookieHelper::unsetAllCookies($allowSessionCookie, $additionalCookieDomains);
+	}
+
+	/**
+	 * Load the common Javascript for this plugin
+	 *
+	 * @param   CMSApplication  $app      The CMS application we are interfacing
+	 * @param   array           $options  Additional options to pass to the JavaScript
+	 */
+	private function loadCommonJavascript($app, array $options = [])
+	{
+		$path   = $app->get('cookie_path', '/');
+		$domain = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
+		$js     = <<< JS
+; //
+var AkeebaDataComplianceCookiesOptions = {
+	cookie: {
+		domain: '$domain',
+		path:   '$path',
+	}
+};
+JS;
+
+		$this->container->template->addJSInline($js);
+		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, true, $this->container->mediaVersion);
+
+		// TODO Add language strings which should be made known to JS
 	}
 }

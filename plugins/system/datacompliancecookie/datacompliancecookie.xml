@@ -16,6 +16,11 @@
         <folder>tmpl</folder>
     </files>
 
+    <media folder="media" destination="plg_system_datacompliancecookie">
+        <folder>js</folder>
+        <folder>css</folder>
+    </media>
+
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.plg_system_datacompliancecookie.ini</language>
         <language tag="en-GB">en-GB/en-GB.plg_system_datacompliancecookie.sys.ini</language>
