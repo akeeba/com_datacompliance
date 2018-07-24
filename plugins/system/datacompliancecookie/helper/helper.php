@@ -29,6 +29,21 @@ abstract class plgSystemDataComplianceCookieHelper
 	private static $hasAcceptedCookies = null;
 
 	/**
+	 * Sets the name of our helper cookie. This is set on the client's browser to record their cookie preference.
+	 *
+	 * @param   string  $cookieName  The name of the cookie. An empty value results in the default being used.
+	 */
+	public static function setCookieName($cookieName)
+	{
+		if (empty($cookieName))
+		{
+			$cookieName = 'plg_system_datacompliancecookie';
+		}
+
+		self::$helperCookieName = $cookieName;
+	}
+
+	/**
 	 * Returns the contents of the helper cookie. If the cookie is not set or is invalid we return boolean false.
 	 *
 	 * @return  bool|array

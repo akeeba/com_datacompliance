@@ -68,7 +68,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	{
 		parent::__construct($subject, $config);
 
-		// Self-disable on admin pages.
+		// Self-disable on admin pages or when we cannot get a reference to the CMS application (e.g. CLI app).
 		try
 		{
 			if (JFactory::getApplication()->isClient('administrator'))
@@ -89,20 +89,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		{
 			if (!JComponentHelper::isInstalled('com_datacompliance') || !JComponentHelper::isEnabled('com_datacompliance'))
 			{
-				$this->enabled = false;
+				throw new RuntimeException('Component not installed');
 			}
-			else
-			{
-				$this->container = Container::getInstance('com_datacompliance');
-			}
+
+			$this->container = Container::getInstance('com_datacompliance');
 		}
 		catch (Exception $e)
 		{
 			$this->enabled = false;
-		}
 
-		if (!$this->enabled)
-		{
 			return;
 		}
 
@@ -118,9 +113,13 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 			return;
 		}
+
+		// Set up the name of the user preference (helper) cookie we are going to use in this plugin
+		$cookieName = $this->params->get('cookieName', 'plg_system_datacompliancecookie');
+		CookieHelper::setCookieName($cookieName);
 	}
 
-	public function onXXXXXXX()
+	public function onAjaxDatacompliancecookie()
 	{
 		// Am I already disabled...?
 		if (!$this->enabled)
@@ -133,7 +132,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		// TODO I will need to call CookieHelper::setAcceptedCookies to record the user's preference
 	}
 
-	public function onAfterInitialize()
+	/**
+	 * Runs early in the application startup, right after Joomla has done basic preparation and loaded the system
+	 * plugins.
+	 *
+	 * @return  void
+	 *
+	 * @see     \Joomla\CMS\Application\CMSApplication::initialiseApp()
+	 */
+	public function onAfterInitialise()
 	{
 		// Am I already disabled...?
 		if (!$this->enabled)
@@ -141,8 +148,11 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		if (!CookieHelper::hasAcceptedCookies())
+		if (!$this->hasAcceptedCookies())
 		{
+			// Remove all cookies
+			$this->removeAllCookies();
+
 			// TODO Add the user to the "No cookies" user group
 		}
 		else
@@ -155,9 +165,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	/**
 	 * Called after Joomla! has routed the application (figured out SEF redirections and is about to load the component)
 	 *
-	 * @see  \Joomla\CMS\Application\CMSApplication::route()
-	 *
 	 * @return  void
+	 *
+	 * @see     \Joomla\CMS\Application\CMSApplication::route()
 	 */
 	public function onAfterRoute()
 	{
@@ -189,19 +199,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		if (!CookieHelper::hasAcceptedCookies())
+		if (!$this->hasAcceptedCookies())
 		{
-			// TODO Create plugin options for the allow session cookie and additional domain names parameters
-			CookieHelper::unsetAllCookies(true, []);
-
-			// TODO Add the user to the "No cookies" user group
+			// Remove all cookies before the component is loaded
+			$this->removeAllCookies();
 
 			// TODO Load the JavaScript to show the cookie consent modal
 		}
 		else
 		{
-			// TODO Add the user to the "Accepted cookies" user group
-
 			// TODO Load the JavaScript to show the manage cookie options controls
 		}
 	}
@@ -209,9 +215,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	/**
 	 * Called after Joomla! has rendered the document and before it is sent to the browser.
 	 *
-	 * @see \Joomla\CMS\Application\CMSApplication::execute()
-	 *
 	 * @return  void
+	 *
+	 * @see     \Joomla\CMS\Application\CMSApplication::execute()
 	 */
 	public function onAfterRender()
 	{
@@ -223,8 +229,11 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 		// TODO Is our JavaScript in the output? If yes, return.
 
-		if (!CookieHelper::hasAcceptedCookies())
+		if (!$this->hasAcceptedCookies())
 		{
+			// Remove any cookies which may have been set by the component and modules
+			$this->removeAllCookies();
+
 			// TODO Load the JavaScript to show the cookie consent modal
 		}
 		else
@@ -243,9 +252,22 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 */
 	private function hasAcceptedCookies(): bool
 	{
-		// TODO Create a configuration option 'impliedAccept' "Implicitly accept cookies", boolean, default 0 (NO).
 		$impliedAcceptance = $this->params->get('impliedAccept', 0) != 0;
 
 		return CookieHelper::hasAcceptedCookies($impliedAcceptance);
+	}
+
+	/**
+	 * Remove all cookies which are already set or about to be set
+	 *
+	 * @return  void
+	 */
+	private function removeAllCookies()
+	{
+		$allowSessionCookie      = $this->params->get('allowSessionCookie', 1) !== 0;
+		$additionalCookieDomains = array_map(function ($x) {
+			return trim($x);
+		}, explode("\n", trim($this->params->get('additionalCookieDomains', ''))));
+		CookieHelper::unsetAllCookies($allowSessionCookie, $additionalCookieDomains);
 	}
 }

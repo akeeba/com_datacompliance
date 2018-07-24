@@ -26,6 +26,57 @@
     <config>
         <fields name="params">
             <fieldset name="basic">
+                <field name="cookieName" type="text"
+                       default="plg_system_datacompliancecookie"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIENAME_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIENAME_DESC"
+                />
+
+                <field name="impliedAccept" type="radio" default="0"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_IMPLIEDACCEPT_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_IMPLIEDACCEPT_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="allowSessionCookie" type="radio" default="1"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ALLOWSESSIONCOOKIE_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ALLOWSESSIONCOOKIE_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="additionalCookieDomains" type="textarea"
+                       rows="7" columns="50"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ADDITIONALCOOKIEDOMAINS_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ADDITIONALCOOKIEDOMAINS_DESC"
+                />
+
+                <field name="cookiesEnabledUserGroup" type="UserGroupList"
+                       checksuperusergroup="1"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESENABLEDUSERGROUP_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESENABLEDUSERGROUP_DESC"
+                />
+
+                <field name="cookiesRejectedUserGroup" type="UserGroupList"
+                       checksuperusergroup="1"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESREJECTEDUSERGROUP_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESREJECTEDUSERGROUP_DESC"
+                />
+
+                <field name="permanentUserGroupAssignment" type="radio" default="0"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_PERMANENTUSERGROUPASSIGNMENT_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_PERMANENTUSERGROUPASSIGNMENT_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
 
             </fieldset>
         </fields>
