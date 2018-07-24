@@ -74,6 +74,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private $hasCookiePreference = false;
 
 	/**
+	 * Have I already included the JavaScript in the HTML page?
+	 *
+	 * @var    bool
+	 *
+	 * @since  1.1.0
+	 */
+	private $haveIncludedJavaScript = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
@@ -225,21 +234,13 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		$jsOptions = [];
-
 		if (!$this->hasAcceptedCookies)
 		{
 			// Remove all cookies before the component is loaded
 			$this->removeAllCookies();
-
-			// TODO Load the JavaScript to show the cookie consent modal
-		}
-		else
-		{
-			// TODO Load the JavaScript to show the manage cookie options controls
 		}
 
-		$this->loadCommonJavascript($app, $jsOptions);
+		$this->loadCommonJavascript($app);
 	}
 
 	/**
@@ -257,18 +258,20 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		// TODO Is our JavaScript in the output? If yes, return.
-
 		if (!$this->hasAcceptedCookies)
 		{
 			// Remove any cookies which may have been set by the component and modules
 			$this->removeAllCookies();
-
-			// TODO Load the JavaScript to show the cookie consent modal
 		}
-		else
+
+		try
 		{
-			// TODO Load the JavaScript to show the manage cookie options controls
+			$app = JFactory::getApplication();
+			$this->loadCommonJavascript($app);
+		}
+		catch (Exception $e)
+		{
+			// Sorry, we cannot get a Joomla! application :(
 		}
 	}
 
@@ -315,10 +318,19 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * Load the common Javascript for this plugin
 	 *
 	 * @param   CMSApplication  $app      The CMS application we are interfacing
-	 * @param   array           $options  Additional options to pass to the JavaScript
+	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
 	 */
 	private function loadCommonJavascript($app, array $options = [])
 	{
+		// Prevent double inclusion of the JavaScript
+		if ($this->haveIncludedJavaScript)
+		{
+			return;
+		}
+
+		$this->haveIncludedJavaScript = true;
+
+		// Get the default options for the cookie killer JavaScript
 		$path   = $app->get('cookie_path', '/');
 		$domain = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
 
@@ -333,6 +345,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		}
 
 		$defaultOptions = [
+			'accepted'                => $this->hasAcceptedCookies,
+			'interacted'              => $this->hasCookiePreference,
 			'cookie'                  => [
 				'domain' => $domain,
 				'path'   => $path,
@@ -351,7 +365,7 @@ var AkeebaDataComplianceCookiesOptions = $optionsJSON;
 JS;
 
 		$this->container->template->addJSInline($js);
-		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', false, false, $this->container->mediaVersion);
+		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, false, $this->container->mediaVersion);
 
 		// TODO Add language strings which should be made known to JS
 	}

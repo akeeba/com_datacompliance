@@ -15,6 +15,10 @@ var AkeebaDataComplianceCookies = function (options)
 	var me = this;
 
 	this.vars = {
+		// Has the user already accepted cookies?
+		accepted: false,
+		// Has the user already interacted with the prompt (accepting or declining cookies)?
+		interacted: false,
 		// The cookie domain and path to use when unsetting cookies
 		cookie: {
 			domain: null,
@@ -564,42 +568,34 @@ if (typeof Object.assign != 'function') {
 	});
 }
 
-/**
- * Construct and initialise the Javascript object for this plugin.
- *
- * Initialization relies on the page's inline code having been already parsed. However, this script is deferred and
- * async so it might be served from the cache before the inline JS has been parsed. That's why we retry for up to one
- * second, every millisecond.
- */
-var AkeebaDataComplianceCookiesRetryCounter = 0;
-var AkeebaDataComplianceCookiesHandle = setInterval(function() {
-	if (++AkeebaDataComplianceCookiesRetryCounter > 1000)
+window.AkeebaDataComplianceCookies = new AkeebaDataComplianceCookies(AkeebaDataComplianceCookiesOptions);
+AkeebaDataComplianceCookiesOnDocumentReady('documentReady', window.AkeebaDataComplianceCookies);
+window.AkeebaDataComplianceCookies.Cookies = Cookies.noConflict();
+
+// Set up the document's ready event handler
+AkeebaDataComplianceCookies.documentReady(function ()
+{
+	// If the user has not accepted cookies for this site we should block them
+	if (!window.AkeebaDataComplianceCookies.vars.accepted)
 	{
-		clearInterval(AkeebaDataComplianceCookiesHandle);
+		window.AkeebaDataComplianceCookies.disableStorage();
+	}
+
+	// TODO If the user has made no preference display the modal or the cookie controls
+	if (!window.AkeebaDataComplianceCookies.vars.interacted)
+	{
+		// TODO Show cookies modal
 
 		return;
 	}
 
-	if (typeof AkeebaDataComplianceCookiesOptions === 'undefined')
+	// The user has already interacted. We do NOT show the modal but we DO show them the cookie controls
+	if (window.AkeebaDataComplianceCookies.vars.accepted)
 	{
-		return;
+		// TODO Show controls to disable cookies
 	}
-
-	clearInterval(AkeebaDataComplianceCookiesHandle);
-
-	window.AkeebaDataComplianceCookies = new AkeebaDataComplianceCookies(AkeebaDataComplianceCookiesOptions);
-	AkeebaDataComplianceCookiesOnDocumentReady('documentReady', window.AkeebaDataComplianceCookies);
-	window.AkeebaDataComplianceCookies.Cookies = Cookies.noConflict();
-
-	// Set up the document's ready event handler
-	AkeebaDataComplianceCookies.documentReady(function ()
+	else
 	{
-		// TODO Check if the user has declined cookies before running this method
-		if (true)
-		{
-			window.AkeebaDataComplianceCookies.disableStorage();
-		}
-
-		// TODO If the user has made no preference display the modal or the cookie controls
-	});
-}, 1);
+		// TODO Show controls to display the modal again
+	}
+});
