@@ -278,10 +278,11 @@ abstract class plgSystemDataComplianceCookieHelper
 			}
 
 			$headerValue = $parts[1];
-			$valueParts  = explode('=', $headerValue, 2);
+			$valueParts  = explode(';', $headerValue, 2);
+			list ($cookieName, $cookieValue) = explode('=', trim($valueParts[0]));
 
 			// Is this a whitelisted cookie?
-			if (!in_array(trim($valueParts[1]), $whiteList))
+			if (!in_array($cookieName, $whiteList))
 			{
 				continue;
 			}
