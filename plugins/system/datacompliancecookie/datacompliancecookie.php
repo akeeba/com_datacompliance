@@ -6,6 +6,7 @@
  */
 
 use FOF30\Container\Container;
+use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
 use plgSystemDataComplianceCookieHelper as CookieHelper;
 
@@ -183,18 +184,48 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
+		// Note that permanent user group assignment IS NOT possible for guest (not logged in) users
+		$user                     = $this->container->platform->getUser();
+		$permanentGroupAssignment = ($this->params->get('permanentUserGroupAssignment', 0) == 1) && !$user->guest;
+		$rejectGroup              = $this->params->get('cookiesRejectedUserGroup', 0);
+		$acceptGroup              = $this->params->get('cookiesEnabledUserGroup', 0);
+
+		// Do I have to do permanent user group assignment
+		if ($permanentGroupAssignment && !$user->guest)
+		{
+			// TODO Permanent group assignment depending on $this->hasAcceptedCookies
+
+		}
+
 		if (!$this->hasAcceptedCookies)
 		{
 			// Remove all cookies
 			$this->removeAllCookies();
 
-			// TODO Add the user to the "No cookies" user group
-		}
-		else
-		{
-			// TODO Add the user to the "Accepted cookies" user group
+			/**
+			 * Add the user to the selected "No cookies" user group.
+			 *
+			 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
+			 * user group assignments until you log back in.
+			 */
+			if ($rejectGroup != 0)
+			{
+				DynamicGroups::addGroup($rejectGroup);
+			}
+
+			return;
 		}
 
+		/**
+		 * Add the user to the selected "Accepted cookies" user group.
+		 *
+		 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
+		 * user group assignments until you log back in.
+		 */
+		if ($acceptGroup != 0)
+		{
+			DynamicGroups::addGroup($acceptGroup);
+		}
 	}
 
 	/**
