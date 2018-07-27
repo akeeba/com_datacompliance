@@ -2,7 +2,7 @@ These view templates are used to render the controls for accepting / rejecting c
 override them by placing files in templates/YOUR_TEMPLATE/html/plg_system_datacompliancecookie
 
 You need to create a Custom HTML module with the code:
-<div id="akeeba-data-compliance-cookie-controls"></div>
+<div id="akeeba-dccc-controls"></div>
 The controls for accepting / rejecting cookies will be rendered inside that DIV. The ID can be controlled in the plugin
 options.
 

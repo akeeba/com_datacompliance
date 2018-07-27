@@ -86,6 +86,27 @@
                     <option value="1">JYes</option>
                 </field>
 
+                <field name="load_fef" type="radio" default="1"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_LOADFEF_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_LOADFEF_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="fef_reset" type="radio" default="1"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_FEFRESET_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_FEFRESET_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="privacyPolicyURL" type="url"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_PRIVACYPOLICYURL_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_PRIVACYPOLICYURL_DESC"
+                />
 
             </fieldset>
         </fields>

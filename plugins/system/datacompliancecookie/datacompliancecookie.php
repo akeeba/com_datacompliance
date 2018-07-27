@@ -84,6 +84,24 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private $haveIncludedJavaScript = false;
 
 	/**
+	 * Have I already included the CSS in the HTML page?
+	 *
+	 * @var    bool
+	 *
+	 * @since  1.1.0
+	 */
+	private $haveIncludedCSS = false;
+
+	/**
+	 * Have I already included the HTML for the cookie banner or controls in the HTML page?
+	 *
+	 * @var    bool
+	 *
+	 * @since  1.1.0
+	 */
+	private $haveIncludedHtml = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
@@ -91,7 +109,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 *                             Recognized key values include 'name', 'group', 'params', 'language'
 	 *                             (this list is not meant to be comprehensive).
 	 *
-	 * @since   1.0.0
+	 * @since   1.1.0
 	 */
 	public function __construct($subject, array $config = array())
 	{
@@ -155,6 +173,13 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		$this->hasCookiePreference = CookieHelper::getDecodedCookieValue() !== false;
 	}
 
+	/**
+	 * Handler for AJAX interactions with the plugin
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
 	public function onAjaxDatacompliancecookie()
 	{
 		// Am I already disabled...?
@@ -175,6 +200,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * @return  void
 	 *
 	 * @see     \Joomla\CMS\Application\CMSApplication::initialiseApp()
+	 *
+	 *
+	 * @since   1.1.0
 	 */
 	public function onAfterInitialise()
 	{
@@ -234,6 +262,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * @return  void
 	 *
 	 * @see     \Joomla\CMS\Application\CMSApplication::route()
+	 *
+	 * @since   1.1.0
 	 */
 	public function onAfterRoute()
 	{
@@ -272,6 +302,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		}
 
 		$this->loadCommonJavascript($app);
+		$this->loadCommonCSS($app);
+
+		// Note: we cannot load the HTML yet. This can only be done AFTER the document is rendered.
 	}
 
 	/**
@@ -280,6 +313,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * @return  void
 	 *
 	 * @see     \Joomla\CMS\Application\CMSApplication::execute()
+	 *
+	 * @since   1.1.0
 	 */
 	public function onAfterRender()
 	{
@@ -297,8 +332,12 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 		try
 		{
+			// Load the common JavaScript
 			$app = JFactory::getApplication();
 			$this->loadCommonJavascript($app);
+			$this->loadCommonCSS($app);
+
+			$this->loadHtml($app);
 		}
 		catch (Exception $e)
 		{
@@ -310,6 +349,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * Remove all cookies which are already set or about to be set
 	 *
 	 * @return  void
+	 *
+	 * @since   1.1.0
 	 */
 	private function removeAllCookies()
 	{
@@ -323,6 +364,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * Get the additional cookie domains as an array
 	 *
 	 * @return array
+	 *
+	 * @since  1.1.0
 	 */
 	private function getAdditionalCookieDomains(): array
 	{
@@ -350,6 +393,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 *
 	 * @param   CMSApplication  $app      The CMS application we are interfacing
 	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
+	 *
+	 * @since   1.1.0
 	 */
 	private function loadCommonJavascript($app, array $options = [])
 	{
@@ -399,5 +444,86 @@ JS;
 		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, false, $this->container->mediaVersion);
 
 		// TODO Add language strings which should be made known to JS
+	}
+
+	/**
+	 * Load the common CSS for this plugin
+	 *
+	 * @param   CMSApplication  $app      The CMS application we are interfacing
+	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
+	 *
+	 * @since   1.1.0
+	 */
+	private function loadCommonCSS($app, array $options = [])
+	{
+		// Prevent double inclusion of the CSS
+		if ($this->haveIncludedCSS)
+		{
+			return;
+		}
+
+		$this->haveIncludedCSS = true;
+
+		// FEF
+		$useFEF   = $this->params->get('load_fef', 1);
+		$useReset = $this->params->get('fef_reset', 1);
+
+		if ($useFEF)
+		{
+			$helperFile = JPATH_SITE . '/media/fef/fef.php';
+
+			if (!class_exists('AkeebaFEFHelper') && is_file($helperFile))
+			{
+				include_once $helperFile;
+			}
+
+			if (class_exists('AkeebaFEFHelper'))
+			{
+				\AkeebaFEFHelper::load($useReset);
+			}
+		}
+
+		// Plugin CSS
+		$this->container->template->addCSS('media://plg_system_datacompliancecookie/css/datacompliancecookies.css', $this->container->mediaVersion);
+	}
+
+	/**
+	 * Load the HTML template used by our JavaScript for either the cookie acceptance banner or the post-acceptance
+	 * cookie controls (revoke consent or reconsider declining cookies).
+	 *
+	 * @param   JApplicationCms $app The CMS application we use to append the HTML output
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
+	private function loadHtml($app)
+	{
+		// Prevent double inclusion of the HTML
+		if ($this->haveIncludedHtml)
+		{
+			return;
+		}
+
+		$this->haveIncludedHtml = true;
+
+		$this->loadLanguage();
+
+		// Get the correct view template, depending on whether we have accepted cookies
+		$template = 'plugin://system/datacompliancecookie/banner.php';
+
+		if ($this->hasAcceptedCookies)
+		{
+			$template = 'plugin://system/datacompliancecookie/controls.php';
+		}
+
+		$fileName = $this->container->template->parsePath($template, true);
+
+		ob_start();
+		include $fileName;
+		$content = ob_get_clean();
+
+		// Append the parsed view template content to the application's HTML output
+		$app->setBody($app->getBody() . $content);
 	}
 }
