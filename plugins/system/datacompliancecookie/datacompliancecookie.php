@@ -691,6 +691,12 @@ JS;
 		$allowedPluginTypes = array_unique($allowedPluginTypes);
 
 		/**
+		 * PHP class names are case insensitive. Therefore we cast the loaded plugins to uppercase to make a
+		 * case-insensitive search in the loop below.
+		 */
+		$loadedPlugins = array_map('strtoupper', $loadedPlugins);
+
+		/**
 		 * Loop through all system and other loaded plugins groups. We will import them if they are not already loaded.
 		 * Then we will trigger onAfterIntialize through the $tempDispatcher, allowing the newly imported system plugins
 		 * to initialize.
@@ -712,7 +718,11 @@ JS;
 		 */
 		foreach ($allPlugins as $plugin)
 		{
-			if (!in_array($plugin->type, $allowedPluginTypes))
+			/**
+			 * The $allowedPluginTypes contains lowercase plugin groups, per Joomla! coding conventions. The $allPlugins
+			 * array contains raw database data which MIGHT NOT be lowercase. Hence the need for strtolower.
+			 */
+			if (!in_array(strtolower($plugin->type), $allowedPluginTypes))
 			{
 				// The plugin is not of an allowed type.
 				continue;
@@ -730,7 +740,11 @@ JS;
 
 			$className = 'Plg' . $plugin->type . $plugin->name;
 
-			if (in_array($className, $loadedPlugins))
+			/**
+			 * Remember that we have converted the class names in $loadedPlugins to uppercase since PHP class names are
+			 * case insensitive. Therefore we need to look if the array contains the uppercase class name of our plugin.
+			 */
+			if (in_array(strtoupper($className), $loadedPlugins))
 			{
 				// The plugin is already loaded.
 				continue;
