@@ -881,26 +881,68 @@ AkeebaDataComplianceCookies.documentReady(function ()
 		window.AkeebaDataComplianceCookies.disableStorage();
 	}
 
-	// If the user has made no preference display the cookie banner
+	/**
+	 * If the user has made no preference the cookie banner HTML ('banner' view template) is included and displayed
+	 * automatically. We do not need to do anything further so we can return early from this code.
+	 *
+	 * If, however the user has already interacted with the banner then we have loaded the 'controls' view template
+	 * which includes two different HTML blocks, depending on whether cookies were accepted or rejected. We need to hide
+	 * both, locate the controls container and then put the correct HTML block inside it and show it.
+	 */
 	if (!window.AkeebaDataComplianceCookies.vars.interacted)
 	{
-		var elBanner = document.getElementById('akeeba-dccc-banner-container');
+		return;
+	}
 
-		if (typeof elBanner !== 'undefined')
+	// Hide the banner
+	var elBanner = document.getElementById('akeeba-dccc-banner-container');
+
+	if (typeof elBanner !== 'undefined')
+	{
+		elBanner.style.display = 'none';
+	}
+
+	// Hide both controls (akeeba-dccc-controls-accepted and akeeba-dccc-controls-declined)
+	var elAcceptedControls = document.getElementById('akeeba-dccc-controls-accepted');
+	var elDeclinedControls = document.getElementById('akeeba-dccc-controls-declined');
+
+	if (typeof elAcceptedControls !== 'undefined')
+	{
+		elAcceptedControls.style.display = 'none';
+	}
+
+	if (typeof elDeclinedControls !== 'undefined')
+	{
+		elDeclinedControls.style.display = 'none';
+	}
+
+	// Find the control holder (akeeba-dccc-controls). If it's not found, exit immediately.
+	var elHolder = document.getElementById('akeeba-dccc-controls');
+
+	if (typeof elHolder === 'undefined')
+	{
+		return;
+	}
+
+	if (window.AkeebaDataComplianceCookies.vars.accepted)
+	{
+		if (typeof elAcceptedControls !== 'undefined')
 		{
-			elBanner.style.display = 'block';
+			// Show akeeba-dccc-controls-accepted
+			elAcceptedControls.style.display = 'block';
+
+			// TODO Move akeeba-dccc-controls-accepted into akeeba-dccc-controls
 		}
 
 		return;
 	}
 
-	// The user has already interacted. We do NOT show the banner but we DO show them the cookie controls
-	if (window.AkeebaDataComplianceCookies.vars.accepted)
+	if (typeof elDeclinedControls !== 'undefined')
 	{
-		// TODO Show controls to disable cookies
+		// Show akeeba-dccc-controls-declined
+		elDeclinedControls.style.display = 'block';
+
+		// TODO Move akeeba-dccc-controls-declined into akeeba-dccc-controls
 	}
-	else
-	{
-		// TODO Show controls to display the modal again
-	}
+
 });

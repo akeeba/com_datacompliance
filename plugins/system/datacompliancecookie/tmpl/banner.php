@@ -9,7 +9,7 @@
 
 $position = $this->params->get('bannerPosition', 'top');
 ?>
-<div id="akeeba-dccc-banner-container" class="akeeba-renderer-fef akeeba-dccc-banner-<?php echo $position ?>" style="display: none;">
+<div id="akeeba-dccc-banner-container" class="akeeba-renderer-fef akeeba-dccc-banner-<?php echo $position ?>">
 	<div class="akeeba-panel--primary">
 		<header class="akeeba-block-header">
 			<h2 class="akeeba-dccc-banner-header">

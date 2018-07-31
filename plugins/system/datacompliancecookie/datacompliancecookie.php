@@ -534,16 +534,21 @@ JS;
 		// Get the correct view template, depending on whether we have accepted cookies
 		$template = 'plugin://system/datacompliancecookie/banner.php';
 
-		if ($this->hasCookiePreference)
-		{
-			$template = 'plugin://system/datacompliancecookie/controls.php';
-		}
-
 		$fileName = $this->container->template->parsePath($template, true);
 
 		ob_start();
 		include $fileName;
 		$content = ob_get_clean();
+
+		if ($this->hasCookiePreference)
+		{
+			$template = 'plugin://system/datacompliancecookie/controls.php';
+			$fileName = $this->container->template->parsePath($template, true);
+
+			ob_start();
+			include $fileName;
+			$content .= ob_get_clean();
+		}
 
 		// Append the parsed view template content to the application's HTML output
 		$app->setBody($app->getBody() . $content);
