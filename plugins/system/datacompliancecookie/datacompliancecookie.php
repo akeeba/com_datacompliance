@@ -584,41 +584,181 @@ JS;
 		$permanentGroupAssignment = ($this->params->get('permanentUserGroupAssignment', 0) == 1) && !$user->guest;
 		$rejectGroup              = $this->params->get('cookiesRejectedUserGroup', 0);
 		$acceptGroup              = $this->params->get('cookiesEnabledUserGroup', 0);
+		$assignGroup              = $this->hasAcceptedCookies ? $acceptGroup : $rejectGroup;
+		$removeGroup              = $this->hasAcceptedCookies ? $rejectGroup : $acceptGroup;
 
 		// Do I have to do permanent user group assignment
-		if ($permanentGroupAssignment && !$user->guest)
+		if ($permanentGroupAssignment && !$user->guest && (($assignGroup != 0) || ($removeGroup != 0)))
 		{
-			// TODO Permanent group assignment depending on $this->hasAcceptedCookies
-
-		}
-
-		if (!$this->hasAcceptedCookies)
-		{
-			/**
-			 * Add the user to the selected "No cookies" user group.
-			 *
-			 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
-			 * user group assignments until you log back in.
-			 */
-			if ($rejectGroup != 0)
+			if ($removeGroup != 0)
 			{
-				DynamicGroups::addGroup($rejectGroup);
-				// TODO Reload plugins in groups already loaded by the CMS
+				// TODO Remove permanent assignment from $removeGroup
 			}
 
+			if ($assignGroup != 0)
+			{
+				// TODO Add permanent assignment to $assignGroup
+			}
+		}
+
+		// No group to assign. Bye-bye.
+		if ($assignGroup == 0)
+		{
 			return;
 		}
 
-		/**
-		 * Add the user to the selected "Accepted cookies" user group.
-		 *
-		 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
-		 * user group assignments until you log back in.
-		 */
-		if ($acceptGroup != 0)
+		DynamicGroups::addGroup($assignGroup);
+		$this->reloadPlugins();
+	}
+
+	private function reloadPlugins()
+	{
+		// Get a reflection into JPluginHelper / PluginHelper
+		try
 		{
-			DynamicGroups::addGroup($acceptGroup);
-			// TODO Reload plugins in groups already loaded by the CMS
+			$helperClass = class_exists('JPluginHelper') ? 'JPluginHelper' : 'Joomla\\CMS\\Plugin\\PluginHelper';
+			$refHelper   = new ReflectionClass($helperClass);
 		}
+		catch (ReflectionException $e)
+		{
+			// Something broke
+			return;
+		}
+
+		// Clear the protected static $plugins property through reflection
+		$refPlugins = $refHelper->getProperty('plugins');
+		$refPlugins->setAccessible(true);
+		$refPlugins->setValue(null, null);
+
+		// Reload the plugins list using the current authorized view levels
+		$refMethod = $refHelper->getMethod('load');
+		$refMethod->setAccessible(true);
+		$refMethod->invoke(null);
+
+		$allPlugins = $refPlugins->getValue();
+
+		// The temp dispatcher is used to fire onAfterInitialize on any newly registered plugins
+		$tempDispatcher = new JEventDispatcher();
+		$dispatcher     = JEventDispatcher::getInstance();
+
+		// Get the class names of all observers already registered
+		$refDispatcher = new ReflectionObject($dispatcher);
+		$refObservers  = $refDispatcher->getProperty('_observers');
+		$refObservers->setAccessible(true);
+		$observers = $refObservers->getValue($dispatcher);
+		$loadedPlugins = [];
+
+		foreach ($observers as $o)
+		{
+			// Some observers are callables, not plugins
+			if (!is_object($o))
+			{
+				continue;
+			}
+
+			$loadedPlugins[] = get_class($o);
+		}
+
+		/**
+		 * Loop through all of the loaded plugins and retrieve the loaded plugin groups.
+		 *
+		 * Since we are called onAfterInitialize the only plugin group definitely loaded is 'system'. That's the only
+		 * group Joomla! will import this early. However, the plugins themselves may load other plugin groups. That's
+		 * why I need to parse the class names.
+		 *
+		 * NB! I cannot simply skip over anything starting with "PlgSystem" because that would also skip over plugin
+		 *     groups whose name starts with system. For example, a plugin group "systemcall" would result in a class
+		 *     name sich as "PlgSystemcallFoobar". You didn't see that coming, huh?
+		 */
+		$allowedPluginTypes = ['system'];
+
+		foreach ($loadedPlugins as $className)
+		{
+			// Classname is PlgGroupPlugin where Group is the plugin group and Plugin is the plugin name
+			$classNameParts = $this->container->inflector->explode($className);
+
+			if (!isset($classNameParts[1]))
+			{
+				continue;
+			}
+
+			$group = strtolower($classNameParts[1]);
+
+			$allowedPluginTypes[] = $group;
+		}
+
+		// Calling array_unique after the loop is faster than doing if(in_array($group, $allowedPluginTypes) in the loop
+		$allowedPluginTypes = array_unique($allowedPluginTypes);
+
+		/**
+		 * Loop through all system and other loaded plugins groups. We will import them if they are not already loaded.
+		 * Then we will trigger onAfterIntialize through the $tempDispatcher, allowing the newly imported system plugins
+		 * to initialize.
+		 *
+		 * Why only system plugins? Because this is called onAfterInitialize. At this point Joomla! has ONLY imported
+		 * system plugins and dispatched the onAfterInitialize event. The newly imported system plugins did not have the
+		 * chance to process onAfterIntialize so we need to dispatch that event ONLY to them. We cannot use the main
+		 * application event dispatcher because that would call onAfterInitialize for the plugins already loaded. These
+		 * plugins have the reasonable expectation that onAfterInitialize is only triggered ONCE per request. Hence the
+		 * need for $tempDispatcher.
+		 *
+		 * Note that the next calls to JPluginHelper::import() will see the reloaded list of plugins. The reloaded list
+		 * was built against the updated user group assignments to the current user, therefore the new view access
+		 * levels.
+		 *
+		 * So, kids, this is how Greybeard Developers(tm) selectively reload plugins without screwing up your site by,
+		 * say, blindly importing plugins in groups which have not been loaded yet such as plugin groups belonging to a
+		 * component that's not even loaded.
+		 */
+		foreach ($allPlugins as $plugin)
+		{
+			if (!in_array($plugin->type, $allowedPluginTypes))
+			{
+				// The plugin is not of an allowed type.
+				continue;
+			}
+
+			$plugin->type = preg_replace('/[^A-Z0-9_\.-]/i', '', $plugin->type);
+			$plugin->name = preg_replace('/[^A-Z0-9_\.-]/i', '', $plugin->name);
+			$path = JPATH_PLUGINS . '/' . $plugin->type . '/' . $plugin->name . '/' . $plugin->name . '.php';
+
+			if (!file_exists($path))
+			{
+				// The plugin file does not exist.
+				continue;
+			}
+
+			$className = 'Plg' . $plugin->type . $plugin->name;
+
+			if (in_array($className, $loadedPlugins))
+			{
+				// The plugin is already loaded.
+				continue;
+			}
+
+			require_once $path;
+
+			if (!class_exists($className))
+			{
+				// The plugin file does not contain the expected plugin class.
+				continue;
+			}
+
+			// Load the plugin from the database.
+			if (!isset($plugin->params))
+			{
+				// Seems like this could just go bye bye completely
+				$plugin = call_user_func([$helperClass, 'getPlugin'], $plugin->type, $plugin->name);
+			}
+
+			// Instantiate and register the plugin with the main application dispatcher.
+			$o = new $className($dispatcher, (array) $plugin);
+
+			// Also register the plugin to the temporary dispatcher
+			$tempDispatcher->attach($o);
+		}
+
+		// Let the newly imported plugins run their onAfterInitialize events
+		$tempDispatcher->trigger('onAfterInitialize');
 	}
 }
