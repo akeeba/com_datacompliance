@@ -23,11 +23,11 @@ $position = $this->params->get('bannerPosition', 'top');
 		</p>
 
 		<div id="akeeba-dccc-banner-controls">
-			<button onclick="return false;" class="akeeba-btn--red">
+			<button onclick="window.AkeebaDataComplianceCookies.applyCookiePreference(0); return false;" class="akeeba-btn--red">
 				<span class="akion-ios-close-outline"></span>
 				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNER_BTN_DECLINE') ?>
 			</button>
-			<button onclick="return false;" class="akeeba-btn--green">
+			<button onclick="window.AkeebaDataComplianceCookies.applyCookiePreference(1); return false;" class="akeeba-btn--green">
 				<span class="akion-ios-checkmark-outline"></span>
 				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNER_BTN_AGREE') ?>
 			</button>

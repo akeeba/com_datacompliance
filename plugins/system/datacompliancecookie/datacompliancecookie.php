@@ -102,6 +102,16 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private $haveIncludedHtml = false;
 
 	/**
+	 * Am I currently handling an AJAX request? This is populated in onAfterInitialise and it's used to prevent other
+	 * event handlers from firing when we are processing an AJAX request.
+	 *
+	 * @var    bool
+	 *
+	 * @since  1.1.0
+	 */
+	private $inAjax = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
@@ -176,7 +186,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	/**
 	 * Handler for AJAX interactions with the plugin
 	 *
-	 * @return  void
+	 * @return  string|Throwable  The message to send back to the application, or an Exception in case of an error
 	 *
 	 * @since   1.1.0
 	 */
@@ -185,12 +195,41 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		// Am I already disabled...?
 		if (!$this->enabled)
 		{
-			return;
+			return new RuntimeException('Cookie conformance is not applicable', 101);
 		}
 
-		// TODO Create an AJAX handler for the cookie preference.
+		// Prevent other event handlers in the plugin from firing
+		$this->enabled = false;
 
-		// TODO I will need to call CookieHelper::setAcceptedCookies to record the user's preference
+		$token = $this->container->platform->getToken();
+		$hasToken = $this->container->input->post->get($token, false, 'none') == 1;
+
+		if (!$hasToken)
+		{
+			return new RuntimeException('Invalid security token; this request is a forgery and has not been taken into account.', 102);
+		}
+
+		$accepted = $this->container->input->post->getInt('accepted', null);
+
+		if (is_null($accepted))
+		{
+			return new RuntimeException('No cookie preference was provided.', 103);
+		}
+
+		// Set the cookies
+		$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
+		CookieHelper::setAcceptedCookies($accepted === 1, $thisManyDays);
+
+		// Apply the user group assignments based on the cookie preference
+		$this->applyUserGroupAssignments();
+
+		// Remove all cookies if the user rejected cookies
+		if (!$accepted)
+		{
+			$this->removeAllCookies();
+		}
+
+		return sprintf("The user has %s cookies", $accepted ? 'accepted' : 'rejected');
 	}
 
 	/**
@@ -212,47 +251,29 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		// Note that permanent user group assignment IS NOT possible for guest (not logged in) users
-		$user                     = $this->container->platform->getUser();
-		$permanentGroupAssignment = ($this->params->get('permanentUserGroupAssignment', 0) == 1) && !$user->guest;
-		$rejectGroup              = $this->params->get('cookiesRejectedUserGroup', 0);
-		$acceptGroup              = $this->params->get('cookiesEnabledUserGroup', 0);
+		/**
+		 * When we are in com_ajax we should defer execution of this code until after we have handled the request.
+		 * Otherwise the I Agree is never honored if the default cookie acceptance state is "declined".
+		 */
+		$input  = $this->container->input->get;
+		$option = $input->getCmd('option', '');
+		$group  = $input->getCmd('group', '');
+		$plugin = $input->getCmd('plugin', '');
 
-		// Do I have to do permanent user group assignment
-		if ($permanentGroupAssignment && !$user->guest)
+		if (($option == 'com_ajax') && ($group == 'system') && ($plugin == 'datacompliancecookie'))
 		{
-			// TODO Permanent group assignment depending on $this->hasAcceptedCookies
-
-		}
-
-		if (!$this->hasAcceptedCookies)
-		{
-			// Remove all cookies
-			$this->removeAllCookies();
-
-			/**
-			 * Add the user to the selected "No cookies" user group.
-			 *
-			 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
-			 * user group assignments until you log back in.
-			 */
-			if ($rejectGroup != 0)
-			{
-				DynamicGroups::addGroup($rejectGroup);
-			}
+			$this->inAjax = true;
 
 			return;
 		}
 
-		/**
-		 * Add the user to the selected "Accepted cookies" user group.
-		 *
-		 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
-		 * user group assignments until you log back in.
-		 */
-		if ($acceptGroup != 0)
+		// Apply the user group assignments based on the cookie preference
+		$this->applyUserGroupAssignments();
+
+		// Remove all cookies if the user has rejected cookies
+		if (!$this->hasAcceptedCookies)
 		{
-			DynamicGroups::addGroup($acceptGroup);
+			$this->removeAllCookies();
 		}
 	}
 
@@ -267,8 +288,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 */
 	public function onAfterRoute()
 	{
-		// Am I already disabled...?
-		if (!$this->enabled)
+		// Am I already disabled or in AJAX handling mode?
+		if (!$this->enabled || $this->inAjax)
 		{
 			return;
 		}
@@ -318,8 +339,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 */
 	public function onAfterRender()
 	{
-		// Am I already disabled...?
-		if (!$this->enabled)
+		// Am I already disabled or in AJAX handling mode?
+		if (!$this->enabled || $this->inAjax)
 		{
 			return;
 		}
@@ -429,6 +450,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			],
 			'additionalCookieDomains' => $this->getAdditionalCookieDomains(),
 			'whitelisted'             => $whiteList,
+			'token'                   => $this->container->platform->getToken(),
 		];
 
 		$options     = array_merge_recursive($defaultOptions, $options);
@@ -525,5 +547,57 @@ JS;
 
 		// Append the parsed view template content to the application's HTML output
 		$app->setBody($app->getBody() . $content);
+	}
+
+	/**
+	 * Assign the current user to user groups depending on the cookie acceptance state.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
+	private function applyUserGroupAssignments(): void
+	{
+		// Note that permanent user group assignment IS NOT possible for guest (not logged in) users
+		$user                     = $this->container->platform->getUser();
+		$permanentGroupAssignment = ($this->params->get('permanentUserGroupAssignment', 0) == 1) && !$user->guest;
+		$rejectGroup              = $this->params->get('cookiesRejectedUserGroup', 0);
+		$acceptGroup              = $this->params->get('cookiesEnabledUserGroup', 0);
+
+		// Do I have to do permanent user group assignment
+		if ($permanentGroupAssignment && !$user->guest)
+		{
+			// TODO Permanent group assignment depending on $this->hasAcceptedCookies
+
+		}
+
+		if (!$this->hasAcceptedCookies)
+		{
+			/**
+			 * Add the user to the selected "No cookies" user group.
+			 *
+			 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
+			 * user group assignments until you log back in.
+			 */
+			if ($rejectGroup != 0)
+			{
+				DynamicGroups::addGroup($rejectGroup);
+				// TODO Reload plugins in groups already loaded by the CMS
+			}
+
+			return;
+		}
+
+		/**
+		 * Add the user to the selected "Accepted cookies" user group.
+		 *
+		 * IMPORTANT! This must happen EVEN IF permanent assignment is requested since Joomla! does NOT reload the
+		 * user group assignments until you log back in.
+		 */
+		if ($acceptGroup != 0)
+		{
+			DynamicGroups::addGroup($acceptGroup);
+			// TODO Reload plugins in groups already loaded by the CMS
+		}
 	}
 }

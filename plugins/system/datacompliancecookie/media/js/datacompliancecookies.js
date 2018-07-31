@@ -27,12 +27,71 @@ var AkeebaDataComplianceCookies = function (options)
 		// Additional domain names to use when unsetting cookies
 		additionalCookieDomains: [],
 		// Whitelisted cookie names
-		whitelisted: []
+		whitelisted: [],
+		// Joomla! anti-CSRF token
+		token: ''
 	};
 
 	var construct = function (options)
 	{
 		Object.assign(me.vars, options);
+	};
+
+	/**
+	 * The user has clicked on one of the buttons in the cookie banner
+	 *
+	 * @param   {int}  allowCookies  Are cookies accepted or declined?
+	 *
+	 * @returns {boolean}
+	 */
+	this.applyCookiePreference = function (allowCookies)
+	{
+		var url = 'index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json';
+		var myData = {
+			accepted: allowCookies
+		};
+		// Pass the Joomla! token
+		myData[me.vars.token] = 1;
+		var myToken = me.vars.token;
+		me.ajaxCall(url, {
+			method: 'POST',
+			timeout: 10000,
+			data: myData,
+			success: function(responseText, responseStatus, xhr) {
+				try {
+					var responseObject = JSON.parse(responseText);
+
+					if (responseObject.success)
+					{
+						console.info("Akeeba DataCompliance Cookies -- AJAX successful: " + responseObject.data);
+					}
+					else
+					{
+						me.handleAjaxError(responseObject.message);
+					}
+				}
+				catch (e)
+				{
+					console.error("Akeeba DataCompliance Cookies -- Cannot parse AJAX response. Assuming success.");
+				}
+
+				window.location = window.location;
+			},
+			error: function(xhr, errorType, e) {
+				me.handleAjaxError('(' + errorType + ') #' + e.code + ' ' + e.message);
+
+				window.location = window.location;
+			}
+		});
+
+		// Return false because this is a button element action handler
+		return false;
+	};
+
+	this.handleAjaxError = function(message)
+	{
+		console.error('Akeeba DataCompliance Cookies -- AJAX Error: ' + message);
+		alert(message);
 	};
 
 	/**
@@ -244,6 +303,247 @@ var AkeebaDataComplianceCookies = function (options)
 		dec = tmpArr.join('');
 
 		return decodeUTF8string(dec.replace(/\0+$/, ''));
+	};
+
+	/**
+	 * Performs an asynchronous AJAX request. Mostly compatible with jQuery 1.5+ calling conventions, or at least the
+	 * subset
+	 * of the features we used in our software.
+	 *
+	 * The parameters can be
+	 * method		string      HTTP method (GET, POST, PUT, ...). Default: POST.
+	 * url      	string      URL to access over AJAX. Required.
+	 * timeout  	int         Request timeout in msec. Default: 600,000 (ten minutes)
+	 * data     	object      Data to send to the AJAX URL. Default: empty
+	 * success  	function    function(string responseText, string responseStatus, XMLHttpRequest xhr)
+	 * error    	function	function(XMLHttpRequest xhr, string errorType, Exception e)
+	 * beforeSend 	function	function(XMLHttpRequest xhr, object parameters) You can modify xhr, not parameters.
+	 * Return false to abort the request.
+	 *
+	 * @param   url         {string}  URL to send the AJAX request to
+	 * @param   parameters  {object}  Configuration parameters
+	 */
+	this.ajaxCall = function (url, parameters)
+	{
+		var xhrSuccessStatus = {
+			// File protocol always yields status code 0, assume 200
+			0   : 200, // Support: IE <=9 only. Sometimes IE returns 1223 when it should be 204
+			1223: 204
+		};
+
+		/**
+		 * Converts a simple object containing query string parameters to a single, escaped query string
+		 *
+		 * @param    object   {object}  A plain object containing the query parameters to pass
+		 * @param    prefix   {string}  Prefix for array-type parameters
+		 *
+		 * @returns  {string}
+		 *
+		 * @access  private
+		 */
+		function interpolateParameters(object, prefix)
+		{
+			prefix = prefix || '';
+			var encodedString = '';
+
+			for (var prop in object)
+			{
+				if (object.hasOwnProperty(prop))
+				{
+					if (encodedString.length > 0)
+					{
+						encodedString += '&';
+					}
+
+					if (typeof object[prop] !== 'object')
+					{
+						if (prefix === '')
+						{
+							encodedString += encodeURIComponent(prop) + '=' + encodeURIComponent(object[prop]);
+						}
+						else
+						{
+							encodedString += encodeURIComponent(prefix) + '[' + encodeURIComponent(prop) + ']=' + encodeURIComponent(object[prop]);
+						}
+
+						continue;
+					}
+
+					// Objects need special handling
+					encodedString += interpolateParameters(object[prop], prop);
+				}
+			}
+			return encodedString;
+		}
+
+		/**
+		 * Goes through a list of callbacks and calls them in succession. Accepts a variable number of arguments.
+		 */
+		function triggerCallbacks()
+		{
+			// converts arguments to real array
+			var args = Array.prototype.slice.call(arguments);
+			var callbackList = args.shift();
+
+			if (typeof(callbackList) === "function")
+			{
+				return callbackList.apply(null, args);
+			}
+
+			if (callbackList instanceof Array)
+			{
+				for (var i = 0; i < callbackList.length; i++)
+				{
+					var callBack = callbackList[i];
+
+					if (callBack.apply(null, args) === false)
+					{
+						return false;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		// Handles jQuery 1.0 calling style of .ajax(parameters), passing the URL as a property of the parameters object
+		if (typeof(parameters) === 'undefined')
+		{
+			parameters = url;
+			url = parameters.url;
+		}
+
+		// Get the parameters I will use throughout
+		var method = (typeof(parameters.type) === 'undefined') ? 'POST' : parameters.type;
+		method = method.toUpperCase();
+		var data = (typeof(parameters.data) === 'undefined') ? {} : parameters.data;
+		var sendData = null;
+		var successCallback = (typeof(parameters.success) === 'undefined') ? null : parameters.success;
+		var errorCallback = (typeof(parameters.error) === 'undefined') ? null : parameters.error;
+
+		// === Cache busting
+		var cache = (typeof(parameters.cache) === 'undefined') ? false : parameters.url;
+
+		if (!cache)
+		{
+			var now = new Date().getTime() / 1000;
+			var s = parseInt(now, 10);
+			data._cacheBustingJunk = Math.round((now - s) * 1000) / 1000;
+		}
+
+		// === Interpolate the data
+		if ((method === 'POST') || (method === 'PUT'))
+		{
+			sendData = interpolateParameters(data);
+		}
+		else
+		{
+			url += url.indexOf("?") === -1 ? '?' : '&';
+			url += interpolateParameters(data);
+		}
+
+		// === Get the XHR object
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, url);
+
+		// === Handle POST / PUT data
+		if ((method === 'POST') || (method === 'PUT'))
+		{
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		}
+
+		// --- Set the load handler
+		xhr.onload = function (event)
+		{
+			var status = xhrSuccessStatus[xhr.status] || xhr.status;
+			var statusText = xhr.statusText;
+			var isBinaryResult = (xhr.responseType || "text") !== "text" || typeof xhr.responseText !== "string";
+			var responseText = isBinaryResult ? xhr.response : xhr.responseText;
+			var headers = xhr.getAllResponseHeaders();
+
+			if (status === 200)
+			{
+				if (successCallback != null)
+				{
+					triggerCallbacks(successCallback, responseText, statusText, xhr);
+				}
+
+				return;
+			}
+
+			if (errorCallback)
+			{
+				triggerCallbacks(errorCallback, xhr, "error", null);
+			}
+		};
+
+		// --- Set the error handler
+		xhr.onerror = function (event)
+		{
+			if (errorCallback)
+			{
+				triggerCallbacks(errorCallback, xhr, "error", null);
+			}
+		};
+
+		// IE 8 is a pain the butt
+		if (window.attachEvent && !window.addEventListener)
+		{
+			xhr.onreadystatechange = function ()
+			{
+				if (this.readyState === 4)
+				{
+					var status = xhrSuccessStatus[this.status] || this.status;
+
+					if (status >= 200 && status < 400)
+					{
+						// Success!
+						xhr.onload();
+					}
+					else
+					{
+						xhr.onerror();
+					}
+				}
+			};
+		}
+
+		// --- Set the timeout handler
+		xhr.ontimeout = function ()
+		{
+			if (errorCallback)
+			{
+				triggerCallbacks(errorCallback, xhr, "timeout", null);
+			}
+		};
+
+		// --- Set the abort handler
+		xhr.onabort = function ()
+		{
+			if (errorCallback)
+			{
+				triggerCallbacks(errorCallback, xhr, "abort", null);
+			}
+		};
+
+		// --- Apply the timeout before running the request
+		var timeout = (typeof(parameters.timeout) === 'undefined') ? 600000 : parameters.timeout;
+
+		if (timeout > 0)
+		{
+			xhr.timeout = timeout;
+		}
+
+		// --- Call the beforeSend event handler. If it returns false the request is canceled.
+		if (typeof(parameters.beforeSend) !== 'undefined')
+		{
+			if (parameters.beforeSend(xhr, parameters) === false)
+			{
+				return;
+			}
+		}
+
+		xhr.send(sendData);
 	};
 
 	construct(options);

@@ -60,6 +60,13 @@
                        description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ADDITIONALCOOKIEDOMAINS_DESC"
                 />
 
+                <field name="cookiePreferenceDuaration" type="integer"
+                       first="1" last="3650" step="1"
+                       default="90"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIEPREFERENCEDUARATION_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIEPREFERENCEDUARATION_DESC"
+                />
+
                 <field name="cookiesEnabledUserGroup" type="UserGroupList"
                        checksuperusergroup="1"
                        default=""

@@ -172,7 +172,7 @@ abstract class plgSystemDataComplianceCookieHelper
 		$secure             = $app->get('force_ssl', 0) == 2;
 		$httpOnly           = true;
 
-		$app->input->cookie->set('plg_system_eprivacy', $encodedCookieValue, $cookieExpiration, $path, $domain, $secure, $httpOnly);
+		$app->input->cookie->set(self::$helperCookieName, $encodedCookieValue, $cookieExpiration, $path, $domain, $secure, $httpOnly);
 	}
 
 	public static function unsetAllCookies(bool $allowSessionCookie = true, array $domainNames = [])
