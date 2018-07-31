@@ -3,6 +3,8 @@
  * @package   Akeeba Data Compliance
  * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
+ *
+ * @since   1.1.0
  */
 
 abstract class plgSystemDataComplianceCookieHelper
@@ -11,6 +13,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Joomla's session cookie name
 	 *
 	 * @var  null|string
+	 *
+	 * @since   1.1.0
 	 */
 	private static $sessionCookieName = null;
 
@@ -18,6 +22,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * The name of our helper's cookie. This is set on the client's browser to record their cookie preference.
 	 *
 	 * @var  string
+	 *
+	 * @since   1.1.0
 	 */
 	private static $helperCookieName = 'plg_system_datacompliancecookie';
 
@@ -25,6 +31,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Has the current user accepted cookies? Use the method hasAcceptedCookies() to retrieve its value.
 	 *
 	 * @var  null|bool
+	 *
+	 * @since   1.1.0
 	 */
 	private static $hasAcceptedCookies = null;
 
@@ -32,6 +40,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Sets the name of our helper cookie. This is set on the client's browser to record their cookie preference.
 	 *
 	 * @param   string  $cookieName  The name of the cookie. An empty value results in the default being used.
+	 *
+	 * @since   1.1.0
 	 */
 	public static function setCookieName($cookieName)
 	{
@@ -47,6 +57,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Gets the name of our helper cookie. This is set on the client's browser to record their cookie preference.
 	 *
 	 * @return  string
+	 *
+	 * @since   1.1.0
 	 */
 	public static function getCookieName(): string
 	{
@@ -57,6 +69,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Returns the contents of the helper cookie. If the cookie is not set or is invalid we return boolean false.
 	 *
 	 * @return  bool|array
+	 *
+	 * @since   1.1.0
 	 */
 	public static function getDecodedCookieValue()
 	{
@@ -101,6 +115,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Has the user accepted cookies and indicated so by storing a cookie on their browsers?
 	 *
 	 * @return  bool
+	 *
+	 * @since   1.1.0
 	 */
 	public static function hasAcceptedCookies($defaultState = false): bool
 	{
@@ -132,6 +148,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * @param   int   $forThisManyDays  For how many days will the acceptance be remembered (default: 90)
 	 *
 	 * @return  void
+	 *
+	 * @since   1.1.0
 	 */
 	public static function setAcceptedCookies(bool $accepted, int $forThisManyDays = 90)
 	{
@@ -175,6 +193,50 @@ abstract class plgSystemDataComplianceCookieHelper
 		$app->input->cookie->set(self::$helperCookieName, $encodedCookieValue, $cookieExpiration, $path, $domain, $secure, $httpOnly);
 	}
 
+	/**
+	 * Ask the browser to unset the helper cookie which marks the user's cookie preferences.
+	 *
+	 * @param   bool   $defaultState  The default cookie acceptance state when a preference is not yet recorded
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
+	public static function removeCookiePreference(bool $defaultState = false)
+	{
+		self::$hasAcceptedCookies = $defaultState;
+
+		// Try to get the application reference
+		try
+		{
+			/** @var JApplicationSite $app */
+			$app = JFactory::getApplication();
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
+
+		// Set the cookie
+		$path               = $app->get('cookie_path', '/');
+		$domain             = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
+		$secure             = $app->get('force_ssl', 0) == 2;
+		$httpOnly           = true;
+
+		$app->input->cookie->set(self::$helperCookieName, '', 1, $path, $domain, $secure, $httpOnly);
+	}
+
+	/**
+	 * Remove all cookies known by the server. Please note that third party cookies cannot be removed. Moreover, any new
+	 * cookies that the server is attempting to set are also removed from the response.
+	 *
+	 * @param   bool   $allowSessionCookie  Should the session cookie be exempt from deletion?
+	 * @param   array  $domainNames         Which domain names are cookies set for?
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
 	public static function unsetAllCookies(bool $allowSessionCookie = true, array $domainNames = [])
 	{
 		// If no additional domain names are set I will add my default ones
@@ -217,6 +279,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * @param   array  $domainNames  Additional domain names to use when unsetting existing cookies
 	 *
 	 * @return  void
+	 *
+	 * @since   1.1.0
 	 */
 	private static function unsetExistingCookies(array $whiteList, array $domainNames)
 	{
@@ -277,6 +341,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * @param   array  $whiteList    A list of cookie names which will not be unset
 	 *
 	 * @return  void
+	 *
+	 * @since   1.1.0
 	 */
 	private static function unsetNewCookies(array $whiteList)
 	{
@@ -343,6 +409,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 *
 	 * @param   string  $cookieName   The cookie to remove
 	 * @param   array   $domainNames  The domain names to remove it from
+	 *
+	 * @since   1.1.0
 	 */
 	private static function unsetCookieFromAllDomains(string $cookieName, array $domainNames)
 	{
@@ -386,9 +454,11 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * successfully unset a cookie. Unsetting the cookie happens by setting its value to an empty string and its
 	 * expiration time to a year in the past.
 	 *
-	 * @param string  $cookieName    The name of the cookie to unset
-	 * @param string  $cookiePath    The path for the cookie
-	 * @param string  $cookieDomain  The domain name for the cookie.
+	 * @param   string  $cookieName    The name of the cookie to unset
+	 * @param   string  $cookiePath    The path for the cookie
+	 * @param   string  $cookieDomain  The domain name for the cookie.
+	 *
+	 * @since   1.1.0
 	 */
 	private static function unsetCookie(string $cookieName, string $cookiePath, string $cookieDomain)
 	{
@@ -426,6 +496,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 *
 	 * @return  bool
 	 * @throws  Exception  Thrown if an error occurs.
+	 *
+	 * @since   1.1.0
 	 */
 	private static function decodeAcceptanceFromHelperCookie()
 	{
@@ -465,6 +537,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Return the name of Joomla's session cookie
 	 *
 	 * @return  string
+	 *
+	 * @since   1.1.0
 	 */
 	public static function getSessionCookieName(): string
 	{
@@ -489,6 +563,8 @@ abstract class plgSystemDataComplianceCookieHelper
 	 * Get the default list of domain names for cookies
 	 *
 	 * @return array
+	 *
+	 * @since   1.1.0
 	 */
 	public static function getDefaultCookieDomainNames(): array
 	{
@@ -528,6 +604,18 @@ abstract class plgSystemDataComplianceCookieHelper
 		return array_unique($domainNames);
 	}
 
+	/**
+	 * Get the base domain of a subdomain. This is the domain and TLD part, ignoring all subdomain parts.
+	 *
+	 * For example, given www.example.com we return example.com. Given foo.bar.baz.example.com we also return
+	 * example.com.
+	 *
+	 * @param   string  $subdomain
+	 *
+	 * @return  string
+	 *
+	 * @since   1.1.0
+	 */
 	private static function getBaseDomain(string $subdomain): string
 	{
 		$domainParts = explode('.', $subdomain);

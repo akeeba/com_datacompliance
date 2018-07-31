@@ -201,7 +201,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		// Prevent other event handlers in the plugin from firing
 		$this->enabled = false;
 
-		$token = $this->container->platform->getToken();
+		$token    = $this->container->platform->getToken();
 		$hasToken = $this->container->input->post->get($token, false, 'none') == 1;
 
 		if (!$hasToken)
@@ -210,26 +210,40 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		}
 
 		$accepted = $this->container->input->post->getInt('accepted', null);
+		$reset    = $this->container->input->post->getInt('reset', null);
 
-		if (is_null($accepted))
+		if (is_null($accepted) && is_null($reset))
 		{
-			return new RuntimeException('No cookie preference was provided.', 103);
+			return new RuntimeException('No cookie preference was provided and no cookie preference reset was requested.', 103);
 		}
 
-		// Set the cookies
-		$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
-		CookieHelper::setAcceptedCookies($accepted === 1, $thisManyDays);
+		if ($reset)
+		{
+			// Reset the cookie preference. Cookie acceptance is set to the implied acceptance value.
+			$accepted = $this->params->get('impliedAccept', 0) != 0;
+			CookieHelper::removeCookiePreference($accepted);
+
+			$ret = sprintf("The cookie preference has been cleared. Cookies are now %s per default setting.", $accepted ? 'accepted' : 'rejected');
+		}
+		else
+		{
+			// Set the cookie preference to the user's setting.
+			$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
+			CookieHelper::setAcceptedCookies($accepted === 1, $thisManyDays);
+
+			$ret = sprintf("The user has %s cookies", $accepted ? 'accepted' : 'rejected');
+		}
 
 		// Apply the user group assignments based on the cookie preference
 		$this->applyUserGroupAssignments();
 
-		// Remove all cookies if the user rejected cookies
+		// Remove all cookies if the user has rejected cookies
 		if (!$accepted)
 		{
 			$this->removeAllCookies();
 		}
 
-		return sprintf("The user has %s cookies", $accepted ? 'accepted' : 'rejected');
+		return $ret;
 	}
 
 	/**
@@ -465,7 +479,9 @@ JS;
 		$this->container->template->addJSInline($js);
 		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, false, $this->container->mediaVersion);
 
-		// TODO Add language strings which should be made known to JS
+		// Add language strings which should be made known to JS
+		$this->loadLanguage();
+		JText::script('PLG_SYSTEM_DATACOMPLIANCECOOKIE_LBL_REMOVECOOKIES');
 	}
 
 	/**

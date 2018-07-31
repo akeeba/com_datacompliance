@@ -8,25 +8,29 @@
 /** @var  \Joomla\CMS\Plugin\CMSPlugin  $this */
 ?>
 <div id="akeeba-dccc-controls-accepted" class="akeeba-renderer-fef">
-	<p id="akeeba-dccc-controls-accepted-text" class="akeeba-dccc-controls-text">
-		<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_ACCEPT_TEXT') ?>
-	</p>
-	<div id="akeeba-dccc-controls-accepted-buttons" class="akeeba-dccc-controls-buttons">
-		<!-- TODO Create event handler -->
-		<button onclick="return false;" class="akeeba-btn--red">
-			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_REVOKE') ?>
-		</button>
+	<div class="akeeba-panel--info">
+		<p id="akeeba-dccc-controls-accepted-text" class="akeeba-dccc-controls-text">
+			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_ACCEPT_TEXT') ?>
+		</p>
+		<div id="akeeba-dccc-controls-accepted-buttons" class="akeeba-dccc-controls-buttons">
+			<button onclick="window.AkeebaDataComplianceCookies.removeCookiePreference(); return false;" class="akeeba-btn--red">
+				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_REVOKE') ?>
+			</button>
+		</div>
 	</div>
+
+
 </div>
 
 <div id="akeeba-dccc-controls-declined" class="akeeba-renderer-fef">
-	<p id="akeeba-dccc-controls-declined-text" class="akeeba-dccc-controls-text">
-		<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_DECLINE_TEXT') ?>
-	</p>
-	<div id="akeeba-dccc-controls-declined-buttons" class="akeeba-dccc-controls-buttons">
-		<!-- TODO Create event handler -->
-		<button onclick="return false;" class="akeeba-btn--green">
-			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_RECONSIDER') ?>
-		</button>
+	<div class="akeeba-panel--orange">
+		<p id="akeeba-dccc-controls-declined-text" class="akeeba-dccc-controls-text">
+			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_DECLINE_TEXT') ?>
+		</p>
+		<div id="akeeba-dccc-controls-declined-buttons" class="akeeba-dccc-controls-buttons">
+			<button onclick="window.AkeebaDataComplianceCookies.removeCookiePreference(); return false;" class="akeeba-btn--green">
+				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_RECONSIDER') ?>
+			</button>
+		</div>
 	</div>
 </div>

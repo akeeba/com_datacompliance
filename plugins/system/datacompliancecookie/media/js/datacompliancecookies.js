@@ -52,10 +52,9 @@ var AkeebaDataComplianceCookies = function (options)
 		};
 		// Pass the Joomla! token
 		myData[me.vars.token] = 1;
-		var myToken = me.vars.token;
 		me.ajaxCall(url, {
 			method: 'POST',
-			timeout: 10000,
+			timeout: 15000,
 			data: myData,
 			success: function(responseText, responseStatus, xhr) {
 				try {
@@ -88,10 +87,92 @@ var AkeebaDataComplianceCookies = function (options)
 		return false;
 	};
 
+	/**
+	 * Remove the user's cookie preferences and show the banner again.
+	 *
+	 * @returns {boolean}
+	 */
+	this.removeCookiePreference = function ()
+	{
+		var url = 'index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json';
+		var myData = {
+			reset: 1
+		};
+		// Pass the Joomla! token
+		myData[me.vars.token] = 1;
+		me.ajaxCall(url, {
+			method: 'POST',
+			timeout: 15000,
+			data: myData,
+			success: function(responseText, responseStatus, xhr) {
+				try {
+					var responseObject = JSON.parse(responseText);
+
+					if (responseObject.success)
+					{
+						console.info("Akeeba DataCompliance Cookies -- Reset AJAX successful: " + responseObject.data);
+					}
+					else
+					{
+						me.handleAjaxError(responseObject.message);
+
+						return;
+					}
+				}
+				catch (e)
+				{
+					console.error("Akeeba DataCompliance Cookies -- Cannot parse Reset AJAX response. Assuming success.");
+				}
+
+				if (me.vars.interacted && me.vars.accepted)
+				{
+					alert(Joomla.JText._('PLG_SYSTEM_DATACOMPLIANCECOOKIE_LBL_REMOVECOOKIES'));
+				}
+
+				// Hide cookie controls
+				var elAcceptedControls = document.getElementById('akeeba-dccc-controls-accepted');
+				var elDeclinedControls = document.getElementById('akeeba-dccc-controls-declined');
+
+				if (typeof elAcceptedControls !== 'undefined')
+				{
+					elAcceptedControls.style.display = 'none';
+				}
+
+				if (typeof elDeclinedControls !== 'undefined')
+				{
+					elDeclinedControls.style.display = 'none';
+				}
+
+				// Show banner
+				var elBanner = document.getElementById('akeeba-dccc-banner-container');
+
+				if (typeof elBanner !== 'undefined')
+				{
+					elBanner.style.display = 'block';
+				}
+			},
+			error: function(xhr, errorType, e) {
+				me.handleAjaxError('(' + errorType + ') #' + e.code + ' ' + e.message);
+
+				window.location = window.location;
+			}
+		});
+
+		// Return false because this is a button element action handler
+		return false;
+	};
+
+	/**
+	 * Dummy AJAX error handler.
+	 *
+	 * This logs all errors to the console. In case of an issue we can instruct the user to give us the console dump so
+	 * that we can understand what happened.
+	 *
+	 * @param   {string}  message
+	 */
 	this.handleAjaxError = function(message)
 	{
 		console.error('Akeeba DataCompliance Cookies -- AJAX Error: ' + message);
-		alert(message);
 	};
 
 	/**
@@ -931,7 +1012,8 @@ AkeebaDataComplianceCookies.documentReady(function ()
 			// Show akeeba-dccc-controls-accepted
 			elAcceptedControls.style.display = 'block';
 
-			// TODO Move akeeba-dccc-controls-accepted into akeeba-dccc-controls
+			// Move akeeba-dccc-controls-accepted into akeeba-dccc-controls
+			elHolder.appendChild(elAcceptedControls);
 		}
 
 		return;
@@ -942,7 +1024,8 @@ AkeebaDataComplianceCookies.documentReady(function ()
 		// Show akeeba-dccc-controls-declined
 		elDeclinedControls.style.display = 'block';
 
-		// TODO Move akeeba-dccc-controls-declined into akeeba-dccc-controls
+		// Move akeeba-dccc-controls-declined into akeeba-dccc-controls
+		elHolder.appendChild(elDeclinedControls);
 	}
 
 });
