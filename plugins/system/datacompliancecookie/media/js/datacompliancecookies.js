@@ -881,15 +881,20 @@ AkeebaDataComplianceCookies.documentReady(function ()
 		window.AkeebaDataComplianceCookies.disableStorage();
 	}
 
-	// TODO If the user has made no preference display the modal or the cookie controls
+	// If the user has made no preference display the cookie banner
 	if (!window.AkeebaDataComplianceCookies.vars.interacted)
 	{
-		// TODO Show cookies modal
+		var elBanner = document.getElementById('akeeba-dccc-banner-container');
+
+		if (typeof elBanner !== 'undefined')
+		{
+			elBanner.style.display = 'block';
+		}
 
 		return;
 	}
 
-	// The user has already interacted. We do NOT show the modal but we DO show them the cookie controls
+	// The user has already interacted. We do NOT show the banner but we DO show them the cookie controls
 	if (window.AkeebaDataComplianceCookies.vars.accepted)
 	{
 		// TODO Show controls to disable cookies

@@ -534,7 +534,7 @@ JS;
 		// Get the correct view template, depending on whether we have accepted cookies
 		$template = 'plugin://system/datacompliancecookie/banner.php';
 
-		if ($this->hasAcceptedCookies)
+		if ($this->hasCookiePreference)
 		{
 			$template = 'plugin://system/datacompliancecookie/controls.php';
 		}
