@@ -580,26 +580,9 @@ JS;
 	private function applyUserGroupAssignments(): void
 	{
 		// Note that permanent user group assignment IS NOT possible for guest (not logged in) users
-		$user                     = $this->container->platform->getUser();
-		$permanentGroupAssignment = ($this->params->get('permanentUserGroupAssignment', 0) == 1) && !$user->guest;
-		$rejectGroup              = $this->params->get('cookiesRejectedUserGroup', 0);
-		$acceptGroup              = $this->params->get('cookiesEnabledUserGroup', 0);
-		$assignGroup              = $this->hasAcceptedCookies ? $acceptGroup : $rejectGroup;
-		$removeGroup              = $this->hasAcceptedCookies ? $rejectGroup : $acceptGroup;
-
-		// Do I have to do permanent user group assignment
-		if ($permanentGroupAssignment && !$user->guest && (($assignGroup != 0) || ($removeGroup != 0)))
-		{
-			if ($removeGroup != 0)
-			{
-				// TODO Remove permanent assignment from $removeGroup
-			}
-
-			if ($assignGroup != 0)
-			{
-				// TODO Add permanent assignment to $assignGroup
-			}
-		}
+		$rejectGroup = $this->params->get('cookiesRejectedUserGroup', 0);
+		$acceptGroup = $this->params->get('cookiesEnabledUserGroup', 0);
+		$assignGroup = $this->hasAcceptedCookies ? $acceptGroup : $rejectGroup;
 
 		// No group to assign. Bye-bye.
 		if ($assignGroup == 0)
