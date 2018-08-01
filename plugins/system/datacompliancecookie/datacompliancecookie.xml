@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.7" type="plugin" group="system" method="upgrade">
+    <name>PLG_SYSTEM_DATACOMPLIANCECOOKIE</name>
+    <author>Nicholas K. Dionysopoulos</author>
+    <authorEmail>nicholas@akeebabackup.com</authorEmail>
+    <authorUrl>http://www.akeebabackup.com</authorUrl>
+    <copyright>Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
+    <license>GNU General Public License version 3, or later</license>
+    <creationDate>2018-04-19</creationDate>
+    <version>1.0</version>
+    <description>PLG_SYSTEM_DATACOMPLIANCECOOKIE_DESCRIPTION</description>
+
+    <files>
+        <filename plugin="datacompliancecookie">datacompliancecookie.php</filename>
+        <folder>helper</folder>
+        <folder>tmpl</folder>
+    </files>
+
+    <media folder="media" destination="plg_system_datacompliancecookie">
+        <folder>js</folder>
+        <folder>css</folder>
+    </media>
+
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.plg_system_datacompliancecookie.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_system_datacompliancecookie.sys.ini</language>
+    </languages>
+
+    <scriptfile>script.php</scriptfile>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="cookieName" type="text"
+                       default="plg_system_datacompliancecookie"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIENAME_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIENAME_DESC"
+                />
+
+                <field name="impliedAccept" type="radio" default="0"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_IMPLIEDACCEPT_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_IMPLIEDACCEPT_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="allowSessionCookie" type="radio" default="1"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ALLOWSESSIONCOOKIE_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ALLOWSESSIONCOOKIE_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="additionalCookieDomains" type="textarea"
+                       rows="7" columns="50"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ADDITIONALCOOKIEDOMAINS_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ADDITIONALCOOKIEDOMAINS_DESC"
+                />
+
+                <field name="cookiePreferenceDuaration" type="integer"
+                       first="1" last="3650" step="1"
+                       default="90"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIEPREFERENCEDUARATION_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIEPREFERENCEDUARATION_DESC"
+                />
+
+                <field name="cookiesEnabledUserGroup" type="UserGroupList"
+                       checksuperusergroup="1"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESENABLEDUSERGROUP_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESENABLEDUSERGROUP_DESC"
+                >
+                    <option value="0">PLG_SYSTEM_DATACOMPLIANCECOOKIE_NOGROUP</option>
+                </field>
+
+                <field name="cookiesRejectedUserGroup" type="UserGroupList"
+                       checksuperusergroup="1"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESREJECTEDUSERGROUP_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESREJECTEDUSERGROUP_DESC"
+                >
+                    <option value="0">PLG_SYSTEM_DATACOMPLIANCECOOKIE_NOGROUP</option>
+                </field>
+
+                <field name="load_fef" type="radio" default="1"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_LOADFEF_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_LOADFEF_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="fef_reset" type="radio" default="1"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_FEFRESET_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_FEFRESET_DESC"
+                       class="switcher btn-group">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+
+                <field name="privacyPolicyURL" type="url"
+                       default=""
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_PRIVACYPOLICYURL_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_PRIVACYPOLICYURL_DESC"
+                />
+
+            </fieldset>
+        </fields>
+    </config>
+</extension>
