@@ -102,6 +102,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private $haveIncludedHtml = false;
 
 	/**
+	 * The value of the Do Not Track (DNT) header sent by the browser. -1 = not set, 0 = allow tracking, 1 = do not
+	 * track.
+	 *
+	 * @var    int
+	 * @since  1.1.0
+	 */
+	private $dnt = -1;
+
+	/**
 	 * Am I currently handling an AJAX request? This is populated in onAfterInitialise and it's used to prevent other
 	 * event handlers from firing when we are processing an AJAX request.
 	 *
@@ -174,13 +183,33 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		// Get some options
 		$cookieName        = $this->params->get('cookieName', 'plg_system_datacompliancecookie');
 		$impliedAcceptance = $this->params->get('impliedAccept', 0) != 0;
+		$dntCompliance     = $this->params->get('dntCompliance', 'ignore');
+		$useDNTforImplied  = $dntCompliance != 'ignore';
 
 		// Set up the name of the user preference (helper) cookie we are going to use in this plugin
 		CookieHelper::setCookieName($cookieName);
 
+		// Get the DNT header value
+		$this->dnt = $this->getDNTValue();
+
+		if ($useDNTforImplied && ($this->dnt !== -1))
+		{
+			$impliedAcceptance = $this->dnt === 0;
+		}
+
 		// Get the user's cookie acceptance preferences
 		$this->hasAcceptedCookies  = CookieHelper::hasAcceptedCookies($impliedAcceptance);
 		$this->hasCookiePreference = CookieHelper::getDecodedCookieValue() !== false;
+
+		/**
+		 * The DNT header is set, the user's option cookie is NOT set and I was told to treat the DNT header as the
+		 * user's concrete preference.
+		 */
+		if (($this->dnt !== -1) && ($dntCompliance == 'overridepreference') && (CookieHelper::getDecodedCookieValue() === false))
+		{
+			$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
+			CookieHelper::setAcceptedCookies($this->dnt === 0, $thisManyDays);
+		}
 	}
 
 	/**
@@ -220,7 +249,13 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		if ($reset)
 		{
 			// Reset the cookie preference. Cookie acceptance is set to the implied acceptance value.
-			$accepted = $this->params->get('impliedAccept', 0) != 0;
+			$accepted         = $this->params->get('impliedAccept', 0) != 0;
+			$useDNTforImplied = $this->params->get('dntCompliance', 'ignore') != 'ignore';
+			if ($useDNTforImplied && ($this->dnt !== -1))
+			{
+				$accepted = $this->dnt === 0;
+			}
+
 			CookieHelper::removeCookiePreference($accepted);
 
 			$ret = sprintf("The cookie preference has been cleared. Cookies are now %s per default setting.", $accepted ? 'accepted' : 'rejected');
@@ -758,4 +793,54 @@ JS;
 		// Let the newly imported plugins run their onAfterInitialize events
 		$tempDispatcher->trigger('onAfterInitialize');
 	}
+
+	/**
+	 * Returns the value of the HTTP DNT (Do Not Track) header.
+	 *
+	 * @return  int -1 if not set, 0 if DNT is disabled, 1 if enabled.
+	 *
+	 * @since   1.1.0
+	 */
+	private function getDNTValue(): int
+	{
+		if (isset($_SERVER['HTTP_DNT']))
+		{
+			return (int) $_SERVER['HTTP_DNT'];
+		}
+
+		if (function_exists('getallheaders'))
+		{
+			foreach (getallheaders() as $k => $v)
+			{
+				if (strtolower($k) === "dnt")
+				{
+					return (int) $v;
+				}
+			}
+		}
+
+		if (function_exists('getenv'))
+		{
+			$v = getenv('HTTP_DNT');
+
+			if ($v !== false)
+			{
+				return (int) $v;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Get the DNT preference
+	 *
+	 * @return  int
+	 * @since   1.1.0
+	 */
+	public function getDnt(): int
+	{
+		return $this->dnt;
+	}
+
 }
