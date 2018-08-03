@@ -93,6 +93,14 @@
                     <option value="0">PLG_SYSTEM_DATACOMPLIANCECOOKIE_NOGROUP</option>
                 </field>
 
+                <field name="bannerPosition" type="list" default="top"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_DESC">
+                    <option value="top">PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_TOP</option>
+                    <option value="bottom">PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_BOTTOM</option>
+                    <option value="modal">PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_MODAL</option>
+                </field>
+
                 <field name="load_fef" type="radio" default="1"
                        label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_LOADFEF_LABEL"
                        description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_LOADFEF_DESC"
