@@ -31,10 +31,11 @@
         <file type="plugin" group="datacompliance" id="s3">plg_datacompliance_s3.zip</file>
 
         <!-- Plugins: system -->
-        <file type="plugin" group="system" id="ars">plg_system_datacompliance.zip</file>
+        <file type="plugin" group="system" id="datacompliance">plg_system_datacompliance.zip</file>
+        <file type="plugin" group="system" id="datacompliancecookie">plg_system_datacompliancecookie.zip</file>
 
         <!-- Plugins: user -->
-        <file type="plugin" group="user" id="ars">plg_user_datacompliance.zip</file>
+        <file type="plugin" group="user" id="datacompliance">plg_user_datacompliance.zip</file>
     </files>
 
     <!-- Installation script -->
