@@ -49,6 +49,13 @@
         the data minimization requirements of GDPR by deleting inactive user
         profiles automatically, after users are suitably notified.</para>
 
+        <para>Since version 1.1.0 it also helps you comply with the ePrivacy
+        Directive extension which is lex specialis to the GDPR (extends and
+        specialises the GDPR to cookie handling) and which comes into effect
+        in 2019. Unlike competing solutions, we do that in a way that is fully
+        compatible with the way Joomla! is supposed to work and does not cause
+        adverse effects to the operation of your site.</para>
+
         <para><application>Akeeba Data Compliance</application> is Free
         Software. You can redistribute it and/or modify it under the terms of
         the GNU General Public License as published by the Free Software
@@ -151,6 +158,9 @@
         with a number of plugins for core Joomla! and Akeeba extensions. The
         API is open and any third party developer can create their own plugins
         for their software.</para>
+
+        <para>Please note that the cookie law compliance plugin is documented
+        in a separate chapter further down this documentation.</para>
       </section>
     </chapter>
 
@@ -1978,6 +1988,281 @@
             </listitem>
           </itemizedlist>
         </section>
+      </section>
+    </chapter>
+
+    <chapter xml:id="cookie-compliance">
+      <title>Cookie law (ePrivacy Directive) compliance</title>
+
+      <section xml:id="cookie-quickstart">
+        <title>Quick Start</title>
+
+        <para>This is the 2' quick start for using the plugin. If you want to
+        understand why you are doing what you're doing read the next section.
+        All the pieces will fall into place.</para>
+
+        <para><bridgehead>Create user groups</bridgehead></para>
+
+        <para>Go to <guimenu>Users</guimenu>, <guisubmenu>Groups</guisubmenu>,
+        <guimenuitem>Add New Group</guimenuitem>.</para>
+
+        <para>Set the group title to <option>Accepted Cookies Group</option>
+        and the parent to <option>Public</option>. Click on <guibutton>Save
+        &amp; New</guibutton>.</para>
+
+        <para>Set the group title to <option>Rejected Cookies Group</option>
+        and the parent to <option>Public</option>. Click on <guibutton>Save
+        &amp; Close</guibutton>.</para>
+
+        <para><bridgehead>Create access levels</bridgehead></para>
+
+        <para>Go to <guimenu>Users</guimenu>, <guisubmenu>Access
+        Levels</guisubmenu>, <guimenuitem>Add New Access
+        Level</guimenuitem>.</para>
+
+        <para>Set the access level title to <option>Accepted Cookies</option>.
+        Under <guilabel>User Groups Having Viewing Access</guilabel> select
+        <option>Accepted Cookies Group</option>. Click on <guibutton>Save
+        &amp; New</guibutton>.</para>
+
+        <para>Set the access level title to <option>Rejected Cookies</option>.
+        Under <guilabel>User Groups Having Viewing Access</guilabel> select
+        <option>Rejected Cookies Group</option>. Click on <guibutton>Save
+        &amp; New</guibutton>.</para>
+
+        <para>Set the access level title to <option>Has Cookie
+        Preference</option>. Under <guilabel>User Groups Having Viewing
+        Access</guilabel> select both <option>Accepted Cookies Group</option>
+        and <option>Rejected Cookies Group</option>. Click on <guibutton>Save
+        &amp; Close</guibutton>.</para>
+
+        <para><bridgehead>Create a custom HTML module (with Cookies Allowed
+        Access access level)</bridgehead></para>
+
+        <para>Go to <guimenu>Extensions</guimenu>,
+        <guimenuitem>Modules</guimenuitem>. Click on
+        <guibutton>New</guibutton>.</para>
+
+        <para>Select the <guilabel>Custom</guilabel> option.</para>
+
+        <para>Set the <guilabel>Title</guilabel> to <option>Cookie
+        Controls</option>.</para>
+
+        <para>Set <guilabel>Show Title</guilabel> to
+        <option>Hide</option>.</para>
+
+        <para>Set the <guilabel>Access</guilabel> to <option>Has Cookie
+        Preference</option>.</para>
+
+        <para>Set the <guilabel>Position</guilabel> to any position visible on
+        your template. This is where the cookie controls will be shown once
+        the user makes a choice (reject or accept cookies).</para>
+
+        <para>In the main <guilabel>Custom</guilabel> area click on
+        <guibutton>Toggle Editor</guibutton> and enter the following
+        HTML</para>
+
+        <programlisting>&lt;div id="akeeba-dccc-controls"&gt;&lt;/div&gt;</programlisting>
+
+        <para>Finally, click on <guibutton>Save &amp;
+        Close</guibutton>.</para>
+
+        <para><bridgehead>Set up and enable the plugin</bridgehead></para>
+
+        <para>Go to <guimenu>Extensions</guimenu>,
+        <guimenuitem>Plugins</guimenuitem>.</para>
+
+        <para>Find the <guilabel>System - Data Compliance Cookie
+        Conformance</guilabel> plugin and click on it.</para>
+
+        <para>Set the <guilabel>Cookies accepted User Group</guilabel> to
+        <option>Accepted Cookies Group</option>.</para>
+
+        <para>Set the <guilabel>Cookies rejected User Group</guilabel> to
+        <option>Rejected Cookies Group</option>.</para>
+
+        <para>Set the <guilabel>Privacy Policy URL</guilabel> to the URL of
+        your site's privacy policy. If you don't have one yet and you just
+        want to test the plugin leave it blank for now.</para>
+      </section>
+
+      <section xml:id="cookie-concepts">
+        <title>How this is supposed to work</title>
+
+        <bridgehead>Framing the issue we need to solve</bridgehead>
+
+        <para>Sites and web pages in general may store information about the
+        visitor on the visitor's browser in one of three ways (links to
+        Mozilla Developer Network are given for context):</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><link
+            xlink:href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies">Cookies</link>.
+            Small text files sent to the browser with Set-Cookie HTTP headers
+            and which are sent back by the browser to the server on every
+            request. Cookies can also be set, modified or retrieved through
+            JavaScript running on the page. </para>
+          </listitem>
+
+          <listitem>
+            <para><link
+            xlink:href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">Local
+            storage</link>. Limited amounts of content can be stored
+            permanently with the browser using JavaScript. This content
+            persists after the user session is closed, e.g. when the user
+            closes and reopens their browser. Unlike cookies, this content
+            cannot be set through HTTP headers and it is not sent to the
+            browser. Like cookies, the content is persistent in the
+            browser.</para>
+          </listitem>
+
+          <listitem>
+            <para><link
+            xlink:href="https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage">Session
+            data</link>. It's similar to local storage with the difference
+            that the content is removed as soon as the user session is
+            closed.</para>
+          </listitem>
+
+          <listitem>
+            <para>While it's possible to also store information using Adobe
+            Flash cookies, the entire Adobe Flash technology is considered
+            obsolete, insecure and is being phased out (modern browsers won't
+            even let you run Flash content unless you jump through hoops).
+            Therefore we decided not to bother with it.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>For the purposes of the European Union ePrivacy Directive they
+        are all considered the same. Therefore we will call it "storing
+        information in the browser" throughout this section.</para>
+
+        <bridgehead>Conformance and exceptions</bridgehead>
+
+        <para>Conforming with the ePrivacy directive requires us to ask for
+        the user's consent before we store any information in the browser. If
+        they have not given explicit consent, or if they have declined to
+        provide consent we must not store any information in the browser and
+        prevent JavaScript from doing so. Moreover, we have to remove
+        information already stored in the browser - but only if it's first
+        party cookies since the browsers won't let us unset cookies set by
+        other sites for security reasons.</para>
+
+        <para>The user also has to be given a way to reconsider their
+        preference. Especially when they have accepted storing information in
+        the browser they need to be given a way to decline.</para>
+
+        <para>A special note is due about "mandatory cookies". The lawmakers
+        have realised that not all cookies can be avoided. The HTTP protocol
+        used to deliver web pages is by its nature
+        <emphasis>stateless</emphasis>, that is to say it does not "remember"
+        who the user is, even with two subsequent requests coming from the
+        same browser. This would make it impossible to log users into sites or
+        to even remember their preferences, such as how many items they want
+        to see on a page, between requests. Therefore it is allowed to send
+        session and login cookies without explicit confirmation, as long as
+        these cookies are not used for tracking the user beyond this narrow
+        scope. To the best of our understanding Joomla's session and login
+        state cookies are exactly that. You can choose to always allow them.
+        If unsure, ask a lawyer. </para>
+
+        <para>Moreover, we need to store the user's preference regarding
+        cookie acceptance. This can only be done by means of a cookie and is,
+        therefore, allowed again if it's not used for tracking outside that
+        narrow scope. Our plugin does use a cookie like that and it's always
+        allowed to be set. At the very least, when a user makes a choice
+        regarding storing information in their browser will set this
+        cookie.</para>
+
+        <bridgehead>What the plugin does</bridgehead>
+
+        <para>Akeeba DataCompliance does that by using a system plugin, System
+        - Data Compliance Cookie Conformance.</para>
+
+        <para>The system plugin is responsible for determining whether the
+        user has made a choice regarding storing information in the browser,
+        displaying the user interface elements to manage that choice and
+        programmatically suppress new and existing information storage
+        according to the user's choices.</para>
+
+        <para>The interface is rendered by using plain HTML and CSS. Even if
+        JavaScript is disabled by the user they will still see the legally
+        required cookie banner. However, in this case, they will not be able
+        to make a choice to allow or reject cookies since that part requires
+        interaction with JavaScript. If they have made a choice the interface
+        is rendered using JavaScript.</para>
+
+        <bridgehead>Why do you need user groups and access levels</bridgehead>
+
+        <para>The plugin also <emphasis>temporarily</emphasis> assigns the
+        current user to specific user groups depending on their information
+        storage choice (accepted or rejected). This is done dynamically and
+        only for the current request. No information is stored in the
+        database. This also works for guest users, i.e. visitors who have not
+        logged in, and even if you have decided to block the Joomla! session
+        cookie.</para>
+
+        <para>Assigning user groups allows you to use access levels to load
+        different plugins and show different modules to users depending on
+        their information storage choices. For example, you can assign a
+        Google Analytics plugin to a view access level that's only linked to
+        your "accepted" user group to prevent the GA JavaScript from loading
+        <emphasis>at all</emphasis> unless the visitor explicitly agrees to
+        information storage. Conversely, you could show a module warning users
+        that some functionality on your site depending on cookies may not work
+        unless they accept the cookies.</para>
+
+        <para>Akeeba DataCompliance automatically loads plugins which are
+        limited by view levels linked to these dynamic user groups. Unlike
+        competing solutions, this is not done "blindly", i.e. we won't load a
+        plugin group which was not already requested to be loaded by code on
+        your site. Furthermore, unlike competing solutions, system plugins
+        loaded through this feature will be properly initialized (the
+        onAfterInitialise event is triggered for system plugins), minimizing
+        the chance of causing impossible to track bugs which would not happen
+        had you not used our cookie plugin. Finally, we assign dynamic user
+        groups to the current user in a way that makes it impossible for
+        Joomla to tell that this user has not always belonged to that user
+        group, therefore ensuring 100% compatibility with all existing Joomla!
+        software. This is where our experience writing low-level parts of
+        Joomla! itself comes in handy.</para>
+
+        <bridgehead>Why do you need a custom HTML module</bridgehead>
+
+        <para>When the user has made a choice for information storage we need
+        a way to give them the option to reconsider their choices. This
+        requires displaying some controls on the page. Typically, this is done
+        by third party solutions displaying a tab or banner on the page. The
+        former is hard to find. The latter is annoying. Both are likely to
+        display ugly or be in awkward positions on the page.</para>
+
+        <para>We want to give our users full control over the placement and
+        display of the cookie controls. That's why you will need to create a
+        custom HTML module with a special DIV which tells our plugin where to
+        render the controls. The controls themselves, just like the banner,
+        can be overridden with standard Joomla! template overrides. This makes
+        for an ultimately customizable solution.</para>
+
+        <para>Finally, we decided to use plain vanilla JavaScript without
+        relying on any third party JavaScript framework. Therefore it doesn't
+        matter if your site does not use jQuery or force unloads mooTools or
+        does whatever funky thing with loading JavaScript frameworks. Our
+        JavaScript will still work (unless something else on the page causes a
+        JavaScript error which forces your browser to stop parsing JavaScript
+        at all - this is something nobody can work around).</para>
+      </section>
+
+      <section xml:id="cookie-plugin">
+        <title>Plugin reference</title>
+
+        <para>(TODO - This section has not been written yet)</para>
+      </section>
+
+      <section xml:id="cookie-overrides">
+        <title>Template overrides</title>
+
+        <para>(TODO - This section has not been written yet)</para>
       </section>
     </chapter>
 

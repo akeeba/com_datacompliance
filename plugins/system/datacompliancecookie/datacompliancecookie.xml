@@ -45,6 +45,14 @@
                     <option value="1">JYes</option>
                 </field>
 
+                <field name="dntCompliance" type="list" default="overrideimplied"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_DONOTTRACK_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_DONOTTRACK_DESC">
+                    <option value="ignore">PLG_SYSTEM_DATACOMPLIANCECOOKIE_DONOTTRACK_IGNORE</option>
+                    <option value="overrideimplied">PLG_SYSTEM_DATACOMPLIANCECOOKIE_DONOTTRACK_OVERRRIDEIMPLIED</option>
+                    <option value="overridepreference">PLG_SYSTEM_DATACOMPLIANCECOOKIE_DONOTTRACK_OVERRRIDEPREFERENCE</option>
+                </field>
+
                 <field name="allowSessionCookie" type="radio" default="1"
                        label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ALLOWSESSIONCOOKIE_LABEL"
                        description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_ALLOWSESSIONCOOKIE_DESC"
@@ -83,6 +91,14 @@
                        description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_COOKIESREJECTEDUSERGROUP_DESC"
                 >
                     <option value="0">PLG_SYSTEM_DATACOMPLIANCECOOKIE_NOGROUP</option>
+                </field>
+
+                <field name="bannerPosition" type="list" default="top"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_DESC">
+                    <option value="top">PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_TOP</option>
+                    <option value="bottom">PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_BOTTOM</option>
+                    <option value="modal">PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNERPOSITION_MODAL</option>
                 </field>
 
                 <field name="load_fef" type="radio" default="1"
