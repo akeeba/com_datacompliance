@@ -5,6 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
+use Akeeba\DataCompliance\Site\Model\Cookietrails;
 use FOF30\Container\Container;
 use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
@@ -208,7 +209,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		if (($this->dnt !== -1) && ($dntCompliance == 'overridepreference') && (CookieHelper::getDecodedCookieValue() === false))
 		{
 			$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
-			CookieHelper::setAcceptedCookies($this->dnt === 0, $thisManyDays);
+			$accepted     = $this->dnt === 0;
+			CookieHelper::setAcceptedCookies($accepted, $thisManyDays);
+			$this->logAuditTrail($accepted, $this->dnt, false);
 		}
 	}
 
@@ -251,12 +254,14 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			// Reset the cookie preference. Cookie acceptance is set to the implied acceptance value.
 			$accepted         = $this->params->get('impliedAccept', 0) != 0;
 			$useDNTforImplied = $this->params->get('dntCompliance', 'ignore') != 'ignore';
+
 			if ($useDNTforImplied && ($this->dnt !== -1))
 			{
 				$accepted = $this->dnt === 0;
 			}
 
 			CookieHelper::removeCookiePreference($accepted);
+			$this->logAuditTrail($accepted, $useDNTforImplied ? $this->dnt : -2, true);
 
 			$ret = sprintf("The cookie preference has been cleared. Cookies are now %s per default setting.", $accepted ? 'accepted' : 'rejected');
 		}
@@ -265,6 +270,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			// Set the cookie preference to the user's setting.
 			$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
 			CookieHelper::setAcceptedCookies($accepted === 1, $thisManyDays);
+			$this->logAuditTrail($accepted, -2, false);
 
 			$ret = sprintf("The user has %s cookies", $accepted ? 'accepted' : 'rejected');
 		}
@@ -843,4 +849,32 @@ JS;
 		return $this->dnt;
 	}
 
+	/**
+	 * Create an audit log entry for the user's cookie preference
+	 *
+	 * @param   int   $preference  The recorded preference.
+	 * @param   int   $dnt         The value of the Do Not Track header (-1 means not set, -2 means does not apply)
+	 * @param   bool  $reset       Did the user ask for his preference to be reset? If so, the recorded preference is the applied default value.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
+	private function logAuditTrail(int $preference, int $dnt, bool $reset)
+	{
+		try
+		{
+			/** @var Cookietrails $model */
+			$model = $this->container->factory->model('Cookietrails')->tmpInstance();
+			$model->create([
+				'preference' => $preference,
+				'dnt' => $dnt,
+				'reset' => $reset ? 1 : 0,
+			]);
+		}
+		catch (Exception $e)
+		{
+			// No worries if that fails
+		}
+	}
 }

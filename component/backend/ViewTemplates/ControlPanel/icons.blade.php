@@ -25,6 +25,13 @@ defined('_JEXEC') or die;
         </a>
 
         <a class="akeeba-action--teal"
+           href="index.php?option=com_datacompliance&view=Cookietrails" >
+            <span class="akion-android-checkbox"></span>
+            @lang('COM_DATACOMPLIANCE_COOKIETRAILS')
+        </a>
+
+
+        <a class="akeeba-action--teal"
            href="index.php?option=com_datacompliance&view=Usertrails" >
             <span class="akion-person"></span>
             @lang('COM_DATACOMPLIANCE_USERTRAILS')
