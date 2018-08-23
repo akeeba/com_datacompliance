@@ -20,4 +20,4 @@ speaking, we have the following files here:
 
 If you want to do serious changes to the formatting of the component's backend you will need to override these files
 using standard Joomla template overrides. The target folder for your overridden files is
-administrator/templates/YOUR_TEMPLATE/html/com_akeebasubs/Common
+administrator/templates/YOUR_TEMPLATE/html/com_datacompliance/Common
