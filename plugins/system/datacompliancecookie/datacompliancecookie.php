@@ -577,7 +577,7 @@ JS;
 	 *
 	 * @since   1.1.0
 	 */
-	private function applyUserGroupAssignments(): void
+	private function applyUserGroupAssignments()
 	{
 		// Note that permanent user group assignment IS NOT possible for guest (not logged in) users
 		$rejectGroup = $this->params->get('cookiesRejectedUserGroup', 0);
