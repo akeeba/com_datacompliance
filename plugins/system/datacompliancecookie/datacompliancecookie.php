@@ -330,6 +330,42 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		{
 			$this->removeAllCookies();
 		}
+
+		/**
+		 * Only for the frontend.
+		 *
+		 * If I am inside a page of Data Compliance or LoginGuard I should not show the cookie acceptance banner.
+		 * These components are special cases. The former requires the user to provide their consent to their
+		 * personal information being processed, the latter is two step verification. If I block their interface
+		 * they block the cookie banner functionality, therefore the user cannot do anything!
+		 */
+		if (!$this->container->platform->isFrontend())
+		{
+			// I am not in the frontend. Nothing to do.
+			return;
+		}
+
+		if ($this->hasCookiePreference)
+		{
+			// The user has already provided a preference, the banner won't be shown anyway.
+			return;
+		}
+
+		if ($option == 'com_datacompliance')
+		{
+			// The user is trying to give / revoke their consent or export / delete their profile.
+			$this->enabled = false;
+
+			return;
+		}
+
+		if ($option == 'com_loginguard')
+		{
+			// The user is trying to undergo two step verification.
+			$this->enabled = false;
+
+			return;
+		}
 	}
 
 	/**
