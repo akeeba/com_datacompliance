@@ -15,6 +15,7 @@
     height: 100%;
     padding: 0;
     margin: 0;
+    z-index: 10000;
 }
 
 .akeeba-dccc-banner-bottom {
@@ -28,6 +29,7 @@
     padding: 0;
     margin: 0;
     border-top: 2px solid #40B5B8;
+    z-index: 10000;
 }
 
 .akeeba-dccc-banner-top {
@@ -41,6 +43,7 @@
     padding: 0;
     margin: 0;
     border-bottom: 2px solid #40B5B8;
+    z-index: 10000;
 }
 
 #akeeba-dccc-banner-container > div {

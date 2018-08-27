@@ -331,7 +331,23 @@ abstract class plgSystemDataComplianceCookieHelper
 				continue;
 			}
 
-			self::unsetCookieFromAllDomains($cookieName, $domainNames);
+			if (!empty($cookieName) && is_string($cookieName))
+			{
+				if (!is_array($domainNames))
+				{
+					if (is_string($domainNames) && empty($domainNames))
+					{
+						$domainNames = array($domainNames);
+					}
+					else
+					{
+						$domainNames = array();
+					}
+				}
+
+				self::unsetCookieFromAllDomains($cookieName, $domainNames);
+			}
+
 		}
 	}
 
@@ -412,7 +428,7 @@ abstract class plgSystemDataComplianceCookieHelper
 	 *
 	 * @since   1.1.0
 	 */
-	private static function unsetCookieFromAllDomains(string $cookieName, array $domainNames)
+	private static function unsetCookieFromAllDomains($cookieName, array $domainNames)
 	{
 		try
 		{
@@ -426,7 +442,18 @@ abstract class plgSystemDataComplianceCookieHelper
 		$cookiePath   = $app->get('cookie_path', '/');
 		$cookieDomain = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
 
-		self::unsetCookie($cookieName, $cookiePath, $cookieDomain);
+		if (!empty($cookieName) && is_string($cookieName))
+		{
+			if (empty($cookiePath) && !is_string($cookiePath))
+			{
+				$cookiePath = '';
+			}
+
+			if (!empty($cookieDomain) && is_string($cookieDomain))
+			{
+				self::unsetCookie($cookieName, $cookiePath, $cookieDomain);
+			}
+		}
 
 		// Do I have additional domain names?
 		if (empty($domainNames))
@@ -443,7 +470,18 @@ abstract class plgSystemDataComplianceCookieHelper
 			}
 
 			// Rerun myself with just one additional domain
-			self::unsetCookie($cookieName, $cookiePath, $domainName);
+			if (!empty($cookieName) && is_string($cookieName))
+			{
+				if (empty($cookiePath) && !is_string($cookiePath))
+				{
+					$cookiePath = '';
+				}
+
+				if (!empty($cookieDomain) && is_string($cookieDomain))
+				{
+					self::unsetCookie($cookieName, $cookiePath, $cookieDomain);
+				}
+			}
 		}
 	}
 
