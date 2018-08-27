@@ -133,12 +133,12 @@ var AkeebaDataComplianceCookies = function (options)
 				var elAcceptedControls = document.getElementById('akeeba-dccc-controls-accepted');
 				var elDeclinedControls = document.getElementById('akeeba-dccc-controls-declined');
 
-				if (typeof elAcceptedControls !== 'undefined')
+				if ((elAcceptedControls !== null) && (typeof elAcceptedControls !== 'undefined'))
 				{
 					elAcceptedControls.style.display = 'none';
 				}
 
-				if (typeof elDeclinedControls !== 'undefined')
+				if ((elDeclinedControls !== null) && (typeof elDeclinedControls !== 'undefined'))
 				{
 					elDeclinedControls.style.display = 'none';
 				}
@@ -146,7 +146,7 @@ var AkeebaDataComplianceCookies = function (options)
 				// Show banner
 				var elBanner = document.getElementById('akeeba-dccc-banner-container');
 
-				if (typeof elBanner !== 'undefined')
+				if ((elBanner !== null) && (typeof elBanner !== 'undefined'))
 				{
 					elBanner.style.display = 'block';
 				}
@@ -978,7 +978,7 @@ AkeebaDataComplianceCookies.documentReady(function ()
 	// Hide the banner
 	var elBanner = document.getElementById('akeeba-dccc-banner-container');
 
-	if (typeof elBanner !== 'undefined')
+	if ((elBanner !== null) && (typeof elBanner !== 'undefined'))
 	{
 		elBanner.style.display = 'none';
 	}
@@ -987,12 +987,12 @@ AkeebaDataComplianceCookies.documentReady(function ()
 	var elAcceptedControls = document.getElementById('akeeba-dccc-controls-accepted');
 	var elDeclinedControls = document.getElementById('akeeba-dccc-controls-declined');
 
-	if (typeof elAcceptedControls !== 'undefined')
+	if ((elAcceptedControls !== null) && (typeof elAcceptedControls !== 'undefined'))
 	{
 		elAcceptedControls.style.display = 'none';
 	}
 
-	if (typeof elDeclinedControls !== 'undefined')
+	if ((elDeclinedControls !== null) && (typeof elDeclinedControls !== 'undefined'))
 	{
 		elDeclinedControls.style.display = 'none';
 	}
@@ -1000,14 +1000,14 @@ AkeebaDataComplianceCookies.documentReady(function ()
 	// Find the control holder (akeeba-dccc-controls). If it's not found, exit immediately.
 	var elHolder = document.getElementById('akeeba-dccc-controls');
 
-	if (typeof elHolder === 'undefined')
+	if ((elHolder === null) || (typeof elHolder === 'undefined'))
 	{
 		return;
 	}
 
 	if (window.AkeebaDataComplianceCookies.vars.accepted)
 	{
-		if (typeof elAcceptedControls !== 'undefined')
+		if ((elAcceptedControls !== null) && (typeof elAcceptedControls !== 'undefined'))
 		{
 			// Show akeeba-dccc-controls-accepted
 			elAcceptedControls.style.display = 'block';
@@ -1019,7 +1019,7 @@ AkeebaDataComplianceCookies.documentReady(function ()
 		return;
 	}
 
-	if (typeof elDeclinedControls !== 'undefined')
+	if ((elDeclinedControls !== null) && (typeof elDeclinedControls !== 'undefined'))
 	{
 		// Show akeeba-dccc-controls-declined
 		elDeclinedControls.style.display = 'block';

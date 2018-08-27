@@ -5,6 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
+use Akeeba\DataCompliance\Site\Model\Cookietrails;
 use FOF30\Container\Container;
 use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
@@ -102,6 +103,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private $haveIncludedHtml = false;
 
 	/**
+	 * The value of the Do Not Track (DNT) header sent by the browser. -1 = not set, 0 = allow tracking, 1 = do not
+	 * track.
+	 *
+	 * @var    int
+	 * @since  1.1.0
+	 */
+	private $dnt = -1;
+
+	/**
 	 * Am I currently handling an AJAX request? This is populated in onAfterInitialise and it's used to prevent other
 	 * event handlers from firing when we are processing an AJAX request.
 	 *
@@ -174,13 +184,35 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		// Get some options
 		$cookieName        = $this->params->get('cookieName', 'plg_system_datacompliancecookie');
 		$impliedAcceptance = $this->params->get('impliedAccept', 0) != 0;
+		$dntCompliance     = $this->params->get('dntCompliance', 'ignore');
+		$useDNTforImplied  = $dntCompliance != 'ignore';
 
 		// Set up the name of the user preference (helper) cookie we are going to use in this plugin
 		CookieHelper::setCookieName($cookieName);
 
+		// Get the DNT header value
+		$this->dnt = $this->getDNTValue();
+
+		if ($useDNTforImplied && ($this->dnt !== -1))
+		{
+			$impliedAcceptance = $this->dnt === 0;
+		}
+
 		// Get the user's cookie acceptance preferences
 		$this->hasAcceptedCookies  = CookieHelper::hasAcceptedCookies($impliedAcceptance);
 		$this->hasCookiePreference = CookieHelper::getDecodedCookieValue() !== false;
+
+		/**
+		 * The DNT header is set, the user's option cookie is NOT set and I was told to treat the DNT header as the
+		 * user's concrete preference.
+		 */
+		if (($this->dnt !== -1) && ($dntCompliance == 'overridepreference') && (CookieHelper::getDecodedCookieValue() === false))
+		{
+			$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
+			$accepted     = $this->dnt === 0;
+			CookieHelper::setAcceptedCookies($accepted, $thisManyDays);
+			$this->logAuditTrail($accepted, $this->dnt, false);
+		}
 	}
 
 	/**
@@ -220,8 +252,16 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		if ($reset)
 		{
 			// Reset the cookie preference. Cookie acceptance is set to the implied acceptance value.
-			$accepted = $this->params->get('impliedAccept', 0) != 0;
+			$accepted         = $this->params->get('impliedAccept', 0) != 0;
+			$useDNTforImplied = $this->params->get('dntCompliance', 'ignore') != 'ignore';
+
+			if ($useDNTforImplied && ($this->dnt !== -1))
+			{
+				$accepted = $this->dnt === 0;
+			}
+
 			CookieHelper::removeCookiePreference($accepted);
+			$this->logAuditTrail($accepted, $useDNTforImplied ? $this->dnt : -2, true);
 
 			$ret = sprintf("The cookie preference has been cleared. Cookies are now %s per default setting.", $accepted ? 'accepted' : 'rejected');
 		}
@@ -230,6 +270,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			// Set the cookie preference to the user's setting.
 			$thisManyDays = $this->params->get('cookiePreferenceDuaration', 90);
 			CookieHelper::setAcceptedCookies($accepted === 1, $thisManyDays);
+			$this->logAuditTrail($accepted, -2, false);
 
 			$ret = sprintf("The user has %s cookies", $accepted ? 'accepted' : 'rejected');
 		}
@@ -288,6 +329,42 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		if (!$this->hasAcceptedCookies)
 		{
 			$this->removeAllCookies();
+		}
+
+		/**
+		 * Only for the frontend.
+		 *
+		 * If I am inside a page of Data Compliance or LoginGuard I should not show the cookie acceptance banner.
+		 * These components are special cases. The former requires the user to provide their consent to their
+		 * personal information being processed, the latter is two step verification. If I block their interface
+		 * they block the cookie banner functionality, therefore the user cannot do anything!
+		 */
+		if (!$this->container->platform->isFrontend())
+		{
+			// I am not in the frontend. Nothing to do.
+			return;
+		}
+
+		if ($this->hasCookiePreference)
+		{
+			// The user has already provided a preference, the banner won't be shown anyway.
+			return;
+		}
+
+		if ($option == 'com_datacompliance')
+		{
+			// The user is trying to give / revoke their consent or export / delete their profile.
+			$this->enabled = false;
+
+			return;
+		}
+
+		if ($option == 'com_loginguard')
+		{
+			// The user is trying to undergo two step verification.
+			$this->enabled = false;
+
+			return;
 		}
 	}
 
@@ -757,5 +834,83 @@ JS;
 
 		// Let the newly imported plugins run their onAfterInitialize events
 		$tempDispatcher->trigger('onAfterInitialize');
+	}
+
+	/**
+	 * Returns the value of the HTTP DNT (Do Not Track) header.
+	 *
+	 * @return  int -1 if not set, 0 if DNT is disabled, 1 if enabled.
+	 *
+	 * @since   1.1.0
+	 */
+	private function getDNTValue(): int
+	{
+		if (isset($_SERVER['HTTP_DNT']))
+		{
+			return (int) $_SERVER['HTTP_DNT'];
+		}
+
+		if (function_exists('getallheaders'))
+		{
+			foreach (getallheaders() as $k => $v)
+			{
+				if (strtolower($k) === "dnt")
+				{
+					return (int) $v;
+				}
+			}
+		}
+
+		if (function_exists('getenv'))
+		{
+			$v = getenv('HTTP_DNT');
+
+			if ($v !== false)
+			{
+				return (int) $v;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Get the DNT preference
+	 *
+	 * @return  int
+	 * @since   1.1.0
+	 */
+	public function getDnt(): int
+	{
+		return $this->dnt;
+	}
+
+	/**
+	 * Create an audit log entry for the user's cookie preference
+	 *
+	 * @param   int   $preference  The recorded preference.
+	 * @param   int   $dnt         The value of the Do Not Track header (-1 means not set, -2 means does not apply)
+	 * @param   bool  $reset       Did the user ask for his preference to be reset? If so, the recorded preference is the applied default value.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.1.0
+	 */
+	private function logAuditTrail(int $preference, int $dnt, bool $reset)
+	{
+		try
+		{
+			/** @var Cookietrails $model */
+			$model = $this->container->factory->model('Cookietrails')->tmpInstance();
+			$model->create([
+				'preference' => $preference,
+				'dnt' => $dnt,
+				'reset' => $reset ? 1 : 0,
+			]);
+		}
+		catch (Exception $e)
+		{
+			// No worries if that fails
+		}
 	}
 }

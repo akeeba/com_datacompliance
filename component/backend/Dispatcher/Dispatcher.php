@@ -20,7 +20,16 @@ class Dispatcher extends \FOF30\Dispatcher\Dispatcher
     /** @var   string  The name of the default view, in case none is specified */
     public $defaultView = 'ControlPanel';
 
-    public function onBeforeDispatch()
+	public function __construct(Container $container, array $config)
+	{
+		parent::__construct($container, $config);
+
+		$this->viewNameAliases = [
+			'cpanel'             => 'ControlPanel',
+		];
+	}
+
+	public function onBeforeDispatch()
     {
         $this->onBeforeDispatchViewAliases();
 
