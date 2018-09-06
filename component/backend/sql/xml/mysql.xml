@@ -75,6 +75,23 @@ PRIMARY KEY (`datacompliance_usertrail_id`)
             ]]></query>
 		</action>
 
+		<!-- User profile changes audit trail -->
+		<action table="#__datacompliance_cookietrails" canfail="0">
+			<condition type="missing" value="" />
+			<query><![CDATA[
+CREATE TABLE `#__datacompliance_cookietrails` (
+`datacompliance_cookietrail_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+`created_on` datetime NOT NULL,
+`created_by` bigint(20) NOT NULL,
+`requester_ip` varchar(255) NOT NULL,
+`preference` int NOT NULL DEFAULT 0,
+`dnt` tinyint(1) NOT NULL DEFAULT -1,
+`reset` tinyint(1) NOT NULL DEFAULT 0,
+PRIMARY KEY (`datacompliance_cookietrail_id`)
+) DEFAULT COLLATE utf8_general_ci;
+            ]]></query>
+		</action>
+
 		<action table="#__datacompliance_emailtemplates" canfail="0">
 			<condition type="missing" value="" />
 			<query><![CDATA[

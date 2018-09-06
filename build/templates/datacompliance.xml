@@ -35,7 +35,7 @@
 	<!-- Administrator back-end section -->
 	<administration>
 		<!-- Administration menu -->
-		<menu view="cpanel">COM_DATACOMPLIANCE</menu>
+		<menu>COM_DATACOMPLIANCE</menu>
 
 		<!-- Back-end files -->
         <files folder="backend">
