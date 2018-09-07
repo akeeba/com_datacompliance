@@ -1,3 +1,7 @@
+Akeeba Data Compliance 1.0.2
+================================================================================
+! Immediate failure accessing the backend of the component [gh-27]
+
 Akeeba Data Compliance 1.0.1
 ================================================================================
 + Cookie consent plugin

@@ -9,6 +9,7 @@ namespace Akeeba\DataCompliance\Admin\Dispatcher;
 
 defined('_JEXEC') or die;
 
+use FOF30\Container\Container;
 use FOF30\Dispatcher\Mixin\ViewAliases;
 
 class Dispatcher extends \FOF30\Dispatcher\Dispatcher
