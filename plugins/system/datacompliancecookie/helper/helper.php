@@ -611,11 +611,17 @@ abstract class plgSystemDataComplianceCookieHelper
 		/**
 		 * First, we are going to add the current domain name as defined in the HOST header.
 		 *
-		 * We add the full domain (e.g. www.example.com), its base domain (example.com) and the dotter base domain
+		 * We add the full domain (e.g. www.example.com), its base domain (example.com) and the dotted base domain
 		 * (.example.com). The latter catches all other subdomains and is commonly used with things like Google
 		 * Analytics.
 		 */
 		$defaultDomain = filter_input(INPUT_SERVER, 'HTTP_HOST');
+
+		if (empty($defaultDomain))
+		{
+			$defaultDomain = \Joomla\CMS\Uri\Uri::getInstance()->toString(['host']);
+		}
+
 		$domainNames[] = $defaultDomain;
 		$domainNames[] = self::getBaseDomain($defaultDomain);
 		$domainNames[] = '.' . self::getBaseDomain($defaultDomain);
