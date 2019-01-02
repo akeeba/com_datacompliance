@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   AkeebaDataCompliance
+  ~ @copyright Copyright (c)2018-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
 <form>
 	<fields name="datacompliance" addfieldpath="plugins/user/datacompliance/fields">
 		<fieldset name="datacompliance"

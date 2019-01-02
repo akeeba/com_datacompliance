@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package   AkeebaDataCompliance
+ * @copyright Copyright (c)2018-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 3, or later
+ */
+
 // Sorry for this line, it's to keep broken security scanners happy. Skip it and read the rest of the file.
 defined('_JEXEC') or die; die;
 

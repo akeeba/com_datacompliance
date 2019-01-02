@@ -4,7 +4,7 @@
 	<author>Nicholas K. Dionysopoulos</author>
 	<authorEmail>nicholas@akeebabackup.com</authorEmail>
 	<authorUrl>http://www.akeebabackup.com</authorUrl>
-	<copyright>Copyright (c)2018 Nicholas K. Dionysopoulos</copyright>
+	<copyright>Copyright (c)2018-2019 Nicholas K. Dionysopoulos</copyright>
 	<license>This component in released under the GNU/GPL v3 or later license</license>
 	<version>##VERSION##</version>
 	<description>A component to help with GDPR compliance on AkeebaBackup.com</description>

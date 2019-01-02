@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   AkeebaDataCompliance
+  ~ @copyright Copyright (c)2018-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
 <extension version="3.7" type="plugin" group="datacompliance" method="upgrade">
     <name>PLG_DATACOMPLIANCE_EMAIL</name>
     <author>Nicholas K. Dionysopoulos</author>
     <authorEmail>nicholas@akeebabackup.com</authorEmail>
     <authorUrl>http://www.akeebabackup.com</authorUrl>
-    <copyright>Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
+    <copyright>Copyright (c)2018-2019 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
     <license>GNU General Public License version 3, or later</license>
     <creationDate>2018-04-19</creationDate>
     <version>1.0</version>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- * @package   Akeeba Data Compliance
- * @copyright Copyright (c)2018 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license   GNU General Public License version 3, or later
--->
+  ~ @package   AkeebaDataCompliance
+  ~ @copyright Copyright (c)2018-2019 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
 <metadata>
 	<layout title="COM_DATACOMPLIANCE_MENUMANAGER_VIEW_OPTIONS_LABEL">
 		<message>
