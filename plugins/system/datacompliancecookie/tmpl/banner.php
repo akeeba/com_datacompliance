@@ -7,6 +7,9 @@
 
 /** @var  \Joomla\CMS\Plugin\CMSPlugin  $this */
 
+// Prevent direct access
+defined('_JEXEC') or die;
+
 $position = $this->params->get('bannerPosition', 'top');
 ?>
 <div id="akeeba-dccc-banner-container" class="akeeba-renderer-fef akeeba-dccc-banner-<?php echo $position ?>">

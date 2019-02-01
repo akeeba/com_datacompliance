@@ -7,6 +7,9 @@
 
 /** @var  plgSystemDataCompliancecookie  $this */
 
+// Prevent direct access
+defined('_JEXEC') or die;
+
 $dntCompliance = $this->params->get('dntCompliance', 'ignore');
 
 ?>
