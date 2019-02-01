@@ -17,9 +17,11 @@
     <description>PLG_USER_DATACOMPLIANCE_DESCRIPTION</description>
 
     <files>
+        <filename plugin="datacompliance">datacompliance.php</filename>
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
         <folder>datacompliance</folder>
         <folder>fields</folder>
-        <filename plugin="datacompliance">datacompliance.php</filename>
     </files>
 
     <languages folder="language">

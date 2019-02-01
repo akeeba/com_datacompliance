@@ -54,7 +54,7 @@ abstract class Email
 	 *
 	 * @return  array|string
 	 */
-	public static function getEmailKeys(bool $jhtmlOptions = false)
+	public static function getEmailKeys($jhtmlOptions = false)
 	{
 		$rawOptions = [
 			'user_user'           => JText::_('COM_DATACOMPLIANCE_EMAILTEMPLATE_LBL_USER_USER'),

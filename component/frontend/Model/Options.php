@@ -7,12 +7,12 @@
 
 namespace Akeeba\DataCompliance\Site\Model;
 
-defined('_JEXEC') or die;
-
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
 use FOF30\Utils\Ip;
 use JHtml;
+
+defined('_JEXEC') or die;
 
 class Options extends Model
 {

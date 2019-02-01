@@ -5,10 +5,12 @@
  * @license   GNU General Public License version 3, or later
  */
 
-
 namespace Akeeba\DataCompliance\Admin\Model;
+
 use DateTime;
 use Joomla\CMS\Cache\Controller\CallbackController;
+
+defined('_JEXEC') or die;
 
 /**
  * Joomla users to be collected by the lifecycle policy

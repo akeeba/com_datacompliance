@@ -17,6 +17,7 @@
     }
   ],
   "require": {
-    "akeeba/s3": "dev-master"
+    "akeeba/s3": "dev-master",
+    "ext-simplexml": "*"
   }
 }

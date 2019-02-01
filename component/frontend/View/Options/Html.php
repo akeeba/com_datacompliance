@@ -7,12 +7,12 @@
 
 namespace Akeeba\DataCompliance\Site\View\Options;
 
-defined('_JEXEC') or die();
-
 use Akeeba\DataCompliance\Site\Model\Options;
 use FOF30\View\DataView\Html as HtmlView;
 use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
+
+defined('_JEXEC') or die();
 
 class Html extends HtmlView
 {

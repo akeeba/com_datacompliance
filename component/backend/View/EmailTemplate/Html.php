@@ -7,9 +7,9 @@
 
 namespace Akeeba\DataCompliance\Admin\View\EmailTemplate;
 
-defined('_JEXEC') or die;
-
 use FOF30\View\DataView\Html as BaseView;
+
+defined('_JEXEC') or die;
 
 class Html extends BaseView
 {

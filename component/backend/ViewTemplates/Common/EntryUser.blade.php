@@ -5,6 +5,8 @@
  * @license   GNU General Public License version 3, or later
  */
 
+defined('_JEXEC') or die;
+
 $id          = isset($id) ? $id : $field;
 $readonly    = isset($readonly) ? ($readonly ? true : false) : false;
 $placeholder = isset($placeholder) ? JText::_($placeholder) : JText::_('JLIB_FORM_SELECT_USER');

@@ -5,7 +5,6 @@
  * @license   GNU General Public License version 3, or later
  */
 
-
 namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;

@@ -7,6 +7,8 @@
  * @var  \Akeeba\DataCompliance\Site\View\Options\Html $this
  */
 
+defined('_JEXEC') or die;
+
 $js = <<< JS
 function datacompliance_toggle_article()
 {

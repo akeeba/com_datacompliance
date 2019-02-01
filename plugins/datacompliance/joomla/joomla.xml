@@ -18,6 +18,8 @@
 
 	<files>
 		<filename plugin="joomla">joomla.php</filename>
+		<filename>.htaccess</filename>
+		<filename>web.config</filename>
 	</files>
 
 	<languages folder="language">

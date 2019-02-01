@@ -5,14 +5,14 @@
  * @license   GNU General Public License version 3, or later
  */
 
-
 namespace Akeeba\DataCompliance\Admin\Helper;
-
 
 use DateTimeZone;
 use FOF30\Container\Container;
 use FOF30\Date\Date;
 use Joomla\CMS\Factory;
+
+defined('_JEXEC') or die;
 
 abstract class Format
 {

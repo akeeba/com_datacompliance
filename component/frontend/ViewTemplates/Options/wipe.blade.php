@@ -7,6 +7,8 @@
  * @var  \Akeeba\DataCompliance\Site\View\Options\Html $this
  */
 
+defined('_JEXEC') or die;
+
 $otherInfo = JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_OTHERINFO');
 $otherInfo = ($otherInfo == 'COM_DATACOMPLIANCE_OPTIONS_WIPE_OTHERINFO') ? '' : $otherInfo;
 

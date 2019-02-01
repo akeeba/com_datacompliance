@@ -7,9 +7,9 @@
 
 namespace Akeeba\DataCompliance\Site\Model;
 
-defined('_JEXEC') or die();
-
 use Akeeba\DataCompliance\Admin\Model\EmailTemplates as AdminModel;
+
+defined('_JEXEC') or die();
 
 class EmailTemplates extends AdminModel
 {

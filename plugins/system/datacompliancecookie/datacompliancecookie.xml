@@ -18,6 +18,8 @@
 
     <files>
         <filename plugin="datacompliancecookie">datacompliancecookie.php</filename>
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
         <folder>helper</folder>
         <folder>tmpl</folder>
     </files>

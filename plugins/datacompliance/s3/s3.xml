@@ -18,6 +18,8 @@
 
     <files>
         <filename plugin="s3">s3.php</filename>
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
     </files>
 
     <languages folder="language">

@@ -1,5 +1,6 @@
 Akeeba Data Compliance 1.0.2
 ================================================================================
++ Protection of all component and plugin folders against direct web access
 ! Immediate failure accessing the backend of the component [gh-27]
 # [LOW] Cookie compliance fails with a fatal error when the server does not set the HTTP_HOST environment variable
 # [LOW] PHP 7.3 warning in the Control Panel page

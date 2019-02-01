@@ -35,7 +35,7 @@ class Wipe extends Model
 	 * @throws  RuntimeException  If wipe is not possible
 	 * @throws \Exception
 	 */
-	public function wipe($userId, string $type = 'user'): bool
+	public function wipe($userId, $type = 'user'): bool
 	{
 		if (!$this->checkWipeAbility($userId, $type))
 		{

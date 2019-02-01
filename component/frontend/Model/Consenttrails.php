@@ -7,9 +7,9 @@
 
 namespace Akeeba\DataCompliance\Site\Model;
 
-defined('_JEXEC') or die();
-
 use Akeeba\DataCompliance\Admin\Model\Consenttrails as AdminModel;
+
+defined('_JEXEC') or die();
 
 class Consenttrails extends AdminModel
 {

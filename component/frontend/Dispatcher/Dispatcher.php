@@ -7,9 +7,9 @@
 
 namespace Akeeba\DataCompliance\Site\Dispatcher;
 
-defined('_JEXEC') or die;
-
 use FOF30\Dispatcher\Mixin\ViewAliases;
+
+defined('_JEXEC') or die;
 
 class Dispatcher extends \FOF30\Dispatcher\Dispatcher
 {

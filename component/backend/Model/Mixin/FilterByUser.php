@@ -5,9 +5,9 @@
  * @license   GNU General Public License version 3, or later
  */
 
-
 namespace Akeeba\DataCompliance\Admin\Model\Mixin;
 
+defined('_JEXEC') or die;
 
 trait FilterByUser
 {

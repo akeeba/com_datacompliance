@@ -7,13 +7,13 @@
 
 namespace Akeeba\DataCompliance\Site\Controller;
 
-defined('_JEXEC') or die;
-
 use Akeeba\DataCompliance\Admin\Model\Wipe;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Controller\Mixin\PredefinedTaskList;
 use RuntimeException;
+
+defined('_JEXEC') or die;
 
 class Options extends Controller
 {

@@ -18,6 +18,8 @@
 
     <files>
         <filename plugin="datacompliance">datacompliance.php</filename>
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
     </files>
 
     <languages folder="language">

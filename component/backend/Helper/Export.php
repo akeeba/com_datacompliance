@@ -110,7 +110,7 @@ abstract class Export
 	 *
 	 * @return  SimpleXMLElement  The XML export item
 	 */
-	public static function exportItemFromObject(stdClass $item, string $idCol = ''): SimpleXMLElement
+	public static function exportItemFromObject(stdClass $item, $idCol = ''): SimpleXMLElement
 	{
 		$data = (array)$item;
 

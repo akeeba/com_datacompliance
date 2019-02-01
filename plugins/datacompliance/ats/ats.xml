@@ -18,6 +18,8 @@
 
     <files>
         <filename plugin="ats">ats.php</filename>
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
     </files>
 
     <languages folder="language">
