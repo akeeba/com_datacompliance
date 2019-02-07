@@ -220,7 +220,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 		$tickets = $this->getTickets($userID);
 		$ticketIDs = [];
 
-		array_map(function($ticket) use ($domainTickets, &$ticketIDs) {
+		array_map(function($ticket) use (&$domainTickets, &$ticketIDs) {
 			Export::adoptChild($domainTickets, Export::exportItemFromObject($ticket));
 			$ticketIDs[] = $ticket->ats_ticket_id;
 		}, $tickets);
@@ -241,7 +241,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 
 			$items = $db->setQuery($selectQuery)->loadObjectList();
 
-			array_map(function($item) {
+			array_map(function($item) use (&$domainAttachments) {
 				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
 			}, $items);
 		}
@@ -254,7 +254,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 		$posts = $this->getPosts($ticketIDs);
 		$postIDs = [];
 
-		array_map(function($post) use ($domainPosts, &$postIDs) {
+		array_map(function($post) use (&$domainPosts, &$postIDs) {
 			Export::adoptChild($domainPosts, Export::exportItemFromObject($post));
 			$postIDs[] = $post->ats_post_id;
 		}, $posts);
@@ -270,7 +270,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 
 		$attachments = $this->getAttachments($postIDs);
 
-		array_map(function($attachment) use ($domainAttachments) {
+		array_map(function($attachment) use (&$domainAttachments) {
 			Export::adoptChild($domainAttachments, Export::exportItemFromObject($attachment));
 			$postIDs[] = $attachment->ats_post_id;
 		}, $attachments);
@@ -288,7 +288,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 
 		$items = $db->setQuery($selectQuery)->loadObjectList();
 
-		array_map(function($item) {
+		array_map(function($item) use (&$domainAttachments) {
 			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
 		}, $items);
 
@@ -305,7 +305,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 
 		$items = $db->setQuery($selectQuery)->loadObjectList();
 
-		array_map(function($item) {
+		array_map(function($item) use (&$domainAttachments) {
 			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
 		}, $items);
 
@@ -322,7 +322,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 
 		$items = $db->setQuery($selectQuery)->loadObjectList();
 
-		array_map(function($item) {
+		array_map(function($item) use (&$domainAttachments) {
 			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
 		}, $items);
 
