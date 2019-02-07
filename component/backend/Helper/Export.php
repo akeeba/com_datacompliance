@@ -9,6 +9,7 @@ namespace Akeeba\DataCompliance\Admin\Helper;
 
 use FOF30\Model\DataModel;
 use Joomla\CMS\Table\Table;
+use PrivacyExportDomain;
 use SimpleXMLElement;
 use stdClass;
 
@@ -149,5 +150,40 @@ abstract class Export
 		}
 
 		return self::exportItemFromArray($data, $idCol);
+	}
+
+	/**
+	 * Converts a PrivacyExportDomain object, returned by Joomla privacy plugins, into an export format compatible with
+	 * Akeeba DataCompliance.
+	 *
+	 * @param   PrivacyExportDomain  $joomlaDomain  The Joomla! export domain object
+	 *
+	 * @return  SimpleXMLElement  The DataCompliance export object
+	 */
+	public static function mapJoomlaPrivacyExportDomain(PrivacyExportDomain $joomlaDomain): SimpleXMLElement
+	{
+		$export = new SimpleXMLElement("<root></root>");
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', $joomlaDomain->name);
+		$domain->addAttribute('description', $joomlaDomain->description);
+
+		$items = $joomlaDomain->getItems();
+
+		foreach ($items as $item)
+		{
+			$itemArray = [
+				'id' => $item->id
+			];
+			$fields = $item->getFields();
+
+			foreach ($fields as $field)
+			{
+				$itemArray[$field->name] = $field->value;
+			}
+
+			self::adoptChild($domain, self::exportItemFromArray($itemArray));
+		}
+
+		return $export;
 	}
 }
