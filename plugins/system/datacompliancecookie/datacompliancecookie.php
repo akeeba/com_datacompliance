@@ -644,7 +644,17 @@ JS;
 		}
 
 		// Append the parsed view template content to the application's HTML output
-		$app->setBody($app->getBody() . $content);
+		$body        = $app->getBody();
+		$postBody    = '';
+		$closeTagPos = strpos($body, '</body');
+
+		if ($closeTagPos !== false)
+		{
+			$postBody = substr($body, $closeTagPos);
+			$body     = substr($body, 0, $closeTagPos);
+		}
+
+		$app->setBody($body . $content . $postBody);
 	}
 
 	/**
