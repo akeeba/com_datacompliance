@@ -952,9 +952,9 @@ JS;
 	/**
 	 * Method to get cache instance.
 	 *
-	 * @return CacheController
+	 * @return JCacheController
 	 */
-	private function getCache(?int $clientId = null): CacheController
+	private function getCache(?int $clientId = null)
 	{
 		$conf = Factory::getConfig();
 
