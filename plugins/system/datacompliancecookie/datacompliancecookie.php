@@ -9,8 +9,6 @@ use Akeeba\DataCompliance\Site\Model\Cookietrails;
 use FOF30\Container\Container;
 use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
-use Joomla\CMS\Cache\Cache;
-use Joomla\CMS\Factory;
 use plgSystemDataComplianceCookieHelper as CookieHelper;
 
 // Prevent direct access
@@ -309,33 +307,6 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		}
 
 		/**
-		 * Disable cache. It's incompatible with cookie preferences.
-		 *
-		 * This happens for two reasons:
-		 *
-		 * 1. The cookie control buttons perform AJAX requests which need to pass the anti-CSRF token for security
-		 *    reasons. The onyl way to do that is send the token to the page through inline JavaScript. This gets
-		 *    cached, therefore the controls never work.
-		 *
-		 * 2. Joomla caches pages by user group membership. Therefore all users see the same cached page as the LAST
-		 *    user who visited the page when it was cached. Guess what? It also inherits its cookie preferences since
-		 *    they are part of the page's JavaScript which is also cached.
-		 *
-		 * In short, per-user information and caching don't mix. This plugin adds per-user content on every page,
-		 * therefore caching must be disabled when you use it. Sucks.
-		 */
-		try
-		{
-			$app = Factory::getApplication();
-			$app->allowCache(false);
-			Factory::getConfig()->set('caching', 0);
-		}
-		catch (Exception $e)
-		{
-
-		}
-
-		/**
 		 * When we are in com_ajax we should defer execution of this code until after we have handled the request.
 		 * Otherwise the I Agree is never honored if the default cookie acceptance state is "declined".
 		 */
@@ -442,9 +413,6 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			$this->removeAllCookies();
 		}
 
-		$this->loadCommonJavascript($app);
-		$this->loadCommonCSS($app);
-
 		// Note: we cannot load the HTML yet. This can only be done AFTER the document is rendered.
 	}
 
@@ -474,11 +442,12 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		try
 		{
 			// Load the common JavaScript
-			$app = JFactory::getApplication();
-			$this->loadCommonJavascript($app);
-			$this->loadCommonCSS($app);
+			$app               = JFactory::getApplication();
+			$additionalContent = '';
+			$additionalContent .= $this->loadCommonJavascript($app);
+			$additionalContent .= $this->loadCommonCSS($app);
 
-			$this->loadHtml($app);
+			$this->loadHtml($app, $additionalContent);
 		}
 		catch (Exception $e)
 		{
@@ -536,13 +505,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
 	 *
 	 * @since   1.1.0
+	 *
+	 * @return  string  The HTML to load the JavaScript
 	 */
 	private function loadCommonJavascript($app, array $options = [])
 	{
 		// Prevent double inclusion of the JavaScript
 		if ($this->haveIncludedJavaScript)
 		{
-			return;
+			return '';
 		}
 
 		$this->haveIncludedJavaScript = true;
@@ -561,6 +532,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			$whiteList[] = 'joomla_user_state';
 		}
 
+		$this->loadLanguage();
+
 		$defaultOptions = [
 			'accepted'                => $this->hasAcceptedCookies,
 			'interacted'              => $this->hasCookiePreference,
@@ -571,23 +544,22 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			'additionalCookieDomains' => $this->getAdditionalCookieDomains(),
 			'whitelisted'             => $whiteList,
 			'token'                   => $this->container->platform->getToken(),
+			'resetNoticeText'         => JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_LBL_REMOVECOOKIES', true),
 		];
 
 		$options     = array_merge_recursive($defaultOptions, $options);
 		$optionsJSON = json_encode($options, JSON_PRETTY_PRINT);
 
-		$js = <<< JS
-; //
-var AkeebaDataComplianceCookiesOptions = $optionsJSON;
+		$jsPath = $this->container->template->parsePath('media://plg_system_datacompliancecookie/js/datacompliancecookies.js');
 
-JS;
+		return <<< HTML
+<script type="application/javascript">
+	var AkeebaDataComplianceCookiesOptions = $optionsJSON;
+</script>
+<script type="application/javascript" src="$jsPath?{$this->container->mediaVersion}" defer="defer" async="async"></script>
 
-		$this->container->template->addJSInline($js);
-		$this->container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, false, $this->container->mediaVersion);
+HTML;
 
-		// Add language strings which should be made known to JS
-		$this->loadLanguage();
-		JText::script('PLG_SYSTEM_DATACOMPLIANCECOOKIE_LBL_REMOVECOOKIES');
 	}
 
 	/**
@@ -597,38 +569,128 @@ JS;
 	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
 	 *
 	 * @since   1.1.0
+	 *
+	 * @return  string  The HTML to load the CSS
 	 */
 	private function loadCommonCSS($app, array $options = [])
 	{
 		// Prevent double inclusion of the CSS
 		if ($this->haveIncludedCSS)
 		{
-			return;
+			return '';
 		}
 
 		$this->haveIncludedCSS = true;
 
-		// FEF
+		$files = [];
+
+		// Load FEF if necessary
 		$useFEF   = $this->params->get('load_fef', 1);
-		$useReset = $this->params->get('fef_reset', 1);
 
 		if ($useFEF)
 		{
-			$helperFile = JPATH_SITE . '/media/fef/fef.php';
-
-			if (!class_exists('AkeebaFEFHelper') && is_file($helperFile))
-			{
-				include_once $helperFile;
-			}
-
-			if (class_exists('AkeebaFEFHelper'))
-			{
-				\AkeebaFEFHelper::load($useReset);
-			}
+			$useReset = $this->params->get('fef_reset', 1);
+			$files    = $this->getFEFFiles($useReset);
 		}
 
-		// Plugin CSS
-		$this->container->template->addCSS('media://plg_system_datacompliancecookie/css/datacompliancecookies.css', $this->container->mediaVersion);
+		// Add our own CSS
+		$files[] = $this->container->template->parsePath('media://plg_system_datacompliancecookie/css/datacompliancecookies.css') . '?' . $this->container->mediaVersion;
+
+		// Filter out CSS files which have already been loaded
+		$files = array_filter($files, function ($file) {
+			$app = \Joomla\CMS\Factory::getApplication();
+			$body = $app->getBody(false);
+
+			return strpos($body, "href=\"$file\"") === false;
+		});
+
+		$ret = '';
+
+		foreach ($files as $file)
+		{
+			$ret .= <<< HTML
+<link rel="stylesheet" type="text/css" href="{$file}" />
+ 
+HTML;
+
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Get a list of FEF files to load, if they have not been loaded yet.
+	 *
+	 * @param   bool  $useReset  Should I also load the FEF reset?
+	 *
+	 * @return  array
+	 */
+	private function getFEFFiles($useReset = false)
+	{
+		$files = [];
+
+		$mediaVersion = $this->getFEFMediaVersion();
+
+		/**
+		 * WATCH OUT!!!
+		 *
+		 * DO NOT USE FOF TO LOAD THE FILES.
+		 *
+		 * The FEF helper is using Joomla's HTMLHelper and generates relative paths. FOF always generates absolute
+		 * paths. Since I need to filter double inclusions I *have to* use relative paths, therefore I *have to* use
+		 * HTMLHelper to get them.
+		 */
+		if ($useReset)
+		{
+			$files[] = \Joomla\CMS\HTML\HTMLHelper::_('stylesheet', 'fef/reset.min.css', [
+					'relative' => true,
+					'pathOnly' => true,
+				]) . '?' . $mediaVersion;
+		}
+
+		$files[] =  \Joomla\CMS\HTML\HTMLHelper::_('stylesheet', 'fef/style.min.css', [
+				'relative' => true,
+				'pathOnly' => true,
+			]) . '?' . $mediaVersion;
+
+		return $files;
+	}
+
+	/**
+	 * Get the FEF media version.
+	 *
+	 * We cannot call the helper directly because we need to deal with Joomla caching.
+	 *
+	 * @return  string
+	 */
+	private function getFEFMediaVersion()
+	{
+		$mediaVersion = md5(filemtime(__FILE__));
+		$helperFile   = JPATH_SITE . '/media/fef/fef.php';
+
+		if (!class_exists('AkeebaFEFHelper') && is_file($helperFile))
+		{
+			include_once $helperFile;
+		}
+
+		if (!class_exists('AkeebaFEFHelper'))
+		{
+			return $mediaVersion;
+		}
+
+		try
+		{
+			$rc = new ReflectionClass('AkeebaFEFHelper');
+			$rm = $rc->getMethod('getMediaVersion');
+
+			$rm->setAccessible(true);
+
+			return $rm->invoke(null);
+		}
+		catch (Exception $e)
+		{
+			return $mediaVersion;
+		}
 	}
 
 	/**
@@ -641,7 +703,7 @@ JS;
 	 *
 	 * @since   1.1.0
 	 */
-	private function loadHtml($app)
+	private function loadHtml($app, $additionalContent = '')
 	{
 		// Prevent double inclusion of the HTML
 		if ($this->haveIncludedHtml)
@@ -683,7 +745,7 @@ JS;
 			$body     = substr($body, 0, $closeTagPos);
 		}
 
-		$app->setBody($body . $content . $postBody);
+		$app->setBody($body . $content . $additionalContent . $postBody);
 	}
 
 	/**

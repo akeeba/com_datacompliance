@@ -126,7 +126,7 @@ var AkeebaDataComplianceCookies = function (options)
 
 				if (me.vars.interacted && me.vars.accepted)
 				{
-					alert(Joomla.JText._('PLG_SYSTEM_DATACOMPLIANCECOOKIE_LBL_REMOVECOOKIES'));
+					alert(AkeebaDataComplianceCookiesOptions.resetNoticeText);
 				}
 
 				// Hide cookie controls
