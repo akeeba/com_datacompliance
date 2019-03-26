@@ -9,6 +9,8 @@ use Akeeba\DataCompliance\Site\Model\Cookietrails;
 use FOF30\Container\Container;
 use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Cache\Cache;
+use Joomla\CMS\Factory;
 use plgSystemDataComplianceCookieHelper as CookieHelper;
 
 // Prevent direct access
@@ -248,6 +250,29 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		{
 			return new RuntimeException('No cookie preference was provided and no cookie preference reset was requested.', 103);
 		}
+
+		/**
+		 * VERY IMPORTANT: Kill the site's cache. Otherwise the JavaScript embedded in the site's header which contains
+		 * the user's cookie preferences will be wrong, therefore not applying the cookie preferences in the frontend!
+		 */
+		try
+		{
+			$cache       = $this->getCache();
+			$cacheInfo   = $cache->getAll();
+			$cacheGroups = array_keys($cacheInfo);
+
+			foreach ($cacheGroups as $group)
+			{
+				$cache->clean($group);
+
+				Factory::getApplication()->triggerEvent('onAfterPurge', array($group));
+			}
+		}
+		catch (Exception $e)
+		{
+
+		}
+
 
 		if ($reset)
 		{
@@ -923,4 +948,30 @@ JS;
 			// No worries if that fails
 		}
 	}
+
+	/**
+	 * Method to get cache instance.
+	 *
+	 * @return CacheController
+	 */
+	private function getCache(?int $clientId = null): CacheController
+	{
+		$conf = Factory::getConfig();
+
+		if (is_null($clientId))
+		{
+			$container = Container::getInstance('com_datacompliance');
+			$clientId = $container->platform->isFrontend() ? 0 : 1;
+		}
+
+		$options = array(
+			'defaultgroup' => '',
+			'storage'      => $conf->get('cache_handler', ''),
+			'caching'      => true,
+			'cachebase'    => (int) $clientId === 1 ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache')
+		);
+
+		return Cache::getInstance('', $options);
+	}
+
 }

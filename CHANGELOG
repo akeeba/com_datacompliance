@@ -1,6 +1,7 @@
 Akeeba Data Compliance 1.1.1
 ================================================================================
 ~ Remove the flash of the cookie plugin popup once you've accepted cookies
+# [HIGH] Cookie acceptance plugin does not work with cache enabled
 
 Akeeba Data Compliance 1.1.0
 ================================================================================
