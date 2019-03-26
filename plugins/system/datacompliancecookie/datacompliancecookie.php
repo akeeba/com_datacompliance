@@ -251,29 +251,6 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return new RuntimeException('No cookie preference was provided and no cookie preference reset was requested.', 103);
 		}
 
-		/**
-		 * VERY IMPORTANT: Kill the site's cache. Otherwise the JavaScript embedded in the site's header which contains
-		 * the user's cookie preferences will be wrong, therefore not applying the cookie preferences in the frontend!
-		 */
-		try
-		{
-			$cache       = $this->getCache();
-			$cacheInfo   = $cache->getAll();
-			$cacheGroups = array_keys($cacheInfo);
-
-			foreach ($cacheGroups as $group)
-			{
-				$cache->clean($group);
-
-				Factory::getApplication()->triggerEvent('onAfterPurge', array($group));
-			}
-		}
-		catch (Exception $e)
-		{
-
-		}
-
-
 		if ($reset)
 		{
 			// Reset the cookie preference. Cookie acceptance is set to the implied acceptance value.
@@ -329,6 +306,33 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		if (!$this->enabled)
 		{
 			return;
+		}
+
+		/**
+		 * Disable cache. It's incompatible with cookie preferences.
+		 *
+		 * This happens for two reasons:
+		 *
+		 * 1. The cookie control buttons perform AJAX requests which need to pass the anti-CSRF token for security
+		 *    reasons. The onyl way to do that is send the token to the page through inline JavaScript. This gets
+		 *    cached, therefore the controls never work.
+		 *
+		 * 2. Joomla caches pages by user group membership. Therefore all users see the same cached page as the LAST
+		 *    user who visited the page when it was cached. Guess what? It also inherits its cookie preferences since
+		 *    they are part of the page's JavaScript which is also cached.
+		 *
+		 * In short, per-user information and caching don't mix. This plugin adds per-user content on every page,
+		 * therefore caching must be disabled when you use it. Sucks.
+		 */
+		try
+		{
+			$app = Factory::getApplication();
+			$app->allowCache(false);
+			Factory::getConfig()->set('caching', 0);
+		}
+		catch (Exception $e)
+		{
+
 		}
 
 		/**
@@ -948,30 +952,4 @@ JS;
 			// No worries if that fails
 		}
 	}
-
-	/**
-	 * Method to get cache instance.
-	 *
-	 * @return JCacheController
-	 */
-	private function getCache(?int $clientId = null)
-	{
-		$conf = Factory::getConfig();
-
-		if (is_null($clientId))
-		{
-			$container = Container::getInstance('com_datacompliance');
-			$clientId = $container->platform->isFrontend() ? 0 : 1;
-		}
-
-		$options = array(
-			'defaultgroup' => '',
-			'storage'      => $conf->get('cache_handler', ''),
-			'caching'      => true,
-			'cachebase'    => (int) $clientId === 1 ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache')
-		);
-
-		return Cache::getInstance('', $options);
-	}
-
 }
