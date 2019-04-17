@@ -1,6 +1,7 @@
 Akeeba Data Compliance 1.1.1
 ================================================================================
 + Rewritten cookie plugin to work with caching enabled
+# User Profile fields not displayed correctly when using an Edit Profile menu item
 
 Akeeba Data Compliance 1.1.0
 ================================================================================

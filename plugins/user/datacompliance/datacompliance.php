@@ -6,6 +6,10 @@
  */
 
 use FOF30\Container\Container;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Menu;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Uri\Uri;
 
 // Prevent direct access
 defined('_JEXEC') or die;
@@ -112,6 +116,27 @@ class PlgUserDatacompliance extends JPlugin
 		}
 
 		$layout = JFactory::getApplication()->input->getCmd('layout', 'default');
+
+		/**
+		 * Joomla is kinda brain-dead. When we have a menu item to the Edit Profile page it does not push the layout
+		 * into the Input (as opposed with option and view) so I have to go in and dig it out myself. Yikes!
+		 */
+		$itemId = Factory::getApplication()->input->getInt('Itemid');
+
+		if ($itemId)
+		{
+			try
+			{
+				/** @var Menu $menuItem */
+				$menuItem = Table::getInstance('Menu');
+				$menuItem->load($itemId);
+				$uri    = new Uri($menuItem->link);
+				$layout = $uri->getVar('layout', $layout);
+			}
+			catch (Exception $e)
+			{
+			}
+		}
 
 		if (!$this->container->platform->isBackend() && !in_array($layout, array('edit', 'default')))
 		{
