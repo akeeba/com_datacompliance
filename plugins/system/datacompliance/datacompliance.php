@@ -5,8 +5,18 @@
  * @license   GNU General Public License version 3, or later
  */
 
+use Akeeba\DataCompliance\Admin\Model\Consenttrails;
 use FOF30\Container\Container;
 use FOF30\Factory\Exception\ModelNotFound;
+use FOF30\Model\DataModel\Exception\RecordNotLoaded;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\User\User;
+use Joomla\Registry\Registry;
 
 // Prevent direct access
 defined('_JEXEC') or die;
@@ -34,7 +44,7 @@ if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/inclu
  *
  * Implements the captive login page for Data Processing Consent
  */
-class PlgSystemDatacompliance extends JPlugin
+class PlgSystemDatacompliance extends CMSPlugin
 {
 	/**
 	 * Are we enabled, all requirements met etc?
@@ -70,7 +80,7 @@ class PlgSystemDatacompliance extends JPlugin
 
 		try
 		{
-			if (!JComponentHelper::isInstalled('com_datacompliance') || !JComponentHelper::isEnabled('com_datacompliance'))
+			if (!ComponentHelper::isInstalled('com_datacompliance') || !ComponentHelper::isEnabled('com_datacompliance'))
 			{
 				$this->enabled = false;
 			}
@@ -91,7 +101,7 @@ class PlgSystemDatacompliance extends JPlugin
 	 *
 	 * @return  void
 	 *
-	 * @throws Exception
+	 * @throws  Exception
 	 *
 	 * @since   1.0.0
 	 */
@@ -106,7 +116,7 @@ class PlgSystemDatacompliance extends JPlugin
 		// Get the session objects
 		try
 		{
-			$session = JFactory::getSession();
+			$session = Factory::getSession();
 		}
 		catch (Exception $e)
 		{
@@ -123,7 +133,7 @@ class PlgSystemDatacompliance extends JPlugin
 		// Make sure we are logged in
 		try
 		{
-			$app = JFactory::getApplication();
+			$app = Factory::getApplication();
 
 			// Joomla! 3: make sure the user identity is loaded. This MUST NOT be called in Joomla! 4, though.
 			if (version_compare(JVERSION, '3.99999.99999', 'lt'))
@@ -133,7 +143,7 @@ class PlgSystemDatacompliance extends JPlugin
 
 			$user = $app->getIdentity();
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			// This would happen if we are in CLI or under an old Joomla! version. Either case is not supported.
 			return;
@@ -213,14 +223,19 @@ class PlgSystemDatacompliance extends JPlugin
 			$needsConsent = false;
 		}
 
+		if ($needsConsent && $this->hasJoomlaConsent($user))
+		{
+			$needsConsent = false;
+		}
+
 		if ($needsConsent)
 		{
 			// Save the current URL, but only if we haven't saved a URL or if the saved URL is NOT internal to the site.
 			$return_url = $session->get('return_url', '', 'com_datacompliance');
 
-			if (empty($return_url) || !JUri::isInternal($return_url))
+			if (empty($return_url) || !Uri::isInternal($return_url))
 			{
-				$session->set('return_url', JUri::getInstance()->toString(array(
+				$session->set('return_url', Uri::getInstance()->toString(array(
 					'scheme',
 					'user',
 					'pass',
@@ -234,9 +249,9 @@ class PlgSystemDatacompliance extends JPlugin
 
 			// Redirect
 			$this->loadLanguage();
-			$message = JText::_('PLG_SYSTEM_DATACOMPLIANCE_MSG_MUSTACCEPT');
+			$message = Text::_('PLG_SYSTEM_DATACOMPLIANCE_MSG_MUSTACCEPT');
 			$app->enqueueMessage($message, 'warning');
-			$url = JRoute::_('index.php?option=com_datacompliance&view=Options', false);
+			$url = Route::_('index.php?option=com_datacompliance&view=Options', false);
 			$app->redirect($url, 307);
 
 			return;
@@ -249,20 +264,22 @@ class PlgSystemDatacompliance extends JPlugin
 	/**
 	 * Does the current user need to provide consent for processing their personal information?
 	 *
+	 * @param   User  $user  The user to check
+	 *
 	 * @return  bool
 	 *
 	 * @since   1.0.0
 	 */
-	private function needsConsent(JUser $user)
+	private function needsConsent(User $user): bool
 	{
-		/** @var \Akeeba\DataCompliance\Admin\Model\Consenttrails $consentModel */
+		/** @var Consenttrails $consentModel */
 		$consentModel = $this->container->factory->model('Consenttrails')->tmpInstance();
 
 		try
 		{
 			$consentModel->findOrFail(['created_by' => $user->id]);
 		}
-		catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+		catch (RecordNotLoaded $e)
 		{
 			// No consent record. The user must provide their consent preference.
 			return true;
@@ -284,7 +301,7 @@ class PlgSystemDatacompliance extends JPlugin
 	 *
      * @since   1.0.0
 	 */
-	private function isExempt($option, $view, $task)
+	private function isExempt($option, $view, $task): bool
 	{
 		$rawConfig = $this->params->get('exempt', '');
 		$rawConfig = trim($rawConfig);
@@ -354,22 +371,22 @@ class PlgSystemDatacompliance extends JPlugin
 	 *
 	 * Only applies to Akeeba Subscriptions 5 and 6.
 	 *
-	 * @param  JUser  $user  The user to check
+	 * @param  User  $user  The user to check
 	 *
 	 * @return  bool
 	 *
 	 * @since   1.0.0
 	 */
-	private function hasAkeebasubsConsent(JUser $user)
+	private function hasAkeebasubsConsent(User $user): bool
 	{
 		// Is Akeeba Subs installed and enabled?
-		if (!JComponentHelper::isInstalled('com_akeebasubs') || !JComponentHelper::isEnabled('com_akeebasubs'))
+		if (!ComponentHelper::isInstalled('com_akeebasubs') || !ComponentHelper::isEnabled('com_akeebasubs'))
 		{
 			return false;
 		}
 
 		// Only transcribe if there is no consent record yet
-		/** @var \Akeeba\DataCompliance\Admin\Model\Consenttrails $consentModel */
+		/** @var Consenttrails $consentModel */
 		$consentModel = $this->container->factory->model('Consenttrails')->tmpInstance();
 
 		try
@@ -378,7 +395,7 @@ class PlgSystemDatacompliance extends JPlugin
 
 			return false;
 		}
-		catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+		catch (RecordNotLoaded $e)
 		{
 			// No consent record. AWESOME! That's what I need!
 		}
@@ -398,7 +415,7 @@ class PlgSystemDatacompliance extends JPlugin
 			{
 				$asUser->findOrFail(['user_id' => $user->id]);
 			}
-			catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+			catch (RecordNotLoaded $e)
 			{
 				// No record found. Bye bye.
 				return false;
@@ -407,7 +424,7 @@ class PlgSystemDatacompliance extends JPlugin
 			// Get the user parameters and see if they have consented to EU data.
 			$params = $asUser->params;
 
-			if (!is_object($params) || !($params instanceof \JRegistry))
+			if (!is_object($params) || !($params instanceof Registry))
 			{
 				JLoader::import('joomla.registry.registry');
 				$params = new \JRegistry($params);
@@ -427,7 +444,7 @@ class PlgSystemDatacompliance extends JPlugin
 		}
 
 		// They have consented. Record their consent as the date and IP of their latest subscription.
-		/** @var \Akeeba\Subscriptions\Site\Model\Subscriptions $subModel */
+		/** @var Akeeba\Subscriptions\Site\Model\Subscriptions $subModel */
 		$subModel = $asContainer->factory->model('Subscriptions')->tmpInstance();
 		$jNow     = $asContainer->platform->getDate();
 		$jWhen    = $asContainer->platform->getDate('2010-01-01 00:00:00');
@@ -440,7 +457,7 @@ class PlgSystemDatacompliance extends JPlugin
 			return false;
 		}
 
-		/** @var \Akeeba\Subscriptions\Site\Model\Subscriptions $sub */
+		/** @var Akeeba\Subscriptions\Site\Model\Subscriptions $sub */
 		foreach ($allSubs as $sub)
 		{
 			// Only take into account a newer subscription
@@ -483,6 +500,69 @@ class PlgSystemDatacompliance extends JPlugin
 	}
 
 	/**
+	 * Do I have consent recorded by Joomla's com_privacy component? This returns true only when there is no Data
+	 * Compliance consent record and there is a Joomla! com_privacy consent recorded in the user's profile. In this case
+	 * we transcribe the consent into Data Compliance. If the user has withdrawn his consent through Data Compliance
+	 * this method returns false.
+	 *
+	 * Only applies to Joomla! 3.9.0 or later
+	 *
+	 * @param  User  $user  The user to check
+	 *
+	 * @return  bool
+	 *
+	 * @since   1.1.1
+	 */
+	private function hasJoomlaConsent(User $user): bool
+	{
+		// Is this Joomla! 3.9.0 or later?
+		if (version_compare(JVERSION, '3.9.0', 'lt'))
+		{
+			return false;
+		}
+
+		// Only transcribe if there is no consent record yet
+		/** @var Consenttrails $consentModel */
+		$consentModel = $this->container->factory->model('Consenttrails')->tmpInstance();
+
+		try
+		{
+			$consentModel->findOrFail(['created_by' => $user->id]);
+
+			return false;
+		}
+		catch (RecordNotLoaded $e)
+		{
+			// No consent record. AWESOME! That's what I need!
+		}
+
+		// Get the consent information from Joomla
+		$db = $this->container->db;
+		$query = $db->getQuery(true)
+			->select($db->qn('profile_value'))
+			->from($db->qn('#__user_profile'))
+			->where($db->quoteName('user_id') . ' = ' . (int)($user->id))
+			->where($db->quoteName('profile_key') . ' = ' . $db->q('privacyconsent.privacy'));
+		$result = $db->setQuery($query)->loadResult();
+
+		if (is_null($result) && ($result != 1))
+		{
+			// They have not consented
+			return false;
+		}
+
+		/**
+		 * They have consented. Since Joomla! does not collect consent date and IP information as machine readable data
+		 * we will record the current date and IP address.
+		 */
+		$consentModel->create([
+			'enabled' => 1,
+		]);
+
+		return true;
+	}
+
+	/**
 	 * Checks if a value set in Akeeba Subs is a truthism.
 	 *
 	 * @param   string  $value  The value to check
@@ -491,7 +571,7 @@ class PlgSystemDatacompliance extends JPlugin
 	 *
 	 * @since   1.0.0
 	 */
-	private function isTruthism($value)
+	private function isTruthism($value): bool
 	{
 		if ($value === 1) return true;
 
