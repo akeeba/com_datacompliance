@@ -540,7 +540,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 		$db = $this->container->db;
 		$query = $db->getQuery(true)
 			->select($db->qn('profile_value'))
-			->from($db->qn('#__user_profile'))
+			->from($db->qn('#__user_profiles'))
 			->where($db->quoteName('user_id') . ' = ' . (int)($user->id))
 			->where($db->quoteName('profile_key') . ' = ' . $db->q('privacyconsent.privacy'));
 		$result = $db->setQuery($query)->loadResult();
