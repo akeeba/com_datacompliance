@@ -6,6 +6,7 @@
  */
 
 use FOF30\Container\Container;
+use FOF30\Factory\Exception\ModelNotFound;
 
 // Prevent direct access
 defined('_JEXEC') or die;
@@ -351,6 +352,8 @@ class PlgSystemDatacompliance extends JPlugin
 	 * consent record and there is an Akeeba Subs consent recorded. In this case we transcribe the consent into Data
 	 * Compliance. If the user has withdrawn his consent through Data Compliance this method returns false.
 	 *
+	 * Only applies to Akeeba Subscriptions 5 and 6.
+	 *
 	 * @param  JUser  $user  The user to check
 	 *
 	 * @return  bool
@@ -382,29 +385,40 @@ class PlgSystemDatacompliance extends JPlugin
 
 		// Try to fetch the Akeeba Subs user record
 		$asContainer = Container::getInstance('com_akeebasubs');
-		/** @var \Akeeba\Subscriptions\Site\Model\Users $asUser */
-		$asUser = $asContainer->factory->model('Users')->tmpInstance();
 
+		/**
+		 * Akeeba Subscriptions 5 and 6. Use the User model.
+		 */
 		try
 		{
-			$asUser->findOrFail(['user_id' => $user->id]);
+			/** @var \Akeeba\Subscriptions\Site\Model\Users $asUser */
+			$asUser = $asContainer->factory->model('Users')->tmpInstance();
+
+			try
+			{
+				$asUser->findOrFail(['user_id' => $user->id]);
+			}
+			catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+			{
+				// No record found. Bye bye.
+				return false;
+			}
+
+			// Get the user parameters and see if they have consented to EU data.
+			$params = $asUser->params;
+
+			if (!is_object($params) || !($params instanceof \JRegistry))
+			{
+				JLoader::import('joomla.registry.registry');
+				$params = new \JRegistry($params);
+			}
+
+			$confirmEUData = $this->isTruthism($params->get('confirm_eudata', false));
 		}
-		catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+		catch (ModelNotFound $e)
 		{
-			// No record found. Bye bye.
-			return false;
+			$confirmEUData = false;
 		}
-
-		// Get the user parameters and see if they have consented to EU data.
-		$params = $asUser->params;
-
-		if (!is_object($params) || !($params instanceof \JRegistry))
-		{
-			JLoader::import('joomla.registry.registry');
-			$params = new \JRegistry($params);
-		}
-
-		$confirmEUData = $this->isTruthism($params->get('confirm_eudata', false));
 
 		if (!$confirmEUData)
 		{
@@ -455,7 +469,7 @@ class PlgSystemDatacompliance extends JPlugin
 
 		// Transcribe the consent record from Akeeba Subscriptions to Data Compliance
 		$consentModel->create([
-			'enabled'      => 1,
+			'enabled' => 1,
 		]);
 
 		$consentModel

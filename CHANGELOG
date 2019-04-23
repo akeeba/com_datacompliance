@@ -1,6 +1,7 @@
 Akeeba Data Compliance 1.1.1
 ================================================================================
 + Rewritten cookie plugin to work with caching enabled
+~ Transcribing consent given during subscription only applies to Akeeba Subscriptions 5 and 6
 # User Profile fields not displayed correctly when using an Edit Profile menu item
 
 Akeeba Data Compliance 1.1.0
