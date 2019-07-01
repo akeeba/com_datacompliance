@@ -403,6 +403,12 @@ class PlgSystemDatacompliance extends CMSPlugin
 		// Try to fetch the Akeeba Subs user record
 		$asContainer = Container::getInstance('com_akeebasubs');
 
+		// Akeeba Subs 7 no longer has a Users model and does not store consent in its own table.
+		if (!class_exists('Akeeba\\Subscriptions\\Site\\Model\\Users'))
+		{
+			return false;
+		}
+
 		/**
 		 * Akeeba Subscriptions 5 and 6. Use the User model.
 		 */
