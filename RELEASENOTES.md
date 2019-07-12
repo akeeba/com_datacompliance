@@ -11,3 +11,9 @@ Akeeba Subscriptions should be compatible with:
 * PHP 7.1, 7.2, 7.3.
 
 ## Changelog
+
+* Rewritten cookie plugin to work with caching enabled
+* Consent can be transcribed from Joomla's privacy consent user profile field (migration from Joomla to DataCompliance)
+* Transcribing consent given during subscription only applies to Akeeba Subscriptions 5 and 6
+* Compatibility with Akeeba Subscriptions 7 for data export and user anonymisation (Users model has been removed)
+* User Profile fields not displayed correctly when using an Edit Profile menu item
