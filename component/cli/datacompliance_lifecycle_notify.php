@@ -13,7 +13,9 @@ use Joomla\Registry\Registry;
 
 define('_JEXEC', 1);
 
-$path = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
+// Setup and import the base CLI script
+$curdir = __DIR__;
+$path   = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
 
 if (file_exists($path))
 {

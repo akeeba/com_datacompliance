@@ -11,7 +11,9 @@ use Joomla\CMS\User\UserHelper;
 
 define('_JEXEC', 1);
 
-$path = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
+// Setup and import the base CLI script
+$curdir = __DIR__;
+$path   = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
 
 if (file_exists($path))
 {
@@ -41,7 +43,7 @@ class DataComplianceUserDelete extends DataComplianceCliBase
 				// Logger format. "echo" passes the log message verbatim.
 				'logger'   => 'callback',
 				'callback' => function (LogEntry $entry) {
-					$priorities = array(
+					$priorities = [
 						Log::EMERGENCY => 'EMERGENCY',
 						Log::ALERT     => 'ALERT',
 						Log::CRITICAL  => 'CRITICAL',
@@ -50,7 +52,7 @@ class DataComplianceUserDelete extends DataComplianceCliBase
 						Log::NOTICE    => 'NOTICE',
 						Log::INFO      => 'INFO',
 						Log::DEBUG     => 'DEBUG',
-					);
+					];
 
 					$priority = $priorities[$entry->priority];
 					$date     = $entry->date->format(JText::_('DATE_FORMAT_FILTER_DATETIME'));
