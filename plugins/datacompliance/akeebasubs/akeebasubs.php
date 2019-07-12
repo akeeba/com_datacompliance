@@ -316,7 +316,7 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->qn('#__akeebasubs_users'))
-			->where($db->qn('akeebasubs_user_id') . ' = ' . $db->q($userID));
+			->where($db->qn('user_id') . ' = ' . $db->q($userID));
 
 		try
 		{
@@ -349,11 +349,17 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->qn('#__akeebasubs_users'))
-			->where($db->qn('akeebasubs_user_id') . ' = ' . $db->q($user_id));
+			->where($db->qn('user_id') . ' = ' . $db->q($user_id));
 
 		try
 		{
 			$userData = $db->setQuery($query)->loadAssoc();
+
+			if (empty($userData))
+			{
+				return [$user_id];
+			}
+
 			$newData = [
 				'isbusiness'     => 0,
 				'businessname'   => '',
