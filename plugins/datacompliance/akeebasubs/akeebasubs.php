@@ -312,14 +312,17 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 			}
 		}
 
-		/** @var \Akeeba\Subscriptions\Admin\Model\Users $user */
-		$user = $container->factory->model('Users')->tmpInstance();
+		$db = $container->db;
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__akeebasubs_users'))
+			->where($db->qn('akeebasubs_user_id') . ' = ' . $db->q($userID));
 
 		try
 		{
-			$user->findOrFail(['user_id' => $userID]);
+			$userData = $db->setQuery($query)->loadAssoc();
 
-			Export::adoptChild($domainUserInfo, Export::exportItemFromDataModel($user));
+			Export::adoptChild($domainUserInfo, Export::exportItemFromArray($userData));
 		}
 		catch (Exception $e)
 		{
@@ -340,16 +343,18 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 	{
 		$container = Container::getInstance('com_akeebasubs', [], 'admin');
 
-		/** @var \Akeeba\Subscriptions\Admin\Model\Users $user */
-		$user = $container->factory->model('Users')->tmpInstance();
-
 		Log::add("Anonymizing Akeeba Subscriptions user information for user #{$user_id}.", Log::DEBUG, 'com_datacompliance');
+
+		$db = $container->db;
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->qn('#__akeebasubs_users'))
+			->where($db->qn('akeebasubs_user_id') . ' = ' . $db->q($user_id));
 
 		try
 		{
-			$user->findOrFail(['user_id' => $user_id]);
-
-			$user->save([
+			$userData = $db->setQuery($query)->loadAssoc();
+			$newData = [
 				'isbusiness'     => 0,
 				'businessname'   => '',
 				'occupation'     => '',
@@ -365,7 +370,18 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 				'params'         => [],
 				'notes'          => 'This record has been pseudonymized per GDPR requirements',
 				'needs_logout'   => 0,
-			]);
+			];
+
+			foreach ($newData as $k => $v)
+			{
+				if (array_key_exists($k, $userData))
+				{
+					$userData[$k] = $v;
+				}
+			}
+
+			$userData = (object)$userData;
+			$db->updateObject('#__akeebasubs_users', $userData, 'akeebasubs_user_id');
 		}
 		catch (Exception $e)
 		{
