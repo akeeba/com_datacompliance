@@ -1,3 +1,7 @@
+Akeeba Data Compliance 1.2.0
+================================================================================
+~ Preliminary work for PHP future 7.4 compatibility
+
 Akeeba Data Compliance 1.1.1
 ================================================================================
 + Rewritten cookie plugin to work with caching enabled

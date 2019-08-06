@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "76a706129b7eca57ee694148ab78ec5d",
+    "content-hash": "2d3393b04c7d002fc5de47c1870bc11d",
     "packages": [
         {
             "name": "akeeba/s3",
@@ -15,7 +15,7 @@
                 "reference": "master"
             },
             "type": "library",
-            "time": "2018-03-27T13:28:27+00:00"
+            "time": "2019-08-06T06:37:39+00:00"
         }
     ],
     "packages-dev": [],
@@ -26,6 +26,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-simplexml": "*"
+    },
     "platform-dev": []
 }
