@@ -1,6 +1,7 @@
 Akeeba Data Compliance 1.2.0
 ================================================================================
 ~ Preliminary work for PHP future 7.4 compatibility
+# [HIGH] CLI (CRON) scripts could sometimes stop with a Joomla crash due to Joomla's mishandling of the session under CLI.
 
 Akeeba Data Compliance 1.1.1
 ================================================================================

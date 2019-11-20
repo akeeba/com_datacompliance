@@ -9,25 +9,39 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
 use Joomla\CMS\User\UserHelper;
 
+// Setup and import the base CLI script
+$minphp = '7.1.0';
+
+// Boilerplate -- START
 define('_JEXEC', 1);
 
-// Setup and import the base CLI script
-$curdir = __DIR__;
-$path   = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
+foreach ([__DIR__, getcwd()] as $curdir)
+{
+	if (file_exists($curdir . '/defines.php'))
+	{
+		define('JPATH_BASE', realpath($curdir . '/..'));
+		require_once $curdir . '/defines.php';
 
-if (file_exists($path))
-{
-	require_once $path;
-}
-else
-{
-	$curDir = getcwd();
-	require_once $curDir . '/../administrator/components/com_datacompliance/assets/cli/base.php';
+		break;
+	}
+
+	if (file_exists($curdir . '/../includes/defines.php'))
+	{
+		define('JPATH_BASE', realpath($curdir . '/..'));
+		require_once $curdir . '/../includes/defines.php';
+
+		break;
+	}
 }
 
-class DataComplianceUserDelete extends DataComplianceCliBase
+defined('JPATH_LIBRARIES') || die ('This script must be placed in or run from the cli folder of your site.');
+
+require_once JPATH_LIBRARIES . '/fof30/Cli/Application.php';
+// Boilerplate -- END
+
+class DataComplianceUserDelete extends FOFApplicationCLI
 {
-	public function execute()
+	public function doExecute()
 	{
 		// Enable debug mode?
 		$debug = $this->input->getBool('debug', false);
@@ -179,4 +193,4 @@ TEXT
 	}
 }
 
-DataComplianceCliBase::getInstance('DataComplianceUserDelete')->execute();
+FOFApplicationCLI::getInstance('DataComplianceUserDelete')->execute();

@@ -8,23 +8,37 @@
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
 
+// Setup and import the base CLI script
+$minphp = '7.1.0';
+
+// Boilerplate -- START
 define('_JEXEC', 1);
 
-// Setup and import the base CLI script
-$curdir = __DIR__;
-$path   = __DIR__ . '/../administrator/components/com_datacompliance/assets/cli/base.php';
-
-if (file_exists($path))
+foreach ([__DIR__, getcwd()] as $curdir)
 {
-	require_once $path;
-}
-else
-{
-	$curDir = getcwd();
-	require_once $curDir . '/../administrator/components/com_datacompliance/assets/cli/base.php';
+	if (file_exists($curdir . '/defines.php'))
+	{
+		define('JPATH_BASE', realpath($curdir . '/..'));
+		require_once $curdir . '/defines.php';
+
+		break;
+	}
+
+	if (file_exists($curdir . '/../includes/defines.php'))
+	{
+		define('JPATH_BASE', realpath($curdir . '/..'));
+		require_once $curdir . '/../includes/defines.php';
+
+		break;
+	}
 }
 
-class DataComplianceLifecycleAutomation extends DataComplianceCliBase
+defined('JPATH_LIBRARIES') || die ('This script must be placed in or run from the cli folder of your site.');
+
+require_once JPATH_LIBRARIES . '/fof30/Cli/Application.php';
+// Boilerplate -- END
+
+class DataComplianceLifecycleAutomation extends FOFApplicationCLI
 {
 	public function execute()
 	{
@@ -275,4 +289,4 @@ TEXT
 	}
 }
 
-DataComplianceCliBase::getInstance('DataComplianceLifecycleAutomation')->execute();
+FOFApplicationCLI::getInstance('DataComplianceLifecycleAutomation')->execute();
