@@ -61,6 +61,8 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 		'files'   => array(
 		),
 		'folders' => array(
+			// Old CLI base script, replaced by FOF's base CLI script
+			'administrator/components/com_datacompliance/assets/cli'
 		)
 	);
 
