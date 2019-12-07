@@ -7,6 +7,16 @@
 
 defined('_JEXEC') or die();
 
+define('AKEEBA_COMMON_WRONGPHP', 1);
+$minPHPVersion         = '7.0.0';
+$recommendedPHPVersion = '7.3';
+$softwareName          = 'Akeeba DataCompliance';
+
+if (!require_once(__DIR__ . '/View/wrongphp.php'))
+{
+	return;
+}
+
 if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
 {
 	throw new RuntimeException('FOF 3.0 is not installed', 500);
