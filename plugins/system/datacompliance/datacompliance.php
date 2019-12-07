@@ -303,6 +303,12 @@ class PlgSystemDatacompliance extends CMSPlugin
 	 */
 	private function isExempt($option, $view, $task): bool
 	{
+		// If Joomla requires a password reset we should not try to redirect or it'll cause an infinite redirection loop
+		if (Factory::getUser()->get('requireReset', 0))
+		{
+			return true;
+		}
+
 		$rawConfig = $this->params->get('exempt', '');
 		$rawConfig = trim($rawConfig);
 
@@ -433,7 +439,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 			if (!is_object($params) || !($params instanceof Registry))
 			{
 				JLoader::import('joomla.registry.registry');
-				$params = new \JRegistry($params);
+				$params = new Registry($params);
 			}
 
 			$confirmEUData = $this->isTruthism($params->get('confirm_eudata', false));
