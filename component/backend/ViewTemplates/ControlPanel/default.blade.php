@@ -11,6 +11,12 @@
 defined('_JEXEC') or die;
 
 ?>
+{{-- Old PHP version reminder --}}
+@include('admin:com_datacompliance/Common/phpversion_warning', [
+	'softwareName'  => 'Akeeba Data Compliance',
+	'minPHPVersion' => '7.0.0',
+])
+
 <div>
 	<div class="akeeba-container--50-50">
 		<div>
