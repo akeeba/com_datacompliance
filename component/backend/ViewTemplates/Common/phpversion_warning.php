@@ -147,13 +147,13 @@ elseif ($warn_about_maintenance):
 
 		<p>
 			Your site is currently using PHP <?php echo $longVersion ?>. This version of PHP has entered its
-			“Security maintenance” phase since <?php $securityDateFormatted ?> and has stopped receiving bug fixes. It
-			will stop receiving security updates on <?php $eolDateFormatted ?> at which point it will be unsuitable for
+			“Security maintenance” phase since <?php echo $securityDateFormatted ?> and has stopped receiving bug fixes. It
+			will stop receiving security updates on <?php echo $eolDateFormatted ?> at which point it will be unsuitable for
 			use on a live site.
 		</p>
 		<p>
 			<?php echo $softwareName ?> will stop supporting your version of PHP soon after it becomes End-of-Life on
-			<?php $eolDateFormatted ?>. We recommend that you plan your migration to a newer version of PHP before that
+			<?php echo $eolDateFormatted ?>. We recommend that you plan your migration to a newer version of PHP before that
 			date. We recommend PHP <?php echo $recommendedPHPVersion ?> or later. You can ask your host or your system
 			administrator for instructions. It's easy and it will make your site faster and more secure.
 		</p>

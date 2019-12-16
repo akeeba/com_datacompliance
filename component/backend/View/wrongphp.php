@@ -188,7 +188,7 @@ $characterization = $isAncient ? 'dangerously obsolete' : $characterization;
 				control. Moreover, third party libraries we use to provide some of the software's features do not
 				support
 				older PHP versions for the same reason – so even if we don't absolutely need to use at least PHP
-				<?php $minPHPVersion ?> the third party libraries do, making it impossible for our software to run on
+				<?php echo $minPHPVersion ?> the third party libraries do, making it impossible for our software to run on
 				your
 				older version <?php echo $shortVersion ?>. We apologize for the inconvenience.
 			</p>
