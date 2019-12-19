@@ -7,115 +7,148 @@
 /**
  * Icons and stuff
  */
- 
- 
-fieldset label { float: left; }
 
-label.title, input.title { font-weight: bold; font-size: larger; }
-label.main { display: inline-block; width: 45%; background: #e0e0e0; border-bottom: 1px solid gray; padding: 2px; margin-bottom: 2px }
-input.longer { width: 40% }
 
-fieldset.datacompliance-float-left {
-	float: left; width: 48%;
+fieldset label {
+    float: left;
 }
 
-.gravatar { margin-right: 3px; }
+label.title, input.title {
+    font-weight: bold;
+    font-size: larger;
+}
 
-tr.revoked td { background: rgba(255,220,220,128) !important; color: gray; }
-tr.revoked td a { color: gray; }
+label.main {
+    display: inline-block;
+    width: 45%;
+    background: #e0e0e0;
+    border-bottom: 1px solid gray;
+    padding: 2px;
+    margin-bottom: 2px
+}
+
+input.longer {
+    width: 40%
+}
+
+fieldset.datacompliance-float-left {
+    float: left;
+    width: 48%;
+}
+
+.gravatar {
+    margin-right: 3px;
+}
+
+tr.revoked td {
+    background: rgba(255, 220, 220, 128) !important;
+    color: gray;
+}
+
+tr.revoked td a {
+    color: gray;
+}
 
 .datacompliance-panel-force-top-margin {
-	margin-top: 20px !important;
+    margin-top: 20px !important;
 }
 
 /** User display **/
 .akeeba-table .fof-usersfield-avatar {
-	margin-right: 10px;
-	border: thin solid black;
-	border-radius: 2px;
-	padding: 2px;
-	background: white;
+    margin-right: 10px;
+    border: thin solid black;
+    border-radius: 2px;
+    padding: 2px;
+    background: white;
 }
 
 .fof-usersfield-username {
-	font-weight: bold;
-	font-size: 120% !important;
+    font-weight: bold;
+    font-size: 120% !important;
 }
 
 .fof-usersfield-id {
-	padding-left: 6pt;
-	font-size: smaller;
-	font-style: italic;
+    padding-left: 6pt;
+    font-size: smaller;
+    font-style: italic;
 }
 
 .fof-usersfield-id:before {
-	content: "["
+    content: "["
 }
 
 .fof-usersfield-id:after {
-	content: "]"
+    content: "]"
 }
 
 .fof-usersfield-name {
-	display: block;
+    display: block;
 }
 
 /** Joomla! 3 workaround for calendar fields */
 input#publish_up,
 input#publish_down,
 input#created_on {
-	width: 90px;
+    width: 90px;
 }
+
 input#publish_down {
-	width: 90px;
+    width: 90px;
 }
 
 /**
  * Joomla! 3.7 made success buttons fixed width.
  */
-#toolbar .btn-success { width: auto !important; }
+#toolbar .btn-success {
+    width: auto !important;
+}
 
 /**
  * Joomla! 3.7 broke span6 margins x_x
  */
-div#akeeba-renderjoomla [class*="span"] { margin-left: 0; }
+div#akeeba-renderjoomla [class*="span"] {
+    margin-left: 0;
+}
 
-div.joomla-version-3{ padding:0 }
+div.joomla-version-3 {
+    padding: 0
+}
 
-div.akeeba-filter-bar--right{
-	text-align: right;
+div.akeeba-filter-bar--right {
+    text-align: right;
 }
 
 div.akeeba-filter-element {
-	display: inline-block;
-	margin-right: 0.5em;
+    display: inline-block;
+    margin-right: 0.5em;
 }
 
-div.akeeba-filter-element button[class*=--icon-only]+button[class*=--icon-only] {
-	margin-left: 0;
+div.akeeba-filter-element button[class*=--icon-only] + button[class*=--icon-only] {
+    margin-left: 0;
 }
 
 div.akeeba-filter-element button[class*=--icon-only] [class*=akion-] {
-	margin: 0;
-	vertical-align: baseline;
+    margin: 0;
+    vertical-align: baseline;
 }
 
-div.akeeba-filter-bar select.custom-select{
-	min-width: 0;
-	max-width: 115px;
+div.akeeba-filter-bar select.custom-select {
+    min-width: 0;
+    max-width: 115px;
 }
 
 .joomla-version-3 .akeeba-filter-joomlacalendarfix {
-	vertical-align: middle;
-	padding-top: 0.35em;
+    vertical-align: middle;
+    padding-top: 0.35em;
 }
 
 /**
  * Lifecycle page
  */
 tbody > tr.akeeba-datacompliance-lifecycle-row-cantdelete:nth-child(2n+1) > td {
-	background-color: lightpink !important;
+    background-color: lightpink !important;
 }
+
 tbody > tr.akeeba-datacompliance-lifecycle-row-cantdelete:nth-child(2n) > td {
-	background-color: #fadfe0;
+    background-color: #fadfe0;
 }

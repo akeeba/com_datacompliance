@@ -13,7 +13,7 @@ $recommendedPHPVersion = '7.3';
 $softwareName          = 'Akeeba DataCompliance';
 $silentResults         = true;
 
-if (!require_once(__DIR__ . '/View/wrongphp.php'))
+if (!require_once(JPATH_COMPONENT_ADMINISTRATOR . '/View/wrongphp.php'))
 {
 	echo 'Your PHP version is too old for this component.';
 

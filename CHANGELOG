@@ -1,6 +1,7 @@
 Akeeba Data Compliance 1.2.0
 ================================================================================
 + Common PHP version warning scripts
++ Dark Mode
 ~ Preliminary work for PHP future 7.4 compatibility
 # [HIGH] CLI (CRON) scripts could sometimes stop with a Joomla crash due to Joomla's mishandling of the session under CLI.
 # [HIGH] Forced password reset in Joomla causes an infinite redirection loop (gh-28)
