@@ -125,6 +125,14 @@
                     <option value="1">JYes</option>
                 </field>
 
+                <field name="dark_mode" type="radio" default="-1"
+                       label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_DARKMODE_LABEL"
+                       description="PLG_SYSTEM_DATACOMPLIANCECOOKIE_DARKMODE_DESC"
+                       class="switcher btn-group">
+                    <option value="-1">PLG_SYSTEM_DATACOMPLIANCECOOKIE_DARKMODE_AUTO</option>
+                    <option value="0">PLG_SYSTEM_DATACOMPLIANCECOOKIE_DARKMODE_NEVER</option>
+                </field>
+
                 <field name="privacyPolicyURL" type="url"
                        default=""
                        label="PLG_SYSTEM_DATACOMPLIANCECOOKIE_PRIVACYPOLICYURL_LABEL"

@@ -407,6 +407,25 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
+		// Load FEF if necessary
+		$useFEF   = $this->params->get('load_fef', 1);
+
+		if ($useFEF)
+		{
+			if (!class_exists('AkeebaFEFHelper'))
+			{
+				@include_once JPATH_ROOT . '/media/fef/fef.php';
+			}
+
+			$useReset = $this->params->get('fef_reset', 1);
+			$darkMode = $this->params->get('dark_mode', -1) != 0;
+
+			if (class_exists('AkeebaFEFHelper'))
+			{
+				AkeebaFEFHelper::load($useReset, $darkMode);
+			}
+		}
+
 		if (!$this->hasAcceptedCookies)
 		{
 			// Remove all cookies before the component is loaded
@@ -584,15 +603,6 @@ HTML;
 
 		$files = [];
 
-		// Load FEF if necessary
-		$useFEF   = $this->params->get('load_fef', 1);
-
-		if ($useFEF)
-		{
-			$useReset = $this->params->get('fef_reset', 1);
-			$files    = $this->getFEFFiles($useReset);
-		}
-
 		// Add our own CSS
 		$files[] = $this->container->template->parsePath('media://plg_system_datacompliancecookie/css/datacompliancecookies.css') . '?' . $this->container->mediaVersion;
 
@@ -616,81 +626,6 @@ HTML;
 		}
 
 		return $ret;
-	}
-
-	/**
-	 * Get a list of FEF files to load, if they have not been loaded yet.
-	 *
-	 * @param   bool  $useReset  Should I also load the FEF reset?
-	 *
-	 * @return  array
-	 */
-	private function getFEFFiles($useReset = false)
-	{
-		$files = [];
-
-		$mediaVersion = $this->getFEFMediaVersion();
-
-		/**
-		 * WATCH OUT!!!
-		 *
-		 * DO NOT USE FOF TO LOAD THE FILES.
-		 *
-		 * The FEF helper is using Joomla's HTMLHelper and generates relative paths. FOF always generates absolute
-		 * paths. Since I need to filter double inclusions I *have to* use relative paths, therefore I *have to* use
-		 * HTMLHelper to get them.
-		 */
-		if ($useReset)
-		{
-			$files[] = \Joomla\CMS\HTML\HTMLHelper::_('stylesheet', 'fef/reset.min.css', [
-					'relative' => true,
-					'pathOnly' => true,
-				]) . '?' . $mediaVersion;
-		}
-
-		$files[] =  \Joomla\CMS\HTML\HTMLHelper::_('stylesheet', 'fef/style.min.css', [
-				'relative' => true,
-				'pathOnly' => true,
-			]) . '?' . $mediaVersion;
-
-		return $files;
-	}
-
-	/**
-	 * Get the FEF media version.
-	 *
-	 * We cannot call the helper directly because we need to deal with Joomla caching.
-	 *
-	 * @return  string
-	 */
-	private function getFEFMediaVersion()
-	{
-		$mediaVersion = md5(filemtime(__FILE__));
-		$helperFile   = JPATH_SITE . '/media/fef/fef.php';
-
-		if (!class_exists('AkeebaFEFHelper') && is_file($helperFile))
-		{
-			include_once $helperFile;
-		}
-
-		if (!class_exists('AkeebaFEFHelper'))
-		{
-			return $mediaVersion;
-		}
-
-		try
-		{
-			$rc = new ReflectionClass('AkeebaFEFHelper');
-			$rm = $rc->getMethod('getMediaVersion');
-
-			$rm->setAccessible(true);
-
-			return $rm->invoke(null);
-		}
-		catch (Exception $e)
-		{
-			return $mediaVersion;
-		}
 	}
 
 	/**

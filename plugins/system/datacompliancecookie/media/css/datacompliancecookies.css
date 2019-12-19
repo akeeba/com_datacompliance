@@ -71,3 +71,13 @@ ul.akeeba-dccc-banner-links > li {
 ul.akeeba-dccc-banner-links > li ~ li:before {
     content: " • ";
 }
+
+@media screen and (prefers-color-scheme: dark) {
+    .akeeba-dccc-banner-bottom {
+        background: rgba(0, 0, 0, 0.85);
+    }
+
+    .akeeba-dccc-banner-top {
+        background: rgba(0, 0, 0, 0.85);
+    }
+}
