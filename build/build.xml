@@ -1,4 +1,10 @@
 <?xml version="1.0"?>
+<!--
+  ~ @package   AkeebaDataCompliance
+  ~ @copyright Copyright (c)2018-2020 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
 <project name="DataCompliance" description="DataCompliance for Joomla" default="git" >
     <import file="${phing.dir}/../../buildfiles/phing/common.xml" />
 
