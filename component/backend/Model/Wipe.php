@@ -366,9 +366,9 @@ class Wipe extends Model
 		 * not notified. This prevents deletion of a user account before the date the user knows they can no longer
 		 * take any action to prevent account deletion.
          */
-		if ($notifiedFor->getTimestamp() > $when->getTimestamp())
+		if ($notifiedFor->getTimestamp() <= $when->getTimestamp())
 		{
-			return false;
+			return true;
 		}
 
 		return false;

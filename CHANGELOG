@@ -1,3 +1,7 @@
+Akeeba Data Compliance 1.2.1
+================================================================================
+# [HIGH] Automatic account deletion (lifecycle) wasn't working
+
 Akeeba Data Compliance 1.2.0
 ================================================================================
 + Common PHP version warning scripts
