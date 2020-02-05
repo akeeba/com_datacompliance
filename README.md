@@ -22,11 +22,15 @@ This component is distributed under the GNU General Public License version 3 or,
 
 ## Download
 
-No public downloads are currently available. You will need to build the package yourself (sorry).
+Stable releases are available [on the GitHub repository's Releases page](https://github.com/akeeba/com_datacompliance/releases).
+
+More current features and bug fixes may be found in the development branch. However, you will need to build the package yourself to access them.
 
 ## Support policy
 
-This component is currently in an experimental / internal development phase. As a result we cannot provide any kind of end user support.
+We do not provide any end user support.
+
+If you are a developer and want to contribute a bug fix or small feature please send a Pull Request. If it's a more significant feature you want to contribute please file an issue first, explaining your use case, how you propose to address it and what is your timeline for writing the code. We will get back to you within a week at most. 
 
 ## Prerequisites
 
@@ -50,17 +54,3 @@ You will need to use the exact folder names specified here.
 ## Building a dev release
 
 Go inside `com_datacompliance/build` and run `phing git -Dversion=0.0.1.a1` to create a development release. The installable Joomla! ZIP package file is output in the `com_datacompliance/release` directory.
-
-If you want to build a release with development versions of FOF and FEF you will need to do some preparatory work. **This is NOT RECOMMENDED for most people**. Development builds of FOF and FEF may affect how other Akeeba and / or third party software work on your site. As a result you MUST NOT distribute these packages or use them on a production site. The steps you need to do are (from the main directory where you checked out all the other repositories):
-```bash
-pushd fof/build
-phing git
-popd
-pushd fef/build
-phing compile
-popd
-pushd com_datacompliance/build
-phing git 
-popd 
-```
-This will create a dev release ZIP package in `com_datacompliance/release`.
