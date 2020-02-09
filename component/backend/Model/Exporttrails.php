@@ -14,6 +14,7 @@ use Akeeba\DataCompliance\Admin\Model\Mixin\FilterByUser;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
+use JDatabaseQuery;
 
 /**
  * Data export audit trails
@@ -28,7 +29,8 @@ class Exporttrails extends DataModel
 {
 	use FilterByUser;
 
-	public function __construct(Container $container, array $config = array())
+	/** @inheritDoc */
+	public function __construct(Container $container, array $config = [])
 	{
 		parent::__construct($container, $config);
 
@@ -66,7 +68,14 @@ class Exporttrails extends DataModel
 		return $static;
 	}
 
-	protected function onBeforeBuildQuery(\JDatabaseQuery &$query)
+	/**
+	 * Executes before FOF builds the select query to retrieve model records
+	 *
+	 * @param   JDatabaseQuery  $query  The query object to modify
+	 *
+	 * @return  void
+	 */
+	protected function onBeforeBuildQuery(JDatabaseQuery &$query)
 	{
 		// Apply filtering by user. This is a relation filter, it needs to go before the main query builder fires.
 		$this->filterByUser($query);

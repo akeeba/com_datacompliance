@@ -7,10 +7,13 @@
 
 namespace Akeeba\DataCompliance\Site\Model;
 
+use Exception;
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
 use FOF30\Utils\Ip;
-use JHtml;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\User\User;
 
 defined('_JEXEC') or die;
 
@@ -39,29 +42,29 @@ class Options extends Model
 		try
 		{
 			jimport('joomla.model.model');
-			\JModelLegacy::addIncludePath(JPATH_BASE . '/components/com_content/models', 'ContentModel');
+			BaseDatabaseModel::addIncludePath(JPATH_BASE . '/components/com_content/models', 'ContentModel');
 			/** @var \ContentModelArticle $contentModel */
-			$contentModel = \JModelLegacy::getInstance('Article', 'ContentModel');
-			$article = $contentModel->getItem($articleId);
+			$contentModel = BaseDatabaseModel::getInstance('Article', 'ContentModel');
+			$article      = $contentModel->getItem($articleId);
 		}
-		catch (\Exception $e)
+		catch (Exception $e)
 		{
 			return '';
 		}
 
 		return
-			JHtml::_('content.prepare', $article->introtext) .
-			JHtml::_('content.prepare', $article->fulltext);
+			HTMLHelper::_('content.prepare', $article->introtext) .
+			HTMLHelper::_('content.prepare', $article->fulltext);
 	}
 
 	/**
 	 * Get the consent preference of a user
 	 *
-	 * @param   \JUser|null  $user  The user to get the status for, or null for the current user.
+	 * @param   User|null  $user  The user to get the status for, or null for the current user.
 	 *
 	 * @return  bool
 	 */
-	public function getPreference(\JUser $user = null)
+	public function getPreference(User $user = null)
 	{
 		if (is_null($user))
 		{
@@ -73,9 +76,9 @@ class Options extends Model
 
 		try
 		{
-			return (bool)($consent->findOrFail(['created_by' => $user->id])->enabled);
+			return (bool) ($consent->findOrFail(['created_by' => $user->id])->enabled);
 		}
-		catch (\Exception $e)
+		catch (RecordNotLoaded $e)
 		{
 			return false;
 		}
@@ -86,7 +89,7 @@ class Options extends Model
 	 *
 	 * @param   bool  $preference  Their data protection preference
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 */
 	public function recordPreference($preference = false, \JUser $user = null)
 	{
@@ -122,12 +125,12 @@ class Options extends Model
 	/**
 	 * Get the human readable list of actions to be taken when deleting a user account
 	 *
-	 * @param   \JUser|null $user The user account we will be deleting
-	 * @param   string      $type The deletion method (user, admin, lifecycle)
+	 * @param   \JUser|null  $user  The user account we will be deleting
+	 * @param   string       $type  The deletion method (user, admin, lifecycle)
 	 *
 	 * @return  array  An array of strings representing the actions (bullet points) to show to the user
 	 *
-	 * @throws \Exception
+	 * @throws  Exception
 	 */
 	public function getBulletPoints(\JUser $user = null, string $type = 'user')
 	{
@@ -155,28 +158,34 @@ class Options extends Model
 	}
 
 	/**
-	 * Load plugins of a specific type. Do not go through FOF; it does not run that under CLI.
+	 * Load plugins of a specific type.
 	 *
-	 * @param   string $type The type of the plugins to be loaded
+	 * This is a simple shim to FOF, ensuring that plugins WILL be loaded under CLI.
 	 *
-	 * @return void
+	 * @param   string  $type  The type of the plugins to be loaded
+	 *
+	 * @return  void
 	 */
 	public function importPlugin($type)
 	{
-		\JLoader::import('joomla.plugin.helper');
-		\JPluginHelper::importPlugin($type);
+		if ($this->container->platform->isCli())
+		{
+			$this->container->platform->setAllowPluginsInCli(true);
+		}
+
+		$this->container->platform->importPlugin($type);
 	}
 
 	/**
 	 * Execute plugins (system-level triggers) and fetch back an array with their return values. Do not go through FOF;
 	 * it does not run that under CLI
 	 *
-	 * @param   string $event The event (trigger) name, e.g. onBeforeScratchMyEar
-	 * @param   array  $data  A hash array of data sent to the plugins as part of the trigger
+	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
+	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
 	 *
 	 * @return  array  A simple array containing the results of the plugins triggered
 	 *
-	 * @throws \Exception
+	 * @throws  Exception
 	 */
 	public function runPlugins($event, $data)
 	{

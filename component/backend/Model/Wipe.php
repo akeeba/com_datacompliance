@@ -193,16 +193,22 @@ class Wipe extends Model
 	}
 
 	/**
-	 * Load plugins of a specific type. Do not go through FOF; it does not run that under CLI.
+	 * Load plugins of a specific type.
 	 *
-	 * @param   string $type The type of the plugins to be loaded
+	 * This is a simple shim to FOF, ensuring that plugins WILL be loaded under CLI.
 	 *
-	 * @return void
+	 * @param   string  $type  The type of the plugins to be loaded
+	 *
+	 * @return  void
 	 */
-	public function importPlugin(string $type)
+	public function importPlugin($type)
 	{
-		\JLoader::import('joomla.plugin.helper');
-		\JPluginHelper::importPlugin($type);
+		if ($this->container->platform->isCli())
+		{
+			$this->container->platform->setAllowPluginsInCli(true);
+		}
+
+		$this->container->platform->importPlugin($type);
 	}
 
 	/**

@@ -18,6 +18,8 @@
   ],
   "require": {
     "akeeba/s3": "dev-master",
-    "ext-simplexml": "*"
+    "ext-simplexml": "*",
+    "ext-dom": "*",
+    "ext-json": "*"
   }
 }

@@ -12,33 +12,29 @@ defined('_JEXEC') or die;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
-use JApplicationHelper;
-use JComponentHelper;
-use JLoader;
-use JUser;
-use JUserHelper;
+use JDatabaseQuery;
 
 /**
  * Model for querying Joomla! users
  *
  * Fields:
  *
- * @property  int     $id
- * @property  string  $name
- * @property  string  $username
- * @property  string  $email
- * @property  string  $password
- * @property  bool    $block
- * @property  bool    $sendEmail
- * @property  string  $registerDate
- * @property  string  $lastvisitDate
- * @property  string  $activation
- * @property  string  $params
- * @property  string  $lastResetTime
- * @property  int     $resetCount
- * @property  string  $otpKey
- * @property  string  $otep
- * @property  bool    $requireReset
+ * @property  int    $id
+ * @property  string $name
+ * @property  string $username
+ * @property  string $email
+ * @property  string $password
+ * @property  bool   $block
+ * @property  bool   $sendEmail
+ * @property  string $registerDate
+ * @property  string $lastvisitDate
+ * @property  string $activation
+ * @property  string $params
+ * @property  string $lastResetTime
+ * @property  int    $resetCount
+ * @property  string $otpKey
+ * @property  string $otep
+ * @property  bool   $requireReset
  *
  * Filters:
  *
@@ -59,17 +55,15 @@ use JUserHelper;
  * @method  $this  requireReset()   requireReset(bool $v)
  * @method  $this  search()         search(string $userInfoToSearch)
  *
- **/class JoomlaUsers extends DataModel
+ */
+class JoomlaUsers extends DataModel
 {
 	/**
-	 * Override the constructor since I need to attach to a core table and add the Filters behaviour
-	 *
-	 * @param Container $container
-	 * @param array     $config
+	 * @inheritDoc
 	 */
-	public function __construct(Container $container, array $config = array())
+	public function __construct(Container $container, array $config = [])
 	{
-		$config['tableName'] = '#__users';
+		$config['tableName']   = '#__users';
 		$config['idFieldName'] = 'id';
 
 		parent::__construct($container, $config);
@@ -82,14 +76,9 @@ use JUserHelper;
 	}
 
 	/**
-	 * Build the SELECT query for returning records. Overridden to apply custom filters.
-	 *
-	 * @param   \JDatabaseQuery  $query           The query being built
-	 * @param   bool             $overrideLimits  Should I be overriding the limit state (limitstart & limit)?
-	 *
-	 * @return  void
+	 * @inheritDoc
 	 */
-	public function onAfterBuildQuery(\JDatabaseQuery $query, $overrideLimits = false)
+	public function onAfterBuildQuery(JDatabaseQuery $query, $overrideLimits = false)
 	{
 		$db = $this->getDbo();
 

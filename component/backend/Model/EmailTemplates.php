@@ -17,12 +17,12 @@ use FOF30\Model\DataModel;
  *
  * Fields:
  *
- * @property  int     $datacompliance_emailtemplate_id
- * @property  string  $key
- * @property  int     $subscription_level_id
- * @property  string  $subject
- * @property  string  $body
- * @property  string  $language
+ * @property  int    $datacompliance_emailtemplate_id
+ * @property  string $key
+ * @property  int    $subscription_level_id
+ * @property  string $subject
+ * @property  string $body
+ * @property  string $language
  *
  * Filters:
  *
@@ -35,20 +35,18 @@ use FOF30\Model\DataModel;
  * @method  $this  ordering()                         ordering(int $v)
  * @method  $this  created_on()                       created_on(string $v)
  * @method  $this  created_by()                       created_by(int $v)
- * @method  $this  modified_on()                      modified_on(string $v)
- * @method  $this  modified_by()                      modified_by(int $v)
+ * @method  $this  modified_on()                       modified_on(string $v)
+ * @method  $this  modified_by()                       modified_by(int $v)
  * @method  $this  locked_on()                        locked_on(string $v)
  * @method  $this  locked_by()                        locked_by(int $v)
  *
- **/class EmailTemplates extends DataModel
+ */
+class EmailTemplates extends DataModel
 {
 	/**
-	 * Overrides the constructor to add the Filters behaviour
-	 *
-	 * @param Container $container
-	 * @param array     $config
+	 * @inheritDoc
 	 */
-	public function __construct(Container $container, array $config = array())
+	public function __construct(Container $container, array $config = [])
 	{
 		parent::__construct($container, $config);
 
@@ -58,9 +56,11 @@ use FOF30\Model\DataModel;
 	/**
 	 * Unpublish the newly copied item
 	 *
-	 * @param EmailTemplates $copy
+	 * @param   EmailTemplates  $copy  The copied item we will be modifying
+	 *
+	 * @return  void
 	 */
-	protected function onAfterCopy(EmailTemplates $copy)
+	protected function onAfterCopy(EmailTemplates $copy): void
 	{
 		// Unpublish the newly copied item
 		if ($copy->enabled)

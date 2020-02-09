@@ -10,10 +10,12 @@ namespace Akeeba\DataCompliance\Admin\Model;
 defined('_JEXEC') or die;
 
 use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
+use DOMDocument;
 use FOF30\Encrypt\Randval;
 use FOF30\Model\Model;
 use Joomla\CMS\Table\Table;
 use PrivacyExportDomain;
+use RuntimeException;
 use SimpleXMLElement;
 
 /**
@@ -28,7 +30,7 @@ class Export extends Model
 	 *
 	 * @return  SimpleXMLElement
 	 *
-	 * @throws  \RuntimeException  If an error occurred during export
+	 * @throws  RuntimeException  If an error occurred during export
 	 */
 	public function exportSimpleXML($userId): SimpleXMLElement
 	{
@@ -36,7 +38,7 @@ class Export extends Model
 		/** @var Exporttrails $trail */
 		$trail = $this->container->factory->model('Exporttrails')->tmpInstance();
 		$trail->create([
-			'user_id' => $userId
+			'user_id' => $userId,
 		]);
 
 		// Integrate results from DataCompliance plugins
@@ -103,7 +105,7 @@ class Export extends Model
 	 *
 	 * @return  string  The unformatted XML document text
 	 *
-	 * @throws  \RuntimeException  If an error occurred during export
+	 * @throws  RuntimeException  If an error occurred during export
 	 */
 	public function exportXML($userId): string
 	{
@@ -119,13 +121,13 @@ class Export extends Model
 	 *
 	 * @return  string  The formatted XML document text
 	 *
-	 * @throws  \RuntimeException  If an error occurred during export
+	 * @throws  RuntimeException  If an error occurred during export
 	 */
 	public function exportFormattedXML($userId): string
 	{
 		$xml = $this->exportXML($userId);
 
-		$dom = new \DOMDocument();
+		$dom = new DOMDocument();
 		$dom->loadXML($xml);
 		$dom->formatOutput = true;
 

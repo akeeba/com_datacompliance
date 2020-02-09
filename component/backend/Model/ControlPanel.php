@@ -9,8 +9,10 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
+use Exception;
 use FOF30\Database\Installer;
 use FOF30\Model\Model;
+use RuntimeException;
 
 class ControlPanel extends Model
 {
@@ -18,10 +20,10 @@ class ControlPanel extends Model
 	 * Checks the database for missing / outdated tables using the $dbChecks
 	 * data and runs the appropriate SQL scripts if necessary.
 	 *
-	 * @throws  \RuntimeException    If the previous database update is stuck
-	 *
 	 * @return  $this
-	 * @throws \Exception
+	 * @throws  RuntimeException    If the previous database update is stuck
+	 *
+	 * @throws  Exception
 	 */
 	public function checkAndFixDatabase()
 	{
@@ -45,6 +47,12 @@ class ControlPanel extends Model
 		$this->container->params->save();
 	}
 
+	/**
+	 * Returns the number of active, deleted and expired users in Joomla
+	 *
+	 * @return  array  Keys 'active', 'deleted' and 'expired'
+	 * @throws  Exception
+	 */
 	public function getUserStats()
 	{
 		$ret = [

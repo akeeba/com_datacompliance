@@ -9,6 +9,7 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
+use Exception;
 use FOF30\Date\Date as FOFDate;
 use FOF30\Model\Model;
 use JDate;
@@ -20,10 +21,13 @@ use Joomla\CMS\Date\Date;
 class Stats extends Model
 {
 	/**
+	 * Get the profile deletion statistics for use in graphs
+	 *
 	 * @param   JDate|Date|FOFDate $from
 	 * @param   JDate|Date|FOFDate $to
 	 *
-	 * @return  array
+	 * @return  array  'user', 'admin' and 'lifecycle' keys
+	 * @throws  Exception
 	 */
 	public function wipeStats($from, $to): array
 	{
@@ -71,6 +75,7 @@ class Stats extends Model
 	 * @param   JDate|Date|FOFDate  $to    End date
 	 *
 	 * @return  array
+	 * @throws  Exception
 	 */
 	private function normalizeDateDataset($data, $from, $to)
 	{

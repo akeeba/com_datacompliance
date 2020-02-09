@@ -8,6 +8,7 @@
 namespace Akeeba\DataCompliance\Admin\Model;
 
 use DateTime;
+use JDatabaseQuery;
 use Joomla\CMS\Cache\Controller\CallbackController;
 
 defined('_JEXEC') or die;
@@ -22,14 +23,9 @@ class Lifecycle extends JoomlaUsers
 	static $lifeCycleUserIDs = null;
 
 	/**
-	 * Build the SELECT query for returning records. Overridden to apply custom filters.
-	 *
-	 * @param   \JDatabaseQuery  $query           The query being built
-	 * @param   bool             $overrideLimits  Should I be overriding the limit state (limitstart & limit)?
-	 *
-	 * @return  void
+	 * @inheritDoc
 	 */
-	public function onAfterBuildQuery(\JDatabaseQuery $query, $overrideLimits = false)
+	public function onAfterBuildQuery(JDatabaseQuery $query, $overrideLimits = false)
 	{
 		parent::onAfterBuildQuery($query, $overrideLimits);
 
@@ -41,8 +37,9 @@ class Lifecycle extends JoomlaUsers
 			$lifecycleUserIDs = $this->getLifecycleUserIDs($when);
 			$db               = $this->container->db;
 
-			if ($lifecycleUserIDs) {
-				$query->where( $db->qn( 'id' ) . ' IN (' . implode( ',', $lifecycleUserIDs ) . ')' );
+			if ($lifecycleUserIDs)
+			{
+				$query->where($db->qn('id') . ' IN (' . implode(',', $lifecycleUserIDs) . ')');
 			}
 		}
 
@@ -50,6 +47,8 @@ class Lifecycle extends JoomlaUsers
 
 	/**
 	 * Gets the user IDs of the expired user profiles. Goes through the cache for performance.
+	 *
+	 * @param   DateTime  $when  return profiles which will be expired on or before the given date
 	 *
 	 * @return  array
 	 */
@@ -60,7 +59,7 @@ class Lifecycle extends JoomlaUsers
 			/** @var CallbackController $cache */
 			$cache = \JFactory::getCache($this->container->componentName, 'callback');
 
-			self::$lifeCycleUserIDs = $cache->get(function () use($when) {
+			self::$lifeCycleUserIDs = $cache->get(function () use ($when) {
 				/** @var Wipe $mWipe */
 				$mWipe = $this->container->factory->model('Wipe')->tmpInstance();
 

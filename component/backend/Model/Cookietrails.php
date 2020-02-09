@@ -14,6 +14,7 @@ use Akeeba\DataCompliance\Admin\Model\Mixin\FilterByUser;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
+use JDatabaseQuery;
 use RuntimeException;
 
 /**
@@ -33,6 +34,7 @@ class Cookietrails extends DataModel
 {
 	use FilterByUser;
 
+	/** @inheritDoc */
 	public function __construct(Container $container, array $config = array())
 	{
 		parent::__construct($container, $config);
@@ -80,7 +82,14 @@ class Cookietrails extends DataModel
 		return $static;
 	}
 
-	protected function onBeforeBuildQuery(\JDatabaseQuery &$query)
+	/**
+	 * Executes before FOF builds the select query to retrieve model records
+	 *
+	 * @param   JDatabaseQuery  $query  The query object to modify
+	 *
+	 * @return  void
+	 */
+	protected function onBeforeBuildQuery(JDatabaseQuery &$query): void
 	{
 		// Apply filtering by user. This is a relation filter, it needs to go before the main query builder fires.
 		$this->filterByUser($query);

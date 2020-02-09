@@ -13,6 +13,7 @@ use Akeeba\DataCompliance\Admin\Model\Mixin\FilterByUser;
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Utils\Ip;
+use JDatabaseQuery;
 
 /**
  * User profile changes audit trails
@@ -20,15 +21,18 @@ use FOF30\Utils\Ip;
  * @property int    datacompliance_usertrail_id   Primary key.
  * @property int    user_id                       User ID whose information changed.
  * @property string created_on                    When the changes were made.
- * @property int    created_by                    Who initiated the changes (if it's 0 then it's a system / CLI change).
+ * @property int    created_by                    Who initiated the changes (if it's 0 then it's a system / CLI
+ *           change).
  * @property string requester_ip                  The IP of the person who performed the change.
- * @property array  items                         The changes made. The content of some changes is redacted for security reasons.
+ * @property array  items                         The changes made. The content of some changes is redacted for
+ *           security reasons.
  */
 class Usertrails extends DataModel
 {
 	use FilterByUser;
 
-	public function __construct(Container $container, array $config = array())
+	/** @inheritDoc */
+	public function __construct(Container $container, array $config = [])
 	{
 		parent::__construct($container, $config);
 
@@ -36,11 +40,7 @@ class Usertrails extends DataModel
 		$this->filterByUserSearchField = 'user_id';
 	}
 
-	/**
-	 * Checks the validity of the record. Also auto-fills the created* and requester_ip fields.
-	 *
-	 * @return  static
-	 */
+	/** @inheritDoc */
 	public function check()
 	{
 		if (empty($this->user_id))
@@ -71,12 +71,25 @@ class Usertrails extends DataModel
 		return $static;
 	}
 
-
+	/**
+	 * Convert the items property (an array) into a JSON-encoded string
+	 *
+	 * @param   array  $value  The value to encode
+	 *
+	 * @return  string
+	 */
 	protected function setItemsAttribute($value)
 	{
 		return $this->setAttributeForImplodedArray($value);
 	}
 
+	/**
+	 * Converts the JSON-encoded items property back into a PHP array
+	 *
+	 * @param   string  $value  The JSON-encoded string
+	 *
+	 * @return  array  The converted PHP array
+	 */
 	protected function getItemsAttribute($value)
 	{
 		return $this->getAttributeForImplodedArray($value);
@@ -98,7 +111,7 @@ class Usertrails extends DataModel
 
 		if (empty($value))
 		{
-			return array();
+			return [];
 		}
 
 		$value = json_decode($value, true);
@@ -114,7 +127,7 @@ class Usertrails extends DataModel
 	/**
 	 * Converts an array of values into a comma separated list
 	 *
-	 * @param   array  $value  The array of values
+	 * @param   array|string  $value  The array of values
 	 *
 	 * @return  string  The imploded comma-separated list
 	 */
@@ -130,7 +143,14 @@ class Usertrails extends DataModel
 		return $value;
 	}
 
-	protected function onBeforeBuildQuery(\JDatabaseQuery &$query)
+	/**
+	 * Executes before FOF builds the select query to retrieve model records
+	 *
+	 * @param   JDatabaseQuery  $query  The query object to modify
+	 *
+	 * @return  void
+	 */
+	protected function onBeforeBuildQuery(JDatabaseQuery &$query): void
 	{
 		// Apply filtering by user. This is a relation filter, it needs to go before the main query builder fires.
 		$this->filterByUser($query);
