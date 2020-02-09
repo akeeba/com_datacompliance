@@ -1,3 +1,8 @@
+Akeeba Data Compliance 1.2.2
+================================================================================
+# [HIGH] When an admin viewed the Options page for a different user the displayed current consent preference was wrong
+# [HIGH] When an admin deleted a user's profile the audit trail showed the user deleting themselves instead of the admin
+
 Akeeba Data Compliance 1.2.1
 ================================================================================
 # [HIGH] Automatic account deletion (lifecycle) wasn't working

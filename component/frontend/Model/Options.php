@@ -91,7 +91,7 @@ class Options extends Model
 	 *
 	 * @throws  Exception
 	 */
-	public function recordPreference($preference = false, \JUser $user = null)
+	public function recordPreference($preference = false, User $user = null)
 	{
 		if (is_null($user))
 		{
@@ -125,14 +125,14 @@ class Options extends Model
 	/**
 	 * Get the human readable list of actions to be taken when deleting a user account
 	 *
-	 * @param   \JUser|null  $user  The user account we will be deleting
-	 * @param   string       $type  The deletion method (user, admin, lifecycle)
+	 * @param   User|null  $user  The user account we will be deleting
+	 * @param   string     $type  The deletion method (user, admin, lifecycle)
 	 *
 	 * @return  array  An array of strings representing the actions (bullet points) to show to the user
 	 *
 	 * @throws  Exception
 	 */
-	public function getBulletPoints(\JUser $user = null, string $type = 'user')
+	public function getBulletPoints(?User $user = null, string $type = 'user')
 	{
 		if (is_null($user))
 		{

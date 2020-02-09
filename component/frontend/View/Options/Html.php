@@ -8,6 +8,7 @@
 namespace Akeeba\DataCompliance\Site\View\Options;
 
 use Akeeba\DataCompliance\Site\Model\Options;
+use Exception;
 use FOF30\View\DataView\Html as HtmlView;
 use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
@@ -52,39 +53,97 @@ class Html extends HtmlView
 	public $type = 'user';
 
 	/**
+	 * Am I allowed to show the Export user profile controls?
+	 *
+	 * @var   bool
+	 */
+	public $showExport = false;
+
+	/**
+	 * Am I allowed to show the Wipe user profile controls?
+	 *
+	 * @var   bool
+	 */
+	public $showWipe = false;
+
+	/**
 	 * The human readable list of actions to be taken upon deleting a user's account
 	 *
 	 * @var  array
 	 */
 	public $bulletPoints = [];
 
-	protected function onBeforeOptions()
+	/**
+	 * View the Data Options page
+	 *
+	 * @return  void
+	 */
+	protected function onBeforeOptions(): void
 	{
-		$this->populateUser();
-
-		$this->layout     = 'default';
-		$this->article    = $this->get('article');
-		$this->preference = $this->get('preference');
-		$this->siteName   = Factory::getApplication()->get('sitename', '');
-	}
-
-	protected function onBeforeWipe()
-	{
-		$this->populateUser();
+		$this->populateBasicViewParameters();
 
 		/** @var Options $model */
-		$model              = $this->getModel();
-		$this->layout       = 'wipe';
-		$this->bulletPoints = $model->getBulletPoints($this->user, $this->type);
+		$model            = $this->getModel();
+		$this->layout     = 'default';
+		$this->article    = $model->getArticle();
+		$this->preference = $model->getPreference($this->user);
+		try
+		{
+			$this->siteName = Factory::getApplication()->get('sitename', '');
+		}
+		catch (Exception $e)
+		{
+			$this->siteName = '(Unknown site)';
+		}
 	}
 
-	private function populateUser()
+	/**
+	 * View the wipe confirmation page
+	 *
+	 * @return  void
+	 */
+	protected function onBeforeWipe(): void
 	{
-		$userID      = $this->input->getInt('user_id', null);
+		$this->populateBasicViewParameters();
+
+		/** @var Options $model */
+		$model        = $this->getModel();
+		$this->layout = 'wipe';
+
+		try
+		{
+			$this->bulletPoints = $model->getBulletPoints($this->user, $this->type);
+		}
+		catch (Exception $e)
+		{
+			$this->bulletPoints = [];
+		}
+	}
+
+	/**
+	 * Populate basic view parameters such as showExport, showWipe, user and type
+	 *
+	 * @return  void
+	 */
+	private function populateBasicViewParameters(): void
+	{
+		// Only allow Super Users and DataCompliance users with Export or Wipe privileges to view a different user
+		$currentUser = $this->container->platform->getUser();
+		$canExport   = $currentUser->authorise('export', 'com_datacompliance');
+		$canWipe     = $currentUser->authorise('wipe', 'com_datacompliance');
+		$isSuper     = $currentUser->authorise('core.admin');
+		$isAdmin     = $isSuper || $canWipe || $canExport;
+		$userID      = $isAdmin ? $this->input->getInt('user_id', null) : null;
 
 		$this->showExport = $this->container->params->get('showexport', 1);
 		$this->showWipe   = $this->container->params->get('showwipe', 1);
 		$this->user       = $this->container->platform->getUser($userID);
-		$this->type       = ($this->user->id == $this->container->platform->getUser()->id) ? 'user' : 'admin';
+		$this->type       = ($this->user->id == $currentUser->id) ? 'user' : 'admin';
+
+		if ($this->type == 'admin')
+		{
+			$this->showExport = $this->showExport && $canExport;
+			$this->showWipe   = $this->showWipe && $canWipe;
+		}
 	}
 }

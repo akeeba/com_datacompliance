@@ -8,9 +8,15 @@
 namespace Akeeba\DataCompliance\Site\Controller;
 
 use Akeeba\DataCompliance\Admin\Model\Wipe;
+use Akeeba\DataCompliance\Site\Model\Options as OptionsModel;
+use Exception;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Controller\Mixin\PredefinedTaskList;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Router\Route as JRoute;
+use Joomla\CMS\Uri\Uri as JUri;
 use RuntimeException;
 
 defined('_JEXEC') or die;
@@ -27,7 +33,7 @@ class Options extends Controller
 	 *
 	 * @since   1.0.0
 	 */
-	public function __construct(Container $container, array $config = array())
+	public function __construct(Container $container, array $config = [])
 	{
 		parent::__construct($container, $config);
 
@@ -44,7 +50,7 @@ class Options extends Controller
 	 */
 	public function options($tpl = null)
 	{
-		$this->assertUserAccess();
+		$this->assertUserAccess('options');
 
 		$this->display(false, false, $tpl);
 	}
@@ -54,23 +60,24 @@ class Options extends Controller
 	 *
 	 * @param   string  $tpl
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 *
 	 * @since   1.0.0
 	 */
 	public function consent($tpl = null)
 	{
 		$this->csrfProtection();
+		$this->assertUserAccess('consent');
 
-		/** @var \Akeeba\DataCompliance\Site\Model\Options $model */
+		/** @var OptionsModel $model */
 		$model = $this->getModel();
 
 		$model->recordPreference($this->input->getBool('enabled', false));
 
-		$defaultUrl = \JRoute::_('index.php?option=com_datacompliance&view=Options', false);
-		$returnUrl = $this->container->platform->getSessionVar('return_url', $defaultUrl, 'com_datacompliance');
+		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=Options', false);
+		$returnUrl  = $this->container->platform->getSessionVar('return_url', $defaultUrl, 'com_datacompliance');
 
-		$message = \JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');
+		$message = JText::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');
 		$this->setRedirect($returnUrl, $message);
 		$this->redirect();
 	}
@@ -80,23 +87,17 @@ class Options extends Controller
 	 *
 	 * @param   string  $tpl
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 *
 	 * @since   1.0.0
 	 */
 	public function export($tpl = null)
 	{
 		$this->csrfProtection();
-		$this->assertUserAccess();
+		$this->assertUserAccess('export');
 
 		$currentUser = $this->container->platform->getUser();
 		$userID      = $this->input->getInt('user_id', $currentUser->id);
-
-		// You can only export your own data unless you have the 'com_datawipe.export' privilege
-		if (($userID != $currentUser->id) && !$currentUser->authorise('export', 'com_datacompliance'))
-		{
-			$this->container->platform->raiseError(403, \JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-		}
 
 		// Make sure there's no buffered data
 		@ob_end_clean();
@@ -135,24 +136,18 @@ class Options extends Controller
 	 *
 	 * @param   string  $tpl
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 *
 	 * @since   1.0.0
 	 */
 	public function wipe($tpl = null)
 	{
 		$this->csrfProtection();
-		$this->assertUserAccess();
+		$this->assertUserAccess('wipe');
 
 		$currentUser = $this->container->platform->getUser();
 		$userID      = $this->input->getInt('user_id', $currentUser->id);
 		$isCurrent   = $userID == $currentUser->id;
-
-		// You can only delete your own data unless you have the 'com_datawipe.wipe' privilege
-		if (!$isCurrent && !$currentUser->authorise('wipe', 'com_datacompliance'))
-		{
-			$this->container->platform->raiseError(403, \JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-		}
 
 		$phrase = $this->input->getString('phrase', null);
 		$user   = $this->container->platform->getUser($userID);
@@ -162,10 +157,10 @@ class Options extends Controller
 		// Can the user be wiped, at all?
 		if (!$wipeModel->checkWipeAbility($user->id))
 		{
-			$msg         = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $wipeModel->getError());
+			$msg         = JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $wipeModel->getError());
 			$url         = 'index.php?option=com_datacompliance&view=Options';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
-			$redirectUrl = \JRoute::_($url, false);
+			$redirectUrl = JRoute::_($url, false);
 			$this->setRedirect($redirectUrl, $msg, 'error');
 			$this->redirect();
 		}
@@ -179,28 +174,30 @@ class Options extends Controller
 		}
 
 		// Confirm the phrase
-		if ($phrase != \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE'))
+		if ($phrase != JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE'))
 		{
 			$token       = $this->container->platform->getToken();
 			$url         = 'index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
-			$redirectUrl = \JRoute::_($url, false);
-			$this->setRedirect($redirectUrl, \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_BADPHRASE'), 'error');
+			$redirectUrl = JRoute::_($url, false);
+			$this->setRedirect($redirectUrl, JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_BADPHRASE'), 'error');
 			$this->redirect();
 
 			return;
 		}
 
 		// Try to delete the user
-		$result = $wipeModel->wipe($user->id, 'user');
+		$currentUser = $this->container->platform->getUser();
+		$wipeType    = ($currentUser->id == $user->id) ? 'user' : 'admin';
+		$result      = $wipeModel->wipe($user->id, $wipeType);
 
 		if (!$result)
 		{
 			$token       = $this->container->platform->getToken();
 			$url         = 'index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
-			$redirectUrl = \JRoute::_($url, false);
-			$message     = \JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $wipeModel->getError());
+			$redirectUrl = JRoute::_($url, false);
+			$message     = JText::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $wipeModel->getError());
 			$this->setRedirect($redirectUrl, $message, 'error');
 			$this->redirect();
 
@@ -211,14 +208,14 @@ class Options extends Controller
 		// Log out the now erased user
 		if ($isCurrent)
 		{
-			\JFactory::getApplication()->getSession()->close();
-			\JFactory::getApplication()->getSession()->restart();
+			JFactory::getApplication()->getSession()->close();
+			JFactory::getApplication()->getSession()->restart();
 		}
 
 		// Redirect them to the home page
-		$message     = \JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_MSG_ERASED');
-		\JFactory::getApplication()->enqueueMessage($message);
-		\JFactory::getApplication()->redirect(\JUri::base());
+		$message = JText::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_MSG_ERASED');
+		JFactory::getApplication()->enqueueMessage($message);
+		JFactory::getApplication()->redirect(JUri::base());
 	}
 
 	/**
@@ -226,18 +223,18 @@ class Options extends Controller
 	 *
 	 * @return   void
 	 *
+	 * @throws   RuntimeException  If access is not allowed
 	 * @since    1.0.0
 	 *
-	 * @throws   RuntimeException  If access is not allowed
 	 */
-	private function assertUserAccess()
+	private function assertUserAccess($actionType = 'options')
 	{
 		// Make sure there is a logged in user
 		$user = $this->container->platform->getUser();
 
 		if ($user->guest)
 		{
-			throw new \RuntimeException(\JText::_('JERROR_ALERTNOAUTHOR'), 403);
+			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 		}
 
 		// Get the user_id from the URL
@@ -258,11 +255,51 @@ class Options extends Controller
 		// Wait. You are asking to access another user. Do you have permission to do so?
 		$canExport = $user->authorise('export', 'com_datacompliance');
 		$canWipe   = $user->authorise('wipe', 'com_datacompliance');
+		$isSuper   = $user->authorise('core.admin');
+		$isAdmin   = $user->authorise('core.manage', 'com_datacompliance');
 
-		if (!$canExport && !$canExport)
+		switch ($actionType)
+		{
+			// View the Options page. Any privilege will do.
+			default:
+			case 'options':
+				if (!$canExport && !$canWipe && !$isSuper && !$isAdmin)
+				{
+					throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+				}
+				break;
+
+			// Change a user's consent. Only Super Users and DataCompliance administrators are allowed to do that.
+			case 'consent':
+				if (!$isSuper && !$isAdmin)
+				{
+					throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+				}
+				break;
+
+			// Delete a user profile. Only Super Users, DataCompliance administrators and users with 'wipe' privilege.
+			case 'wipe':
+				if (!$canWipe && !$isSuper && !$isAdmin)
+				{
+					throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+				}
+
+				break;
+
+			// Export a user profile. Only Super Users, DataCompliance administrators and users with 'export' privilege.
+			case 'export':
+				if (!$canExport && !$isSuper && !$isAdmin)
+				{
+					throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+				}
+
+				break;
+		}
+
+		if (!$canExport && !$canWipe)
 		{
 			// Neither privilege is granted. You are trying to do something naughty.
-			throw new \RuntimeException(\JText::_('JERROR_ALERTNOAUTHOR'), 403);
+			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 		}
 	}
 
