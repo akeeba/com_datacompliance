@@ -322,7 +322,11 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 		{
 			$userData = $db->setQuery($query)->loadAssoc();
 
-			Export::adoptChild($domainUserInfo, Export::exportItemFromArray($userData));
+			// Sometimes we just don't have a record with invoicing information and Joomla returns null
+			if (is_array($userData) && !empty($userData))
+			{
+				Export::adoptChild($domainUserInfo, Export::exportItemFromArray($userData));
+			}
 		}
 		catch (Exception $e)
 		{
