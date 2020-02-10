@@ -27,17 +27,17 @@ class Wipe extends Model
 	/**
 	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
 	 *
-	 * @param   int     $userId  The user ID to export
-	 * @param   string  $type    user, admin or lifecycle
+	 * @param   int     $userId   The user ID to export
+	 * @param   string  $type     user, admin or lifecycle
+	 * @param   bool    $godMode  If true all checks are off. INCREDIBLY DANGEROUS! CAN EVEN REMOVE SUPER USERS.
 	 *
 	 * @return  bool  True on success.
 	 *
-	 * @throws  RuntimeException  If wipe is not possible
 	 * @throws \Exception
 	 */
-	public function wipe($userId, $type = 'user'): bool
+	public function wipe($userId, $type = 'user', $godMode = false): bool
 	{
-		if (!$this->checkWipeAbility($userId, $type))
+		if (!$godMode && !$this->checkWipeAbility($userId, $type))
 		{
 			return false;
 		}

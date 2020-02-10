@@ -5,6 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
 use Joomla\CMS\User\UserHelper;
@@ -37,6 +38,7 @@ foreach ([__DIR__, getcwd()] as $curdir)
 defined('JPATH_LIBRARIES') || die ('This script must be placed in or run from the cli folder of your site.');
 
 require_once JPATH_LIBRARIES . '/fof30/Cli/Application.php';
+
 // Boilerplate -- END
 
 class DataComplianceUserDelete extends FOFApplicationCLI
@@ -125,16 +127,26 @@ TEXT
 			$this->close(255);
 		}
 
+		$godMode = $this->input->getBool('thor', false);
+
+		if ($godMode)
+		{
+			$this->out(str_repeat('~', 79));
+			$this->out('You yield the Mjölnir with the power to crush all user accounts –– even Super Users.');
+			$this->out(str_repeat('~', 79));
+			$this->out('');
+		}
+
 		/** @var \Akeeba\DataCompliance\Admin\Model\Wipe $wipeModel */
 		$wipeModel = $container->factory->model('Wipe')->tmpInstance();
-		$user      = \Joomla\CMS\Factory::getUser($user_id);
+		$user      = Factory::getUser($user_id);
 
 		$this->out("You are going to remove the following user:");
 		$this->out("\tUsername: {$user->username}");
 		$this->out("\tName:     {$user->name}");
 		$this->out("\tEmail:    {$user->email}");
 
-		if (!$wipeModel->checkWipeAbility($user_id, 'admin'))
+		if (!$godMode && !$wipeModel->checkWipeAbility($user_id, 'admin'))
 		{
 			$this->out("Sorry, this user cannot be deleted:");
 			$this->out($wipeModel->getError());
@@ -142,10 +154,14 @@ TEXT
 			$this->close('127');
 		}
 
-		$force  = $this->input->getBool('force', false);
-		$dryRun = $this->input->getBool('dry-run', false);
+		$force   = $this->input->getBool('force', false) || $godMode;
+		$dryRun  = $this->input->getBool('dry-run', false);
 
-		if ($force)
+		if ($godMode)
+		{
+			$answer = 'Y';
+		}
+		elseif ($force)
 		{
 			$this->out('--force option enabled; proceeding anyway.');
 
@@ -174,7 +190,7 @@ TEXT
 
 		$this->out("Removing user $user_id... ", false);
 
-		$result = $wipeModel->wipe($user_id, 'admin');
+		$result = $wipeModel->wipe($user_id, 'admin', $godMode);
 
 		if ($result)
 		{
