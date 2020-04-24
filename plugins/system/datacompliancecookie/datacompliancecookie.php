@@ -135,17 +135,37 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	{
 		parent::__construct($subject, $config);
 
+		try
+		{
+			$app = JFactory::getApplication();
+		}
+		catch (Exception $e)
+		{
+			// This code block catches the case where JFactory::getApplication() crashes, e.g. CLI applications.
+			$this->enabled = false;
+
+			return;
+		}
+
+
+		// Self-disable in off-line mode
+		if ($app->get('offline') == 1)
+		{
+			$this->enabled = false;
+
+			return;
+		}
+
 		// Self-disable on admin pages or when we cannot get a reference to the CMS application (e.g. CLI app).
 		try
 		{
-			if (JFactory::getApplication()->isClient('administrator'))
+			if ($app->isClient('administrator'))
 			{
 				throw new RuntimeException("This plugin should not load on administrator pages.");
 			}
 		}
 		catch (Exception $e)
 		{
-			// This code block also catches the case where JFactory::getApplication() crashes, e.g. CLI applications.
 			$this->enabled = false;
 
 			return;

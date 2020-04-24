@@ -1,6 +1,7 @@
 Akeeba Data Compliance 1.2.2
 ================================================================================
 # [LOW] Empty box when viewing the Options page of a different user as an admin
+# [MEDIUM] Cookie popup shows up in Off-line mode but cannot be acted upon
 # [HIGH] When an admin viewed the Options page for a different user the displayed current consent preference was wrong
 # [HIGH] When an admin deleted a user's profile the audit trail showed the user deleting themselves instead of the admin
 # [HIGH] Export may fail if the Akeeba Subscriptions plugin is enabled and the user was created after AS7 was installed
