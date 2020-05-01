@@ -391,6 +391,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	/**
 	 * Called after Joomla! has routed the application (figured out SEF redirections and is about to load the component)
 	 *
+	 * WARNING! DO NOT ANY CSS / JS LOADING HERE. Joomla 4 HAS NOT INITIALISED THE DOCUMENT YET.
+	 *
 	 * @return  void
 	 *
 	 * @see     \Joomla\CMS\Application\CMSApplication::route()
@@ -398,6 +400,50 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * @since   1.1.0
 	 */
 	public function onAfterRoute()
+	{
+		// Am I already disabled or in AJAX handling mode?
+		if (!$this->enabled || $this->inAjax)
+		{
+			return;
+		}
+
+		// If the format is not 'html' or the tmpl is not one of the allowed values we should not run.
+		try
+		{
+			$app = JFactory::getApplication();
+
+			if ($app->input->getCmd('format', 'html') != 'html')
+			{
+				throw new RuntimeException("This plugin should not run in non-HTML application formats.");
+			}
+
+			if (!in_array($app->input->getCmd('tmpl', ''), ['', 'index', 'component'], true))
+			{
+				throw new RuntimeException("This plugin should not run for application templates which do not predictably result in HTML output.");
+			}
+		}
+		catch (Exception $e)
+		{
+			$this->enabled = false;
+
+			return;
+		}
+
+		if (!$this->hasAcceptedCookies)
+		{
+			// Remove all cookies before the component is loaded
+			$this->removeAllCookies();
+		}
+
+		// Note: we cannot load the HTML yet. This can only be done AFTER the document is rendered.
+	}
+
+	/**
+	 * Called after Joomla has finished processing the main component.
+	 *
+	 * We MUST NOT combine this with onAfterRoute because Joomla 4 initializes the document late.
+	 */
+	public function onAfterDispatch()
 	{
 		// Am I already disabled or in AJAX handling mode?
 		if (!$this->enabled || $this->inAjax)
@@ -445,14 +491,6 @@ class PlgSystemDatacompliancecookie extends JPlugin
 				AkeebaFEFHelper::load($useReset, $darkMode);
 			}
 		}
-
-		if (!$this->hasAcceptedCookies)
-		{
-			// Remove all cookies before the component is loaded
-			$this->removeAllCookies();
-		}
-
-		// Note: we cannot load the HTML yet. This can only be done AFTER the document is rendered.
 	}
 
 	/**
