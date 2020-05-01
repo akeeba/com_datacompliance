@@ -25,7 +25,7 @@ $currentUser = $this->getContainer()->platform->getUser();
 $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $currentUser->authorise('export', 'com_datacompliance');
 ?>
 
-@extends('admin:com_datacompliance/Common/browse')
+@extends('any:lib_fof30/Common/browse')
 
 @section('browse-filters')
     <div class="akeeba-filter-element akeeba-form-group">

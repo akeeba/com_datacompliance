@@ -20,7 +20,7 @@ defined('_JEXEC') or die();
 $model = $this->getModel();
 ?>
 
-@extends('admin:com_datacompliance/Common/browse')
+@extends('any:lib_fof30/Common/browse')
 
 @section('browse-filters')
     {{-- Enabled --}}
