@@ -5,13 +5,18 @@
  * @license   GNU General Public License version 3, or later
  */
 
-/** @var  \Joomla\CMS\Plugin\CMSPlugin  $this */
+/** @var  PlgSystemDatacompliancecookie  $this */
 
 // Prevent direct access
 defined('_JEXEC') or die;
 
 $position = $this->params->get('bannerPosition', 'top');
 $style = $this->hasCookiePreference && $this->hasAcceptedCookies ? 'style="display: none"' : '';
+
+if ($this->hasCookiePreference)
+{
+	$style = 'style="display: none"';
+}
 ?>
 <div id="akeeba-dccc-banner-container" class="akeeba-renderer-fef akeeba-dccc-banner-<?= $position ?>" <?=$style?>>
 	<div class="akeeba-panel--primary">

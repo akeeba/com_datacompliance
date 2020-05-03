@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 $dntCompliance = $this->params->get('dntCompliance', 'ignore');
 
 ?>
-<div id="akeeba-dccc-controls-accepted" class="akeeba-renderer-fef">
+<div id="akeeba-dccc-controls-accepted" class="akeeba-renderer-fef" style="display: none">
 	<div class="akeeba-panel--info">
 		<?php if (($dntCompliance == 'overridepreference') && ($this->getDnt() === 0)):
 		// The user's preference is overridden by their browser's Do Not Track settings
@@ -39,11 +39,9 @@ $dntCompliance = $this->params->get('dntCompliance', 'ignore');
 		</div>
 		<?php endif; ?>
 	</div>
-
-
 </div>
 
-<div id="akeeba-dccc-controls-declined" class="akeeba-renderer-fef">
+<div id="akeeba-dccc-controls-declined" class="akeeba-renderer-fef" style="display: none">
 	<div class="akeeba-panel--orange">
 		<?php if (($dntCompliance == 'overridepreference') && ($this->getDnt() === 1)):
 		// The user's preference is overridden by their browser's Do Not Track settings

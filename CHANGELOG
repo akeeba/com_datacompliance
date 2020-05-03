@@ -1,6 +1,7 @@
 Akeeba Data Compliance 1.2.2
 ================================================================================
 + Joomla 4 compatibility (pre-release beta 1)
+# [LOW] Public site pages flash when the cookie plugin is enabled
 # [LOW] Empty box when viewing the Options page of a different user as an admin
 # [MEDIUM] Cookie popup shows up in Off-line mode but cannot be acted upon
 # [HIGH] When an admin viewed the Options page for a different user the displayed current consent preference was wrong
