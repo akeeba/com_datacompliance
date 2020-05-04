@@ -336,7 +336,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		$group  = $input->getCmd('group', '');
 		$plugin = $input->getCmd('plugin', '');
 
-		if (($option == 'com_ajax') && ($group == 'system') && ($plugin == 'datacompliancecookie'))
+		if (($group == 'system') && ($plugin == 'datacompliancecookie'))
 		{
 			$this->inAjax = true;
 
@@ -495,9 +495,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 		// Pass some useful URLs to the frontend
 		$this->container->platform->addScriptOptions('com_datacompliance.applyURL',
-			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json'));
+			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json', false));
 		$this->container->platform->addScriptOptions('com_datacompliance.removeURL',
-			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json'));
+			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json', false));
 	}
 
 	/**
