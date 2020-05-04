@@ -9,6 +9,7 @@ use Akeeba\DataCompliance\Site\Model\Cookietrails;
 use FOF30\Container\Container;
 use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Router\Route;
 use plgSystemDataComplianceCookieHelper as CookieHelper;
 
 // Prevent direct access
@@ -125,13 +126,13 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
-	 * @param   array   $config    An optional associative array of configuration settings.
+	 * @param   array    $config   An optional associative array of configuration settings.
 	 *                             Recognized key values include 'name', 'group', 'params', 'language'
 	 *                             (this list is not meant to be comprehensive).
 	 *
 	 * @since   1.1.0
 	 */
-	public function __construct($subject, array $config = array())
+	public function __construct($subject, array $config = [])
 	{
 		parent::__construct($subject, $config);
 
@@ -474,7 +475,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		}
 
 		// Load FEF if necessary
-		$useFEF   = $this->params->get('load_fef', 1);
+		$useFEF = $this->params->get('load_fef', 1);
 
 		if ($useFEF)
 		{
@@ -491,6 +492,12 @@ class PlgSystemDatacompliancecookie extends JPlugin
 				AkeebaFEFHelper::load($useReset, $darkMode);
 			}
 		}
+
+		// Pass some useful URLs to the frontend
+		$this->container->platform->addScriptOptions('com_datacompliance.applyURL',
+			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json'));
+		$this->container->platform->addScriptOptions('com_datacompliance.removeURL',
+			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json'));
 	}
 
 	/**
@@ -530,6 +537,17 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		{
 			// Sorry, we cannot get a Joomla! application :(
 		}
+	}
+
+	/**
+	 * Get the DNT preference
+	 *
+	 * @return  int
+	 * @since   1.1.0
+	 */
+	public function getDnt(): int
+	{
+		return $this->dnt;
 	}
 
 	/**
@@ -581,9 +599,9 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * @param   CMSApplication  $app      The CMS application we are interfacing
 	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
 	 *
+	 * @return  string  The HTML to load the JavaScript
 	 * @since   1.1.0
 	 *
-	 * @return  string  The HTML to load the JavaScript
 	 */
 	private function loadCommonJavascript($app, array $options = [])
 	{
@@ -645,9 +663,9 @@ HTML;
 	 * @param   CMSApplication  $app      The CMS application we are interfacing
 	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
 	 *
+	 * @return  string  The HTML to load the CSS
 	 * @since   1.1.0
 	 *
-	 * @return  string  The HTML to load the CSS
 	 */
 	private function loadCommonCSS($app, array $options = [])
 	{
@@ -666,7 +684,7 @@ HTML;
 
 		// Filter out CSS files which have already been loaded
 		$files = array_filter($files, function ($file) {
-			$app = \Joomla\CMS\Factory::getApplication();
+			$app  = \Joomla\CMS\Factory::getApplication();
 			$body = $app->getBody(false);
 
 			return strpos($body, "href=\"$file\"") === false;
@@ -690,7 +708,7 @@ HTML;
 	 * Load the HTML template used by our JavaScript for either the cookie acceptance banner or the post-acceptance
 	 * cookie controls (revoke consent or reconsider declining cookies).
 	 *
-	 * @param   JApplicationCms $app The CMS application we use to append the HTML output
+	 * @param   JApplicationCms  $app  The CMS application we use to append the HTML output
 	 *
 	 * @return  void
 	 *
@@ -799,7 +817,7 @@ HTML;
 		$refDispatcher = new ReflectionObject($dispatcher);
 		$refObservers  = $refDispatcher->getProperty('_observers');
 		$refObservers->setAccessible(true);
-		$observers = $refObservers->getValue($dispatcher);
+		$observers     = $refObservers->getValue($dispatcher);
 		$loadedPlugins = [];
 
 		foreach ($observers as $o)
@@ -884,7 +902,7 @@ HTML;
 
 			$plugin->type = preg_replace('/[^A-Z0-9_\.-]/i', '', $plugin->type);
 			$plugin->name = preg_replace('/[^A-Z0-9_\.-]/i', '', $plugin->name);
-			$path = JPATH_PLUGINS . '/' . $plugin->type . '/' . $plugin->name . '/' . $plugin->name . '.php';
+			$path         = JPATH_PLUGINS . '/' . $plugin->type . '/' . $plugin->name . '/' . $plugin->name . '.php';
 
 			if (!file_exists($path))
 			{
@@ -969,22 +987,12 @@ HTML;
 	}
 
 	/**
-	 * Get the DNT preference
-	 *
-	 * @return  int
-	 * @since   1.1.0
-	 */
-	public function getDnt(): int
-	{
-		return $this->dnt;
-	}
-
-	/**
 	 * Create an audit log entry for the user's cookie preference
 	 *
 	 * @param   int   $preference  The recorded preference.
 	 * @param   int   $dnt         The value of the Do Not Track header (-1 means not set, -2 means does not apply)
-	 * @param   bool  $reset       Did the user ask for his preference to be reset? If so, the recorded preference is the applied default value.
+	 * @param   bool  $reset       Did the user ask for his preference to be reset? If so, the recorded preference is
+	 *                             the applied default value.
 	 *
 	 * @return  void
 	 *
@@ -998,8 +1006,8 @@ HTML;
 			$model = $this->container->factory->model('Cookietrails')->tmpInstance();
 			$model->create([
 				'preference' => $preference,
-				'dnt' => $dnt,
-				'reset' => $reset ? 1 : 0,
+				'dnt'        => $dnt,
+				'reset'      => $reset ? 1 : 0,
 			]);
 		}
 		catch (Exception $e)

@@ -46,7 +46,7 @@ var AkeebaDataComplianceCookies = function (options)
 	 */
 	this.applyCookiePreference = function (allowCookies)
 	{
-		var url = 'index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json';
+		var url = Joomla.getOptions('com_datacompliance.applyURL');
 		var myData = {
 			accepted: allowCookies
 		};
@@ -94,7 +94,7 @@ var AkeebaDataComplianceCookies = function (options)
 	 */
 	this.removeCookiePreference = function ()
 	{
-		var url = 'index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json';
+		var url = Joomla.getOptions('com_datacompliance.removeURL');
 		var myData = {
 			reset: 1
 		};
