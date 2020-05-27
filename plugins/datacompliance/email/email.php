@@ -5,11 +5,11 @@
  * @license   GNU General Public License version 3, or later
  */
 
-use Akeeba\DataCompliance\Admin\Helper\Export;
+use Akeeba\DataCompliance\Admin\Helper\Email;
+use Akeeba\DataCompliance\Site\Model\Options;
 use FOF30\Container\Container;
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Log\Log;
-use Joomla\CMS\User\User;
-use Joomla\CMS\User\UserHelper;
 
 defined('_JEXEC') or die;
 
@@ -28,10 +28,10 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 	 * @param   object  $subject  Passed by Joomla
 	 * @param   array   $config   Passed by Joomla
 	 */
-	public function __construct($subject, array $config = array())
+	public function __construct($subject, array $config = [])
 	{
 		$this->autoloadLanguage = true;
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
+		$this->container        = Container::getInstance('com_datacompliance');
 
 		parent::__construct($subject, $config);
 	}
@@ -41,15 +41,15 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 	 *
 	 * Sends emails to the user and the administrator.
 	 *
-	 * @param   int    $userID The user ID we are asked to delete
-	 * @param   string $type   The export type (user, admin, lifecycle)
+	 * @param   int     $userID  The user ID we are asked to delete
+	 * @param   string  $type    The export type (user, admin, lifecycle)
 	 *
 	 * @return  array
 	 */
 	public function onDataComplianceDeleteUser(int $userID, string $type): array
 	{
-		$emailUser   = $this->params->get('users', 1);
-		$emailAdmin  = $this->params->get('admins', 1);
+		$emailUser  = $this->params->get('users', 1);
+		$emailAdmin = $this->params->get('admins', 1);
 
 		// Check if we have to send any emails
 		if (!$emailUser && !$emailAdmin)
@@ -63,10 +63,10 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 		$user = $this->container->platform->getUser($userID);
 
 		// Get the actions carried out for the user
-		/** @var \Akeeba\DataCompliance\Site\Model\Options $optionsModel */
+		/** @var Options $optionsModel */
 		$optionsModel = $this->container->factory->model('Options')->tmpInstance();
-		$actionsList = $optionsModel->getBulletPoints($user, $type);
-		$actionsHtml = "<ul>\n";
+		$actionsList  = $optionsModel->getBulletPoints($user, $type);
+		$actionsHtml  = "<ul>\n";
 
 		foreach ($actionsList as $action)
 		{
@@ -76,7 +76,7 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 		$actionsHtml .= "</ul>\n";
 
 		$extras = [
-			'[ACTIONS]' => $actionsHtml
+			'[ACTIONS]' => $actionsHtml,
 		];
 
 		// Send an email to the user
@@ -86,7 +86,7 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 
 			try
 			{
-				$mailer = \Akeeba\DataCompliance\Admin\Helper\Email::getPreloadedMailer('user_' . $type, $userID, $extras);
+				$mailer = Email::getPreloadedMailer('user_' . $type, $userID, $extras);
 
 				if ($mailer !== false)
 				{
@@ -126,7 +126,7 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 
 				try
 				{
-					$mailer = \Akeeba\DataCompliance\Admin\Helper\Email::getPreloadedMailer('admin_' . $type, $userID, $newExtras);
+					$mailer = Email::getPreloadedMailer('admin_' . $type, $userID, $newExtras);
 
 					if ($mailer !== false)
 					{
@@ -145,6 +145,7 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 		// Finally, return an empty array
 		return [];
 	}
+
 	/**
 	 * Returns the Super Users email information. If you provide an array $email with a list of addresses we will check
 	 * that these emails do belong to Super Users and that they have not blocked system emails.
@@ -161,37 +162,23 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 		// Convert the email list to an array
 		if (empty($email))
 		{
-			$emails = array();
+			$emails = [];
 		}
 
 		// Get a list of groups which have Super User privileges
-		$ret = array();
+		$ret = [];
 
 		try
 		{
-			$query = $db->getQuery(true)
-				->select($db->qn('rules'))
-				->from($db->qn('#__assets'))
-				->where($db->qn('parent_id') . ' = ' . $db->q(0));
-			$db->setQuery($query, 0, 1);
-			$rulesJSON	 = $db->loadResult();
-			$rules		 = json_decode($rulesJSON, true);
+			$q      = $db->getQuery(true)
+				->select([$db->qn('id')])
+				->from($db->qn('#__usergroups'));
+			$groups = $db->setQuery($q)->loadColumn();
 
-			$rawGroups = $rules['core.admin'];
-			$groups = array();
-
-			if (empty($rawGroups))
-			{
-				return $ret;
-			}
-
-			foreach ($rawGroups as $g => $enabled)
-			{
-				if ($enabled)
-				{
-					$groups[] = $db->q($g);
-				}
-			}
+			// Get the groups that are Super Users
+			$groups = array_filter($groups, function ($gid) {
+				return Access::checkGroup($gid, 'core.admin');
+			});
 
 			if (empty($groups))
 			{
@@ -209,7 +196,7 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 			$query = $db->getQuery(true)
 				->select($db->qn('user_id'))
 				->from($db->qn('#__user_usergroup_map'))
-				->where($db->qn('group_id') . ' IN(' . implode(',', $groups) . ')' );
+				->where($db->qn('group_id') . ' IN(' . implode(',', $groups) . ')');
 			$db->setQuery($query);
 			$rawUserIDs = $db->loadColumn(0);
 
@@ -218,7 +205,7 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 				return $ret;
 			}
 
-			$userIDs = array();
+			$userIDs = [];
 
 			foreach ($rawUserIDs as $id)
 			{
@@ -234,12 +221,12 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 		try
 		{
 			$query = $db->getQuery(true)
-				->select(array(
+				->select([
 					$db->qn('id'),
 					$db->qn('username'),
 					$db->qn('name'),
 					$db->qn('email'),
-				))->from($db->qn('#__users'))
+				])->from($db->qn('#__users'))
 				->where($db->qn('id') . ' IN(' . implode(',', $userIDs) . ')')
 				->where($db->qn('sendEmail') . ' = ' . $db->q('1'));
 
