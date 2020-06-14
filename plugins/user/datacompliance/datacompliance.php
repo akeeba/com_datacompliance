@@ -15,7 +15,7 @@ use Joomla\CMS\Uri\Uri;
 defined('_JEXEC') or die;
 
 // Minimum PHP version check
-if (!version_compare(PHP_VERSION, '7.0.0', '>='))
+if (!version_compare(PHP_VERSION, '7.1.0', '>='))
 {
 	return;
 }
