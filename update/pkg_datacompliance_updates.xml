@@ -20,6 +20,7 @@
         <ars-phpcompat version="7.1"/>
         <ars-phpcompat version="7.2"/>
         <ars-phpcompat version="7.3"/>
+        <ars-phpcompat version="7.4"/>
 
         <name>Akeeba Data Compliance package</name>
         <description>Akeeba Data Compliance - Easy GDPR compliance for your Joomla! site</description>
