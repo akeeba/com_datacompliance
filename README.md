@@ -22,7 +22,7 @@ This component is distributed under the GNU General Public License version 3 or,
 
 ## Download
 
-Stable releases are available [on the GitHub repository's Releases page](https://github.com/akeeba/com_datacompliance/releases).
+Stable releases are available from [our site's Downloads page](https://www.akeebabackup.com/download/official/datacompliance.html).
 
 More current features and bug fixes may be found in the development branch. However, you will need to build the package yourself to access them.
 
