@@ -8,8 +8,8 @@
 <extension version="3.3.0" type="file" method="upgrade">
     <name>file_datacompliance</name>
     <author>Nicholas K. Dionysopoulos</author>
-    <authorEmail>nicholas@akeebabackup.com</authorEmail>
-    <authorUrl>https://www.akeebabackup.com</authorUrl>
+    <authorEmail>nicholas@akeeba.com</authorEmail>
+    <authorUrl>https://www.akeeba.com</authorUrl>
     <copyright>Copyright (c)2018 Akeeba Ltd / Nicholas K. Dionysopoulos</copyright>
     <license>GNU GPL v3 or later</license>
     <version>##VERSION##</version>

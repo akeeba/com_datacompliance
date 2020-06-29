@@ -86,7 +86,7 @@
           <listitem>
             <para><trademark>Joomla!</trademark> and PHP version
             compatibilities are detailed in <link
-            xlink:href="https://www.akeebabackup.com/compatibility.html">our
+            xlink:href="https://www.akeeba.com/compatibility.html">our
             Compatibility page</link>. At the time of this writing the minimum
             requirements are PHP 7.1 or later and Joomla! 3.8 or later.</para>
           </listitem>
@@ -242,7 +242,7 @@
             </important>
 
             <para>First, go to <link
-            xlink:href="https://www.akeebabackup.com/download/official/datacompliance.html">the
+            xlink:href="https://www.akeeba.com/download/official/datacompliance.html">the
             download page for Akeeba Data Compliance</link>. Find the latest
             version (at the top of the page). Right click the ZIP file and
             copy the URL.</para>
@@ -259,7 +259,7 @@
             the methods described in this section of the documentation. If,
             however you get an error about copying files, folder not found or
             a cryptic "-1" error please follow <link
-            xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+            xlink:href="https://www.akeeba.com/documentation/troubleshooter/abinstallation.html">our
             installation troubleshooting instructions</link>.</para>
           </section>
 
@@ -267,7 +267,7 @@
             <title>Upload and install.</title>
 
             <para>You can download the latest installation packages from <link
-            xlink:href="https://www.akeebabackup.com/download/official/datacompliance.html">the
+            xlink:href="https://www.akeeba.com/download/official/datacompliance.html">the
             download page for Akeeba Data Compliance</link>. Please note that
             the latest version is always on top. Click on the ZIP file version
             you want to download and install.</para>
@@ -306,7 +306,7 @@
               <para>Akeeba Data Compliance is a big extension. Some servers do
               not allow you to upload files that big. If this is the case you
               can ask your host to follow <link
-              xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+              xlink:href="https://www.akeeba.com/documentation/troubleshooter/abinstallation.html">our
               installation troubleshooting instructions</link> under "You get
               an error about the package not being uploaded to the
               server".</para>
@@ -332,7 +332,7 @@
 
             <para>If the installation did not work, please take a look at
             <link
-            xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+            xlink:href="https://www.akeeba.com/documentation/troubleshooter/abinstallation.html">our
             installation troubleshooting instructions</link>.</para>
           </section>
         </section>
@@ -399,7 +399,7 @@
         manual update methods described below. If, however you get an error
         about copying files, folder not found or a cryptic "-1" error please
         follow <link
-        xlink:href="https://www.akeebabackup.com/documentation/troubleshooter/abinstallation.html">our
+        xlink:href="https://www.akeeba.com/documentation/troubleshooter/abinstallation.html">our
         installation troubleshooting instructions</link>.</para>
 
         <para>If you get a white page while installing the update please try
@@ -462,7 +462,7 @@
           <para>We strongly recommend trying Data Compliance on a copy of your
           site first. If you do not know how to make a copy of your site we
           suggest that you take a look at our <link
-          xlink:href="https://www.akeebabackup.com/products/akeeba-backup.html">Akeeba
+          xlink:href="https://www.akeeba.com/products/akeeba-backup.html">Akeeba
           Backup</link> software. The free of charge Akeeba Backup Core
           version can be easily used to create copies of your site, e.g.
           running them on a local server such as MAMP, XAMPP or
@@ -478,7 +478,7 @@
         xlink:href="https://www.itgovernance.co.uk/blog/how-to-write-a-gdpr-privacy-notice-with-documentation-template-example/">an
         example</link>. Or you could even take a look at what other companies
         have. For example. here is <link
-        xlink:href="https://www.akeebabackup.com/privacy">our Privacy
+        xlink:href="https://www.akeeba.com/privacy">our Privacy
         Statement</link>. It's best to publish the article in the
         Uncategorized section of your site.</para>
 

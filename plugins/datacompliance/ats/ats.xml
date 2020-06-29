@@ -8,8 +8,8 @@
 <extension version="3.7" type="plugin" group="datacompliance" method="upgrade">
     <name>PLG_DATACOMPLIANCE_ATS</name>
     <author>Nicholas K. Dionysopoulos</author>
-    <authorEmail>nicholas@akeebabackup.com</authorEmail>
-    <authorUrl>http://www.akeebabackup.com</authorUrl>
+    <authorEmail>nicholas@akeeba.com</authorEmail>
+    <authorUrl>https://www.akeeba.com</authorUrl>
     <copyright>Copyright (c)2018-2019 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
     <license>GNU General Public License version 3, or later</license>
     <creationDate>2020-06-23</creationDate>
