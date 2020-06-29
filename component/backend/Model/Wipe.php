@@ -9,13 +9,12 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
-use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
 use DateTime;
+use Exception;
 use FOF30\Date\Date;
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
 use RuntimeException;
-use SimpleXMLElement;
 
 /**
  * A model to wipe users (right to be forgotten)
@@ -33,7 +32,7 @@ class Wipe extends Model
 	 *
 	 * @return  bool  True on success.
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function wipe($userId, $type = 'user', $godMode = false): bool
 	{
@@ -109,7 +108,7 @@ class Wipe extends Model
 	 *
 	 * @return  bool  True if we can wipe the user
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 */
 	public function checkWipeAbility(int $userId, string $type = 'user', DateTime $when = null): bool
 	{
@@ -137,7 +136,7 @@ class Wipe extends Model
 	 *
 	 * @return  array
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function getLifecycleUserIDs(bool $onlyNonWiped = true, DateTime $when = null): array
 	{
@@ -220,7 +219,7 @@ class Wipe extends Model
 	 *
 	 * @return  array  A simple array containing the results of the plugins triggered
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function runPlugins(string $event, array $data = [])
 	{
@@ -259,7 +258,7 @@ class Wipe extends Model
 	 *
 	 * @return  bool  False if the user should NOT be notified (can't be deleted on $when or already notified)
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function notifyUser(int $userId, DateTime $when): bool
 	{
