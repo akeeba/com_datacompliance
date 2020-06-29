@@ -159,6 +159,7 @@ TEXT
 			// Clear the state between any run. Basically this is what tmpInstance is doing, without cloning the current object.
 			// Since we're going to run several times, let's try to save some memory
 			$wipeModel->clearState();
+			$wipeModel->skipAuditRecord(true);
 
 			try
 			{
