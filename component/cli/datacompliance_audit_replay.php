@@ -5,6 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
+use Akeeba\DataCompliance\Admin\Model\Wipe;
 use FOF30\Container\Container;
 use FOF30\Date\Date;
 use Joomla\CMS\Log\Log;
@@ -126,7 +127,57 @@ TEXT
 			$this->close(101);
 		}
 
-		$start = microtime(true);
+		$start        = microtime(true);
+		$counter      = 0;
+		$dir_iterator = new DirectoryIterator($folder);
+
+		/** @var Wipe $wipeModel */
+		$wipeModel = $this->container->factory->model('Wipe')->tmpInstance();
+
+		foreach ($dir_iterator as $file)
+		{
+			if ($file->isDot() || $file->isDir())
+			{
+				continue;
+			}
+
+			$contents = file_get_contents($file->getPathname());
+			$data     = json_decode($contents, true);
+
+			if (!$data)
+			{
+				$this->out(sprintf("Skipping file %s. Contents could not be decoded", $file->getBasename()));
+				continue;
+			}
+
+			if (!isset($data['user_id']))
+			{
+				$this->out(sprintf("File %s is miissing required field 'user_id', skipping", $file->getBasename()));
+				continue;
+			}
+
+			// Clear the state between any run. Basically this is what tmpInstance is doing, without cloning the current object.
+			// Since we're going to run several times, let's try to save some memory
+			$wipeModel->clearState();
+
+			try
+			{
+				if(!$wipeModel->wipe($data['user_id'], $data['type']))
+				{
+					$this->out(sprintf("Could not replay audit for user %s. More details:", $data['user_id']));
+					$this->out("\t" . $wipeModel->getError());
+				}
+			}
+			catch (Exception $e)
+			{
+				$this->out(sprintf("An exception occurred while deleting user %s. The raw exception will follow", $data['user_id']));
+				$this->out($e->getMessage());
+
+				continue;
+			}
+
+			$counter += 1;
+		}
 
 		$end         = microtime(true);
 		$timeElapsed = $this->timeago($start, $end, 's', false);
@@ -136,6 +187,7 @@ TEXT
 		$this->out(str_repeat('-', 79));
 		$this->out(sprintf('Elapsed time:               %s', $timeElapsed));
 		$this->out(sprintf('Maximum memory usage        %s', $this->peakMemUsage()));
+		$this->out(sprintf("Audit trails replayed:      %s", $counter));
 
 		parent::execute();
 	}
