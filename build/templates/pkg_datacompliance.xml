@@ -49,6 +49,6 @@
 
     <!-- Update servers -->
     <updateservers>
-        <server type="extension" priority="1" name="Akeeba Data Compliance">https://cdn.akeebabackup.com/updates/pkgdatacompliance.xml</server>
+        <server type="extension" priority="1" name="Akeeba Data Compliance">https://cdn.akeeba.com/updates/pkgdatacompliance.xml</server>
     </updateservers>
 </extension>
