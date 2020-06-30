@@ -7,10 +7,8 @@
 
 use Akeeba\DataCompliance\Admin\Model\Wipe;
 use FOF30\Container\Container;
-use FOF30\Date\Date;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
-use Joomla\Registry\Registry;
 
 // Setup and import the base CLI script
 $minphp = '7.1.0';
@@ -156,6 +154,10 @@ TEXT
 		}
 
 		$start        = microtime(true);
+
+		Log::add("Disabling site mail", Log::INFO, 'com_datacompliance');
+		$this->container->platform->getConfig()->set('mailonline', 0);
+
 		$counter      = 0;
 		$dir_iterator = new DirectoryIterator($folder);
 
