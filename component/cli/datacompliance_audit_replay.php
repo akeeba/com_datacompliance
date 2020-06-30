@@ -54,6 +54,34 @@ class DataComplianceAuditReplay extends FOFApplicationCLI
 	 */
 	protected $container;
 
+	/**
+	 * Sometimes Joomla outputs some messages using the enqueueMessage method, which does not exist under CLI, so we have to mock it
+	 *
+	 * @param $message
+	 * @param $type
+	 */
+	public function enqueueMessage($message, $type)
+	{
+		$type = strtoupper($type);
+
+		$priorities = [
+			'EMERGENCY',
+			'ALERT',
+			'CRITICAL',
+			'ERROR',
+			'WARNING',
+			'NOTICE',
+			'INFO',
+			'DEBUG',
+		];
+
+		$priority = $priorities[$type] ?? 'NOTICE';
+
+		$date = date(JText::_('DATE_FORMAT_FILTER_DATETIME'));
+
+		$this->out(sprintf("[%-9s] %20s -- %s", $priority, $date, $message));
+	}
+
 	public function execute()
 	{
 		// Enable debug mode?
@@ -73,7 +101,7 @@ class DataComplianceAuditReplay extends FOFApplicationCLI
 				// Logger format. "echo" passes the log message verbatim.
 				'logger'   => 'callback',
 				'callback' => function (LogEntry $entry) {
-					$priorities = array(
+					$priorities = [
 						Log::EMERGENCY => 'EMERGENCY',
 						Log::ALERT     => 'ALERT',
 						Log::CRITICAL  => 'CRITICAL',
@@ -82,7 +110,7 @@ class DataComplianceAuditReplay extends FOFApplicationCLI
 						Log::NOTICE    => 'NOTICE',
 						Log::INFO      => 'INFO',
 						Log::DEBUG     => 'DEBUG',
-					);
+					];
 
 					$priority = $priorities[$entry->priority];
 					$date     = $entry->date->format(JText::_('DATE_FORMAT_FILTER_DATETIME'));
