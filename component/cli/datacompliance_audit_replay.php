@@ -124,6 +124,9 @@ class DataComplianceAuditReplay extends FOFApplicationCLI
 
 		$this->container = Container::getInstance('com_datacompliance', [], 'site');
 
+		// Tell the plugins to not activate because we're replaying an audit log
+		Container::getInstance('com_datacompliance')->platform->setSessionVar('__audit_replay', 1, 'com_datacompliance');
+
 		// Load the translations for this component;
 		$this->container->platform->loadTranslations($this->container->componentName);
 
