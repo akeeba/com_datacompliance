@@ -48,6 +48,13 @@ class plgDatacomplianceEmail extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	public function onDataComplianceDeleteUser(int $userID, string $type): array
 	{
+		if ($this->container->platform->getSessionVar('__audit_replay', 0, 'com_datacompliance'))
+		{
+			Log::add("Will NOT send email", Log::DEBUG, 'com_datacompliance');
+
+			return [];
+		}
+
 		$emailUser  = $this->params->get('users', 1);
 		$emailAdmin = $this->params->get('admins', 1);
 

@@ -49,6 +49,13 @@ class plgDatacomplianceS3 extends Joomla\CMS\Plugin\CMSPlugin
 	 */
 	public function onComDatacomplianceModelWipetrailsAfterSave($model)
 	{
+		if ($this->container->platform->getSessionVar('__audit_replay', 0, 'com_datacompliance'))
+		{
+			Log::add("Will NOT upload an audit trail to S3", Log::DEBUG, 'com_datacompliance');
+
+			return;
+		}
+
 		Log::add("Preparing to upload audit trail to S3", Log::DEBUG, 'com_datacompliance');
 
 		$data = $model->getData();

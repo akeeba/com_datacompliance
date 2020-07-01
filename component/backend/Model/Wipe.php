@@ -9,13 +9,12 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
-use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
 use DateTime;
+use Exception;
 use FOF30\Date\Date;
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\Model;
 use RuntimeException;
-use SimpleXMLElement;
 
 /**
  * A model to wipe users (right to be forgotten)
@@ -23,6 +22,12 @@ use SimpleXMLElement;
 class Wipe extends Model
 {
 	protected $error = '';
+
+	/** @var Wipetrails $auditRecord */
+	protected $auditRecord;
+
+	/** @var bool Should we skip the creation of an audit record (ie we're replaying an old one) */
+	protected $skipAuditRecord = false;
 
 	/**
 	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
@@ -33,7 +38,7 @@ class Wipe extends Model
 	 *
 	 * @return  bool  True on success.
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function wipe($userId, $type = 'user', $godMode = false): bool
 	{
@@ -42,33 +47,7 @@ class Wipe extends Model
 			return false;
 		}
 
-		/** @var Wipetrails $auditRecord */
-		$auditRecord = $this->container->factory->model('Wipetrails')->tmpInstance();
-
-		// Do I have an existing data wipe record?
-		try
-		{
-			$auditRecord->findOrFail(['user_id' => $userId]);
-
-			$isDebug     = defined('JDEBUG') && JDEBUG;
-			$platform    = $this->container->platform;
-			$isSuperUser = $platform->getUser()->authorise('core.admin');
-			$isCli       = $platform->isCli();
-
-			if (!($isDebug && ($isCli || $isSuperUser)))
-			{
-				throw new RuntimeException(\JText::_('COM_DATACOMPLIANCE_WIPE_ERR_TRAILEXISTS'));
-			}
-
-			$auditRecord->type = $type;
-		}
-		catch (RecordNotLoaded $e)
-		{
-			$auditRecord->create([
-				'user_id' => $userId,
-				'type'    => $type,
-			]);
-		}
+		$this->createAuditRecord($userId, $type);
 
 		// Actually delete the records
 		$this->importPlugin('datacompliance');
@@ -90,9 +69,7 @@ class Wipe extends Model
 			$auditItems = array_merge($auditItems, $result);
 		}
 
-		// Update audit record with $auditItems
-		$auditRecord->items = $auditItems;
-		$auditRecord->save();
+		$this->saveAuditRecord($auditItems);
 
 		// Unset the session variable indicating we are wiping a profile
 		$this->container->platform->setSessionVar('wiping', false, 'com_datacompliance');
@@ -109,7 +86,7 @@ class Wipe extends Model
 	 *
 	 * @return  bool  True if we can wipe the user
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 */
 	public function checkWipeAbility(int $userId, string $type = 'user', DateTime $when = null): bool
 	{
@@ -137,7 +114,7 @@ class Wipe extends Model
 	 *
 	 * @return  array
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function getLifecycleUserIDs(bool $onlyNonWiped = true, DateTime $when = null): array
 	{
@@ -220,7 +197,7 @@ class Wipe extends Model
 	 *
 	 * @return  array  A simple array containing the results of the plugins triggered
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function runPlugins(string $event, array $data = [])
 	{
@@ -259,7 +236,7 @@ class Wipe extends Model
 	 *
 	 * @return  bool  False if the user should NOT be notified (can't be deleted on $when or already notified)
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function notifyUser(int $userId, DateTime $when): bool
 	{
@@ -378,5 +355,73 @@ class Wipe extends Model
 		}
 
 		return false;
+	}
+
+	public function skipAuditRecord(bool $value)
+	{
+		$this->skipAuditRecord = $value;
+	}
+
+	/**
+	 * Creates (if requested) an audit record for current operation
+	 *
+	 * @param   int     $userId   The user ID to export
+	 * @param   string  $type     user, admin or lifecycle
+	 */
+	private function createAuditRecord($userId, $type)
+	{
+		// Always nuke current audit record instance
+		$this->auditRecord = null;
+
+		// Am I asked to ignore creating an audit record? Let's stop here
+		if ($this->skipAuditRecord)
+		{
+			return;
+		}
+
+		$this->auditRecord = $this->container->factory->model('Wipetrails')->tmpInstance();
+
+		// Do I have an existing data wipe record?
+		try
+		{
+			$this->auditRecord->findOrFail(['user_id' => $userId]);
+
+			$isDebug     = defined('JDEBUG') && JDEBUG;
+			$platform    = $this->container->platform;
+			$isSuperUser = $platform->getUser()->authorise('core.admin');
+			$isCli       = $platform->isCli();
+
+			if (!($isDebug && ($isCli || $isSuperUser)))
+			{
+				throw new RuntimeException(\JText::_('COM_DATACOMPLIANCE_WIPE_ERR_TRAILEXISTS'));
+			}
+
+			$this->auditRecord->type = $type;
+		}
+		catch (RecordNotLoaded $e)
+		{
+			$this->auditRecord->create([
+				'user_id' => $userId,
+				'type'    => $type,
+			]);
+		}
+	}
+
+	/**
+	 * Saves current audit record with passes audit items. Nothing is performed if we're asked to skip the creation of
+	 * an audit record
+	 *
+	 * @param $auditItems
+	 */
+	private function saveAuditRecord(array $auditItems)
+	{
+		if ($this->skipAuditRecord)
+		{
+			return;
+		}
+
+		// Update audit record with $auditItems
+		$this->auditRecord->items = $auditItems;
+		$this->auditRecord->save();
 	}
 }
