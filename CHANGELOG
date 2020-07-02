@@ -1,3 +1,9 @@
+Akeeba Data Compliance 1.2.3
+================================================================================
+
++ CLI tool to replay the audit log
+~ Update path to cacert.pem
+
 Akeeba Data Compliance 1.2.2
 ================================================================================
 + Joomla 4 compatibility (pre-release beta 1)
