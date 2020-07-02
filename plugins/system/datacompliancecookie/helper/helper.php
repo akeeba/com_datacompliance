@@ -6,6 +6,8 @@
  */
 
 // Prevent direct access
+use Joomla\CMS\Uri\Uri;
+
 defined('_JEXEC') or die;
 
 /**
@@ -192,7 +194,7 @@ abstract class plgSystemDataComplianceCookieHelper
 		$encodedCookieValue = base64_encode(json_encode($cookieValues));
 		$cookieExpiration   = $expires->format('U');
 		$path               = $app->get('cookie_path', '/');
-		$domain             = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
+		$domain             = $app->get('cookie_domain', Uri::getInstance()->getHost());
 		$secure             = $app->get('force_ssl', 0) == 2;
 		$httpOnly           = true;
 
@@ -406,7 +408,7 @@ abstract class plgSystemDataComplianceCookieHelper
 
 			$headerValue = $parts[1];
 			$valueParts  = explode(';', $headerValue, 2);
-			list ($cookieName, $cookieValue) = explode('=', trim($valueParts[0]));
+			[$cookieName, $cookieValue] = explode('=', trim($valueParts[0]));
 
 			// Is this a whitelisted cookie?
 			if (!in_array($cookieName, $whiteList))
@@ -625,7 +627,7 @@ abstract class plgSystemDataComplianceCookieHelper
 
 		if (empty($defaultDomain))
 		{
-			$defaultDomain = \Joomla\CMS\Uri\Uri::getInstance()->toString(['host']);
+			$defaultDomain = Uri::getInstance()->toString(['host']);
 		}
 
 		$domainNames[] = $defaultDomain;
