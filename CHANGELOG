@@ -1,9 +1,9 @@
 Akeeba Data Compliance 1.2.3
 ================================================================================
-
 + CLI tool to replay the audit log
 ~ Update path to cacert.pem
 ~ Use Joomla's domain name when setting the cookie acceptance, er, cookie
+~ Banner links to EU sites should have rel="noopener"
 
 Akeeba Data Compliance 1.2.2
 ================================================================================
