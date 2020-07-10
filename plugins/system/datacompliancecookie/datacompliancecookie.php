@@ -41,6 +41,11 @@ if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/inclu
 class PlgSystemDatacompliancecookie extends JPlugin
 {
 	/**
+	 * @var   \Joomla\CMS\Application\SiteApplication
+	 */
+	public $app;
+
+	/**
 	 * Are we enabled, all requirements met etc?
 	 *
 	 * @var    bool
@@ -136,18 +141,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	{
 		parent::__construct($subject, $config);
 
-		try
-		{
-			$app = JFactory::getApplication();
-		}
-		catch (Exception $e)
-		{
-			// This code block catches the case where JFactory::getApplication() crashes, e.g. CLI applications.
-			$this->enabled = false;
-
-			return;
-		}
-
+		$app = $this->app;
 
 		// Self-disable in off-line mode
 		if ($app->get('offline') == 1)
@@ -408,11 +402,11 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
+		$app = $this->app;
+
 		// If the format is not 'html' or the tmpl is not one of the allowed values we should not run.
 		try
 		{
-			$app = JFactory::getApplication();
-
 			if ($app->input->getCmd('format', 'html') != 'html')
 			{
 				throw new RuntimeException("This plugin should not run in non-HTML application formats.");
@@ -452,11 +446,11 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
+		$app = $this->app;
+
 		// If the format is not 'html' or the tmpl is not one of the allowed values we should not run.
 		try
 		{
-			$app = JFactory::getApplication();
-
 			if ($app->input->getCmd('format', 'html') != 'html')
 			{
 				throw new RuntimeException("This plugin should not run in non-HTML application formats.");
@@ -523,20 +517,21 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			$this->removeAllCookies();
 		}
 
-		try
-		{
-			// Load the common JavaScript
-			$app               = JFactory::getApplication();
-			$additionalContent = '';
-			$additionalContent .= $this->loadCommonJavascript($app);
-			$additionalContent .= $this->loadCommonCSS($app);
+//		if ($this->enabled && !$this->inAjax)
+//		{
+//			$this->loadCommonJavascript();
+//			$this->loadCommonCSS();
+//		}
 
-			$this->loadHtml($app, $additionalContent);
-		}
-		catch (Exception $e)
-		{
-			// Sorry, we cannot get a Joomla! application :(
-		}
+		$app = $this->app;
+
+		// Load the common JavaScript
+		$additionalContent = '';
+		$additionalContent .= $this->loadCommonJavascript($app);
+		$additionalContent .= $this->loadCommonCSS($app);
+
+		// Load the HTML content for the banner and cookie status notifications
+		$this->loadHtml($app, $additionalContent);
 	}
 
 	/**
@@ -684,8 +679,7 @@ HTML;
 
 		// Filter out CSS files which have already been loaded
 		$files = array_filter($files, function ($file) {
-			$app  = \Joomla\CMS\Factory::getApplication();
-			$body = $app->getBody(false);
+			$body = $this->app->getBody(false);
 
 			return strpos($body, "href=\"$file\"") === false;
 		});
@@ -708,7 +702,7 @@ HTML;
 	 * Load the HTML template used by our JavaScript for either the cookie acceptance banner or the post-acceptance
 	 * cookie controls (revoke consent or reconsider declining cookies).
 	 *
-	 * @param   JApplicationCms  $app  The CMS application we use to append the HTML output
+	 * @param   CMSApplication  $app  The CMS application we use to append the HTML output
 	 *
 	 * @return  void
 	 *
