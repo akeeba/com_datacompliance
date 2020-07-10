@@ -9,23 +9,12 @@ use Akeeba\DataCompliance\Site\Model\Cookietrails;
 use FOF30\Container\Container;
 use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Router\Route;
 use plgSystemDataComplianceCookieHelper as CookieHelper;
 
 // Prevent direct access
 defined('_JEXEC') or die;
-
-// Make sure Akeeba DataCompliance is installed
-if (!file_exists(JPATH_ADMINISTRATOR . '/components/com_datacompliance'))
-{
-	return;
-}
-
-// Load FOF
-if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
-{
-	return;
-}
 
 /**
  * Akeeba DataCompliance Cookie Conformance System Plugin
@@ -135,6 +124,22 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	{
 		parent::__construct($subject, $config);
 
+		// Self-disable if the Akeeba DataCompliance component is not installed or disabled
+		if (!ComponentHelper::isEnabled('com_datacompliance'))
+		{
+			$this->enabled = false;
+
+			return;
+		}
+
+		// Self-disable if FOF cannot be loaded
+		if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+		{
+			$this->enabled = false;
+
+			return;
+		}
+
 		$app = $this->app;
 
 		// Self-disable in off-line mode
@@ -145,29 +150,17 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			return;
 		}
 
-		// Self-disable on admin pages or when we cannot get a reference to the CMS application (e.g. CLI app).
-		try
-		{
-			if ($app->isClient('administrator'))
-			{
-				throw new RuntimeException("This plugin should not load on administrator pages.");
-			}
-		}
-		catch (Exception $e)
+		// Self-disable if we're not on the public site.
+		if (!method_exists($app, 'isClient') || !$app->isClient('site'))
 		{
 			$this->enabled = false;
 
 			return;
 		}
 
-		// Self-disable if our component is not enabled.
+		// Self-disable if we can't get the component's container
 		try
 		{
-			if (!JComponentHelper::isInstalled('com_datacompliance') || !JComponentHelper::isEnabled('com_datacompliance'))
-			{
-				throw new RuntimeException('Component not installed');
-			}
-
 			$this->container = Container::getInstance('com_datacompliance');
 		}
 		catch (Exception $e)
