@@ -15,12 +15,6 @@ use plgSystemDataComplianceCookieHelper as CookieHelper;
 // Prevent direct access
 defined('_JEXEC') or die;
 
-// Minimum PHP version check
-if (!version_compare(PHP_VERSION, '7.1.0', '>='))
-{
-	return;
-}
-
 // Make sure Akeeba DataCompliance is installed
 if (!file_exists(JPATH_ADMINISTRATOR . '/components/com_datacompliance'))
 {
