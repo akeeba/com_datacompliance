@@ -10,6 +10,7 @@ use FOF30\Container\Container;
 use FOF30\Utils\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use plgSystemDataComplianceCookieHelper as CookieHelper;
 
@@ -63,24 +64,6 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	 * @since  1.1.0
 	 */
 	private $hasCookiePreference = false;
-
-	/**
-	 * Have I already included the JavaScript in the HTML page?
-	 *
-	 * @var    bool
-	 *
-	 * @since  1.1.0
-	 */
-	private $haveIncludedJavaScript = false;
-
-	/**
-	 * Have I already included the CSS in the HTML page?
-	 *
-	 * @var    bool
-	 *
-	 * @since  1.1.0
-	 */
-	private $haveIncludedCSS = false;
 
 	/**
 	 * Have I already included the HTML for the cookie banner or controls in the HTML page?
@@ -235,7 +218,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		// Prevent other event handlers in the plugin from firing
 		$this->enabled = false;
 
-		$token    = $this->container->platform->getToken();
+		$token    = $this->container->platform->getToken(true);
 		$hasToken = $this->container->input->post->get($token, false, 'none') == 1;
 
 		if (!$hasToken)
@@ -341,12 +324,6 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		 * personal information being processed, the latter is two step verification. If I block their interface
 		 * they block the cookie banner functionality, therefore the user cannot do anything!
 		 */
-		if (!$this->container->platform->isFrontend())
-		{
-			// I am not in the frontend. Nothing to do.
-			return;
-		}
-
 		if ($this->hasCookiePreference)
 		{
 			// The user has already provided a preference, the banner won't be shown anyway.
@@ -368,6 +345,8 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 			return;
 		}
+
+		// TODO Don't I need to do that for com_privacy (or maybe com_users)?
 	}
 
 	/**
@@ -391,20 +370,11 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 		$app = $this->app;
 
-		// If the format is not 'html' or the tmpl is not one of the allowed values we should not run.
-		try
-		{
-			if ($app->input->getCmd('format', 'html') != 'html')
-			{
-				throw new RuntimeException("This plugin should not run in non-HTML application formats.");
-			}
+		// Make sure we only execute when the output is supposed to predictably be HTML
+		$format = $app->input->getCmd('format', 'html');
+		$tpl    = $app->input->getCmd('tmpl', '');
 
-			if (!in_array($app->input->getCmd('tmpl', ''), ['', 'index', 'component'], true))
-			{
-				throw new RuntimeException("This plugin should not run for application templates which do not predictably result in HTML output.");
-			}
-		}
-		catch (Exception $e)
+		if (($format != 'html') || !in_array($tpl, ['', 'index', 'component'], true))
 		{
 			$this->enabled = false;
 
@@ -435,20 +405,15 @@ class PlgSystemDatacompliancecookie extends JPlugin
 
 		$app = $this->app;
 
-		// If the format is not 'html' or the tmpl is not one of the allowed values we should not run.
-		try
-		{
-			if ($app->input->getCmd('format', 'html') != 'html')
-			{
-				throw new RuntimeException("This plugin should not run in non-HTML application formats.");
-			}
+		/**
+		 * Make sure we only execute when the output is supposed to predictably be HTML.
+		 *
+		 * We do a cross-check here in case the component modified the application input during its run.
+		 */
+		$format = $app->input->getCmd('format', 'html');
+		$tpl    = $app->input->getCmd('tmpl', '');
 
-			if (!in_array($app->input->getCmd('tmpl', ''), ['', 'index', 'component'], true))
-			{
-				throw new RuntimeException("This plugin should not run for application templates which do not predictably result in HTML output.");
-			}
-		}
-		catch (Exception $e)
+		if (($format != 'html') || !in_array($tpl, ['', 'index', 'component'], true))
 		{
 			$this->enabled = false;
 
@@ -456,29 +421,16 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		}
 
 		// Load FEF if necessary
-		$useFEF = $this->params->get('load_fef', 1);
-
-		if ($useFEF)
+		if ($this->params->get('load_fef', 1) != 0)
 		{
-			if (!class_exists('AkeebaFEFHelper'))
-			{
-				@include_once JPATH_ROOT . '/media/fef/fef.php';
-			}
-
-			$useReset = $this->params->get('fef_reset', 1);
-			$darkMode = $this->params->get('dark_mode', -1) != 0;
-
-			if (class_exists('AkeebaFEFHelper'))
-			{
-				AkeebaFEFHelper::load($useReset, $darkMode);
-			}
+			$this->loadFEF();
 		}
 
-		// Pass some useful URLs to the frontend
-		$this->container->platform->addScriptOptions('com_datacompliance.applyURL',
-			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json', false));
-		$this->container->platform->addScriptOptions('com_datacompliance.removeURL',
-			Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json', false));
+		if ($this->enabled && !$this->inAjax)
+		{
+			$this->loadCommonJavascript();
+			$this->loadCommonCSS();
+		}
 	}
 
 	/**
@@ -504,21 +456,10 @@ class PlgSystemDatacompliancecookie extends JPlugin
 			$this->removeAllCookies();
 		}
 
-//		if ($this->enabled && !$this->inAjax)
-//		{
-//			$this->loadCommonJavascript();
-//			$this->loadCommonCSS();
-//		}
-
 		$app = $this->app;
 
-		// Load the common JavaScript
-		$additionalContent = '';
-		$additionalContent .= $this->loadCommonJavascript($app);
-		$additionalContent .= $this->loadCommonCSS($app);
-
 		// Load the HTML content for the banner and cookie status notifications
-		$this->loadHtml($app, $additionalContent);
+		$this->loadHtml($app);
 	}
 
 	/**
@@ -530,6 +471,28 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	public function getDnt(): int
 	{
 		return $this->dnt;
+	}
+
+	/**
+	 * Loads Akeeba FEF
+	 *
+	 * @return  void
+	 * @since   1.2.3
+	 */
+	protected function loadFEF(): void
+	{
+		if (!class_exists('AkeebaFEFHelper'))
+		{
+			@include_once JPATH_ROOT . '/media/fef/fef.php';
+		}
+
+		$useReset = $this->params->get('fef_reset', 1);
+		$darkMode = $this->params->get('dark_mode', -1) != 0;
+
+		if (class_exists('AkeebaFEFHelper'))
+		{
+			AkeebaFEFHelper::load($useReset, $darkMode);
+		}
 	}
 
 	/**
@@ -576,113 +539,58 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	}
 
 	/**
-	 * Load the common Javascript for this plugin
+	 * Loads the common Javascript for this plugin
 	 *
-	 * @param   CMSApplication  $app      The CMS application we are interfacing
-	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
-	 *
-	 * @return  string  The HTML to load the JavaScript
+	 * @return  void
 	 * @since   1.1.0
 	 *
 	 */
-	private function loadCommonJavascript($app, array $options = [])
+	private function loadCommonJavascript(): void
 	{
-		// Prevent double inclusion of the JavaScript
-		if ($this->haveIncludedJavaScript)
-		{
-			return '';
-		}
+		// Load language strings
+		$this->loadLanguage();
 
-		$this->haveIncludedJavaScript = true;
+		Text::script('PLG_SYSTEM_DATACOMPLIANCECOOKIE_LBL_REMOVECOOKIES', true);
 
-		// Get the default options for the cookie killer JavaScript
-		$path   = $app->get('cookie_path', '/');
-		$domain = $app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST'));
+		// Determine the list of allowed cookies
+		$whiteList = [CookieHelper::getCookieName()];
 
-		$whiteList          = [CookieHelper::getCookieName()];
-		$allowSessionCookie = $this->params->get('allowSessionCookie', 1) !== 0;
-
-		// If the session cookie is allowed I need to whitelist it too.
-		if ($allowSessionCookie)
+		if ($this->params->get('allowSessionCookie', 1) !== 0)
 		{
 			$whiteList[] = CookieHelper::getSessionCookieName();
 			$whiteList[] = 'joomla_user_state';
 		}
 
-		$this->loadLanguage();
-
-		$defaultOptions = [
+		// Get the options for the cookie killer JavaScript
+		$options = [
 			'accepted'                => $this->hasAcceptedCookies,
 			'interacted'              => $this->hasCookiePreference,
 			'cookie'                  => [
-				'domain' => $domain,
-				'path'   => $path,
+				'domain' => $this->app->get('cookie_domain', filter_input(INPUT_SERVER, 'HTTP_HOST')),
+				'path'   => $this->app->get('cookie_path', '/'),
 			],
 			'additionalCookieDomains' => $this->getAdditionalCookieDomains(),
 			'whitelisted'             => $whiteList,
-			'token'                   => $this->container->platform->getToken(),
-			'resetNoticeText'         => JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_LBL_REMOVECOOKIES', true),
+			'ajaxURL'                => Route::_('index.php?option=com_ajax&group=system&plugin=datacompliancecookie&format=json', false),
 		];
 
-		$options     = array_merge_recursive($defaultOptions, $options);
-		$optionsJSON = json_encode($options, JSON_PRETTY_PRINT);
+		$container = $this->container;
 
-		$jsPath = $this->container->template->parsePath('media://plg_system_datacompliancecookie/js/datacompliancecookies.js');
-
-		return <<< HTML
-<script type="application/javascript">
-	var AkeebaDataComplianceCookiesOptions = $optionsJSON;
-</script>
-<script type="application/javascript" src="$jsPath?{$this->container->mediaVersion}" defer="defer" async="async"></script>
-
-HTML;
-
+		$container->platform->addScriptOptions('com_datacompliance', $options);
+		$container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, false, $container->mediaVersion);
 	}
 
 	/**
 	 * Load the common CSS for this plugin
 	 *
-	 * @param   CMSApplication  $app      The CMS application we are interfacing
-	 * @param   array           $options  Additional options to pass to the JavaScript (overrides defaults)
-	 *
-	 * @return  string  The HTML to load the CSS
+	 * @return  void
 	 * @since   1.1.0
 	 *
 	 */
-	private function loadCommonCSS($app, array $options = [])
+	private function loadCommonCSS(): void
 	{
-		// Prevent double inclusion of the CSS
-		if ($this->haveIncludedCSS)
-		{
-			return '';
-		}
-
-		$this->haveIncludedCSS = true;
-
-		$files = [];
-
-		// Add our own CSS
-		$files[] = $this->container->template->parsePath('media://plg_system_datacompliancecookie/css/datacompliancecookies.css') . '?' . $this->container->mediaVersion;
-
-		// Filter out CSS files which have already been loaded
-		$files = array_filter($files, function ($file) {
-			$body = $this->app->getBody(false);
-
-			return strpos($body, "href=\"$file\"") === false;
-		});
-
-		$ret = '';
-
-		foreach ($files as $file)
-		{
-			$ret .= <<< HTML
-<link rel="stylesheet" type="text/css" href="{$file}" />
- 
-HTML;
-
-		}
-
-		return $ret;
+		$container = $this->container;
+		$container->template->addCSS('media://plg_system_datacompliancecookie/css/datacompliancecookies.css', $container->mediaVersion);
 	}
 
 	/**
@@ -695,7 +603,7 @@ HTML;
 	 *
 	 * @since   1.1.0
 	 */
-	private function loadHtml($app, $additionalContent = '')
+	private function loadHtml($app)
 	{
 		// Prevent double inclusion of the HTML
 		if ($this->haveIncludedHtml)
@@ -737,7 +645,7 @@ HTML;
 			$body     = substr($body, 0, $closeTagPos);
 		}
 
-		$app->setBody($body . $content . $additionalContent . $postBody);
+		$app->setBody($body . $content . $postBody);
 	}
 
 	/**
