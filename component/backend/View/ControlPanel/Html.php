@@ -25,8 +25,8 @@ class Html extends BaseView
 	{
 		$this->formattedChangelog    = $this->formatChangelog();
 
-		$this->addJavascriptFile('media://com_datacompliance/js/ControlPanel.js');
-		$this->addJavascriptFile('media://com_datacompliance/js/Chart.bundle.min.js');
+		$this->addJavascriptFile('media://com_datacompliance/js/ControlPanel.min.js', $this->container->mediaVersion);
+		$this->addJavascriptFile('media://com_datacompliance/js/Chart.bundle.min.js', $this->container->mediaVersion);
 
 		$js = <<< JS
 window.jQuery(document).ready(function(){

@@ -577,7 +577,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		$container = $this->container;
 
 		$container->platform->addScriptOptions('com_datacompliance', $options);
-		$container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.js', true, false, $container->mediaVersion);
+		$container->template->addJS('media://plg_system_datacompliancecookie/js/datacompliancecookies.min.js', true, false, $container->mediaVersion);
 	}
 
 	/**
@@ -590,7 +590,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	private function loadCommonCSS(): void
 	{
 		$container = $this->container;
-		$container->template->addCSS('media://plg_system_datacompliancecookie/css/datacompliancecookies.css', $container->mediaVersion);
+		$container->template->addCSS('media://plg_system_datacompliancecookie/css/datacompliancecookies.min.css', $container->mediaVersion);
 	}
 
 	/**

@@ -4,6 +4,7 @@ Akeeba Data Compliance 1.2.3
 ~ Update path to cacert.pem
 ~ Use Joomla's domain name when setting the cookie acceptance, er, cookie
 ~ Banner links to EU sites should have rel="noopener"
+# [LOW] Minified JS / CSS was not being loaded by default
 
 Akeeba Data Compliance 1.2.2
 ================================================================================
