@@ -20,9 +20,21 @@ if (!require_once(JPATH_COMPONENT_ADMINISTRATOR . '/View/wrongphp.php'))
 	return;
 }
 
-if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+try
 {
-	throw new RuntimeException('FOF 3.0 is not installed', 500);
+	if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+	{
+		throw new RuntimeException('FOF 3.0 is not installed', 500);
+	}
+	FOF30\Container\Container::getInstance('com_datacompliance')->dispatcher->dispatch();
 }
+catch (Throwable $e)
+{
+	$title = 'Akeeba DataCompliance';
+	$isPro = false;
 
-FOF30\Container\Container::getInstance('com_datacompliance')->dispatcher->dispatch();
+	if (!(include_once JPATH_COMPONENT_ADMINISTRATOR . '/View/errorhandler.php'))
+	{
+		throw $e;
+	}
+}
