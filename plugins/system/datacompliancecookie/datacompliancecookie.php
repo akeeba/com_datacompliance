@@ -107,6 +107,14 @@ class PlgSystemDatacompliancecookie extends JPlugin
 	{
 		parent::__construct($subject, $config);
 
+		// This plugin only works on Joomla 3
+		if (version_compare(JVERSION, '3.9999.9999', 'gt'))
+		{
+			$this->enabled = false;
+
+			return;
+		}
+
 		// Self-disable if the Akeeba DataCompliance component is not installed or disabled
 		if (!ComponentHelper::isEnabled('com_datacompliance'))
 		{
