@@ -2,6 +2,7 @@ Akeeba Data Compliance 1.2.3
 ================================================================================
 + CLI tool to replay the audit log
 + Custom error pages when FEF is not installed or an unhandled PHP exception occurred
+~ Replace zero datetime with nullable datetime (gh-32)
 ~ DEPRECATED: The cookie plugin only works with Joomla 3 and will be removed in version 2.0
 ~ Update path to cacert.pem
 ~ Use Joomla's domain name when setting the cookie acceptance, er, cookie

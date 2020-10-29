@@ -277,6 +277,7 @@ class plgDatacomplianceJoomla extends plgDatacomplianceAbstractPlugin
 		if ($this->params->get('nevervisited', 1))
 		{
 			$query->where($db->qn('lastvisitDate') . ' = ' . $db->q($db->getNullDate()), 'OR');
+			$query->where($db->qn('lastvisitDate') . ' IS NULL ', 'OR');
 		}
 
 		// Blocked users (unless they were created or have visited the site during the threshold period)
