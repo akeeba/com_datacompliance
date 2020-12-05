@@ -113,19 +113,8 @@ class PlgSystemDatacompliance extends CMSPlugin
 			return;
 		}
 
-		// Get the session objects
-		try
-		{
-			$session = Factory::getSession();
-		}
-		catch (Exception $e)
-		{
-			// Can't get access to the session? Must be under CLI which is not supported.
-			return;
-		}
-
 		// We only kick in if the session flag is not set (saves a lot of processing time)
-		if ($session->get('has_consented', 0, 'com_datacompliance'))
+		if ($this->container->platform->getSessionVar('has_consented', 0, 'com_datacompliance'))
 		{
 			return;
 		}
@@ -231,11 +220,11 @@ class PlgSystemDatacompliance extends CMSPlugin
 		if ($needsConsent)
 		{
 			// Save the current URL, but only if we haven't saved a URL or if the saved URL is NOT internal to the site.
-			$return_url = $session->get('return_url', '', 'com_datacompliance');
+			$return_url = $this->container->platform->getSessionVar('return_url', '', 'com_datacompliance');
 
 			if (empty($return_url) || !Uri::isInternal($return_url))
 			{
-				$session->set('return_url', Uri::getInstance()->toString(array(
+				$this->container->platform->setSessionVar('return_url', Uri::getInstance()->toString(array(
 					'scheme',
 					'user',
 					'pass',
@@ -258,7 +247,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 		}
 
 		// If we're here someone just logged in but has already consented
-		$session->set('has_consented', 1, 'com_datacompliance');
+		$this->container->platform->setSessionVar('has_consented', 1, 'com_datacompliance');
 	}
 
 	/**
