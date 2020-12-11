@@ -11,7 +11,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
 
 // Setup and import the base CLI script
-$minphp = '7.1.0';
+$minphp = '7.2.0';
 
 // Boilerplate -- START
 define('_JEXEC', 1);
@@ -50,15 +50,16 @@ class DataComplianceAuditReplay extends FOFApplicationCLI
 	 *
 	 * @var  Container
 	 */
-	protected $container;
+	protected $fofContainer;
 
 	/**
-	 * Sometimes Joomla outputs some messages using the enqueueMessage method, which does not exist under CLI, so we have to mock it
+	 * Sometimes Joomla outputs some messages using the enqueueMessage method, which does not exist under CLI, so we
+	 * have to mock it
 	 *
-	 * @param $message
-	 * @param $type
+	 * @param   string  $message
+	 * @param   string  $type
 	 */
-	public function enqueueMessage($message, $type)
+	public function enqueueMessage($message, $type = self::MSG_INFO)
 	{
 		$type = strtoupper($type);
 
@@ -80,7 +81,7 @@ class DataComplianceAuditReplay extends FOFApplicationCLI
 		$this->out(sprintf("[%-9s] %20s -- %s", $priority, $date, $message));
 	}
 
-	public function execute()
+	public function doExecute()
 	{
 		// Enable debug mode?
 		$debug = $this->input->getBool('debug', false);
@@ -122,16 +123,16 @@ class DataComplianceAuditReplay extends FOFApplicationCLI
 		// Disable the database driver's debug mode (logging of all queries)
 		JFactory::getDbo()->setDebug(false);
 
-		$this->container = Container::getInstance('com_datacompliance', [], 'site');
+		$this->fofContainer = Container::getInstance('com_datacompliance', [], 'site');
 
 		// Tell the plugins to not activate because we're replaying an audit log
 		Container::getInstance('com_datacompliance')->platform->setSessionVar('__audit_replay', 1, 'com_datacompliance');
 
 		// Load the translations for this component;
-		$this->container->platform->loadTranslations($this->container->componentName);
+		$this->fofContainer->platform->loadTranslations($this->fofContainer->componentName);
 
 		// Load the version information
-		include_once $this->container->backEndPath . '/version.php';
+		include_once $this->fofContainer->backEndPath . '/version.php';
 
 		$version = DATACOMPLIANCE_VERSION;
 		$year    = gmdate('Y');
@@ -156,16 +157,16 @@ TEXT
 			$this->close(101);
 		}
 
-		$start        = microtime(true);
+		$start = microtime(true);
 
 		Log::add("Disabling site mail", Log::INFO, 'com_datacompliance');
-		$this->container->platform->getConfig()->set('mailonline', 0);
+		$this->fofContainer->platform->getConfig()->set('mailonline', 0);
 
 		$counter      = 0;
 		$dir_iterator = new DirectoryIterator($folder);
 
 		/** @var Wipe $wipeModel */
-		$wipeModel = $this->container->factory->model('Wipe')->tmpInstance();
+		$wipeModel = $this->fofContainer->factory->model('Wipe')->tmpInstance();
 
 		foreach ($dir_iterator as $file)
 		{
@@ -196,7 +197,7 @@ TEXT
 
 			try
 			{
-				if(!$wipeModel->wipe($data['user_id'], $data['type']))
+				if (!$wipeModel->wipe($data['user_id'], $data['type']))
 				{
 					$this->out(sprintf("Could not replay audit for user %s. More details:", $data['user_id']));
 					$this->out("\t" . $wipeModel->getError());

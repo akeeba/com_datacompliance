@@ -9,7 +9,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
 
 // Setup and import the base CLI script
-$minphp = '7.1.0';
+$minphp = '7.2.0';
 
 // Boilerplate -- START
 define('_JEXEC', 1);

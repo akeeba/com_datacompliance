@@ -8,7 +8,7 @@
 defined('_JEXEC') or die();
 
 define('AKEEBA_COMMON_WRONGPHP', 1);
-$minPHPVersion         = '7.1.0';
+$minPHPVersion         = '7.2.0';
 $recommendedPHPVersion = '7.4';
 $softwareName          = 'Akeeba DataCompliance';
 $silentResults         = true;

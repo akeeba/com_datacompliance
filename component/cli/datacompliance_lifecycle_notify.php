@@ -12,7 +12,7 @@ use Joomla\CMS\Log\LogEntry;
 use Joomla\Registry\Registry;
 
 // Setup and import the base CLI script
-$minphp = '7.1.0';
+$minphp = '7.2.0';
 
 // Boilerplate -- START
 define('_JEXEC', 1);
@@ -51,9 +51,9 @@ class DataComplianceLifecycleNotify extends FOFApplicationCLI
 	 *
 	 * @var  Container
 	 */
-	protected $container;
+	protected $fofContainer;
 
-	public function execute()
+	public function doExecute()
 	{
 		// Enable debug mode?
 		$debug = $this->input->getBool('debug', false);
@@ -95,13 +95,13 @@ class DataComplianceLifecycleNotify extends FOFApplicationCLI
 		// Disable the database driver's debug mode (logging of all queries)
 		JFactory::getDbo()->setDebug(false);
 
-		$this->container = Container::getInstance('com_datacompliance', [], 'site');
+		$this->fofContainer = Container::getInstance('com_datacompliance', [], 'site');
 
 		// Load the translations for this component;
-		$this->container->platform->loadTranslations($this->container->componentName);
+		$this->fofContainer->platform->loadTranslations($this->fofContainer->componentName);
 
 		// Load the version information
-		include_once $this->container->backEndPath . '/version.php';
+		include_once $this->fofContainer->backEndPath . '/version.php';
 
 		$version = DATACOMPLIANCE_VERSION;
 		$year    = gmdate('Y');
@@ -159,7 +159,7 @@ END;
 			$this->close(102);
 		}
 
-		$when = $this->container->platform->getDate();
+		$when = $this->fofContainer->platform->getDate();
 		$when->add($interval);
 
 		$this->out(<<< END
@@ -169,7 +169,7 @@ END
 		);
 
 		/** @var \Akeeba\DataCompliance\Admin\Model\Wipe $wipeModel */
-		$wipeModel = $this->container->factory->model('Wipe')->tmpInstance();
+		$wipeModel = $this->fofContainer->factory->model('Wipe')->tmpInstance();
 		$userIDs   = $wipeModel->getLifecycleUserIDs(true, $when);
 
 		if (empty($userIDs))
@@ -360,7 +360,7 @@ END
 	 */
 	private function sendEmail(int $userID, DateTime $when): bool
 	{
-		$user     = $this->container->platform->getUser($userID);
+		$user     = $this->fofContainer->platform->getUser($userID);
 		$registry = is_object($user->params) ? $user->params : new Registry($user->params);
 		$tzString = $registry->get('timezone', 'GMT');
 
@@ -379,7 +379,7 @@ END
 
 		// Get the actions carried out for the user
 		/** @var \Akeeba\DataCompliance\Site\Model\Options $optionsModel */
-		$optionsModel = $this->container->factory->model('Options')->tmpInstance();
+		$optionsModel = $this->fofContainer->factory->model('Options')->tmpInstance();
 		$actionsList  = $optionsModel->getBulletPoints($user, 'lifecycle');
 		$actionsHtml  = "<ul>\n";
 

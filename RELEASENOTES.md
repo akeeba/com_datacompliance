@@ -3,30 +3,24 @@
 We are developing, testing and using Akeeba Data Compliance using the latest version of Joomla! and a popular and actively maintained branch of PHP 7. At the time of this writing this is:
 
 * Joomla! 3.9
-* PHP 7.3
+* PHP 7.4
 
-Akeeba Subscriptions should be compatible with:
+Akeeba Data Compliance should be compatible with:
 
 * Joomla! 3.9, 4.0
-* PHP 7.1, 7.2, 7.3, 7.4, 8.0.
-
-At the time of this writing PHP 8.0 has not been officially released yet. Support for PHP 8 is, therefore, tentative at this point.
+* PHP 7.2, 7.3, 7.4, 8.0.
 
 ## Changelog
 
-**New features**
+**Removed features**
 
-* CLI tool to replay the audit log
-* Custom error pages when FEF is not installed or an unhandled PHP exception occurred
-
+* Removed PHP 7.1 support
+  
 **Miscellaneous changes**
 
-* Replace zero datetime with nullable datetime (gh-32)
-* **DEPRECATED**: The cookie plugin only works with Joomla 3 and will be removed in version 2.0. We strongly recommend not using services which set third party cookies. It not only respects your users' privacy, it also allows you to run a site _without_ a cookie banner! 
-* Update path to cacert.pem
-* Use Joomla's domain name when setting the cookie acceptance, er, cookie
-* Banner links to EU sites should have `rel="noopener"`
+* Add PHP 8.0 in the list of known PHP versions
+* Recommend PHP 7.4 or later
 
 **Bug fixes**
 
-* `[LOW]` Minified JS / CSS was not being loaded by default
+* [HIGH] Joomla 4 beta 6 changed how sessions work, breaking everything
