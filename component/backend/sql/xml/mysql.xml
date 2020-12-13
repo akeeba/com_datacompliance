@@ -113,7 +113,7 @@ CREATE TABLE `#__datacompliance_emailtemplates` (
     `created_by` bigint(20) NOT NULL DEFAULT '0',
     `modified_on` datetime NULL DEFAULT NULL,
     `modified_by` bigint(20) NOT NULL DEFAULT '0',
-    `locked_on` datetime NOT NULL DEFAULT NULL,
+    `locked_on` datetime NULL DEFAULT NULL,
     `locked_by` bigint(20) NOT NULL DEFAULT '0',
     PRIMARY KEY (`datacompliance_emailtemplate_id`)
 ) DEFAULT COLLATE utf8_general_ci;

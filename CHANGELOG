@@ -3,6 +3,7 @@ Akeeba Data Compliance 1.2.4
 - Removed PHP 7.1 support
 ~ Add PHP 8.0 in the list of known PHP versions, recommend PHP 7.4 or later
 # [HIGH] Joomla 4 beta 6 changed how sessions work, breaking everything
+# [HIGH] Typo in installation SQL file would cause an error on first install
 
 Akeeba Data Compliance 1.2.3
 ================================================================================
