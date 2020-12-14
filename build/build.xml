@@ -48,4 +48,11 @@
         </phingcall>
     </target>
 
+    <target name="docsdeploy">
+        <phingcall target="docbook-deploy">
+            <property name="docsdeploy.path.source" value=""/>
+            <property name="docsdeploy.path.target" value="datacompliance"/>
+        </phingcall>
+    </target>
+
 </project>
