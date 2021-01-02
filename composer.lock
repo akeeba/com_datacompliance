@@ -12,18 +12,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "96208915514b19e7789ea053c6a109b212864001"
+                "reference": "55c6015d7bbbea95dc4590d5df02b9f62fe5411c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/96208915514b19e7789ea053c6a109b212864001",
-                "reference": "96208915514b19e7789ea053c6a109b212864001",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/55c6015d7bbbea95dc4590d5df02b9f62fe5411c",
+                "reference": "55c6015d7bbbea95dc4590d5df02b9f62fe5411c",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "php": ">=5.3.4"
+                "ext-simplexml": "*",
+                "php": ">=7.1.0 <8.1"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -42,12 +44,16 @@
                     "role": "Lead Developer"
                 }
             ],
-            "description": "Akeeba Engine connector for Amazon S3",
+            "description": "A compact, dependency-less Amazon S3 API client implementing the most commonly used features",
             "homepage": "https://github.com/akeeba/s3",
             "keywords": [
                 "s3"
             ],
-            "time": "2020-01-02T07:13:47+00:00"
+            "support": {
+                "issues": "https://github.com/akeeba/s3/issues",
+                "source": "https://github.com/akeeba/s3/tree/development"
+            },
+            "time": "2020-11-30T14:43:43+00:00"
         }
     ],
     "packages-dev": [],
@@ -64,5 +70,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.0.0"
 }
