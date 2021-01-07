@@ -62,7 +62,7 @@ if (!function_exists('akeeba_common_wrongphp'))
 		// Make sure I have all necessary configuration variables
 		$config = array_merge(array(
 			'minPHPVersion'         => '7.2.0',
-			'recommendedPHPVersion' => '7.3',
+			'recommendedPHPVersion' => '7.4',
 			'softwareName'          => 'This software',
 			'silentResults'         => false,
 			'longVersion'           => PHP_VERSION,
@@ -242,7 +242,7 @@ if (!defined('KICKSTART'))
 		return akeeba_common_wrongphp(array(
 			// Configuration -- Override before calling this script
 			'minPHPVersion'         => isset($minPHPVersion) ? $minPHPVersion : '7.2.0',
-			'recommendedPHPVersion' => isset($recommendedPHPVersion) ? $recommendedPHPVersion : '7.3',
+			'recommendedPHPVersion' => isset($recommendedPHPVersion) ? $recommendedPHPVersion : '7.4',
 			'softwareName'          => isset($softwareName) ? $softwareName : 'This software',
 			'silentResults'         => isset($silentResults) ? $silentResults : false,
 			// Override these to test the script
