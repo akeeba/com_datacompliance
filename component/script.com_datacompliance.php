@@ -57,19 +57,23 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 	 *
 	 * @var   array
 	 */
-	protected $removeFilesAllVersions = array(
-		'files'   => array(
-		),
-		'folders' => array(
+	protected $removeFilesAllVersions = [
+		'files'   => [
+			'administrator/components/com_datacompliance/ViewTemplates/Common/browse.blade.php',
+			'administrator/components/com_datacompliance/ViewTemplates/Common/edit.blade.php',
+			'administrator/components/com_datacompliance/ViewTemplates/Common/EntryUser.blade.php',
+			'administrator/components/com_datacompliance/ViewTemplates/Common/ShowUser.blade.php',
+		],
+		'folders' => [
 			// Old CLI base script, replaced by FOF's base CLI script
-			'administrator/components/com_datacompliance/assets/cli'
-		)
-	);
+			'administrator/components/com_datacompliance/assets/cli',
+		],
+	];
 
 	/**
 	 * Runs on installation
 	 *
-	 * @param   JInstallerAdapterComponent $parent The parent object
+	 * @param   JInstallerAdapterComponent  $parent  The parent object
 	 *
 	 * @return  void
 	 */
@@ -84,7 +88,7 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 	/**
 	 * Runs after install, update or discover_update
 	 *
-	 * @param   string                      $type install, update or discover_update
+	 * @param   string                      $type  install, update or discover_update
 	 * @param   JInstallerAdapterComponent  $parent
 	 *
 	 * @return  boolean  True to let the installation proceed, false to halt the installation
@@ -125,12 +129,12 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 	{
 		$db = JFactory::getDbo();
 
-		$query = $db->getQuery(true)
-		            ->select('COUNT(*)')
-		            ->from($db->qn('#__extensions'))
-		            ->where($db->qn('type') . ' = ' . $db->q('component'))
-		            ->where($db->qn('element') . ' = ' . $db->q('com_poweradmin'))
-		            ->where($db->qn('enabled') . ' = ' . $db->q('1'));
+		$query         = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from($db->qn('#__extensions'))
+			->where($db->qn('type') . ' = ' . $db->q('component'))
+			->where($db->qn('element') . ' = ' . $db->q('com_poweradmin'))
+			->where($db->qn('enabled') . ' = ' . $db->q('1'));
 		$hasPowerAdmin = $db->setQuery($query)->loadResult();
 
 		if (!$hasPowerAdmin)
@@ -138,12 +142,12 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 			return;
 		}
 
-		$query = $db->getQuery(true)
-		            ->select('manifest_cache')
-		            ->from($db->qn('#__extensions'))
-		            ->where($db->qn('type') . ' = ' . $db->q('component'))
-		            ->where($db->qn('element') . ' = ' . $db->q('com_poweradmin'))
-		            ->where($db->qn('enabled') . ' = ' . $db->q('1'));
+		$query      = $db->getQuery(true)
+			->select('manifest_cache')
+			->from($db->qn('#__extensions'))
+			->where($db->qn('type') . ' = ' . $db->q('component'))
+			->where($db->qn('element') . ' = ' . $db->q('com_poweradmin'))
+			->where($db->qn('enabled') . ' = ' . $db->q('1'));
 		$paramsJson = $db->setQuery($query)->loadResult();
 
 		$className = class_exists('JRegistry') ? 'JRegistry' : '\Joomla\Registry\Registry';

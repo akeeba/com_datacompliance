@@ -71,7 +71,7 @@ $model = $this->getModel();
         </td>
         {{-- Created by --}}
         <td>
-            @include('admin:com_datacompliance/Common/ShowUser', ['item' => $row, 'field' => 'created_by'])
+            @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'created_by'])
         </td>
         {{-- Created on --}}
         <td>

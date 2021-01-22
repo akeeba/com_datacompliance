@@ -1,3 +1,7 @@
+Akeeba Data Compliance 1.2.5
+================================================================================
+~ Now using common view templates from our FOF framework for consistency across our software
+
 Akeeba Data Compliance 1.2.4
 ================================================================================
 - Removed PHP 7.1 support

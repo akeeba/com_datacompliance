@@ -78,7 +78,7 @@ $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $current
             @jhtml('FEFHelper.browse.id', ++$i, $row->getId())
         </td>
         <td>
-            @include('admin:com_datacompliance/Common/ShowUser', ['item' => $row, 'field' => 'id'])
+            @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'id'])
         </td>
         <td>
             {{ \Akeeba\DataCompliance\Admin\Helper\Format::date($row->registerDate) }}

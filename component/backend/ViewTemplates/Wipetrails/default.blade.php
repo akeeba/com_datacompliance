@@ -83,7 +83,7 @@ $typeOptions = [
             </td>
             {{-- User ID --}}
             <td>
-                @include('admin:com_datacompliance/Common/ShowUser', ['item' => $row, 'field' => 'user_id', 'linkURL' => 'index.php?option=com_datacompliance&view=Wipetrail&task=read&id=[ITEM:ID]'])
+                @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'user_id', 'linkURL' => 'index.php?option=com_datacompliance&view=Wipetrail&task=read&id=[ITEM:ID]'])
             </td>
             {{--type--}}
             <td>
@@ -93,7 +93,7 @@ $typeOptions = [
             </td>
             {{-- Created by --}}
             <td>
-                @include('admin:com_datacompliance/Common/ShowUser', ['item' => $row, 'field' => 'created_by'])
+                @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'created_by'])
             </td>
             {{-- Created on --}}
             <td>
