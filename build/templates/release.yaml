@@ -1,0 +1,59 @@
+# Basic release information
+release:
+  version: '%%VERSION%%'
+  date: '%%DATE%%'
+  category: 56
+  access: 1
+  release_notes: '%%DEFAULT_RELEASE_NOTES%%'
+  changelog: '%%DEFAULT_CHANGELOG%%'
+
+# Akeeba Release System API connection
+api:
+  endpoint: '%%API.ENDPOINT%%'
+  connector: '%%API.CONNECTOR%%'
+  username: '%%API.USERNAME%%'
+  password: '%%API.PASSWORD%%'
+  token: '%%API.TOKEN%%'
+  cacert: '%%CUSTOMCACERT%%'
+
+steps: [%%RELEASESTEPS%%]
+
+# File upload connections
+connections:
+  s3:
+    type: 's3'
+    access: '%%S3.ACCESS%%'
+    secret: '%%S3.SECRET%%'
+    bucket: '%%S3.BUCKET%%'
+    tls: true
+    signature: '%%S3.SIGNATURE%%'
+    region: '%%S3.REGION%%'
+    directory: 'downloads/datacompliance'
+    cdnhostname: '%%S3.CDNHOSTNAME%%'
+    acl: 'public-read'
+    storage_class: 'STANDARD'
+    maximum_age: 600
+
+# Release source files configuration.
+files:
+  -
+    title: 'Akeeba DataCompliance'
+    connection: s3
+    source: '%%RELEASEDIR%%/pkg_datacompliance-*.zip'
+    access: 1
+  -
+    title: 'Documentation (PDF)'
+    connection: s3
+    source: '%%RELEASEDIR%%/datacompliance.pdf'
+    access: 1
+
+# Update sources
+updates:
+  -
+    title: 'Akeeba DataCompliance updates'
+    connection: s3
+    directory: '/updates'
+    stream: 42
+    base_name: 'datacompliance'
+    formats:
+      - 'xml'
