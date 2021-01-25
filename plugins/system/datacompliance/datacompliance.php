@@ -68,13 +68,13 @@ class PlgSystemDatacompliance extends CMSPlugin
 	 * Constructor
 	 *
 	 * @param   object  &$subject  The object to observe
-	 * @param   array   $config    An optional associative array of configuration settings.
+	 * @param   array    $config   An optional associative array of configuration settings.
 	 *                             Recognized key values include 'name', 'group', 'params', 'language'
 	 *                             (this list is not meant to be comprehensive).
 	 *
 	 * @since   1.0.0
 	 */
-	public function __construct($subject, array $config = array())
+	public function __construct($subject, array $config = [])
 	{
 		parent::__construct($subject, $config);
 
@@ -160,9 +160,19 @@ class PlgSystemDatacompliance extends CMSPlugin
 		}
 
 		// We only kick in if the option and task are not the ones of the captive page
-		$option = strtolower($app->input->getCmd('option'));
-		$task   = strtolower($app->input->getCmd('task'));
-		$view   = strtolower($app->input->getCmd('view'));
+		$fallbackView = version_compare(JVERSION, '3.999.999', 'ge')
+			? $app->input->getCmd('controller', '')
+			: '';
+		$option       = strtolower($app->input->getCmd('option'));
+		$task         = strtolower($app->input->getCmd('task'));
+		$view         = strtolower($app->input->getCmd('view', $fallbackView));
+
+		if (strpos($task, '.') !== false)
+		{
+			$parts = explode('.', $task);
+			$view  = ($parts[0] ?? $view) ?: $view;
+			$task  = ($parts[1] ?? $task) ?: $task;
+		}
 
 		// DO NOT kick in if we are in an exempt component / view / task
 		if ($this->isExempt($option, $task, $view))
@@ -178,7 +188,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 			$app->input->set('layout', null);
 
 			// Note the check for an empty view. That's because Options is the default view of the component.
-			$allowedViews = array('options', 'Options', 'option', 'Option', '');
+			$allowedViews = ['options', 'Options', 'option', 'Option', ''];
 
 			if ($isBackend)
 			{
@@ -224,7 +234,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 
 			if (empty($return_url) || !Uri::isInternal($return_url))
 			{
-				$this->container->platform->setSessionVar('return_url', Uri::getInstance()->toString(array(
+				$this->container->platform->setSessionVar('return_url', Uri::getInstance()->toString([
 					'scheme',
 					'user',
 					'pass',
@@ -233,7 +243,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 					'path',
 					'query',
 					'fragment',
-				)), 'com_datacompliance');
+				]), 'com_datacompliance');
 			}
 
 			// Redirect
@@ -288,7 +298,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 	 *
 	 * @return  bool
 	 *
-     * @since   1.0.0
+	 * @since   1.0.0
 	 */
 	private function isExempt($option, $view, $task): bool
 	{
@@ -331,7 +341,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 			}
 
 
-			list ($checkOption, $checkView, $checkTask) = $explodedItem;
+			[$checkOption, $checkView, $checkTask] = $explodedItem;
 
 			// If the option is not '*' and does not match the current one this is not a match; move on
 			if (($checkOption != '*') && (strtolower($checkOption) != strtolower($option)))
@@ -366,7 +376,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 	 *
 	 * Only applies to Akeeba Subscriptions 5 and 6.
 	 *
-	 * @param  User  $user  The user to check
+	 * @param   User  $user  The user to check
 	 *
 	 * @return  bool
 	 *
@@ -508,7 +518,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 	 *
 	 * Only applies to Joomla! 3.9.0 or later
 	 *
-	 * @param  User  $user  The user to check
+	 * @param   User  $user  The user to check
 	 *
 	 * @return  bool
 	 *
@@ -538,11 +548,11 @@ class PlgSystemDatacompliance extends CMSPlugin
 		}
 
 		// Get the consent information from Joomla
-		$db = $this->container->db;
-		$query = $db->getQuery(true)
+		$db     = $this->container->db;
+		$query  = $db->getQuery(true)
 			->select($db->qn('profile_value'))
 			->from($db->qn('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = ' . (int)($user->id))
+			->where($db->quoteName('user_id') . ' = ' . (int) ($user->id))
 			->where($db->quoteName('profile_key') . ' = ' . $db->q('privacyconsent.privacy'));
 		$result = $db->setQuery($query)->loadResult();
 
@@ -574,7 +584,10 @@ class PlgSystemDatacompliance extends CMSPlugin
 	 */
 	private function isTruthism($value): bool
 	{
-		if ($value === 1) return true;
+		if ($value === 1)
+		{
+			return true;
+		}
 
 		if (in_array($value, ['on', 'checked', 'true', '1', 'yes', 1, true], true))
 		{
