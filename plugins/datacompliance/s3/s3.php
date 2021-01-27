@@ -32,7 +32,7 @@ class plgDatacomplianceS3 extends Joomla\CMS\Plugin\CMSPlugin
 	public function __construct($subject, array $config = array())
 	{
 		$this->autoloadLanguage = true;
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
+		$this->container = \FOF40\Container\Container::getInstance('com_datacompliance');
 
 		parent::__construct($subject, $config);
 	}
@@ -127,7 +127,7 @@ class plgDatacomplianceS3 extends Joomla\CMS\Plugin\CMSPlugin
 	{
 		if (!class_exists('Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Connector'))
 		{
-			\FOF30\Autoloader\Autoloader::getInstance()->addMap(
+			\FOF40\Autoloader\Autoloader::getInstance()->addMap(
 				'Akeeba\\Engine\\Postproc\\Connector\\S3v4\\', array(
 					$this->container->backEndPath . '/vendor/akeeba/s3/src'
 				)

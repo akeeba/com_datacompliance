@@ -9,7 +9,7 @@ namespace Akeeba\DataCompliance\Admin\Controller;
 
 defined('_JEXEC') or die;
 
-use FOF30\Controller\DataController;
+use FOF40\Controller\DataController;
 
 class EmailTemplate extends DataController
 {

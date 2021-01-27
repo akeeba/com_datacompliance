@@ -6,9 +6,9 @@
  */
 
 use Akeeba\DataCompliance\Admin\Model\Consenttrails;
-use FOF30\Container\Container;
-use FOF30\Factory\Exception\ModelNotFound;
-use FOF30\Model\DataModel\Exception\RecordNotLoaded;
+use FOF40\Container\Container;
+use FOF40\Factory\Exception\ModelNotFound;
+use FOF40\Model\DataModel\Exception\RecordNotLoaded;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -34,7 +34,7 @@ if (!file_exists(JPATH_ADMINISTRATOR . '/components/com_datacompliance'))
 }
 
 // Load FOF
-if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+if (!defined('FOF40_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof40/include.php'))
 {
 	return;
 }
@@ -217,11 +217,6 @@ class PlgSystemDatacompliance extends CMSPlugin
 		// We only kick in when the user has not consented already
 		$needsConsent = $this->needsConsent($user);
 
-		if ($needsConsent && $this->hasAkeebasubsConsent($user))
-		{
-			$needsConsent = false;
-		}
-
 		if ($needsConsent && $this->hasJoomlaConsent($user))
 		{
 			$needsConsent = false;
@@ -367,147 +362,6 @@ class PlgSystemDatacompliance extends CMSPlugin
 
 		// No match found.
 		return false;
-	}
-
-	/**
-	 * Do I have consent recorded by Akeeba Subscriptions? This returns true only when there is no Data Compliance
-	 * consent record and there is an Akeeba Subs consent recorded. In this case we transcribe the consent into Data
-	 * Compliance. If the user has withdrawn his consent through Data Compliance this method returns false.
-	 *
-	 * Only applies to Akeeba Subscriptions 5 and 6.
-	 *
-	 * @param   User  $user  The user to check
-	 *
-	 * @return  bool
-	 *
-	 * @since   1.0.0
-	 */
-	private function hasAkeebasubsConsent(User $user): bool
-	{
-		// Is Akeeba Subs installed and enabled?
-		if (!ComponentHelper::isInstalled('com_akeebasubs') || !ComponentHelper::isEnabled('com_akeebasubs'))
-		{
-			return false;
-		}
-
-		// Only transcribe if there is no consent record yet
-		/** @var Consenttrails $consentModel */
-		$consentModel = $this->container->factory->model('Consenttrails')->tmpInstance();
-
-		try
-		{
-			$consentModel->findOrFail(['created_by' => $user->id]);
-
-			return false;
-		}
-		catch (RecordNotLoaded $e)
-		{
-			// No consent record. AWESOME! That's what I need!
-		}
-
-		// Try to fetch the Akeeba Subs user record
-		$asContainer = Container::getInstance('com_akeebasubs');
-
-		// Akeeba Subs 7 no longer has a Users model and does not store consent in its own table.
-		if (!class_exists('Akeeba\\Subscriptions\\Site\\Model\\Users'))
-		{
-			return false;
-		}
-
-		/**
-		 * Akeeba Subscriptions 5 and 6. Use the User model.
-		 */
-		try
-		{
-			/** @var \Akeeba\Subscriptions\Site\Model\Users $asUser */
-			$asUser = $asContainer->factory->model('Users')->tmpInstance();
-
-			try
-			{
-				$asUser->findOrFail(['user_id' => $user->id]);
-			}
-			catch (RecordNotLoaded $e)
-			{
-				// No record found. Bye bye.
-				return false;
-			}
-
-			// Get the user parameters and see if they have consented to EU data.
-			$params = $asUser->params;
-
-			if (!is_object($params) || !($params instanceof Registry))
-			{
-				JLoader::import('joomla.registry.registry');
-				$params = new Registry($params);
-			}
-
-			$confirmEUData = $this->isTruthism($params->get('confirm_eudata', false));
-		}
-		catch (ModelNotFound $e)
-		{
-			$confirmEUData = false;
-		}
-
-		if (!$confirmEUData)
-		{
-			// Not consented (this means they subscribed before we ran the consent)
-			return false;
-		}
-
-		// They have consented. Record their consent as the date and IP of their latest subscription.
-		/** @var Akeeba\Subscriptions\Site\Model\Subscriptions $subModel */
-		$subModel = $asContainer->factory->model('Subscriptions')->tmpInstance();
-		$jNow     = $asContainer->platform->getDate();
-		$jWhen    = $asContainer->platform->getDate('2010-01-01 00:00:00');
-		$ip       = '';
-		$allSubs  = $subModel->user_id($user->id)->paystate(['C'])->until($jNow->toSql())->get();
-
-		if (empty($allSubs))
-		{
-			// What? No subscriptions? They can't have possibly consented then :/
-			return false;
-		}
-
-		/** @var Akeeba\Subscriptions\Site\Model\Subscriptions $sub */
-		foreach ($allSubs as $sub)
-		{
-			// Only take into account a newer subscription
-			$jThisSub = $asContainer->platform->getDate($sub->created_on);
-
-			if ($jThisSub->toUnix() <= $jWhen->toUnix())
-			{
-				continue;
-			}
-
-			// Do I have an IP address?
-			if (empty($sub->ip))
-			{
-				continue;
-			}
-
-			// Yup, found a subscription
-			$ip    = $sub->ip;
-			$jWhen = $jThisSub;
-		}
-
-		if (empty($ip))
-		{
-			return false;
-		}
-
-		// Transcribe the consent record from Akeeba Subscriptions to Data Compliance
-		$consentModel->create([
-			'enabled' => 1,
-		]);
-
-		$consentModel
-			->findOrFail(['created_by' => $user->id])
-			->save([
-				'created_on'   => $jWhen->toSql(),
-				'requester_ip' => $ip,
-			]);
-
-		return true;
 	}
 
 	/**

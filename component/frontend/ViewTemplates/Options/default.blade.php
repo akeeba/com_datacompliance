@@ -64,7 +64,7 @@ $myUser = $this->getContainer()->platform->getUser();
             <label for="enabled">
                 @sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL', $this->siteName)
             </label>
-            @jhtml('FEFHelper.select.booleanswitch', 'enabled', 0)
+            @jhtml('FEFHelp.select.booleanswitch', 'enabled', 0)
         </div>
 
         <div class="akeeba-form-group--pull-right">

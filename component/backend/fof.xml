@@ -7,15 +7,15 @@
 <fof>
     <backend>
         <container>
-            <option name="factoryClass">FOF30\Factory\SwitchFactory</option>
+            <option name="factoryClass">FOF40\Factory\SwitchFactory</option>
         </container>
     </backend>
     <common>
         <container>
             <option name="componentNamespace">Akeeba\DataCompliance</option>
-            <option name="factoryClass">FOF30\Factory\BasicFactory</option>
+            <option name="factoryClass">FOF40\Factory\BasicFactory</option>
             <option name="scaffolding">0</option>
-            <option name="rendererClass">FOF30\Render\FEF</option>
+            <option name="rendererClass">FOF40\Render\FEF</option>
         </container>
     </common>
 </fof>

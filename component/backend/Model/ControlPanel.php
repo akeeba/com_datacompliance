@@ -10,8 +10,8 @@ namespace Akeeba\DataCompliance\Admin\Model;
 defined('_JEXEC') or die;
 
 use Exception;
-use FOF30\Database\Installer;
-use FOF30\Model\Model;
+use FOF40\Database\Installer;
+use FOF40\Model\Model;
 use RuntimeException;
 
 class ControlPanel extends Model

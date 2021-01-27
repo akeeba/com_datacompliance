@@ -298,7 +298,7 @@ abstract class plgSystemDataComplianceCookieHelper
 		 * This works and is more reliable BUT if there are cookies in array notation (foo[bar]) the get converted into
 		 * an array which kinda sucks for us. See below.
 		 */
-		$cookieInput = new \FOF30\Input\Input($_COOKIE);
+		$cookieInput = new \FOF40\Input\Input($_COOKIE);
 		$cookies = $cookieInput->getData();
 
 		if (empty($cookies))
@@ -568,7 +568,7 @@ abstract class plgSystemDataComplianceCookieHelper
 
 		// Is the cookie acceptance validity date in the future?
 		$until = array_key_exists('until', $cookie) ? $cookie['until'] : 0;
-		$dateUntil = new \FOF30\Date\Date($until);
+		$dateUntil = new \FOF40\Date\Date($until);
 
 		if ($dateUntil->toUnix() < time())
 		{

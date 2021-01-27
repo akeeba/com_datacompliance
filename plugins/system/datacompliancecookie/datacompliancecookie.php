@@ -6,8 +6,8 @@
  */
 
 use Akeeba\DataCompliance\Site\Model\Cookietrails;
-use FOF30\Container\Container;
-use FOF30\Utils\DynamicGroups;
+use FOF40\Container\Container;
+use FOF40\JoomlaAbstraction\DynamicGroups;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Language\Text;
@@ -124,7 +124,7 @@ class PlgSystemDatacompliancecookie extends JPlugin
 		}
 
 		// Self-disable if FOF cannot be loaded
-		if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+		if (!defined('FOF40_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof40/include.php'))
 		{
 			$this->enabled = false;
 

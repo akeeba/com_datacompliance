@@ -8,9 +8,9 @@
 namespace Akeeba\DataCompliance\Site\Model;
 
 use Exception;
-use FOF30\Model\DataModel\Exception\RecordNotLoaded;
-use FOF30\Model\Model;
-use FOF30\Utils\Ip;
+use FOF40\Model\DataModel\Exception\RecordNotLoaded;
+use FOF40\Model\Model;
+use FOF40\IP\IPHelper as Ip;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\User\User;

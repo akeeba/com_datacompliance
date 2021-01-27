@@ -11,9 +11,9 @@ defined('_JEXEC') or die;
 
 use DateTime;
 use Exception;
-use FOF30\Date\Date;
-use FOF30\Model\DataModel\Exception\RecordNotLoaded;
-use FOF30\Model\Model;
+use FOF40\Date\Date;
+use FOF40\Model\DataModel\Exception\RecordNotLoaded;
+use FOF40\Model\Model;
 use RuntimeException;
 
 /**

@@ -37,7 +37,7 @@ foreach ([__DIR__, getcwd()] as $curdir)
 
 defined('JPATH_LIBRARIES') || die ('This script must be placed in or run from the cli folder of your site.');
 
-require_once JPATH_LIBRARIES . '/fof30/Cli/Application.php';
+require_once JPATH_LIBRARIES . '/fof40/Cli/Application.php';
 
 // Boilerplate -- END
 
@@ -81,7 +81,7 @@ class DataComplianceUserDelete extends FOFApplicationCLI
 			Log::add('Test', Log::DEBUG, 'com_datacompliance');
 		}
 
-		$container = \FOF30\Container\Container::getInstance('com_datacompliance', [], 'admin');
+		$container = \FOF40\Container\Container::getInstance('com_datacompliance', [], 'admin');
 
 		// Load the translations for this component;
 		$container->platform->loadTranslations($container->componentName);

@@ -6,13 +6,13 @@
  */
 
 use Akeeba\DataCompliance\Admin\Model\Wipetrails;
-use FOF30\Utils\FEFHelper\BrowseView;
-use FOF30\Utils\SelectOptions;
+use FOF40\Html\FEFHelper\BrowseView;
+use FOF40\Html\SelectOptions;
 
 defined('_JEXEC') or die();
 
 /**
- * @var  FOF30\View\DataView\Html $this
+ * @var  FOF40\View\DataView\Html $this
  * @var  Wipetrails               $row
  * @var  Wipetrails               $model
  */
@@ -25,7 +25,7 @@ $typeOptions = [
 ];
 ?>
 
-@extends('any:lib_fof30/Common/browse')
+@extends('any:lib_fof40/Common/browse')
 
 @section('browse-filters')
     <div class="akeeba-filter-element akeeba-form-group">
@@ -37,7 +37,7 @@ $typeOptions = [
     </div>
 
     <th>
-        {{ \FOF30\Utils\FEFHelper\BrowseView::selectFilter('type', $typeOptions) }}
+        {{ \FOF40\Html\FEFHelper\BrowseView::selectFilter('type', $typeOptions) }}
     </th>
 
 @stop
@@ -47,7 +47,7 @@ $typeOptions = [
     <tr>
         {{-- Row select --}}
         <th width="20">
-            @jhtml('FEFHelper.browse.checkall')
+            @jhtml('FEFHelp.browse.checkall')
         </th>
         {{-- user_id --}}
         <th>
@@ -79,11 +79,11 @@ $typeOptions = [
         <tr>
             {{-- Row select --}}
             <td>
-                @jhtml('FEFHelper.browse.id', ++$i, $row->getId())
+                @jhtml('FEFHelp.browse.id', ++$i, $row->getId())
             </td>
             {{-- User ID --}}
             <td>
-                @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'user_id', 'linkURL' => 'index.php?option=com_datacompliance&view=Wipetrail&task=read&id=[ITEM:ID]'])
+                @include('any:lib_fof40/Common/user_show', ['item' => $row, 'field' => 'user_id', 'linkURL' => 'index.php?option=com_datacompliance&view=Wipetrail&task=read&id=[ITEM:ID]'])
             </td>
             {{--type--}}
             <td>
@@ -93,7 +93,7 @@ $typeOptions = [
             </td>
             {{-- Created by --}}
             <td>
-                @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'created_by'])
+                @include('any:lib_fof40/Common/user_show', ['item' => $row, 'field' => 'created_by'])
             </td>
             {{-- Created on --}}
             <td>

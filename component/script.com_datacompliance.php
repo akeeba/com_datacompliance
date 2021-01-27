@@ -6,22 +6,24 @@
  */
 
 // Protect from unauthorized access
+use Joomla\CMS\Installer\Adapter\ComponentAdapter;
+
 defined('_JEXEC') or die();
 
 // Load FOF if not already loaded
-if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+if (!defined('FOF40_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof40/include.php'))
 {
 	throw new RuntimeException('This component requires FOF 3.0.');
 }
 
-class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
+class Com_DatacomplianceInstallerScript extends \FOF40\InstallScript\Component
 {
 	/**
 	 * The component's name
 	 *
 	 * @var   string
 	 */
-	protected $componentName = 'com_datacompliance';
+	public $componentName = 'com_datacompliance';
 
 	/**
 	 * The title of the component (printed on installation and uninstallation messages)
@@ -93,7 +95,7 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 	 *
 	 * @return  boolean  True to let the installation proceed, false to halt the installation
 	 */
-	function postflight($type, $parent)
+	public function postflight(string $type, ComponentAdapter $parent): void
 	{
 		// Parent method
 		parent::postflight($type, $parent);
@@ -107,7 +109,7 @@ class Com_DatacomplianceInstallerScript extends \FOF30\Utils\InstallScript
 	/**
 	 * Renders the post-installation message
 	 */
-	function renderPostInstallation($parent)
+	protected function renderPostInstallation(ComponentAdapter $parent): void
 	{
 		try
 		{

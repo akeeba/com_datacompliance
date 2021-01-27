@@ -342,7 +342,7 @@ class plgDatacomplianceJoomla extends plgDatacomplianceAbstractPlugin
 		{
 			$userModel->findOrFail(['id' => $user->id]);
 		}
-		catch (\FOF30\Model\DataModel\Exception\RecordNotLoaded $e)
+		catch (\FOF40\Model\DataModel\Exception\RecordNotLoaded $e)
 		{
 			Log::add("Could not load user to pseudonymize: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');

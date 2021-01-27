@@ -9,7 +9,7 @@ namespace Akeeba\DataCompliance\Site\View\Options;
 
 use Akeeba\DataCompliance\Site\Model\Options;
 use Exception;
-use FOF30\View\DataView\Html as HtmlView;
+use FOF40\View\DataView\Html as HtmlView;
 use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
 

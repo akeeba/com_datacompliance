@@ -14,7 +14,7 @@ use JText;
 use JToolbar;
 use JToolbarHelper;
 
-class Toolbar extends \FOF30\Toolbar\Toolbar
+class Toolbar extends \FOF40\Toolbar\Toolbar
 {
 	const icon = 'vcard';
 
@@ -23,7 +23,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 	 *
 	 * @return  void
 	 */
-	public function renderSubmenu()
+	public function renderSubmenu(): void
 	{
 		$views = array(
 			'ControlPanel',
@@ -55,7 +55,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 	 *
 	 * @return array
 	 */
-	protected function getMyViews()
+	protected function getMyViews(): array
 	{
 		return array();
 	}
@@ -67,7 +67,7 @@ class Toolbar extends \FOF30\Toolbar\Toolbar
 	 *
 	 * @return  void
 	 */
-	public function onBrowse()
+	public function onBrowse(): void
 	{
 		// On frontend, buttons must be added specifically
 		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)

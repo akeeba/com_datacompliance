@@ -9,7 +9,7 @@ namespace Akeeba\DataCompliance\Admin\Helper;
 
 use Akeeba\DataCompliance\Admin\Model\EmailTemplates;
 use Akeeba\ReleaseSystem\Site\Helper\Filter;
-use FOF30\Container\Container;
+use FOF40\Container\Container;
 use JFactory;
 use JFile;
 use JHtml;

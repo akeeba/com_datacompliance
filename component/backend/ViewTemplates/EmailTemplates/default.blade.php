@@ -6,13 +6,13 @@
  */
 
 use Akeeba\DataCompliance\Admin\Model\EmailTemplates;
-use FOF30\Utils\FEFHelper\BrowseView;
-use FOF30\Utils\SelectOptions;
+use FOF40\Html\FEFHelper\BrowseView;
+use FOF40\Html\SelectOptions;
 
 defined('_JEXEC') or die();
 
 /**
- * @var  FOF30\View\DataView\Html $this
+ * @var  FOF40\View\DataView\Html $this
  * @var  EmailTemplates           $row
  * @var  EmailTemplates           $model
  */
@@ -21,7 +21,7 @@ $model = $this->getModel();
 $emailKeys = \Akeeba\DataCompliance\Admin\Helper\Email::getEmailKeys(true);
 ?>
 
-@extends('any:lib_fof30/Common/browse')
+@extends('any:lib_fof40/Common/browse')
 
 @section('browse-filters')
     <div class="akeeba-filter-element akeeba-form-group">
@@ -43,11 +43,11 @@ $emailKeys = \Akeeba\DataCompliance\Admin\Helper\Email::getEmailKeys(true);
 <tr>
     {{-- Drag'n'drop reordering --}}
     <th width="20">
-        @jhtml('FEFHelper.browse.orderfield', 'ordering')
+        @jhtml('FEFHelp.browse.orderfield', 'ordering')
     </th>
     {{-- Row select --}}
     <th width="20">
-        @jhtml('FEFHelper.browse.checkall')
+        @jhtml('FEFHelp.browse.checkall')
     </th>
     {{-- Language --}}
     <th>
@@ -75,15 +75,15 @@ $emailKeys = \Akeeba\DataCompliance\Admin\Helper\Email::getEmailKeys(true);
     <tr>
         {{-- Drag'n'drop reordering --}}
         <td>
-            @jhtml('FEFHelper.browse.order', 'ordering', $row->ordering)
+            @jhtml('FEFHelp.browse.order', 'ordering', $row->ordering)
         </td>
         {{-- Row select --}}
         <td>
-            @jhtml('FEFHelper.browse.id', ++$i, $row->getId())
+            @jhtml('FEFHelp.browse.id', ++$i, $row->getId())
         </td>
         {{-- Language --}}
         <td>
-            {{{ BrowseView::getOptionName($row->language, \FOF30\Utils\SelectOptions::getOptions('languages', ['none' => 'COM_DATACOMPLIANCE_EMAILTEMPLATES_FIELD_LANGUAGE_ALL'])) }}}
+            {{{ BrowseView::getOptionName($row->language, \FOF40\Html\SelectOptions::getOptions('languages', ['none' => 'COM_DATACOMPLIANCE_EMAILTEMPLATES_FIELD_LANGUAGE_ALL'])) }}}
         </td>
         {{-- Key --}}
         <td>
@@ -101,7 +101,7 @@ $emailKeys = \Akeeba\DataCompliance\Admin\Helper\Email::getEmailKeys(true);
         </td>
         {{-- Enabled --}}
         <td>
-            @jhtml('FEFHelper.browse.published', $row->enabled, $i)
+            @jhtml('FEFHelp.browse.published', $row->enabled, $i)
         </td>
     </tr>
 @endforeach

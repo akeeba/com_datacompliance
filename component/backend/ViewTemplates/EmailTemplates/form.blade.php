@@ -5,11 +5,11 @@
  * @license   GNU General Public License version 3, or later
  */
 
-use FOF30\Utils\FEFHelper\BrowseView;
+use FOF40\Html\FEFHelper\BrowseView;
 
 defined('_JEXEC') or die();
 
-/** @var  FOF30\View\DataView\Html  $this */
+/** @var  FOF40\View\DataView\Html  $this */
 
 ?>
 @extends('admin:com_datacompliance/Common/edit')
@@ -26,14 +26,14 @@ defined('_JEXEC') or die();
 		<label for="language">
 			@fieldtitle('language')
 		</label>
-		{{ BrowseView::genericSelect('language', \FOF30\Utils\SelectOptions::getOptions('languages', ['none' => 'COM_DATACOMPLIANCE_EMAILTEMPLATES_FIELD_LANGUAGE_ALL']), $this->getItem()->language, ['fof.autosubmit' => false, 'translate' => false]) }}
+		{{ BrowseView::genericSelect('language', \FOF40\Html\SelectOptions::getOptions('languages', ['none' => 'COM_DATACOMPLIANCE_EMAILTEMPLATES_FIELD_LANGUAGE_ALL']), $this->getItem()->language, ['fof.autosubmit' => false, 'translate' => false]) }}
 	</div>
 
 	<div class="akeeba-form-group">
 		<label for="enabled">
 			@lang('JPUBLISHED')
 		</label>
-		@jhtml('FEFHelper.select.booleanswitch', 'enabled', $this->getItem()->enabled)
+		@jhtml('FEFHelp.select.booleanswitch', 'enabled', $this->getItem()->enabled)
 	</div>
 
 	<div class="akeeba-form-group">
@@ -48,7 +48,7 @@ defined('_JEXEC') or die();
 			@fieldtitle('body')
 		</label>
 		<div class="akeeba-nofef">
-			@jhtml('FEFHelper.edit.editor', 'body', $this->getItem()->body)
+			@jhtml('FEFHelp.edit.editor', 'body', $this->getItem()->body)
 		</div>
 	</div>
 @stop

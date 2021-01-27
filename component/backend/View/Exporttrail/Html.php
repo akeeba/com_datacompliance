@@ -7,7 +7,7 @@
 
 namespace Akeeba\DataCompliance\Admin\View\Exporttrail;
 
-use FOF30\View\DataView\Html as BaseView;
+use FOF40\View\DataView\Html as BaseView;
 
 defined('_JEXEC') or die;
 

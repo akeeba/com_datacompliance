@@ -27,7 +27,7 @@ abstract class plgDatacomplianceAbstractPlugin extends Joomla\CMS\Plugin\CMSPlug
 	public function __construct(&$subject, array $config = array())
 	{
 		$this->autoloadLanguage = true;
-		$this->container = \FOF30\Container\Container::getInstance('com_datacompliance');
+		$this->container = \FOF40\Container\Container::getInstance('com_datacompliance');
 
 		parent::__construct($subject, $config);
 	}
@@ -63,4 +63,31 @@ abstract class plgDatacomplianceAbstractPlugin extends Joomla\CMS\Plugin\CMSPlug
 		}
 	}
 
+	/**
+	 * Get the FOF 3 or 4 Container of a FOF-powered component.
+	 *
+	 * The entry point file is analysed to see if the component is FOF 3 or 4, then the correct container is loaded.
+	 *
+	 * @param   string  $component
+	 *
+	 * @return  \FOF40\Container\Container|\FOF30\Container\Container|null
+	 */
+	protected function getFOFContainer(string $component, array $params = [], string $section = 'auto')
+	{
+		$bareComponent = (strpos($component, 'com_') === 0) ? substr($component, 4) : $component;
+		$entryPoint = JPATH_ADMINISTRATOR . '/components/' . $component . '/' . $bareComponent . '.php';
+		$contents = @file_get_contents($entryPoint);
+
+		if ($contents === false)
+		{
+			return null;
+		}
+
+		if (strpos($contents, 'FOF40_INCLUDED') !== false)
+		{
+			return \FOF40\Container\Container::getInstance($component, $params, $section);
+		}
+
+		return \FOF30\Container\Container::getInstance($component, $params, $section);
+	}
 }

@@ -6,13 +6,13 @@
  */
 
 use Akeeba\DataCompliance\Admin\Model\Lifecycle;
-use Akeeba\DataCompliance\Admin\Model\Wipe;use FOF30\Utils\FEFHelper\BrowseView;
-use FOF30\Utils\SelectOptions;
+use Akeeba\DataCompliance\Admin\Model\Wipe;use FOF40\Html\FEFHelper\BrowseView;
+use FOF40\Html\SelectOptions;
 
 defined('_JEXEC') or die();
 
 /**
- * @var  FOF30\View\DataView\Html $this
+ * @var  FOF40\View\DataView\Html $this
  * @var  Lifecycle                $row
  * @var  Lifecycle                $model
  * @var  Wipe                     $wipeModel
@@ -25,7 +25,7 @@ $currentUser = $this->getContainer()->platform->getUser();
 $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $currentUser->authorise('export', 'com_datacompliance');
 ?>
 
-@extends('any:lib_fof30/Common/browse')
+@extends('any:lib_fof40/Common/browse')
 
 @section('browse-filters')
     <div class="akeeba-filter-element akeeba-form-group">
@@ -46,7 +46,7 @@ $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $current
 <tr>
     {{-- Row select --}}
     <th width="20">
-        @jhtml('FEFHelper.browse.checkall')
+        @jhtml('FEFHelp.browse.checkall')
     </th>
     <th>
         @sortgrid('user_id')
@@ -75,10 +75,10 @@ $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $current
     <?php $canDelete = $wipeModel->checkWipeAbility($row->id, 'lifecycle', $when) ?>
     <tr class="{{ $canDelete ? '' : 'akeeba-datacompliance-lifecycle-row-cantdelete' }}">
         <td>
-            @jhtml('FEFHelper.browse.id', ++$i, $row->getId())
+            @jhtml('FEFHelp.browse.id', ++$i, $row->getId())
         </td>
         <td>
-            @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'id'])
+            @include('any:lib_fof40/Common/user_show', ['item' => $row, 'field' => 'id'])
         </td>
         <td>
             {{ \Akeeba\DataCompliance\Admin\Helper\Format::date($row->registerDate) }}
@@ -87,7 +87,7 @@ $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $current
             {{ \Akeeba\DataCompliance\Admin\Helper\Format::date($row->lastvisitDate) }}
         </td>
         <td>
-            @jhtml('FEFHelper.browse.published', $canDelete, $i, '', false)
+            @jhtml('FEFHelp.browse.published', $canDelete, $i, '', false)
         </td>
         @if($canManage)
         <td>

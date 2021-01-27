@@ -10,9 +10,9 @@ namespace Akeeba\DataCompliance\Admin\Model;
 defined('_JEXEC') or die;
 
 use Akeeba\DataCompliance\Admin\Model\Mixin\FilterByUser;
-use FOF30\Container\Container;
-use FOF30\Model\DataModel;
-use FOF30\Utils\Ip;
+use FOF40\Container\Container;
+use FOF40\Model\DataModel;
+use FOF40\IP\IPHelper as Ip;
 use JDatabaseQuery;
 
 /**

@@ -27,12 +27,12 @@ if (!@file_exists(JPATH_SITE . '/media/fef/fef.php'))
 
 try
 {
-	if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
+	if (!defined('FOF40_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof40/include.php'))
 	{
 		throw new RuntimeException('FOF 3.0 is not installed', 500);
 	}
 
-	FOF30\Container\Container::getInstance('com_datacompliance')->dispatcher->dispatch();
+	FOF40\Container\Container::getInstance('com_datacompliance')->dispatcher->dispatch();
 }
 catch (Throwable $e)
 {

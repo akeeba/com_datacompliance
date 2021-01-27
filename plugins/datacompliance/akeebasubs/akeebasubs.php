@@ -7,7 +7,7 @@
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
 use Akeeba\Subscriptions\Admin\Model\Subscriptions;
-use FOF30\Container\Container;
+use FOF40\Container\Container;
 use Joomla\CMS\Log\Log;
 
 defined('_JEXEC') or die;
@@ -38,7 +38,7 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 	 */
 	public function onDataComplianceCanDelete(int $userID, string $type, DateTime $when = null)
 	{
-		$container = Container::getInstance('com_akeebasubs', [], 'admin');
+		$container = $this->getFOFContainer('com_akeebasubs', [], 'admin');
 
 		if (empty($when))
 		{
@@ -135,7 +135,7 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 		 * before invoices and only then can we remove subscriptions.
 		 *
 		 */
-		$container = Container::getInstance('com_akeebasubs', [], 'admin');
+		$container = $this->getFOFContainer('com_akeebasubs', [], 'admin');
 		$db = $container->db;
 		$db->setDebug(false);
 
@@ -271,7 +271,7 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 	public function onDataComplianceExportUser(int $userID): SimpleXMLElement
 	{
 		$export    = new SimpleXMLElement("<root></root>");
-		$container = Container::getInstance('com_akeebasubs', [], 'admin');
+		$container = $this->getFOFContainer('com_akeebasubs', [], 'admin');
 
 		// Subscriptions
 		$domainSubs = $export->addChild('domain');
@@ -345,7 +345,7 @@ class plgDatacomplianceAkeebasubs extends plgDatacomplianceAbstractPlugin
 	 */
 	private function anonymizeUser($user_id)
 	{
-		$container = Container::getInstance('com_akeebasubs', [], 'admin');
+		$container = $this->getFOFContainer('com_akeebasubs', [], 'admin');
 
 		Log::add("Anonymizing Akeeba Subscriptions user information for user #{$user_id}.", Log::DEBUG, 'com_datacompliance');
 

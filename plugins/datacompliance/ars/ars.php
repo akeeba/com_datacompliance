@@ -6,7 +6,7 @@
  */
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
-use FOF30\Container\Container;
+use FOF40\Container\Container;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
@@ -161,7 +161,7 @@ class plgDatacomplianceArs extends plgDatacomplianceAbstractPlugin
 	{
 		$export = new SimpleXMLElement("<root></root>");
 
-		$arsContainer = \FOF30\Container\Container::getInstance('com_ars');
+		$arsContainer = $this->getFOFContainer('com_ars');
 		$db           = $arsContainer->db;
 
 		// #__ars_log
@@ -207,7 +207,7 @@ class plgDatacomplianceArs extends plgDatacomplianceAbstractPlugin
 		if (!isset($this->items[$item_id]))
 		{
 			/** @var \Akeeba\ReleaseSystem\Site\Model\Items $item */
-			$item = Container::getInstance('com_ars')->factory->model('Items');
+			$item = $this->getFOFContainer('com_ars')->factory->model('Items');
 			$item->with([]);
 
 			try
@@ -235,7 +235,7 @@ class plgDatacomplianceArs extends plgDatacomplianceAbstractPlugin
 		if (!isset($this->releases[$release_id]))
 		{
 			/** @var \Akeeba\ReleaseSystem\Site\Model\Releases $release */
-			$release = Container::getInstance('com_ars')->factory->model('Releases');
+			$release = $this->getFOFContainer('com_ars')->factory->model('Releases');
 			$release->with(['category']);
 
 			try

@@ -6,7 +6,7 @@
  */
 
 use Akeeba\DataCompliance\Admin\Helper\Export;
-use FOF30\Container\Container;
+use FOF40\Container\Container;
 use Joomla\CMS\Log\Log;
 
 defined('_JEXEC') or die;
@@ -51,7 +51,7 @@ class plgDatacomplianceAts extends plgDatacomplianceAbstractPlugin
 		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Ticket System data", Log::INFO, 'com_datacompliance');
 		Log::add(sprintf('ATS -- RAM %s', $this->memUsage()), Log::INFO, 'com_datacompliance.memory');
 
-		$container = Container::getInstance('com_ats', [], 'admin');
+		$container = $this->getFOFContainer('com_ats', [], 'admin');
 		$db        = $container->db;
 		$db->setDebug(false);
 

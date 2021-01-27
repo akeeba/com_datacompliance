@@ -6,13 +6,13 @@
  */
 
 use Akeeba\DataCompliance\Admin\Model\Consenttrails;
-use FOF30\Utils\FEFHelper\BrowseView;
-use FOF30\Utils\SelectOptions;
+use FOF40\Html\FEFHelper\BrowseView;
+use FOF40\Html\SelectOptions;
 
 defined('_JEXEC') or die();
 
 /**
- * @var  FOF30\View\DataView\Html $this
+ * @var  FOF40\View\DataView\Html $this
  * @var  Consenttrails            $row
  * @var  Consenttrails            $model
  */
@@ -20,7 +20,7 @@ defined('_JEXEC') or die();
 $model = $this->getModel();
 ?>
 
-@extends('any:lib_fof30/Common/browse')
+@extends('any:lib_fof40/Common/browse')
 
 @section('browse-filters')
     <div class="akeeba-filter-element akeeba-form-group">
@@ -34,7 +34,7 @@ $model = $this->getModel();
 <tr>
     {{-- Row select --}}
     <th width="20">
-        @jhtml('FEFHelper.browse.checkall')
+        @jhtml('FEFHelp.browse.checkall')
     </th>
     {{-- user_id --}}
     <th>
@@ -62,15 +62,15 @@ $model = $this->getModel();
     <tr>
         {{-- Row select --}}
         <td>
-            @jhtml('FEFHelper.browse.id', ++$i, $row->getId())
+            @jhtml('FEFHelp.browse.id', ++$i, $row->getId())
         </td>
         {{-- User ID --}}
         <td>
-            @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'user_id', 'linkURL' => 'index.php?option=com_datacompliance&view=Usertrail&task=read&id=[ITEM:ID]'])
+            @include('any:lib_fof40/Common/user_show', ['item' => $row, 'field' => 'user_id', 'linkURL' => 'index.php?option=com_datacompliance&view=Usertrail&task=read&id=[ITEM:ID]'])
         </td>
         {{-- Created by --}}
         <td>
-            @include('any:lib_fof30/Common/user_show', ['item' => $row, 'field' => 'created_by'])
+            @include('any:lib_fof40/Common/user_show', ['item' => $row, 'field' => 'created_by'])
         </td>
         {{-- Created on --}}
         <td>

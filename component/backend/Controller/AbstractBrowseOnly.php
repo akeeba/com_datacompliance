@@ -9,9 +9,9 @@ namespace Akeeba\DataCompliance\Admin\Controller;
 
 defined('_JEXEC') or die;
 
-use FOF30\Container\Container;
-use FOF30\Controller\DataController;
-use FOF30\Controller\Mixin\PredefinedTaskList;
+use FOF40\Container\Container;
+use FOF40\Controller\DataController;
+use FOF40\Controller\Mixin\PredefinedTaskList;
 
 /**
  * Abstract controller which only allows Browse views

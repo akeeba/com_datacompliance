@@ -26,13 +26,13 @@ $item = $this->item;
         <tr>
             <td>@fieldtitle('user_id')</td>
             <td>
-                @include('any:lib_fof30/Common/user_show', ['item' => $item, 'field' => 'user_id', 'showLink' => 'false'])
+                @include('any:lib_fof40/Common/user_show', ['item' => $item, 'field' => 'user_id', 'showLink' => 'false'])
             </td>
         </tr>
         <tr>
             <td>@fieldtitle('created_by')</td>
             <td>
-                @include('any:lib_fof30/Common/user_show', ['item' => $item, 'field' => 'created_by', 'showLink' => 'false'])
+                @include('any:lib_fof40/Common/user_show', ['item' => $item, 'field' => 'created_by', 'showLink' => 'false'])
             </td>
         </tr>
         <tr>

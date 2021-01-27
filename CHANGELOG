@@ -1,3 +1,7 @@
+Akeeba Data Compliance 2.0.0
+================================================================================
++ Rewritten to use FOF 4.0
+
 Akeeba Data Compliance 1.2.5
 ================================================================================
 + Supports controller as an alias for view in Joomla 4

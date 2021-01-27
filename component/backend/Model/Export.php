@@ -11,8 +11,8 @@ defined('_JEXEC') or die;
 
 use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
 use DOMDocument;
-use FOF30\Encrypt\Randval;
-use FOF30\Model\Model;
+use FOF40\Encrypt\Randval;
+use FOF40\Model\Model;
 use Joomla\CMS\Table\Table;
 use PrivacyExportDomain;
 use RuntimeException;

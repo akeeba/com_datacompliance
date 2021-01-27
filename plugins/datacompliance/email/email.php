@@ -7,7 +7,7 @@
 
 use Akeeba\DataCompliance\Admin\Helper\Email;
 use Akeeba\DataCompliance\Site\Model\Options;
-use FOF30\Container\Container;
+use FOF40\Container\Container;
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Log\Log;
 

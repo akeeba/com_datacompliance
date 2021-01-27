@@ -7,7 +7,7 @@
 
 namespace Akeeba\DataCompliance\Admin\Helper;
 
-use FOF30\Model\DataModel;
+use FOF40\Model\DataModel;
 use Joomla\CMS\Table\Table;
 use PrivacyExportDomain;
 use SimpleXMLElement;
