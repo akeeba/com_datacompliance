@@ -7,25 +7,9 @@
 
 defined('_JEXEC') or die;
 
-$js = <<< JS
-function datacompliance_toggle_article()
-{
-    var elArticle = window.jQuery('#datacompliance-article');
-
-    if (elArticle.css('display') === 'none')
-    {
-        elArticle.show();
-        return;
-    }
-
-    elArticle.hide();
-}
-
-JS;
-
-$this->addJavascriptInline($js);
 $myUser = $this->getContainer()->platform->getUser();
 ?>
+@js('media://com_datacompliance/js/Options.min.js')
 
 @if($this->type == 'user')
 <div class="akeeba-panel--teal">
@@ -38,7 +22,7 @@ $myUser = $this->getContainer()->platform->getUser();
         @sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_INFOBLOCK', $this->siteName)
     </p>
     <p>
-        <a onclick="datacompliance_toggle_article();">
+        <a class="akeebaDataComplianceArticleToggle">
             @Lang('COM_DATACOMPLIANCE_OPTIONS_CONSENT_CLICKTOREAD')
         </a>
     </p>

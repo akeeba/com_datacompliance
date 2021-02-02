@@ -16,27 +16,27 @@ var AkeebaDataComplianceCookies = function (options)
 
     this.vars = {
         // Has the user already accepted cookies?
-        accepted:                false,
+        accepted: false,
         // Has the user already interacted with the prompt (accepting or declining cookies)?
-        interacted:              false,
+        interacted: false,
         // The cookie domain and path to use when unsetting cookies
-        cookie:                  {
+        cookie: {
             domain: null,
             path:   null
         },
         // Additional domain names to use when unsetting cookies
         additionalCookieDomains: [],
         // Whitelisted cookie names
-        whitelisted:             [],
-        ajaxURL:                "",
-        token:                   ""
+        whitelisted: [],
+        ajaxURL:     "",
+        token:       ""
     };
 
     var construct = function (options)
     {
         Object.assign(me.vars, options);
 
-        me.vars.token = Joomla.getOptions('csrf.token', '');
+        me.vars.token = Joomla.getOptions("csrf.token", "");
     };
 
     /**
@@ -1012,6 +1012,139 @@ if (typeof Object.assign != "function")
     });
 }
 
+window.akeeba                = window.akeeba || {};
+window.akeeba.DataCompliance = window.akeeba.DataCompliance || {};
+
+/**
+ * Adds an event listener to an element
+ *
+ * @param {Element|String} element - The element or DOM ID to set the event listener to
+ * @param {String} eventName - The name of the event to handle, e.g. "click", "change", "error", ...
+ * @param {function} listener - The event listener to add
+ */
+akeeba.DataCompliance.addEventListener = function (element, eventName, listener)
+{
+    // Allow the passing of an element ID string instead of the DOM elem
+    if (typeof element === "string")
+    {
+        element = document.getElementById(element);
+    }
+
+    if (element == null)
+    {
+        return;
+    }
+
+    if (typeof element != "object")
+    {
+        return;
+    }
+
+    if (!(element instanceof Element))
+    {
+        return;
+    }
+
+    // Handles the listener in a way that returning boolean false will cancel the event propagation
+    function listenHandler(e)
+    {
+        var ret = listener.apply(this, arguments);
+
+        if (ret === false)
+        {
+            if (e.stopPropagation())
+            {
+                e.stopPropagation();
+            }
+
+            if (e.preventDefault)
+            {
+                e.preventDefault();
+            }
+            else
+            {
+                e.returnValue = false;
+            }
+        }
+
+        return (ret);
+    }
+
+    // Equivalent of listenHandler for IE8
+    function attachHandler()
+    {
+        // Normalize the target of the event –– PhpStorm detects this as an error
+        // window.event.target = window.event.srcElement;
+
+        var ret = listener.call(element, window.event);
+
+        if (ret === false)
+        {
+            window.event.returnValue  = false;
+            window.event.cancelBubble = true;
+        }
+
+        return (ret);
+    }
+
+    if (element.addEventListener)
+    {
+        element.addEventListener(eventName, listenHandler, false);
+
+        return;
+    }
+
+    element.attachEvent("on" + eventName, attachHandler);
+};
+
+/**
+ * Apply a callback to a list of DOM elements
+ *
+ * This is useful when applying an event handler to all objects that have a specific CSS class. Example:
+ * akeeba.System.iterateNodes("superClickable", function (el) {
+ *     akeeba.System.addEventListener(el, "click", mySuperClickableHandler);
+ * });
+ *
+ * @param {String|NodeList} elements - The NodeList to iterate or a CSS query selector pass to document.querySelectorAll
+ * @param {function} callback - The callback to execute for each node
+ * @param {*} [context] - Optional additional parameter to pass to the callback
+ */
+akeeba.DataCompliance.iterateNodes = function (elements, callback, context)
+{
+    if (typeof callback != "function")
+    {
+        return;
+    }
+
+    // Allow passing a CSS selector string instead of a NodeList object
+    if (typeof elements === "string")
+    {
+        elements = document.querySelectorAll(elements);
+    }
+
+    if (elements.length === 0)
+    {
+        return;
+    }
+
+    var i;
+    var el;
+
+    for (i = 0; i < elements.length; i++)
+    {
+        el = elements[i];
+
+        if (typeof context !== "undefined")
+        {
+            callback(el, context);
+
+            continue;
+        }
+
+        callback(el);
+    }
+};
+
 window.AkeebaDataComplianceCookies = new AkeebaDataComplianceCookies(Joomla.getOptions("com_datacompliance"));
 AkeebaDataComplianceCookiesOnDocumentReady("documentReady", window.AkeebaDataComplianceCookies);
 window.AkeebaDataComplianceCookies.Cookies = Cookies.noConflict();
@@ -1019,6 +1152,35 @@ window.AkeebaDataComplianceCookies.Cookies = Cookies.noConflict();
 // Set up the document's ready event handler
 AkeebaDataComplianceCookies.documentReady(function ()
 {
+    // Add click event handlers
+    akeeba.DataCompliance.iterateNodes(".akeebaDataComplianceCookiePreference", function (element)
+    {
+        akeeba.DataCompliance.addEventListener(element, "click", function (event)
+        {
+            event.preventDefault();
+
+            var elClickable = event.currentTarget;
+
+            if (!elClickable || !elClickable.dataset)
+            {
+                return false;
+            }
+
+            var preference  = elClickable.dataset["cookie-preference"];
+
+            if (preference == -1)
+            {
+                window.AkeebaDataComplianceCookies.removeCookiePreference();
+            }
+            else
+            {
+                window.AkeebaDataComplianceCookies.applyCookiePreference(preference);
+            }
+
+            return false;
+        });
+    });
+
     // If the user has not accepted cookies for this site we should block them
     if (!window.AkeebaDataComplianceCookies.vars.accepted)
     {

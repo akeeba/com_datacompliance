@@ -32,13 +32,13 @@ if ($this->hasCookiePreference)
 		</p>
 
 		<div id="akeeba-dccc-banner-controls">
-			<button onclick="window.AkeebaDataComplianceCookies.applyCookiePreference(0); return false;"
-					class="akeeba-btn--red">
+			<button data-cookie-preference="0"
+					class="akeebaDataComplianceCookiePreference akeeba-btn--red">
 				<span class="akion-ios-close-outline"></span>
 				<?= JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNER_BTN_DECLINE') ?>
 			</button>
-			<button onclick="window.AkeebaDataComplianceCookies.applyCookiePreference(1); return false;"
-					class="akeeba-btn--green">
+			<button data-cookie-preference="1"
+					class="akeebaDataComplianceCookiePreference akeeba-btn--green">
 				<span class="akion-ios-checkmark-outline"></span>
 				<?= JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_BANNER_BTN_AGREE') ?>
 			</button>

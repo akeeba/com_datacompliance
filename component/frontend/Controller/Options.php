@@ -52,7 +52,7 @@ class Options extends Controller
 	{
 		$this->assertUserAccess('options');
 
-		$this->display(false, false, $tpl);
+		$this->display(false, [], $tpl);
 	}
 
 	/**

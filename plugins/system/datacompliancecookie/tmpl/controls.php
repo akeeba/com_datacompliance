@@ -22,7 +22,8 @@ $dntCompliance = $this->params->get('dntCompliance', 'ignore');
 			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_DNTOVERRIDE_ACCEPT_TEXT') ?>
 		</p>
 		<div id="akeeba-dccc-controls-accepted-buttons" class="akeeba-dccc-controls-buttons">
-			<button onclick="window.AkeebaDataComplianceCookies.applyCookiePreference(0); return false;" class="akeeba-btn--red">
+			<button data-cookie-preference="0"
+					class="akeebaDataComplianceCookiePreference akeeba-btn--red">
 				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_DECLINECOOKIES') ?>
 			</button>
 		</div>
@@ -33,7 +34,8 @@ $dntCompliance = $this->params->get('dntCompliance', 'ignore');
 			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_ACCEPT_TEXT') ?>
 		</p>
 		<div id="akeeba-dccc-controls-accepted-buttons" class="akeeba-dccc-controls-buttons">
-			<button onclick="window.AkeebaDataComplianceCookies.removeCookiePreference(); return false;" class="akeeba-btn--red">
+			<button data-cookie-preference="-1"
+					class="akeebaDataComplianceCookiePreference akeeba-btn--red">
 				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_REVOKE') ?>
 			</button>
 		</div>
@@ -50,7 +52,8 @@ $dntCompliance = $this->params->get('dntCompliance', 'ignore');
 			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_DNTOVERRIDE_DECLINE_TEXT') ?>
 		</p>
 		<div id="akeeba-dccc-controls-accepted-buttons" class="akeeba-dccc-controls-buttons">
-			<button onclick="window.AkeebaDataComplianceCookies.applyCookiePreference(1); return false;" class="akeeba-btn--green">
+			<button data-cookie-preference="1"
+					class="akeebaDataComplianceCookiePreference akeeba-btn--green">
 				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_ACCEPTCOOKIES') ?>
 			</button>
 		</div>
@@ -61,7 +64,8 @@ $dntCompliance = $this->params->get('dntCompliance', 'ignore');
 			<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_DECLINE_TEXT') ?>
 		</p>
 		<div id="akeeba-dccc-controls-declined-buttons" class="akeeba-dccc-controls-buttons">
-			<button onclick="window.AkeebaDataComplianceCookies.removeCookiePreference(); return false;" class="akeeba-btn--green">
+			<button data-cookie-preference="-1"
+					class="akeebaDataComplianceCookiePreference akeeba-btn--green">
 				<?php echo JText::_('PLG_SYSTEM_DATACOMPLIANCECOOKIE_CONTROLS_BTN_RECONSIDER') ?>
 			</button>
 		</div>

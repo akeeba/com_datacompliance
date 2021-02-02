@@ -27,16 +27,6 @@ class Html extends BaseView
 
 		$this->addJavascriptFile('media://com_datacompliance/js/ControlPanel.min.js', $this->container->mediaVersion);
 		$this->addJavascriptFile('media://com_datacompliance/js/Chart.bundle.min.js', $this->container->mediaVersion);
-
-		$js = <<< JS
-window.jQuery(document).ready(function(){
-	akeeba.DataCompliance.ControlPanel.loadUserGraphs();
-	akeeba.DataCompliance.ControlPanel.loadWipedGraphs();
-});
-
-JS;
-
-		$this->addJavascriptInline($js);
 	}
 
 	protected function formatChangelog($onlyLast = false)

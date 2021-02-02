@@ -6,8 +6,7 @@
  */
 
 use Akeeba\DataCompliance\Admin\Model\Lifecycle;
-use Akeeba\DataCompliance\Admin\Model\Wipe;use FOF40\Html\FEFHelper\BrowseView;
-use FOF40\Html\SelectOptions;
+use Akeeba\DataCompliance\Admin\Model\Wipe;
 
 defined('_JEXEC') or die();
 
@@ -34,9 +33,9 @@ $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $current
 
     <div class="akeeba-filter-element akeeba-form-group">
         @jhtml('calendar', $model->when, 'when', 'when', '%Y-%m-%d', [
-        'placeholder' => JText::_('COM_DATACOMPLIANCE_LIFECYCLE_FILTER_WHEN'),
-        'onChange' => 'document.forms.adminForm.submit();']
-        )
+        'placeholder' => \Joomla\CMS\Language\Text::_('COM_DATACOMPLIANCE_LIFECYCLE_FILTER_WHEN'),
+        'class' => 'akeebaCommonEventsOnChangeSubmit',
+        ])
     </div>
 
 @stop
