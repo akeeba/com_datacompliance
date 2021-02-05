@@ -14,6 +14,7 @@ use DateInterval;
 use FOF40\Container\Container;
 use FOF40\Controller\Controller;
 use FOF40\Controller\Mixin\PredefinedTaskList;
+use FOF40\Utils\ViewManifestMigration;
 use Joomla\CMS\Cache\Controller\CallbackController;
 
 class ControlPanel extends Controller
@@ -42,6 +43,10 @@ class ControlPanel extends Controller
 
 		// Update the magic parameters
 		$model->updateMagicParameters();
+
+		// Migrate view XML manifest
+		ViewManifestMigration::migrateJoomla4MenuXMLFiles($this->container);
+		ViewManifestMigration::removeJoomla3LegacyViews($this->container);
 	}
 
 	public function changelog()

@@ -19,9 +19,8 @@
 		<folder>Controller</folder>
 		<folder>Dispatcher</folder>
 		<folder>Model</folder>
+		<folder>tmpl</folder>
 		<folder>View</folder>
-		<folder>views</folder>
-		<folder>ViewTemplates</folder>
         <filename>datacompliance.php</filename>
 	</files>
 
@@ -50,10 +49,10 @@
             <folder>Helper</folder>
             <folder>Model</folder>
             <folder>sql</folder>
+            <folder>tmpl</folder>
             <folder>Toolbar</folder>
             <folder>vendor</folder>
             <folder>View</folder>
-            <folder>ViewTemplates</folder>
 
             <filename>access.xml</filename>
             <filename>datacompliance.php</filename>

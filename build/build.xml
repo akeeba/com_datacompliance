@@ -15,6 +15,9 @@
 	-->
 	<fileset dir="${dirs.component}" id="component" expandsymboliclinks="true">
 		<include name="**" />
+
+        <exclude name="backend/views/**" />
+        <exclude name="frontend/views/**" />
 	</fileset>
 
     <fileset dir="${dirs.release}" id="package">

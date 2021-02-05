@@ -61,14 +61,14 @@ class Com_DatacomplianceInstallerScript extends \FOF40\InstallScript\Component
 	 */
 	protected $removeFilesAllVersions = [
 		'files'   => [
-			'administrator/components/com_datacompliance/ViewTemplates/Common/browse.blade.php',
-			'administrator/components/com_datacompliance/ViewTemplates/Common/edit.blade.php',
-			'administrator/components/com_datacompliance/ViewTemplates/Common/EntryUser.blade.php',
-			'administrator/components/com_datacompliance/ViewTemplates/Common/ShowUser.blade.php',
 		],
 		'folders' => [
 			// Old CLI base script, replaced by FOF's base CLI script
 			'administrator/components/com_datacompliance/assets/cli',
+
+			// Migrating to FOF 4
+			'administrator/components/com_datacompliance/ViewTemplates',
+			'components/com_datacompliance/ViewTemplates',
 		],
 	];
 

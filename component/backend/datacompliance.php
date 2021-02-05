@@ -12,7 +12,7 @@ $minPHPVersion         = '7.2.0';
 $recommendedPHPVersion = '7.4';
 $softwareName          = 'Akeeba DataCompliance';
 
-if (!require_once(__DIR__ . '/View/wrongphp.php'))
+if (!require_once(__DIR__ . '/tmpl/ErrorPages/wrongphp.php'))
 {
 	return;
 }
@@ -39,7 +39,7 @@ catch (Throwable $e)
 	$title = 'Akeeba DataCompliance';
 	$isPro = false;
 
-	if (!(include_once JPATH_COMPONENT_ADMINISTRATOR . '/View/errorhandler.php'))
+	if (!(include_once JPATH_COMPONENT_ADMINISTRATOR . '/tmpl/ErrorPages/errorhandler.php'))
 	{
 		throw $e;
 	}

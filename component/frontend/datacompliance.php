@@ -13,7 +13,7 @@ $recommendedPHPVersion = '7.4';
 $softwareName          = 'Akeeba DataCompliance';
 $silentResults         = true;
 
-if (!require_once(JPATH_COMPONENT_ADMINISTRATOR . '/View/wrongphp.php'))
+if (!require_once(JPATH_COMPONENT_ADMINISTRATOR . '/tmpl/ErrorPages/wrongphp.php'))
 {
 	echo 'Your PHP version is too old for this component.';
 
@@ -33,7 +33,7 @@ catch (Throwable $e)
 	$title = 'Akeeba DataCompliance';
 	$isPro = false;
 
-	if (!(include_once JPATH_COMPONENT_ADMINISTRATOR . '/View/errorhandler.php'))
+	if (!(include_once JPATH_COMPONENT_ADMINISTRATOR . '/tmpl/ErrorPages/errorhandler.php'))
 	{
 		throw $e;
 	}

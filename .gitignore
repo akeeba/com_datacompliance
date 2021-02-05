@@ -4,11 +4,15 @@
 /documentation/output/*
 
 /component/datacompliance.xml
+
 /component/backend/datacompliance.xml
 /component/backend/CHANGELOG.php
 /component/backend/version.php
+/component/backend/views
 
 /component/cli/*.xml
+
+/component/frontend/views
 
 /component/media/css/fef*
 /component/media/fonts
