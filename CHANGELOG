@@ -1,3 +1,10 @@
+<?php die(); ?>
+Akeeba Data Compliance 1.2.6
+================================================================================
+~ Releasing the previous version without changes, due to server and CDN issues which resulted in inconsistent updates
++ Supports controller as an alias for view in Joomla 4
+~ Now using common view templates from our FOF framework for consistency across our software
+
 Akeeba Data Compliance 1.2.5
 ================================================================================
 + Supports controller as an alias for view in Joomla 4
