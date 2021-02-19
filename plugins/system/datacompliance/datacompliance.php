@@ -7,7 +7,6 @@
 
 use Akeeba\DataCompliance\Admin\Model\Consenttrails;
 use FOF40\Container\Container;
-use FOF40\Factory\Exception\ModelNotFound;
 use FOF40\Model\DataModel\Exception\RecordNotLoaded;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
@@ -16,7 +15,6 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\User;
-use Joomla\Registry\Registry;
 
 // Prevent direct access
 defined('_JEXEC') or die;
@@ -242,6 +240,7 @@ class PlgSystemDatacompliance extends CMSPlugin
 			}
 
 			// Redirect
+			$this->snuffJoomlaPrivacyConsent();
 			$this->loadLanguage();
 			$message = Text::_('PLG_SYSTEM_DATACOMPLIANCE_MSG_MUSTACCEPT');
 			$app->enqueueMessage($message, 'warning');
@@ -450,4 +449,79 @@ class PlgSystemDatacompliance extends CMSPlugin
 
 		return false;
 	}
+
+	/**
+	 * Kills the Joomla Privacy Consent plugin when we are showing the Two Step Verification.
+	 *
+	 * JPC uses captive login code copied from our DataCompliance component. However, they removed the exceptions we
+	 * have for other captive logins. As a result the JPC captive login interfered with LoginGuard's captive login,
+	 * causing an infinite redirection.
+	 *
+	 * Due to complete lack of support for exceptions, this method here does something evil. It hunts down the observer
+	 * (plugin hook) installed by the JPC plugin and removes it from the loaded plugins. This prevents the redirection
+	 * of the captive login. THIS IS NOT THE BEST WAY TO DO THINGS. You should NOT ever, EVER!!!! copy this code. I am
+	 * someone who has spent 15+ years dealing with Joomla's core code and I know what I'm doing, why I'm doing it and,
+	 * most importantly, how it can possibly break. don't go about merrily copying this code if you do not understand
+	 * how Joomla event dispatching works. You'll break shit and I'm not to blame. Thank you!
+	 *
+	 * @throws ReflectionException
+	 * @since  3.0.4
+	 */
+	private function snuffJoomlaPrivacyConsent()
+	{
+		/**
+		 * The privacy suite is not ported to Joomla! 4 yet.
+		 */
+		if (version_compare(JVERSION, '3.9999.9999', 'ge'))
+		{
+			return;
+		}
+
+		// The broken Joomla! consent plugin is not activated
+		if (!class_exists('PlgSystemPrivacyconsent'))
+		{
+			return;
+		}
+
+		// Get the events dispatcher and find which observer is the offending plugin
+		$dispatcher    = JEventDispatcher::getInstance();
+		$refDispatcher = new ReflectionObject($dispatcher);
+		$refObservers  = $refDispatcher->getProperty('_observers');
+		$refObservers->setAccessible(true);
+		$observers = $refObservers->getValue($dispatcher);
+
+		$jConsentObserverId = 0;
+
+		foreach ($observers as $id => $o)
+		{
+			if (!is_object($o))
+			{
+				continue;
+			}
+
+			if ($o instanceof \PlgSystemPrivacyconsent)
+			{
+				$jConsentObserverId = $id;
+
+				break;
+			}
+		}
+
+		// Nope. Cannot find the offending plugin.
+		if ($jConsentObserverId == 0)
+		{
+			return;
+		}
+
+		// Now we need to remove the offending plugin from the onAfterRoute event.
+		$refMethods = $refDispatcher->getProperty('_methods');
+		$refMethods->setAccessible(true);
+		$methods = $refMethods->getValue($dispatcher);
+
+		$methods['onafterroute'] = array_filter($methods['onafterroute'], function ($id) use ($jConsentObserverId) {
+			return $id != $jConsentObserverId;
+		});
+		$refMethods->setValue($dispatcher, $methods);
+	}
+
 }
