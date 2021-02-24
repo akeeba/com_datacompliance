@@ -29,34 +29,59 @@
 
     <scriptfile>script.php</scriptfile>
 
-    <config>
+    <config addfieldpath="/administrator/components/com_datacompliance/fields">
         <fields name="params">
             <fieldset name="basic">
-                <field name="access" type="text" default="" label="PLG_DATACOMPLIANCE_S3_ACCESS_LABEL"
-                       description="PLG_DATACOMPLIANCE_S3_ACCESS_DESC" size="50" filter="raw"/>
+                <field name="access"
+                       type="text"
+                       default=""
+                       label="PLG_DATACOMPLIANCE_S3_ACCESS_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_ACCESS_DESC"
+                       size="50"
+                       filter="raw"/>
 
-                <field name="secret" type="password" default="" label="PLG_DATACOMPLIANCE_S3_SECRET_LABEL"
-                       description="PLG_DATACOMPLIANCE_S3_SECRET_DESC" size="50" filter="raw"/>
+                <field name="secret"
+                       type="password"
+                       default=""
+                       label="PLG_DATACOMPLIANCE_S3_SECRET_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_SECRET_DESC"
+                       size="50"
+                       filter="raw"/>
 
-                <field name="ssl" type="list" default="1" label="PLG_DATACOMPLIANCE_S3_SSL_LABEL"
+                <field name="ssl"
+                       type="fancyradio"
+                       class="btn-group btn-yesno"
+                       default="1"
+                       label="PLG_DATACOMPLIANCE_S3_SSL_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_SSL_DESC">
                     <option value="0">JNO</option>
                     <option value="1">JYES</option>
                 </field>
 
-                <field name="bucket" type="text" default="" label="PLG_DATACOMPLIANCE_S3_BUCKET_LABEL"
+                <field name="bucket"
+                       type="text"
+                       default=""
+                       label="PLG_DATACOMPLIANCE_S3_BUCKET_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_BUCKET_DESC"/>
 
-                <field name="path" type="text" default="" label="PLG_DATACOMPLIANCE_S3_PATH_LABEL"
+                <field name="path"
+                       type="text"
+                       default=""
+                       label="PLG_DATACOMPLIANCE_S3_PATH_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_PATH_DESC"/>
 
-                <field name="method" type="list" default="v2" label="PLG_DATACOMPLIANCE_S3_METHOD_LABEL"
+                <field name="method"
+                       type="list"
+                       default="v2"
+                       label="PLG_DATACOMPLIANCE_S3_METHOD_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_METHOD_DESC">
                     <option value="v2">PLG_DATACOMPLIANCE_S3_SIGNATURE_V2</option>
                     <option value="v4">PLG_DATACOMPLIANCE_S3_SIGNATURE_V4</option>
                 </field>
 
-                <field name="region" type="list" default="us-east-1"
+                <field name="region"
+                       type="list"
+                       default="us-east-1"
                        label="PLG_DATACOMPLIANCE_S3_REGION_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_REGION_DESC">
                     <option value="">PLG_DATACOMPLIANCE_S3_REGION_NONE</option>
@@ -78,14 +103,16 @@
                     <option value="sa-west-2">PLG_DATACOMPLIANCE_S3_REGION_SAWEST2</option>
                 </field>
 
-                <field name="class" type="list" default="0" label="PLG_DATACOMPLIANCE_S3_CLASS_LABEL"
+                <field name="class"
+                       type="list"
+                       default="0"
+                       label="PLG_DATACOMPLIANCE_S3_CLASS_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_CLASS_DESC">
                     <option value="STANDARD">PLG_DATACOMPLIANCE_S3_CLASS_STANDARD</option>
                     <option value="REDUCED_REDUNDANCY">PLG_DATACOMPLIANCE_S3_CLASS_REDUCED_REDUNDANCY</option>
                     <option value="STANDARD_IA">PLG_DATACOMPLIANCE_S3_CLASS_STANDARD_IA</option>
                     <option value="ONEZONE_IA">PLG_DATACOMPLIANCE_S3_CLASS_ONEZONE_IA</option>
                 </field>
-
             </fieldset>
         </fields>
     </config>

@@ -29,26 +29,39 @@
 
 	<scriptfile>script.php</scriptfile>
 
-	<config>
+	<config addfieldpath="/administrator/components/com_datacompliance/fields">
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="exemptgroups" type="usergrouplist"
-					   multiple="1" default=""
+				<field name="exemptgroups"
+					   type="usergrouplist"
+					   multiple="1"
+					   default=""
 					   label="PLG_DATACOMPLIANCE_JOOMLA_USERGROUPLIST_LABEL"
 					   description="PLG_DATACOMPLIANCE_JOOMLA_USERGROUPLIST_DESC" />
 
-				<field name="lifecycle" type="list"
+				<field name="lifecycle"
+					   type="fancyradio"
+					   class="btn-group btn-yesno"
 					   default="1"
-					   label="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_LABEL" description="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_DESC">
+					   label="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_LABEL"
+					   description="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_DESC">
 					<option value="0">JNo</option>
 					<option value="1">JYes</option>
 				</field>
 
-				<field name="threshold" type="number" default="18" size="5" min="1" max="1200" step="1"
+				<field name="threshold"
+					   type="number"
+					   default="18"
+					   size="5"
+					   min="1"
+					   max="1200"
+					   step="1"
 					   label="PLG_DATACOMPLIANCE_JOOMLA_THRESHOLD_LABEL"
 					   description="PLG_DATACOMPLIANCE_JOOMLA_THRESHOLD_DESC" />
 
-				<field name="nevervisited" type="list"
+				<field name="nevervisited"
+					   type="fancyradio"
+					   class="btn-group btn-yesno"
 					   default="1"
 					   label="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISITED_LABEL"
 					   description="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISITED_DESC">
@@ -56,14 +69,15 @@
 					<option value="1">JYes</option>
 				</field>
 
-				<field name="blocked" type="list"
+				<field name="blocked"
+					   type="fancyradio"
+					   class="btn-group btn-yesno"
 					   default="1"
 					   label="PLG_DATACOMPLIANCE_JOOMLA_BLOCKED_LABEL"
 					   description="PLG_DATACOMPLIANCE_JOOMLA_BLOCKED_DESC">
 					<option value="0">JNo</option>
 					<option value="1">JYes</option>
 				</field>
-
 			</fieldset>
 		</fields>
 	</config>

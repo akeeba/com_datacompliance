@@ -3,6 +3,7 @@ Akeeba Data Compliance 2.0.0
 + Rewritten to use FOF 4.0
 + Renamed ViewTemplates to tmpl (Joomla 4 convention, with fallback code for Joomla 3)
 + Kills the redirection imposed by the Joomla privacy consent to avoid an infinite redirection loop
++ Yes/No options in the component and plugin options now work correctly under Joomla 4.0 beta 7 and later
 
 Akeeba Data Compliance 1.2.5
 ================================================================================

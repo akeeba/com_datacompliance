@@ -29,21 +29,32 @@
 
     <scriptfile>script.php</scriptfile>
 
-    <config>
+    <config addfieldpath="/administrator/components/com_datacompliance/fields">
         <fields name="params">
             <fieldset name="basic">
-                <field name="lifecycle" type="list"
+                <field name="lifecycle"
+                       type="fancyradio"
+                       class="btn-group btn-yesno"
                        default="1"
-                       label="PLG_DATACOMPLIANCE_AKEEBASUBS_LIFECYCLE_LABEL" description="PLG_DATACOMPLIANCE_AKEEBASUBS_LIFECYCLE_DESC">
+                       label="PLG_DATACOMPLIANCE_AKEEBASUBS_LIFECYCLE_LABEL"
+                       description="PLG_DATACOMPLIANCE_AKEEBASUBS_LIFECYCLE_DESC">
                     <option value="0">JNo</option>
                     <option value="1">JYes</option>
                 </field>
 
-                <field name="threshold" type="number" default="6" size="5" min="1" max="1200" step="1"
+                <field name="threshold"
+                       type="number"
+                       default="6"
+                       size="5"
+                       min="1"
+                       max="1200"
+                       step="1"
                        label="PLG_DATACOMPLIANCE_AKEEBASUBS_THRESHOLD_LABEL"
-                       description="PLG_DATACOMPLIANCE_AKEEBASUBS_THRESHOLD_DESC" />
+                       description="PLG_DATACOMPLIANCE_AKEEBASUBS_THRESHOLD_DESC"/>
 
-                <field name="lastvisit" type="list"
+                <field name="lastvisit"
+                       type="fancyradio"
+                       class="btn-group btn-yesno"
                        default="1"
                        label="PLG_DATACOMPLIANCE_AKEEBASUBS_LASTVISIT_LABEL"
                        description="PLG_DATACOMPLIANCE_AKEEBASUBS_LASTVISIT_DESC">
@@ -51,9 +62,15 @@
                     <option value="1">JYes</option>
                 </field>
 
-                <field name="guard_threshold" type="number" default="90" size="5" min="1" max="36500" step="1"
+                <field name="guard_threshold"
+                       type="number"
+                       default="90"
+                       size="5"
+                       min="1"
+                       max="36500"
+                       step="1"
                        label="PLG_DATACOMPLIANCE_AKEEBASUBS_GUARD_THRESHOLD_LABEL"
-                       description="PLG_DATACOMPLIANCE_AKEEBASUBS_GUARD_THRESHOLD_DESC" />
+                       description="PLG_DATACOMPLIANCE_AKEEBASUBS_GUARD_THRESHOLD_DESC"/>
 
             </fieldset>
         </fields>

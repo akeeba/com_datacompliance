@@ -4,92 +4,107 @@
   ~ @copyright Copyright (c)2018-2021 Nicholas K. Dionysopoulos / Akeeba Ltd
   ~ @license   GNU General Public License version 3, or later
   -->
-<config>
-	<fieldset
-		name="consent"
-		label="COM_DATACOMPLIANCE_CONFIG_CONSENT_LABEL"
-		description="COM_DATACOMPLIANCE_CONFIG_CONSENT_DESC"
-		addfieldpath="/administrator/components/com_content/models/fields"
-	>
-		<field
-				name="policyarticle"
-				type="modal_article"
-				label="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_LABEL"
-				description="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_DESC"
-				select="true"
-				new="true"
-				edit="true"
-				clear="true"
-		/>
+<config addfieldpath="/administrator/components/com_datacompliance/fields">
+    <fieldset
+            name="consent"
+            label="COM_DATACOMPLIANCE_CONFIG_CONSENT_LABEL"
+            description="COM_DATACOMPLIANCE_CONFIG_CONSENT_DESC"
+            addfieldpath="/administrator/components/com_content/models/fields"
+    >
+        <field
+                name="policyarticle"
+                type="modal_article"
+                label="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_LABEL"
+                description="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_DESC"
+                select="true"
+                new="true"
+                edit="true"
+                clear="true"
+        />
 
-		<field name="showexport" type="list" default="1"
-			   label="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_LABEL"
-			   description="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_DESC">
-			<option value="0">JNo</option>
-			<option value="1">JYes</option>
-		</field>
+        <field name="showexport"
+               type="fancyradio"
+               default="1"
+               label="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_LABEL"
+               description="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_DESC"
+               class="btn-group btn-yesno"
+        >
+            <option value="0">JNo</option>
+            <option value="1">JYes</option>
+        </field>
 
-		<field name="showwipe" type="list" default="1"
-			   label="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_LABEL"
-			   description="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_DESC">
-			<option value="0">JNo</option>
-			<option value="1">JYes</option>
-		</field>
+        <field name="showwipe"
+               type="fancyradio"
+               default="1"
+               label="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_LABEL"
+               description="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_DESC"
+               class="btn-group btn-yesno">
+            <option value="0">JNo</option>
+            <option value="1">JYes</option>
+        </field>
 
-		<field name="siteurl" type="hidden" default=""/>
-	</fieldset>
+        <field name="siteurl" type="hidden" default=""/>
+    </fieldset>
 
-	<fieldset name="backend" label="COM_DATACOMPLIANCE_CONFIG_BACKEND_TITLE">
-		<field name="load_fef" type="list" default="3"
-		       label="COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF"
-		       description="COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_DESC">
-			<option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_NEVER</option>
-			<option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_FRONTEND</option>
-			<option value="2">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BACKEND</option>
-			<option value="3">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BOTH</option>
-		</field>
+    <fieldset name="backend" label="COM_DATACOMPLIANCE_CONFIG_BACKEND_TITLE">
+        <field name="load_fef"
+               type="list"
+               default="3"
+               label="COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF"
+               description="COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_DESC">
+            <option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_NEVER</option>
+            <option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_FRONTEND</option>
+            <option value="2">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BACKEND</option>
+            <option value="3">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BOTH</option>
+        </field>
 
-		<field name="fef_reset" type="list" default="3"
-		       label="COM_DATACOMPLIANCE_CONFIG_BACKEND_FEF_RESET"
-		       description="COM_DATACOMPLIANCE_CONFIG_BACKEND_FEF_RESET_DESC">
-			<option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_NEVER</option>
-			<option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_FRONTEND</option>
-			<option value="2">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BACKEND</option>
-			<option value="3">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BOTH</option>
-		</field>
+        <field name="fef_reset"
+               type="list"
+               default="3"
+               label="COM_DATACOMPLIANCE_CONFIG_BACKEND_FEF_RESET"
+               description="COM_DATACOMPLIANCE_CONFIG_BACKEND_FEF_RESET_DESC">
+            <option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_NEVER</option>
+            <option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_FRONTEND</option>
+            <option value="2">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BACKEND</option>
+            <option value="3">COM_DATACOMPLIANCE_CONFIG_BACKEND_LOAD_FEF_BOTH</option>
+        </field>
 
-		<field name="dark_mode_backend" type="radio" default="-1"
-			   label="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_BACKEND_LABEL"
-			   description="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_BACKEND_DESC"
-			   class="switcher btn-group">
-			<option value="-1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_AUTO</option>
-			<option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_NEVER</option>
-			<option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_ALWAYS</option>
-		</field>
+        <field name="dark_mode_backend"
+               type="list"
+               default="-1"
+               label="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_BACKEND_LABEL"
+               description="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_BACKEND_DESC"
+        >
+            <option value="-1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_AUTO</option>
+            <option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_NEVER</option>
+            <option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_ALWAYS</option>
+        </field>
 
-		<field name="dark_mode_frontend" type="radio" default="-1"
-			   label="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_FRONTEND_LABEL"
-			   description="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_FRONTEND_DESC"
-			   class="switcher btn-group">
-			<option value="-1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_AUTO</option>
-			<option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_NEVER</option>
-			<option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_ALWAYS</option>
-		</field>
-	</fieldset>
+        <field name="dark_mode_frontend"
+               type="list"
+               default="-1"
+               label="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_FRONTEND_LABEL"
+               description="COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_FRONTEND_DESC"
+        >
+            <option value="-1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_AUTO</option>
+            <option value="0">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_NEVER</option>
+            <option value="1">COM_DATACOMPLIANCE_CONFIG_BACKEND_DARKMODE_ALWAYS</option>
+        </field>
+    </fieldset>
 
-	<fieldset
-			name="permissions"
-			label="JCONFIG_PERMISSIONS_LABEL"
-			description="JCONFIG_PERMISSIONS_DESC"
-	>
+    <fieldset
+            name="permissions"
+            label="JCONFIG_PERMISSIONS_LABEL"
+            description="JCONFIG_PERMISSIONS_DESC"
+    >
 
-		<field
-				name="rules"
-				type="rules"
-				label="JCONFIG_PERMISSIONS_LABEL"
-				class="inputbox"
-				filter="rules"
-				component="com_datacompliance"
-				section="component"/>
-	</fieldset>
+        <field
+                name="rules"
+                type="rules"
+                label="JCONFIG_PERMISSIONS_LABEL"
+                class="inputbox"
+                filter="rules"
+                component="com_datacompliance"
+                section="component"/>
+    </fieldset>
 </config>

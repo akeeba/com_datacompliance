@@ -29,11 +29,12 @@
 
     <scriptfile>script.php</scriptfile>
 
-    <config>
+    <config addfieldpath="/administrator/components/com_datacompliance/fields">
         <fields name="params">
             <fieldset name="basic">
                 <field name="users"
-                       type="list"
+                       type="fancyradio"
+                       class="btn-group btn-yesno"
                        default="1"
                        label="PLG_DATACOMPLIANCE_EMAIL_USERS_LABEL"
                        description="PLG_DATACOMPLIANCE_EMAIL_USERS_DESC">
@@ -42,7 +43,8 @@
                 </field>
 
                 <field name="admins"
-                       type="list"
+                       type="fancyradio"
+                       class="btn-group btn-yesno"
                        default="1"
                        label="PLG_DATACOMPLIANCE_EMAIL_ADMINS_LABEL"
                        description="PLG_DATACOMPLIANCE_EMAIL_ADMINS_DESC">
@@ -50,8 +52,10 @@
                     <option value="1">JYes</option>
                 </field>
 
-                <field name="adminemails" type="textarea"
-                       rows="5" cols="50"
+                <field name="adminemails"
+                       type="textarea"
+                       rows="5"
+                       cols="50"
                        default=""
                        label="PLG_DATACOMPLIANCE_JOOMLA_ADMINEMAILS_LABEL"
                        description="PLG_DATACOMPLIANCE_JOOMLA_ADMINEMAILS_DESC" />
