@@ -102,8 +102,6 @@ class Com_DatacomplianceInstallerScript extends \FOF40\InstallScript\Component
 
 		// Add ourselves to the list of extensions depending on Akeeba FEF
 		$this->addDependency('file_fef', $this->componentName);
-
-		return true;
 	}
 
 	/**
