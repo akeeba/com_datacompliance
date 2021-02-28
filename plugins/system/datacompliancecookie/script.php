@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
 // Load FOF if not already loaded
 if (!defined('FOF40_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof40/include.php'))
 {
-	throw new RuntimeException('This extension requires FOF 3.0.');
+	throw new RuntimeException('FOF 4.0 is not installed');
 }
 
 class plgSystemDatacompliancecookieInstallerScript extends FOF40\InstallScript\Plugin
