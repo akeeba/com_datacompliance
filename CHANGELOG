@@ -1,3 +1,7 @@
+Akeeba Data Compliance 2.0.1
+================================================================================
+~ Converted all tables to InnoDB for better performance
+
 Akeeba Data Compliance 2.0.0
 ================================================================================
 + Rewritten to use FOF 4.0

@@ -160,5 +160,60 @@ INSERT INTO `#__datacompliance_emailtemplates` VALUES (1,'user_user','You have d
       UPDATE `#__datacompliance_emailtemplates` SET `locked_on` = NULL WHERE `locked_on` = '0000-00-00 00:00:00';
       ]]></query>
 		</action>
+
+		<!-- 2.0.1 :: Convert tables to InnoDB -->
+		<action table="#__datacompliance_exporttrails" canfail="1">
+			<condition type="equals" operator="not" value="1"><![CDATA[
+SELECT COUNT(*) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE (`TABLE_NAME` = '#__datacompliance_exporttrails') AND (`TABLE_SCHEMA` = DATABASE()) AND (`ENGINE` = 'InnoDB');
+            ]]></condition>
+			<query><![CDATA[
+ALTER TABLE `#__datacompliance_exporttrails` ENGINE InnoDB;
+            ]]></query>
+		</action>
+
+		<action table="#__datacompliance_wipetrails" canfail="1">
+			<condition type="equals" operator="not" value="1"><![CDATA[
+SELECT COUNT(*) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE (`TABLE_NAME` = '#__datacompliance_wipetrails') AND (`TABLE_SCHEMA` = DATABASE()) AND (`ENGINE` = 'InnoDB');
+            ]]></condition>
+			<query><![CDATA[
+ALTER TABLE `#__datacompliance_wipetrails` ENGINE InnoDB;
+            ]]></query>
+		</action>
+
+		<action table="#__datacompliance_consenttrails" canfail="1">
+			<condition type="equals" operator="not" value="1"><![CDATA[
+SELECT COUNT(*) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE (`TABLE_NAME` = '#__datacompliance_consenttrails') AND (`TABLE_SCHEMA` = DATABASE()) AND (`ENGINE` = 'InnoDB');
+            ]]></condition>
+			<query><![CDATA[
+ALTER TABLE `#__datacompliance_consenttrails` ENGINE InnoDB;
+            ]]></query>
+		</action>
+
+		<action table="#__datacompliance_usertrails" canfail="1">
+			<condition type="equals" operator="not" value="1"><![CDATA[
+SELECT COUNT(*) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE (`TABLE_NAME` = '#__datacompliance_usertrails') AND (`TABLE_SCHEMA` = DATABASE()) AND (`ENGINE` = 'InnoDB');
+            ]]></condition>
+			<query><![CDATA[
+ALTER TABLE `#__datacompliance_usertrails` ENGINE InnoDB;
+            ]]></query>
+		</action>
+
+		<action table="#__datacompliance_cookietrails" canfail="1">
+			<condition type="equals" operator="not" value="1"><![CDATA[
+SELECT COUNT(*) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE (`TABLE_NAME` = '#__datacompliance_cookietrails') AND (`TABLE_SCHEMA` = DATABASE()) AND (`ENGINE` = 'InnoDB');
+            ]]></condition>
+			<query><![CDATA[
+ALTER TABLE `#__datacompliance_cookietrails` ENGINE InnoDB;
+            ]]></query>
+		</action>
+
+		<action table="#__datacompliance_emailtemplates" canfail="1">
+			<condition type="equals" operator="not" value="1"><![CDATA[
+SELECT COUNT(*) FROM `INFORMATION_SCHEMA`.`TABLES` WHERE (`TABLE_NAME` = '#__datacompliance_emailtemplates') AND (`TABLE_SCHEMA` = DATABASE()) AND (`ENGINE` = 'InnoDB');
+            ]]></condition>
+			<query><![CDATA[
+ALTER TABLE `#__datacompliance_emailtemplates` ENGINE InnoDB;
+            ]]></query>
+		</action>
 	</sql>
 </schema>
