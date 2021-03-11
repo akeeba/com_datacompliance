@@ -857,10 +857,10 @@
           <para>The view template files you need to override is located
           in:</para>
 
-          <para><filename>PATH_TO_JOOMLA/components/com_datacompliance/ViewTemplates/Options/default.blade.php</filename>
+          <para><filename>PATH_TO_JOOMLA/components/com_datacompliance/tmpl/Options/default.blade.php</filename>
           The self-service page</para>
 
-          <para><filename>PATH_TO_JOOMLA/components/com_datacompliance/ViewTemplates/Options/wipe.blade.php</filename>
+          <para><filename>PATH_TO_JOOMLA/components/com_datacompliance/tmpl/Options/wipe.blade.php</filename>
           The confirmation page for wiping your user account</para>
 
           <para>You can create frontend (public site) overrides for these
