@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "39ff6b7048d326ff76ef44eb8f9ca554",
+    "content-hash": "d1bddd48b8944784e5d41d3b1ae8ca90",
     "packages": [
         {
             "name": "akeeba/s3",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "55c6015d7bbbea95dc4590d5df02b9f62fe5411c"
+                "reference": "05ef038c45a8451c46303fbab07d74d4760682cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/55c6015d7bbbea95dc4590d5df02b9f62fe5411c",
-                "reference": "55c6015d7bbbea95dc4590d5df02b9f62fe5411c",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/05ef038c45a8451c46303fbab07d74d4760682cb",
+                "reference": "05ef038c45a8451c46303fbab07d74d4760682cb",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "issues": "https://github.com/akeeba/s3/issues",
                 "source": "https://github.com/akeeba/s3/tree/development"
             },
-            "time": "2020-11-30T14:43:43+00:00"
+            "time": "2021-02-19T10:57:20+00:00"
         }
     ],
     "packages-dev": [],
@@ -65,6 +65,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
+        "php": ">=7.2.0 <8.1",
         "ext-simplexml": "*",
         "ext-dom": "*",
         "ext-json": "*"
