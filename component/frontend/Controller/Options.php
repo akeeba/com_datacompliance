@@ -168,7 +168,7 @@ class Options extends Controller
 		// If 'phrase' is not set just skip to displaying the confirmation interface
 		if (is_null($phrase))
 		{
-			$this->display($tpl);
+			$this->display(false, [], $tpl);
 
 			return;
 		}
