@@ -26,7 +26,9 @@ class Html extends BaseView
 		$this->formattedChangelog    = $this->formatChangelog();
 
 		$this->addJavascriptFile('media://com_datacompliance/js/ControlPanel.min.js', $this->container->mediaVersion);
-		$this->addJavascriptFile('media://com_datacompliance/js/Chart.bundle.min.js', $this->container->mediaVersion);
+		$this->addJavascriptFile('https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js', null, 'text/javascript', true);
+		$this->addJavascriptFile('https://cdn.jsdelivr.net/npm/moment@2.27.0', null, 'text/javascript', true);
+		$this->addJavascriptFile('https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1', null, 'text/javascript', true);
 	}
 
 	protected function formatChangelog($onlyLast = false)

@@ -61,6 +61,7 @@ class Com_DatacomplianceInstallerScript extends \FOF40\InstallScript\Component
 	 */
 	protected $removeFilesAllVersions = [
 		'files'   => [
+			'media/com_datacompliance/js/Chart.bundle.min.js'
 		],
 		'folders' => [
 			// Old CLI base script, replaced by FOF's base CLI script

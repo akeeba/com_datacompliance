@@ -43,8 +43,8 @@ akeeba.DataCompliance.ControlPanel.loadUserGraphs = function ()
                 ]
             },
             options: {
-                cutout: "50%",
-                plugins:          {
+                cutout:  "50%",
+                plugins: {
                     legend: {
                         display: false
                     }
@@ -85,28 +85,25 @@ akeeba.DataCompliance.ControlPanel.loadWipedGraphs = function ()
             },
             options: {
                 scales:  {
-                    xAxes: [
-                        {
-                            stacked:      true,
-                            type:         "time",
-                            time:         {
-                                unit: "day"
-                            },
-                            distribution: "linear"
+                    x: {
+                        stacked:      true,
+                        type:         "time",
+                        time:         {
+                            unit: "day"
+                        },
+                        distribution: "linear"
+                    }
+                    ,
+                    y: {
+                        type:    "linear",
+                        stacked: true,
+                        ticks:   {
+                            callback: function (value, index, values)
+                                      {
+                                          return "" + value;
+                                      }
                         }
-                    ],
-                    yAxes: [
-                        {
-                            type:    "linear",
-                            stacked: true,
-                            ticks:   {
-                                callback: function (value, index, values)
-                                          {
-                                              return "" + value;
-                                          }
-                            }
-                        }
-                    ]
+                    }
                 },
                 plugins: {
                     legend: {

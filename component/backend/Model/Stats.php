@@ -90,7 +90,7 @@ class Stats extends Model
 		{
 			$thisDate       = $from->format('Y-m-d');
 			$ret[] = [
-				't' => $thisDate,
+				'x' => $thisDate,
 				'y' => isset($data[$thisDate]) ? $data[$thisDate] : 0
 			];
 			$from->add($interval);
