@@ -25,7 +25,7 @@ akeeba.DataCompliance.ControlPanel.loadUserGraphs = function ()
     {
         var ctx     = document.getElementById("adcExpiredUsers").getContext("2d");
         var myChart = new Chart(ctx, {
-            type:    "pie",
+            type:    "doughnut",
             data:    {
                 labels:   ["Inactive", "Active", "Deleted"],
                 datasets: [
@@ -43,9 +43,11 @@ akeeba.DataCompliance.ControlPanel.loadUserGraphs = function ()
                 ]
             },
             options: {
-                cutoutPercentage: 50,
-                legend:           {
-                    display: false
+                cutout: "50%",
+                plugins:          {
+                    legend: {
+                        display: false
+                    }
                 }
             }
         });
@@ -82,7 +84,7 @@ akeeba.DataCompliance.ControlPanel.loadWipedGraphs = function ()
                 ],
             },
             options: {
-                scales: {
+                scales:  {
                     xAxes: [
                         {
                             stacked:      true,
@@ -106,16 +108,19 @@ akeeba.DataCompliance.ControlPanel.loadWipedGraphs = function ()
                         }
                     ]
                 },
-                legend: {
-                    display:  true,
-                    position: "right"
+                plugins: {
+                    legend: {
+                        display:  true,
+                        position: "right"
+                    }
                 }
             }
         });
     });
 };
 
-akeeba.Loader.add(['akeeba.System', 'akeeba.Ajax', 'Chart'], function () {
-	akeeba.DataCompliance.ControlPanel.loadUserGraphs();
-	akeeba.DataCompliance.ControlPanel.loadWipedGraphs();
+akeeba.Loader.add(["akeeba.System", "akeeba.Ajax", "Chart"], function ()
+{
+    akeeba.DataCompliance.ControlPanel.loadUserGraphs();
+    akeeba.DataCompliance.ControlPanel.loadWipedGraphs();
 });

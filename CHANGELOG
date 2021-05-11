@@ -1,6 +1,7 @@
 Akeeba Data Compliance 2.0.1
 ================================================================================
 ~ Converted all tables to InnoDB for better performance
+~ Updated Charts.js
 # [HIGH] Cannot delete user or export settings from the frontend
 
 Akeeba Data Compliance 2.0.0
