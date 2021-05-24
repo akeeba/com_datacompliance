@@ -54,6 +54,6 @@ updates:
     connection: s3
     directory: 'updates'
     stream: 42
-    base_name: 'datacompliance'
+    base_name: 'pkgdatacompliance'
     formats:
       - 'xml'
