@@ -152,7 +152,11 @@ class plgDatacomplianceS3 extends Joomla\CMS\Plugin\CMSPlugin
 		// If SSL is not enabled you must not provide the CA root file.
 		if ($useSSL && !defined('AKEEBA_CACERT_PEM'))
 		{
-			define('AKEEBA_CACERT_PEM', JPATH_LIBRARIES . '/src/Http/Transport/cacert.pem');
+			$caCertPath = class_exists('\\Composer\\CaBundle\\CaBundle')
+				? \Composer\CaBundle\CaBundle::getBundledCaBundlePath()
+				: JPATH_LIBRARIES . '/src/Http/Transport/cacert.pem';
+
+			define('AKEEBA_CACERT_PEM', $caCertPath);
 		}
 
 		// Create the S3 client instance

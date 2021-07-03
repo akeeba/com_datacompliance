@@ -1,3 +1,7 @@
+Akeeba Data Compliance 2.0.2
+================================================================================
+~ Joomla changed the location of cacert.pem
+
 Akeeba Data Compliance 2.0.1
 ================================================================================
 ~ Converted all tables to InnoDB for better performance
