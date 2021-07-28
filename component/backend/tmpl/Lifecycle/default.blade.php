@@ -39,8 +39,8 @@ $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $current
             ])
         @else
             <input
-                    type="datetime-local"
-                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+                    type="date"
+                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                     name="when"
                     id="when"
                     value="{{{ $model->when }}}"

@@ -1,3 +1,7 @@
+Akeeba Data Compliance 2.0.3
+================================================================================
+~ Changes in Joomla 4.0.0-RC5 broke the date and time input fields. Now using native HTML 5 controls.
+
 Akeeba Data Compliance 2.0.2
 ================================================================================
 ~ Joomla changed the location of cacert.pem
