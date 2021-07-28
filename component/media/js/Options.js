@@ -12,7 +12,7 @@ akeeba.Loader.add(["akeeba.System"], function ()
         {
             event.preventDefault();
 
-            var elTarget = event.currentTarget;
+            var elTarget = document.getElementById('datacompliance-article');
 
             if (elTarget.style.display === "none")
             {
