@@ -32,10 +32,22 @@ $canManage   = $currentUser->authorise('wipe', 'com_datacompliance') || $current
     </div>
 
     <div class="akeeba-filter-element akeeba-form-group">
-        @jhtml('calendar', $model->when, 'when', 'when', '%Y-%m-%d', [
-        'placeholder' => \Joomla\CMS\Language\Text::_('COM_DATACOMPLIANCE_LIFECYCLE_FILTER_WHEN'),
-        'class' => 'akeebaCommonEventsOnChangeSubmit',
-        ])
+        @if (version_compare(JVERSION, '3.999.999', 'le'))
+            @jhtml('calendar', $model->when, 'when', 'when', '%Y-%m-%d', [
+            'placeholder' => \Joomla\CMS\Language\Text::_('COM_DATACOMPLIANCE_LIFECYCLE_FILTER_WHEN'),
+            'class' => 'akeebaCommonEventsOnChangeSubmit',
+            ])
+        @else
+            <input
+                    type="datetime-local"
+                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+                    name="when"
+                    id="when"
+                    value="{{{ $model->when }}}"
+                    placeholder="@lang('COM_DATACOMPLIANCE_LIFECYCLE_FILTER_WHEN')"
+                    class="akeebaCommonEventsOnChangeSubmit"
+            >
+        @endif
     </div>
 
 @stop
