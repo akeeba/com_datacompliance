@@ -2,6 +2,7 @@ Akeeba Data Compliance 2.0.3
 ================================================================================
 ~ Changes in Joomla 4.0.0-RC5 broke the date and time input fields. Now using native HTML 5 controls.
 # [HIGH] The Privacy Policy article is not displayed in the data options page
+# [HIGH] Uninstallation broken on Joomla 4 due to different installation script event handling.
 
 Akeeba Data Compliance 2.0.2
 ================================================================================
