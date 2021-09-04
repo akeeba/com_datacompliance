@@ -11,7 +11,7 @@
 /release/*
 
 ### Composer
-/vendor
+/component/backend/vendor
 
 ### Other generated files
 /assets/email/*.ini

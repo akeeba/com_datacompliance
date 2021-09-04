@@ -28,7 +28,11 @@ class DataComplianceComponent extends MVCComponent implements
 
 	public function boot(ContainerInterface $container)
 	{
+		// Register the HTML helper
 		$dbo = $container->get('DatabaseDriver');
 		$this->getRegistry()->register('datacompliance', new DataCompliance($dbo));
+
+		// Make sure the Composer autoloader for our dependencies is loaded
+		require_once __DIR__ . '/../../vendor/autoload.php';
 	}
 }
