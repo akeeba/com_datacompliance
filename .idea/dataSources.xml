@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="joomla.datasource" uuid="c7b105c8-0455-4d0b-b5e7-757523bde3d6">
+    <data-source source="LOCAL" name="joomla.datasource" uuid="56412dbc-0087-48da-aa4b-99ca291c2115">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
-      <remarks>$USER_HOME$/Sites/boot/configuration.php</remarks>
+      <remarks>$USER_HOME$/Sites/boot4/configuration.php</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://127.0.0.1:3306/boot</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="Dev4" uuid="220afd80-8bb1-4cfa-9e8f-0971a2b3c282">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/dev4</jdbc-url>
+      <jdbc-url>jdbc:mysql://127.0.0.1:3306/boot4</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
 </project>
