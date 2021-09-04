@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Copyright" pattern="((file:build/templates/link.php||file:build/templates/version.php||file:component//*)&amp;&amp;!file:component/backend/vendor//*&amp;&amp;!file:component/language//*||file:modules//*||file:plugins//*||file:translation//*||file:build/build.xml||file:component//*)&amp;&amp;!file:component/backend/vendor//*&amp;&amp;!file:component/language//*&amp;&amp;!file:component/media/js/Chart.bundle.min.js||file:build/templates//*||file:component/language//*" />
+</component>

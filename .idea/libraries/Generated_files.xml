@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/old/component/media/js/ControlPanel.min.js" />
+      <root url="file://$PROJECT_DIR$/old/component/media/js/Options.min.js" />
+      <root url="file://$PROJECT_DIR$/old/component/media/js/Options.min.min.js" />
+      <root url="file://$PROJECT_DIR$/old/plugins/system/datacompliancecookie/media/js/datacompliancecookies.min.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
