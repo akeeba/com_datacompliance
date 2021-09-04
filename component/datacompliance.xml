@@ -37,6 +37,7 @@
 
 		<!-- Back-end files -->
         <files folder="backend">
+			<folder>assets</folder>
 			<folder>forms</folder>
 			<folder>language</folder>
 			<folder>services</folder>
