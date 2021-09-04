@@ -23,9 +23,6 @@
         <!-- Component -->
         <file type="component" id="com_datacompliance">com_datacompliance.zip</file>
 
-        <!-- CLI scripts -->
-        <file type="file" id="file_datacompliance">file_datacompliance.zip</file>
-
         <!-- Plugins: datacompliance // DO NOT RE-ORDER!!! -->
         <!-- IMPORTANT: The email plugin MUST be installed first to ensure the correct publish order -->
         <file type="plugin" group="datacompliance" id="email">plg_datacompliance_email.zip</file>

@@ -1,0 +1,86 @@
+<!--
+  ~ @package   AkeebaDataCompliance
+  ~ @copyright Copyright (c)2018-2021 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+<extension type="component" version="4.0.0" method="upgrade">
+	<name>COM_DATACOMPLIANCE</name>
+	<creationDate>2021-09-04</creationDate>
+	<author>Nicholas K. Dionysopoulos</author>
+	<authorEmail>nicholas@akeeba.com</authorEmail>
+	<authorUrl>https://www.akeeba.com</authorUrl>
+	<copyright>Copyright (c)2018-2021 Nicholas K. Dionysopoulos</copyright>
+	<license>This component in released under the GNU/GPL v3 or later license</license>
+	<version>3.0.0</version>
+	<description>COM_DATACOMPLIANCE_XML_DESCRIPTION</description>
+	<namespace path="src">Akeeba\Component\DataCompliance</namespace>
+
+	<!-- Public front end files -->
+	<files folder="frontend">
+		<folder>language</folder>
+		<folder>src</folder>
+		<folder>tmpl</folder>
+
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
+	</files>
+
+	<!-- Front end translation files -->
+	<languages folder="frontend/language">
+		<language tag="en-GB">en-GB/com_datacompliance.ini</language>
+	</languages>
+
+	<!-- Administrator back-end section -->
+	<administration>
+		<!-- Administration menu -->
+		<menu>COM_DATACOMPLIANCE</menu>
+
+		<!-- Back-end files -->
+        <files folder="backend">
+			<folder>forms</folder>
+			<folder>language</folder>
+			<folder>services</folder>
+			<folder>sql</folder>
+			<folder>src</folder>
+			<folder>tmpl</folder>
+
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>
+        </files>
+
+		<!-- Back-end translation files -->
+		<languages folder="backend/language">
+			<language tag="en-GB">en-GB/com_datacompliance.ini</language>
+			<language tag="en-GB">en-GB/com_datacompliance.sys.ini</language>
+		</languages>
+
+	</administration>
+
+	<!-- Media files -->
+	<media destination="com_datacompliance" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+
+		<filename>joomla.asset.json</filename>
+	</media>
+
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+
+	<!--<scriptfile>script.com_datacompliance.php</scriptfile>-->
+</extension>

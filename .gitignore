@@ -1,27 +1,17 @@
-/.idea/*
+### Node Modules
+/node_modules
 
-/documentation/*.xml~
-/documentation/output/*
+### Component
+# Generated files in the component folder
+/component/backend/paddle.xml
+# Old component being migrated
+/old
 
-/component/datacompliance.xml
-
-/component/backend/datacompliance.xml
-/component/backend/CHANGELOG.php
-/component/backend/version.php
-/component/backend/views
-
-/component/cli/*.xml
-
-/component/frontend/views
-
-/component/media/css/fef*
-/component/media/fonts
-/component/media/images
-/component/media/uncompressed/js/tabs.js
-
-/component/backend/vendor
-
+### Release files
 /release/*
 
-# Symlink to FEF to let phpStorm auto-complete the CSS class names
-/fef.min.css
+### Composer
+/vendor
+
+### Other generated files
+/assets/email/*.ini

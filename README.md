@@ -1,6 +1,8 @@
 # Data Compliance
 
-A tool to help comply with the European Union's General Data Protection Directive 
+A tool to facilitate GDPR conformance of your Joomla! sites
+
+[Download](https://www.akeeba.com/download/official/datacompliance.html) • [Documentation](https://www.akeeba.com/documentation/data-compliance.html)
 
 ## What does it do?
 
@@ -12,27 +14,30 @@ The component allows the site's visitors to:
 
 The component also keeps an audit log of all the user profile changes, data exports and account removal.
 
-The account removal audit log can be automatically exported to S3 (in a JSON format) or a filesystem location or email and replayed at a later time. This lets you comply with the GDPR when restoring older backups. Note that this audit log does NOT include any personally identifiable information, just the anonymous IDs of the information deleted.  
+The account removal audit log can be automatically exported to S3 (in a JSON format). This lets you comply with the GDPR requiring you to keep an audit trail of your compliance to personal data requests. Note that this audit log does NOT include any personally identifiable information, just the anonymous IDs of the information deleted.  
 
-There are CLI plugins included to schedule periodic removal of stale accounts (lifecycle management).
+There is a Joomla CLI integration plugin. You can use the CLI commands to, among other things, schedule periodic removal of stale accounts. This lets you comply with the data minimisation requirement of the GDPR.
 
-## License 
+## Copyright notice and license 
 
-This component is distributed under the GNU General Public License version 3 or, at your option, any later version published by the Free Software Foundation.
+Akeeba Data Compliance — A tool to facilitate GDPR conformance of your Joomla! sites
+Copyright (C) 2018-2021  Nicholas K. Dionysopoulos / Akeeba Ltd
 
-## Download
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Stable releases are available from [our site's Downloads page](https://www.akeeba.com/download/official/datacompliance.html).
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License for more details.
 
-More current features and bug fixes may be found in the development branch. However, you will need to build the package yourself to access them.
+You should have received a copy of the GNU General Public License  along with this program.  If not, see [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).
 
 ## Support policy
 
 We do not provide any end user support.
 
-If you are a developer and want to contribute a bug fix or small feature please send a Pull Request. If it's a more significant feature you want to contribute please file an issue first, explaining your use case, how you propose to address it and what is your timeline for writing the code. We will get back to you within a week at most. 
+If you are a developer and want to contribute a bug fix or small feature please send a Pull Request. 
 
-## Prerequisites
+If it's a more significant feature you want to contribute please file an issue first, explaining your use case, how you propose to address it and what is your timeline for writing the code.
+
+## Building the component (for developers)
 
 In order to build the installation packages of this component you will need to have the following tools:
 
@@ -45,9 +50,6 @@ You will also need the following path structure inside a folder on your system
 
 * **com_datacompliance** This repository
 * **buildfiles** [Akeeba Build Tools](https://github.com/akeeba/buildfiles)
-* **fof** [Framework on Framework](https://github.com/akeeba/fof)
-* **fef** [Akeeba Front-end Framework](https://github.com/akeeba/fef)
-* **translations** [Akeeba Translations](https://github.com/akeeba/translations)
 
 You will need to use the exact folder names specified here.
 

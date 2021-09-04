@@ -2,7 +2,7 @@
   "name": "akeeba/com_datacompliance",
   "description": "Akeeba DataCompliance for Joomla",
   "config": {
-    "vendor-dir": "component/backend/vendor",
+    "vendor-dir": "old/component/backend/vendor",
     "platform": {
       "php": "7.2.0"
     }

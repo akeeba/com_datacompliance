@@ -8,7 +8,4 @@
 // Internal linking script
 $hardlink_files  = [];
 $symlink_files   = [];
-$symlink_folders = [
-	// Force phpStorm to auto-complete CSS classes
-	'../fef/out/css/fef-joomla.min.css' => 'fef.min.css',
-];
+$symlink_folders = [];

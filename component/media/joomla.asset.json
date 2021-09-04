@@ -1,0 +1,41 @@
+{
+	"$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+	"name": "com_datacompliance",
+	"version": "3.0.0",
+	"description": "Akeeba DataCompliance",
+	"license": "GPL-3.0-or-later",
+	"assets": [
+		{
+			"name": "com_datacompliance.backend",
+			"description": "Backend CSS",
+			"type": "style",
+			"uri": "com_datacompliance/backend.css"
+		},
+
+		{
+			"name": "com_datacompliance.controlpanel",
+			"description": "Control Panel JavaScript",
+			"type": "script",
+			"uri": "com_datacompliance/controlpanel.min.js",
+			"dependencies": [
+				"core"
+			],
+			"attributes": {
+				"defer": true
+			}
+		},
+
+		{
+			"name": "com_datacompliance.options",
+			"description": "Data Options JavaScript",
+			"type": "script",
+			"uri": "com_datacompliance/options.min.js",
+			"dependencies": [
+				"core"
+			],
+			"attributes": {
+				"defer": true
+			}
+		}
+	]
+}
