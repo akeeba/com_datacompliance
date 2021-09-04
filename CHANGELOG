@@ -1,3 +1,7 @@
+Akeeba Data Compliance 2.0.4
+================================================================================
++ Use Joomla Privacy plugins when removing users
+
 Akeeba Data Compliance 2.0.3
 ================================================================================
 ~ Changes in Joomla 4.0.0-RC5 broke the date and time input fields. Now using native HTML 5 controls.
@@ -15,7 +19,7 @@ Akeeba Data Compliance 2.0.1
 # [HIGH] Cannot delete user or export settings from the frontend
 
 Akeeba Data Compliance 2.0.0
-================================================================================
+================================================π================================
 + Rewritten to use FOF 4.0
 + Renamed ViewTemplates to tmpl (Joomla 4 convention, with fallback code for Joomla 3)
 + Kills the redirection imposed by the Joomla privacy consent to avoid an infinite redirection loop

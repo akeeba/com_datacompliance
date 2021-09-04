@@ -9,11 +9,15 @@ namespace Akeeba\DataCompliance\Admin\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\DataCompliance\Admin\Model\Mixin\JoomlaPrivacy;
 use DateTime;
 use Exception;
 use FOF40\Date\Date;
+use FOF40\Encrypt\Randval;
 use FOF40\Model\DataModel\Exception\RecordNotLoaded;
 use FOF40\Model\Model;
+use Joomla\CMS\Factory;
+use Joomla\Component\Privacy\Administrator\Removal\Status;
 use RuntimeException;
 
 /**
@@ -21,61 +25,15 @@ use RuntimeException;
  */
 class Wipe extends Model
 {
-	protected $error = '';
+	use JoomlaPrivacy;
 
 	/** @var Wipetrails $auditRecord */
 	protected $auditRecord;
 
+	protected $error = '';
+
 	/** @var bool Should we skip the creation of an audit record (ie we're replaying an old one) */
 	protected $skipAuditRecord = false;
-
-	/**
-	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
-	 *
-	 * @param   int     $userId   The user ID to export
-	 * @param   string  $type     user, admin or lifecycle
-	 * @param   bool    $godMode  If true all checks are off. INCREDIBLY DANGEROUS! CAN EVEN REMOVE SUPER USERS.
-	 *
-	 * @return  bool  True on success.
-	 *
-	 * @throws Exception
-	 */
-	public function wipe($userId, $type = 'user', $godMode = false): bool
-	{
-		if (!$godMode && !$this->checkWipeAbility($userId, $type))
-		{
-			return false;
-		}
-
-		$this->createAuditRecord($userId, $type);
-
-		// Actually delete the records
-		$this->importPlugin('datacompliance');
-
-		// Set a session variable indicating we are wiping a profile, therefore no change audit trail should be preserved
-		$this->container->platform->setSessionVar('wiping', true, 'com_datacompliance');
-
-		// Run the user account removal
-		$auditItems = [];
-		$results    = $this->runPlugins('onDataComplianceDeleteUser', [$userId, $type]);
-
-		foreach ($results as $result)
-		{
-			if (!is_array($result))
-			{
-				continue;
-			}
-
-			$auditItems = array_merge($auditItems, $result);
-		}
-
-		$this->saveAuditRecord($auditItems);
-
-		// Unset the session variable indicating we are wiping a profile
-		$this->container->platform->setSessionVar('wiping', false, 'com_datacompliance');
-
-		return true;
-	}
 
 	/**
 	 * Checks if we can wipe a user. If it returns FALSE use getError to retrieve the reason.
@@ -91,9 +49,13 @@ class Wipe extends Model
 	public function checkWipeAbility(int $userId, string $type = 'user', DateTime $when = null): bool
 	{
 		$this->importPlugin('datacompliance');
+		$this->importPlugin('privacy');
 
 		try
 		{
+			// Joomla Privacy
+			$this->checkJoomlaPrivacyWipeAbility($userId, new Date($when));
+			// Akeeba DataCompliance
 			$this->runPlugins('onDataComplianceCanDelete', [$userId, $type, $when]);
 		}
 		catch (RuntimeException $e)
@@ -104,6 +66,16 @@ class Wipe extends Model
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get the reason why wiping is not allowed
+	 *
+	 * @return  string
+	 */
+	public function getError(): string
+	{
+		return $this->error;
 	}
 
 	/**
@@ -120,6 +92,7 @@ class Wipe extends Model
 	{
 		// Load the plugins.
 		$this->importPlugin('datacompliance');
+		$this->importPlugin('privacy');
 
 		try
 		{
@@ -160,56 +133,6 @@ class Wipe extends Model
 	}
 
 	/**
-	 * Get the reason why wiping is not allowed
-	 *
-	 * @return  string
-	 */
-	public function getError(): string
-	{
-		return $this->error;
-	}
-
-	/**
-	 * Load plugins of a specific type.
-	 *
-	 * This is a simple shim to FOF, ensuring that plugins WILL be loaded under CLI.
-	 *
-	 * @param   string  $type  The type of the plugins to be loaded
-	 *
-	 * @return  void
-	 */
-	public function importPlugin($type)
-	{
-		if ($this->container->platform->isCli())
-		{
-			$this->container->platform->setAllowPluginsInCli(true);
-		}
-
-		$this->container->platform->importPlugin($type);
-	}
-
-	/**
-	 * Execute plugins (system-level triggers) and fetch back an array with their return values. Do not go through FOF;
-	 * it does not run that under CLI
-	 *
-	 * @param   string $event The event (trigger) name, e.g. onBeforeScratchMyEar
-	 * @param   array  $data  A hash array of data sent to the plugins as part of the trigger
-	 *
-	 * @return  array  A simple array containing the results of the plugins triggered
-	 *
-	 * @throws Exception
-	 */
-	public function runPlugins(string $event, array $data = [])
-	{
-		if (class_exists('JEventDispatcher'))
-		{
-			return \JEventDispatcher::getInstance()->trigger($event, $data);
-		}
-
-		return \JFactory::getApplication()->triggerEvent($event, $data);
-	}
-
-	/**
 	 * Get the IDs of the users we have already deleted
 	 *
 	 * @return  array
@@ -224,80 +147,6 @@ class Wipe extends Model
 		$alreadyWiped = $db->setQuery($query)->loadColumn(0);
 
 		return $alreadyWiped;
-	}
-
-	/**
-	 * Mark a user as notified a user that their account will be deleted. This method does NOT send an email or perform
-	 * any other kind of notification. It only marks the user account as notified. If it returns false you MUST NOT
-	 * send any emails to the user.
-	 *
-	 * @param   int       $userId  Which user should be notified?
-	 * @param   DateTime  $when    When is their account going to be deleted?
-	 *
-	 * @return  bool  False if the user should NOT be notified (can't be deleted on $when or already notified)
-	 *
-	 * @throws Exception
-	 */
-	public function notifyUser(int $userId, DateTime $when): bool
-	{
-		// Can the user really be deleted on the date and time specified by $when?
-		if (!$this->checkWipeAbility($userId, $when))
-		{
-			return false;
-		}
-
-		// Is the user already notified?
-		if ($this->isUserNotified($userId))
-		{
-			return false;
-		}
-
-		// Mark the user notified
-		$db = $this->container->db;
-
-		// -- Delete old records
-		$this->resetUserNotification($userId);
-
-		// -- Yes, they have been notified
-		$o = (object)[
-			'user_id' => $userId,
-			'profile_key' => 'datacompliance.notified',
-			'profile_value' => 1
-		];
-		$db->insertObject('#__user_profiles', $o);
-
-		// -- This is when we notified them on
-		$o = (object)[
-			'user_id' => $userId,
-			'profile_key' => 'datacompliance.notified_on',
-			'profile_value' => $this->container->platform->getDate()->toSql()
-		];
-		$db->insertObject('#__user_profiles', $o);
-
-		// -- This is when we notified them for
-		$o = (object)[
-			'user_id' => $userId,
-			'profile_key' => 'datacompliance.notified_for',
-			'profile_value' => $this->container->platform->getDate($when->getTimestamp())->toSql()
-		];
-		$db->insertObject('#__user_profiles', $o);
-
-		return true;
-	}
-
-	/**
-	 * Reset the status of the notifications we have sent to the user regarding their profile deletion.
-	 *
-	 * @param   int  $userId
-	 */
-	public function resetUserNotification($userId)
-	{
-		$db    = $this->container->db;
-		$query = $db->getQuery(true)
-			->delete($db->qn('#__user_profiles'))
-			->where($db->qn('user_id') . ' = ' . $userId)
-			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
-		$db->setQuery($query)->execute();
 	}
 
 	/**
@@ -348,7 +197,7 @@ class Wipe extends Model
 		 * If the user was told their account will be deleted after the current deletion date ($when) consider them
 		 * not notified. This prevents deletion of a user account before the date the user knows they can no longer
 		 * take any action to prevent account deletion.
-         */
+		 */
 		if ($notifiedFor->getTimestamp() <= $when->getTimestamp())
 		{
 			return true;
@@ -357,16 +206,215 @@ class Wipe extends Model
 		return false;
 	}
 
+	/**
+	 * Mark a user as notified a user that their account will be deleted. This method does NOT send an email or perform
+	 * any other kind of notification. It only marks the user account as notified. If it returns false you MUST NOT
+	 * send any emails to the user.
+	 *
+	 * @param   int       $userId  Which user should be notified?
+	 * @param   DateTime  $when    When is their account going to be deleted?
+	 *
+	 * @return  bool  False if the user should NOT be notified (can't be deleted on $when or already notified)
+	 *
+	 * @throws Exception
+	 */
+	public function notifyUser(int $userId, DateTime $when): bool
+	{
+		// Can the user really be deleted on the date and time specified by $when?
+		if (!$this->checkWipeAbility($userId, $when))
+		{
+			return false;
+		}
+
+		// Is the user already notified?
+		if ($this->isUserNotified($userId))
+		{
+			return false;
+		}
+
+		// Mark the user notified
+		$db = $this->container->db;
+
+		// -- Delete old records
+		$this->resetUserNotification($userId);
+
+		// -- Yes, they have been notified
+		$o = (object) [
+			'user_id'       => $userId,
+			'profile_key'   => 'datacompliance.notified',
+			'profile_value' => 1,
+		];
+		$db->insertObject('#__user_profiles', $o);
+
+		// -- This is when we notified them on
+		$o = (object) [
+			'user_id'       => $userId,
+			'profile_key'   => 'datacompliance.notified_on',
+			'profile_value' => $this->container->platform->getDate()->toSql(),
+		];
+		$db->insertObject('#__user_profiles', $o);
+
+		// -- This is when we notified them for
+		$o = (object) [
+			'user_id'       => $userId,
+			'profile_key'   => 'datacompliance.notified_for',
+			'profile_value' => $this->container->platform->getDate($when->getTimestamp())->toSql(),
+		];
+		$db->insertObject('#__user_profiles', $o);
+
+		return true;
+	}
+
+	/**
+	 * Reset the status of the notifications we have sent to the user regarding their profile deletion.
+	 *
+	 * @param   int  $userId
+	 */
+	public function resetUserNotification($userId)
+	{
+		$db    = $this->container->db;
+		$query = $db->getQuery(true)
+			->delete($db->qn('#__user_profiles'))
+			->where($db->qn('user_id') . ' = ' . $userId)
+			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
+		$db->setQuery($query)->execute();
+	}
+
 	public function skipAuditRecord(bool $value)
 	{
 		$this->skipAuditRecord = $value;
 	}
 
 	/**
-	 * Creates (if requested) an audit record for current operation
+	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
 	 *
 	 * @param   int     $userId   The user ID to export
 	 * @param   string  $type     user, admin or lifecycle
+	 * @param   bool    $godMode  If true all checks are off. INCREDIBLY DANGEROUS! CAN EVEN REMOVE SUPER USERS.
+	 *
+	 * @return  bool  True on success.
+	 *
+	 * @throws Exception
+	 */
+	public function wipe($userId, $type = 'user', $godMode = false): bool
+	{
+		if (!$godMode && !$this->checkWipeAbility($userId, $type))
+		{
+			return false;
+		}
+
+		$this->createAuditRecord($userId, $type);
+
+		// Actually delete the records
+		$this->importPlugin('datacompliance');
+		$this->importPlugin('privacy');
+
+		// Set a session variable indicating we are wiping a profile, therefore no change audit trail should be preserved
+		$this->container->platform->setSessionVar('wiping', true, 'com_datacompliance');
+
+		// Run the user account removal
+		$auditItems = [];
+		$results    = $this->runPlugins('onDataComplianceDeleteUser', [$userId, $type]);
+
+		foreach ($results as $result)
+		{
+			if (!is_array($result))
+			{
+				continue;
+			}
+
+			$auditItems = array_merge($auditItems, $result);
+		}
+
+		// Also run Joomla Privacy plugins
+		try
+		{
+			$this->deleteUserWithJoomla($userId);
+		}
+		catch (Exception $e)
+		{
+			// Don't care if it fails
+		}
+
+		$this->saveAuditRecord($auditItems);
+
+		// Unset the session variable indicating we are wiping a profile
+		$this->container->platform->setSessionVar('wiping', false, 'com_datacompliance');
+
+		return true;
+	}
+
+	/**
+	 * Checks whether Joomla reports a user account as ready for being wiped.
+	 *
+	 * @param   int   $userId  The user ID which will be deleted
+	 * @param   Date  $when    When the deletion will be taking place.
+	 *
+	 * @return  void
+	 * @throws  RuntimeException  If the user can't be wiped. The message says why.
+	 * @since   2.0.4
+	 */
+	private function checkJoomlaPrivacyWipeAbility(int $userId, Date $when): void
+	{
+		// This feature is available since Joomla! 3.9.0
+		if (version_compare(JVERSION, '3.9.0', 'lt'))
+		{
+			return;
+		}
+
+		// We'll need to go through FOF's platform
+		$platform = $this->container->platform;
+
+		// Get a user record
+		$user = $platform->getUser($userId);
+
+		// If the user does not exist fail early
+		if ($user->id != $userId)
+		{
+			return;
+		}
+
+		// Create a (fake) request table object for Joomla's privacy plugins
+		$request = $this->getJoomlaPrivacyRequestTable();
+
+		if (is_null($request))
+		{
+			return;
+		}
+
+		$randVal                           = new Randval();
+		$request->email                    = $user->email;
+		$request->requested_at             = $when->toSql();
+		$request->status                   = 1;
+		$request->request_type             = 'remove';
+		$request->confirm_token            = $randVal->getRandomPassword(32);
+		$request->confirm_token_created_at = $when->toSql();
+
+		$platform->importPlugin('privacy');
+		$results    = $platform->runPlugins('onPrivacyCanRemoveData', [$request, $user]);
+		$validClass = version_compare(JVERSION, '4.0.0') ? Status::class : \PrivacyRemovalStatus::class;
+
+		/** @var Status $result */
+		foreach ($results as $result)
+		{
+			if (!($result instanceof $validClass))
+			{
+				continue;
+			}
+
+			if (!$result->canRemove)
+			{
+				throw new RuntimeException($result->reason);
+			}
+		}
+
+	}
+
+	/**
+	 * Creates (if requested) an audit record for current operation
+	 *
+	 * @param   int     $userId  The user ID to export
+	 * @param   string  $type    user, admin or lifecycle
 	 */
 	private function createAuditRecord($userId, $type)
 	{
@@ -405,6 +453,102 @@ class Wipe extends Model
 				'type'    => $type,
 			]);
 		}
+	}
+
+	private function deleteUserWithJoomla(int $userId): void
+	{
+		// This feature is available since Joomla! 3.9.0
+		if (version_compare(JVERSION, '3.9.0', 'lt'))
+		{
+			return;
+		}
+
+		// We'll need to go through FOF's platform
+		$platform = $this->container->platform;
+
+		// Get a user record
+		$user = $platform->getUser($userId);
+
+		// If the user does not exist fail early
+		if ($user->id != $userId)
+		{
+			return;
+		}
+
+		// Create a (fake) request table object for Joomla's privacy plugins
+		$request = $this->getJoomlaPrivacyRequestTable();
+
+		if (is_null($request))
+		{
+			return;
+		}
+
+		$when                              = new Date();
+		$randVal                           = new Randval();
+		$request->email                    = $user->email;
+		$request->requested_at             = $when->toSql();
+		$request->status                   = 1;
+		$request->request_type             = 'remove';
+		$request->confirm_token            = $randVal->getRandomPassword(32);
+		$request->confirm_token_created_at = $when->toSql();
+
+		$platform->importPlugin('privacy');
+		$results    = $platform->runPlugins('onPrivacyRemoveData', [$request, $user]);
+		$validClass = version_compare(JVERSION, '4.0.0') ? Status::class : \PrivacyRemovalStatus::class;
+
+		/** @var Status $result */
+		foreach ($results as $result)
+		{
+			if (!($result instanceof $validClass))
+			{
+				continue;
+			}
+
+			if (!$result->canRemove)
+			{
+				throw new RuntimeException($result->reason);
+			}
+		}
+	}
+
+	/**
+	 * Load plugins of a specific type.
+	 *
+	 * This is a simple shim to FOF, ensuring that plugins WILL be loaded under CLI.
+	 *
+	 * @param   string  $type  The type of the plugins to be loaded
+	 *
+	 * @return  void
+	 */
+	private function importPlugin($type)
+	{
+		if ($this->container->platform->isCli())
+		{
+			$this->container->platform->setAllowPluginsInCli(true);
+		}
+
+		$this->container->platform->importPlugin($type);
+	}
+
+	/**
+	 * Execute plugins (system-level triggers) and fetch back an array with their return values. Do not go through FOF;
+	 * it does not run that under CLI
+	 *
+	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
+	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
+	 *
+	 * @return  array  A simple array containing the results of the plugins triggered
+	 *
+	 * @throws Exception
+	 */
+	private function runPlugins(string $event, array $data = [])
+	{
+		if (class_exists('JEventDispatcher'))
+		{
+			return \JEventDispatcher::getInstance()->trigger($event, $data);
+		}
+
+		return Factory::getApplication()->triggerEvent($event, $data);
 	}
 
 	/**

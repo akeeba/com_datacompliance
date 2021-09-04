@@ -10,10 +10,13 @@ namespace Akeeba\DataCompliance\Admin\Model;
 defined('_JEXEC') or die;
 
 use Akeeba\DataCompliance\Admin\Helper\Export as ExportHelper;
+use Akeeba\DataCompliance\Admin\Model\Mixin\JoomlaPrivacy;
 use DOMDocument;
 use FOF40\Encrypt\Randval;
 use FOF40\Model\Model;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Table\Table;
+use Joomla\Component\Privacy\Administrator\Table\RequestTable;
 use PrivacyExportDomain;
 use RuntimeException;
 use SimpleXMLElement;
@@ -23,6 +26,8 @@ use SimpleXMLElement;
  */
 class Export extends Model
 {
+	use JoomlaPrivacy;
+
 	/**
 	 * Exports the user information as a SimpleXMLElement object
 	 *
@@ -161,26 +166,15 @@ class Export extends Model
 			return [];
 		}
 
-		// Try to load the PrivacyTableRequest class
-		$tableFile = JPATH_ADMINISTRATOR . '/components/com_privacy/tables/request.php';
-
-		if (!@file_exists($tableFile) && !class_exists('PrivacyTableRequest'))
-		{
-			return [];
-		}
-		else
-		{
-			@include_once $tableFile;
-		}
-
-		if (!class_exists('PrivacyTableRequest'))
-		{
-			return [];
-		}
-
 		// Create a (fake) request table object for Joomla's privacy plugins
 		/** @var \PrivacyTableRequest $request */
-		$request                           = Table::getInstance('Request', 'PrivacyTable');
+		$request                           = $this->getJoomlaPrivacyRequestTable();
+
+		if (is_null($request))
+		{
+			return [];
+		}
+
 		$randVal                           = new Randval();
 		$rightNow                          = $platform->getDate()->toSql();
 		$request->email                    = $user->email;
