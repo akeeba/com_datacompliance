@@ -40,6 +40,7 @@
 			<folder>assets</folder>
 			<folder>forms</folder>
 			<folder>language</folder>
+			<folder>layouts</folder>
 			<folder>services</folder>
 			<folder>sql</folder>
 			<folder>src</folder>
