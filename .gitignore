@@ -3,7 +3,8 @@
 
 ### Component
 # Generated files in the component folder
-/component/backend/paddle.xml
+/component/backend/datacompliance.xml
+
 # Old component being migrated
 /old
 
@@ -12,6 +13,3 @@
 
 ### Composer
 /component/backend/vendor
-
-### Other generated files
-/assets/email/*.ini

@@ -13,6 +13,15 @@ use Exception;
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\MVC\View\ViewInterface;
 
+/**
+ * A trait for reusing the models and views returned from getModel() and getView().
+ *
+ * Joomla's MVC is supposed to have a controller which allows you to push models to the view. However, the way it is
+ * implemented means that every time you call getView you get a brand new instance of the view, with a blank state
+ * default model. This makes it impossible to set up the default model before setting up the view. This trait addresses
+ * this problem by making getModel() and getView() work in the more logical and consistent manner we are used to from
+ * FOF.
+ */
 trait ReusableModels
 {
 	static $_models = [];

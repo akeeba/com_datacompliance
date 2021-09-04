@@ -1,9 +1,13 @@
 <component name="libraryTable">
   <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/component/media/js/controlpanel.min.js" />
+      </sourceFilesUrls>
+    </properties>
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/old/component/media/js/ControlPanel.min.js" />
+      <root url="file://$PROJECT_DIR$/component/media/js/controlpanel.min.js" />
       <root url="file://$PROJECT_DIR$/old/component/media/js/Options.min.js" />
-      <root url="file://$PROJECT_DIR$/old/component/media/js/Options.min.min.js" />
       <root url="file://$PROJECT_DIR$/old/plugins/system/datacompliancecookie/media/js/datacompliancecookies.min.js" />
     </CLASSES>
     <JAVADOC />

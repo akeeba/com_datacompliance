@@ -12,6 +12,11 @@ defined('_JEXEC') || die;
 use ReflectionMethod;
 use ReflectionObject;
 
+/**
+ * Trait to register controller tasks in a way that resembles what we were doing in FOF.
+ *
+ * @since   3.0.0
+ */
 trait RegisterControllerTasks
 {
 	/**
@@ -30,7 +35,6 @@ trait RegisterControllerTasks
 
 		$refObj = new ReflectionObject($this);
 
-		/** @var ReflectionMethod $refMethod */
 		foreach ($refObj->getMethods(ReflectionMethod::IS_PUBLIC) as $refMethod)
 		{
 			if (
@@ -38,21 +42,25 @@ trait RegisterControllerTasks
 				$refMethod->isStatic() || $refMethod->isAbstract() || $refMethod->isClosure() ||
 				$refMethod->isConstructor() || $refMethod->isDestructor()
 
-			) {
+			)
+			{
 				continue;
 			}
 
 			$method = $refMethod->getName();
 
-			if (substr($method, 0, 1) == '_') {
+			if (substr($method, 0, 1) == '_')
+			{
 				continue;
 			}
 
-			if (substr($method, 0, 8) == 'onBefore') {
+			if (substr($method, 0, 8) == 'onBefore')
+			{
 				continue;
 			}
 
-			if (substr($method, 0, 7) == 'onAfter') {
+			if (substr($method, 0, 7) == 'onAfter')
+			{
 				continue;
 			}
 

@@ -10,9 +10,15 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller\Mixin;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Mixin\TriggerEvent;
+use Exception;
 use Joomla\CMS\Language\Text;
 use RuntimeException;
 
+/**
+ * Trait for dispatching events before and after controller tasks execute.
+ *
+ * @since  3.0.0
+ */
 trait ControllerEvents
 {
 	use TriggerEvent;
@@ -27,8 +33,8 @@ trait ControllerEvents
 	 *
 	 * @return  mixed   The value returned by the called method.
 	 *
-	 * @throws  \Exception
-	 * @since   9.0.0
+	 * @throws  Exception
+	 * @since   3.0.0
 	 */
 	public function execute($task)
 	{

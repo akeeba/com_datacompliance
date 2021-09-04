@@ -5,23 +5,23 @@
  */
 
 @font-face {
-  font-family: "Akeeba Products DataCompliance";
+  font-family: "Akeeba Products";
   src: url("../fonts/Akeeba-Products.woff");
   font-display: swap;
 }
 
-.icon-datacompliance,
-.icon-datacompliance-j4, {
+span.icon-datacompliance,
+span.icon-datacompliance-j4, {
   &:before{
-    font-family: 'Akeeba Products DataCompliance' !important;
+    font-family: 'Akeeba Products' !important;
     font-style: normal !important;
     font-weight: normal !important;
     line-height: 1 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
     display: inline-block;
-    -webkit-font-smoothing: antialiased;
     position: relative;
-    -moz-osx-font-smoothing: grayscale;
 
     content:'\004F';
   }
