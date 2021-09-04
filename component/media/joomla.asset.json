@@ -36,6 +36,14 @@
 			"attributes": {
 				"defer": true
 			}
+		},
+
+		{
+			"name": "com_datacompliance.backend",
+			"type": "preset",
+			"dependencies": [
+				"com_datacompliance.backend#style"
+			]
 		}
 	]
 }
