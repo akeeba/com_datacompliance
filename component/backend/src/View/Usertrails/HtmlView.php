@@ -63,6 +63,14 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected $state;
 
+	/**
+	 * Is this view an Empty State
+	 *
+	 * @var   boolean
+	 * @since 3.0.0
+	 */
+	private $isEmptyState = false;
+
 	public function display($tpl = null)
 	{
 		/** @var ConsenttrailsModel $model */
@@ -72,6 +80,12 @@ class HtmlView extends BaseHtmlView
 		$this->state         = $model->getState();
 		$this->filterForm    = $model->getFilterForm();
 		$this->activeFilters = $model->getActiveFilters();
+		$this->isEmptyState  = $this->get('IsEmptyState');
+
+		if (!\count($this->items) && $this->isEmptyState)
+		{
+			$this->setLayout('emptystate');
+		}
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
