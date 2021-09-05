@@ -70,6 +70,7 @@ class UpgradeModel extends BaseModel
 	private const REMOVE_EXTENSIONS = [
 		'file_datacompliance',
 		'plg_system_datacompliancecookie',
+		'plg_datacompliance_akeebasubs',
 	];
 
 	/**
