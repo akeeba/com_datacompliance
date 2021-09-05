@@ -3,12 +3,12 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$PROJECT_DIR$/component/media/js/controlpanel.min.js" />
+        <item url="file://$PROJECT_DIR$/component/media/js/options.min.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/component/media/js/controlpanel.min.js" />
-      <root url="file://$PROJECT_DIR$/old/component/media/js/Options.min.js" />
-      <root url="file://$PROJECT_DIR$/old/plugins/system/datacompliancecookie/media/js/datacompliancecookies.min.js" />
+      <root url="file://$PROJECT_DIR$/component/media/js/options.min.js" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
