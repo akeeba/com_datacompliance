@@ -68,7 +68,8 @@ class UpgradeModel extends BaseModel
 
 	/** @var string[] Extensions to always uninstall if they are still installed (runs on install and upgrade) */
 	private const REMOVE_EXTENSIONS = [
-		'file_datacompliance'
+		'file_datacompliance',
+		'plg_system_datacompliancecookie',
 	];
 
 	/**

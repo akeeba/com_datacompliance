@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\DataCompliance\Administrator\View\Consenttrails;
+namespace Akeeba\Component\DataCompliance\Administrator\View\Usertrails;
 
 defined('_JEXEC') or die;
 
@@ -79,7 +79,7 @@ class HtmlView extends BaseHtmlView
 			throw new GenericDataException(implode("\n", $errors), 500);
 		}
 
-		ToolbarHelper::title(Text::_('COM_DATACOMPLIANCE_TITLE_CONSENTTRAILS'), 'datacompliance');
+		ToolbarHelper::title(Text::_('COM_DATACOMPLIANCE_USERTRAILS'), 'datacompliance');
 		ToolbarHelper::back('COM_DATACOMPLIANCE_TITLE_DASHBOARD_SHORT', 'index.php?option=com_datacompliance');
 
 		parent::display($tpl);

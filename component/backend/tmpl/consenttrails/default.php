@@ -51,10 +51,10 @@ $userLayout = new FileLayout('akeeba.datacompliance.common.user', JPATH_ADMINIST
 					<thead>
 					<tr>
 						<th scope="col">
-							<?= HTMLHelper::_('searchtools.sort', 'COM_DATACOMPLIANCE_CONSENTTRAIL_FIELD_CREATED_BY', 'created_by', $listDirn, $listOrder); ?>
+							<?= Text::_('COM_DATACOMPLIANCE_CONSENTTRAIL_FIELD_CREATED_BY') ?>
 						</th>
 						<th scope="col">
-							<?= Text::_('COM_DATACOMPLIANCE_CONSENTTRAIL_FIELD_CREATED_ON') ?>
+							<?= HTMLHelper::_('searchtools.sort', 'COM_DATACOMPLIANCE_CONSENTTRAIL_FIELD_CREATED_ON', 'created_on', $listDirn, $listOrder); ?>
 						</th>
 						<th scope="col">
 							<?= Text::_('COM_DATACOMPLIANCE_CONSENTTRAIL_FIELD_REQUESTER_IP') ?>
