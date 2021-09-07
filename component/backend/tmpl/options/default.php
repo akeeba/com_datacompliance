@@ -12,7 +12,9 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
-$myUser = $this->getContainer()->platform->getUser();
+/** @var \Akeeba\Component\DataCompliance\Administrator\View\Options\HtmlView $this  */
+
+$myUser = Factory::getApplication()->getIdentity();
 $token  = Factory::getApplication()->getFormToken();
 ?>
 
@@ -26,16 +28,18 @@ $token  = Factory::getApplication()->getFormToken();
 		<p>
 			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_INFOBLOCK', $this->siteName) ?>
 		</p>
-		<p>
-			<a class="akeebaDataComplianceArticleToggle">
-				<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_CLICKTOREAD') ?>
-			</a>
-		</p>
-		<div class="m-2 p-2 border border-2 d-none" id="datacompliance-article">
-			<h4 class="h2">
-				<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_POLICYHEADER') ?>
-			</h4>
-			<?= $this->article ?>
+		<div class="my-4">
+			<p>
+				<a class="akeebaDataComplianceArticleToggle">
+					<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_CLICKTOREAD') ?>
+				</a>
+			</p>
+			<div class="m-2 p-2 border border-2 d-none" id="datacompliance-article">
+				<h4 class="h2">
+					<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_POLICYHEADER') ?>
+				</h4>
+				<?= $this->article ?>
+			</div>
 		</div>
 		<p>
 			<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_CURRENTPREFERENCE') ?>
@@ -46,32 +50,27 @@ $token  = Factory::getApplication()->getFormToken();
 			</span>
 		</p>
 		<form
-				method="post"
-				action="<?= Route::_('index.php?option=com_datacompliance&view=Options&task=consent') ?>">
+			class="border border-primary rounded-3 p-3 m-2"
+			method="post"
+			action="<?= Route::_('index.php?option=com_datacompliance&view=Options&task=consent') ?>">
 
-			<div class="row mb-3">
-				<label for="enabled" class="col-sm-3 col-form-label">
+			<div class="mb-3">
+				<label for="enabled" class="fw-bold text-primary">
 					<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL', $this->siteName) ?>
 				</label>
-				<div class="col-sm-9">
-					<?= HTMLHelper::_('select.booleanlist', 'enabled', [
-						'class' => 'form-control',
-						'list.select' => 0
-					]) ?>
-				</div>
+				<?= HTMLHelper::_('datacompliance.booleanlist', 'enabled', 0, Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL')) ?>
 			</div>
 
-			<div class="row mb-3">
-				<div class="col-sm-9 offset-sm-3">
-					<button type="submit" class="btn btn-primary">
-						<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCEBUTTON') ?>
-					</button>
-				</div>
+
+			<div class="mb-3">
+				<button type="submit" class="btn btn-primary">
+					<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCEBUTTON') ?>
+				</button>
 			</div>
 
 			<?= HTMLHelper::_('form.token') ?>
 		</form>
-		<p>
+		<p class="text-muted mt-3 mb-1 text-end">
 			<span class="fa fa-info-circle" aria-hidden="true"></span>
 			<a href="https://ec.europa.eu/info/law/law-topic/data-protection_en" target="_blank">
 				<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELINK') ?>

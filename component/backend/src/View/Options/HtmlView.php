@@ -97,7 +97,7 @@ class HtmlView extends BaseHtmlView
 	 * @throws  Exception
 	 * @since   1.0.0
 	 */
-	protected function onBeforeOptions(): void
+	protected function onBeforeMain(): void
 	{
 		$this->populateBasicViewParameters();
 
@@ -132,7 +132,8 @@ class HtmlView extends BaseHtmlView
 
 		/** @var OptionsModel $model */
 		$model        = $this->getModel();
-		$this->layout = 'wipe';
+
+		$this->setLayout('wipe');
 
 		try
 		{
@@ -164,7 +165,9 @@ class HtmlView extends BaseHtmlView
 
 		$this->showExport = $cParams->get('showexport', 1);
 		$this->showWipe   = $cParams->get('showwipe', 1);
-		$this->user       = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+		$this->user       = empty($userID)
+			? Factory::getApplication()->getIdentity()
+			: Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
 		$this->type       = ($this->user->id == $currentUser->id) ? 'user' : 'admin';
 
 		if ($this->type == 'admin')

@@ -16,13 +16,13 @@ $otherInfo = ($otherInfo == 'COM_DATACOMPLIANCE_OPTIONS_WIPE_OTHERINFO') ? '' : 
 
 ?>
 <div class="card mb-3 border-danger">
-	<2 class="card-header h1 bg-danger text-white">
+	<h2 class="card-header h1 bg-danger text-white">
 		<?php if($this->type == 'user'): ?>
 		<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_HEADER') ?>
 		<?php else: ?>
 		<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ADMIN_HEADER', $this->user->username) ?>
 		<?php endif ?>
-	</2>
+	</h2>
 	<div class="card-body">
 		<div class="alert alert-warning">
 			<h3 class="h1">

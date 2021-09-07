@@ -11,6 +11,9 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\Model\DatabaseAwareTrait;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Database\DatabaseDriver;
@@ -57,4 +60,24 @@ class DataCompliance
 
 		return $jDate->format($format ?: 'Y-m-d H:i T', true);
 	}
+
+	public static function booleanList(string $name, bool $value, string $label, ?string $id = null)
+	{
+		return (new FileLayout('joomla.form.field.radio.switcher'))->render([
+			'id'            => $id ?: $value,
+			'name'          => $name,
+			'label'         => $label,
+			'value'         => $value ? 1 : 0,
+			'onchange'      => '',
+			'dataAttribute' => '',
+			'readonly'      => false,
+			'disabled'      => false,
+			'class'         => 'form-control',
+			'options'       => [
+				HTMLHelper::_('select.option', '0', Text::_('JNO')),
+				HTMLHelper::_('select.option', '1', Text::_('JYES')),
+			],
+		]);
+	}
+
 }
