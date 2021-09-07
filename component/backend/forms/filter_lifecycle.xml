@@ -14,16 +14,16 @@
                 label="JSEARCH_FILTER"
                 hint="JSEARCH_FILTER"
         />
-
         <field
-                name="enabled"
-                type="status"
+                name="lifecycle"
+                type="list"
                 optionsFilter="*,0,1"
-                label="JENABLED"
-                description="JFIELD_ENABLED_DESC"
+                label="COM_DATACOMPLIANCE_LIFECYCLE_FILTER_LIFECYCLE"
                 onchange="this.form.submit();"
         >
-            <option value="">JOPTION_SELECT_PUBLISHED</option>
+            <option value="">COM_DATACOMPLIANCE_LIFECYCLE_FILTER_LIFECYCLE_SELECT</option>
+            <option value="1">COM_DATACOMPLIANCE_LIFECYCLE_FILTER_LIFECYCLE_OPT_EXPIRED</option>
+            <option value="0">COM_DATACOMPLIANCE_LIFECYCLE_FILTER_LIFECYCLE_OPT_NOTEXPIRED</option>
         </field>
     </fields>
     <fields name="list">
@@ -33,12 +33,16 @@
                 label="JGLOBAL_SORT_BY"
                 statuses="*,0,1"
                 onchange="this.form.submit();"
-                default="a.created DESC"
+                default="id ASC"
                 validate="options"
         >
             <option value="">JGLOBAL_SORT_BY</option>
-            <option value="a.created ASC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_ASC</option>
-            <option value="a.created DESC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_DESC</option>
+            <option value="id ASC">JGRID_HEADING_ID_ASC</option>
+            <option value="id DESC">JGRID_HEADING_ID_DESC</option>
+            <option value="registerDate ASC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_REGISTERDATE_ASC</option>
+            <option value="registerDate DESC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_REGISTERDATE_DESC</option>
+            <option value="lastvisitDate ASC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_LASTVISITDATE</option>
+            <option value="lastvisitDate DESC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_LASTVISITDATE_ASC</option>
         </field>
 
         <field

@@ -5,6 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$/component/backend/src" isTestSource="false" packagePrefix="Akeeba\Component\DataCompliance\Administrator" />
       <sourceFolder url="file://$MODULE_DIR$/component/frontend/src" isTestSource="false" packagePrefix="Akeeba\Component\DataCompliance\Site" />
       <excludeFolder url="file://$MODULE_DIR$/old" />
+      <excludeFolder url="file://$MODULE_DIR$/component/backend/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/component/backend/vendor/akeeba/s3" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

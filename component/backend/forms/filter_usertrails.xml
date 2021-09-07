@@ -23,12 +23,14 @@
                 label="JGLOBAL_SORT_BY"
                 statuses="*,0,1"
                 onchange="this.form.submit();"
-                default="i.id ASC"
+                default="a.id ASC"
                 validate="options"
         >
             <option value="">JGLOBAL_SORT_BY</option>
-            <option value="a.created ASC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_ASC</option>
-            <option value="a.created DESC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_DESC</option>
+            <option value="a.name ASC">JGLOBAL_NAME_ASC</option>
+            <option value="a.name DESC">JGLOBAL_NAME_DESC</option>
+            <option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
+            <option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
         </field>
 
         <field

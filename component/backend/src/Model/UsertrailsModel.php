@@ -23,7 +23,7 @@ class UsertrailsModel extends ListModel
 	{
 		$config['filter_fields'] = $config['filter_fields'] ?? [];
 		$config['filter_fields'] = $config['filter_fields'] ?: [
-			'search', 'enabled',
+			'search',
 		];
 
 		parent::__construct($config, $factory);
@@ -115,14 +115,6 @@ class UsertrailsModel extends ListModel
 					->bind(':search3', $search)
 					->bind(':search4', $search);
 			}
-		}
-
-		// Published filter
-		$enabled = $this->getState('filter.enabled');
-		if (is_numeric($enabled))
-		{
-			$query->where($db->quoteName('a.enabled') . ' = :enabled')
-				->bind(':enabled', $enabled, ParameterType::INTEGER);
 		}
 
 		// List ordering clause

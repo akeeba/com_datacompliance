@@ -23,7 +23,8 @@ class WipetrailsModel extends ListModel
 	{
 		$config['filter_fields'] = $config['filter_fields'] ?? [];
 		$config['filter_fields'] = $config['filter_fields'] ?: [
-			'search', 'enabled',
+			'search',
+			'search',
 		];
 
 		parent::__construct($config, $factory);
@@ -115,14 +116,6 @@ class WipetrailsModel extends ListModel
 					->bind(':search3', $search)
 					->bind(':search4', $search);
 			}
-		}
-
-		// Published filter
-		$enabled = $this->getState('filter.enabled');
-		if (is_numeric($enabled))
-		{
-			$query->where($db->quoteName('a.enabled') . ' = :enabled')
-				->bind(':enabled', $enabled, ParameterType::INTEGER);
 		}
 
 		// List ordering clause

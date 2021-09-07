@@ -33,7 +33,7 @@
                 label="JGLOBAL_SORT_BY"
                 statuses="*,0,1"
                 onchange="this.form.submit();"
-                default="i.id ASC"
+                default="a.created DESC"
                 validate="options"
         >
             <option value="">JGLOBAL_SORT_BY</option>

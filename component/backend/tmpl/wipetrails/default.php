@@ -182,6 +182,9 @@ $userLayout = new FileLayout('akeeba.datacompliance.common.user', JPATH_ADMINIST
 					<?php endforeach; ?>
 					</tbody>
 				</table>
+
+				<?php // Load the pagination. ?>
+				<?= $this->pagination->getListFooter(); ?>
 				<?php endif; ?>
 
 				<input type="hidden" name="task" value="">
