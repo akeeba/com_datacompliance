@@ -15,8 +15,13 @@
     <creationDate>2021-08-12</creationDate>
     <version>2.0.3</version>
     <description>PLG_DATACOMPLIANCE_ARS_DESCRIPTION</description>
+    <namespace path="src">Joomla\Plugin\DataCompliance\ARS</namespace>
 
     <files>
+        <folder>language</folder>
+        <folder>services</folder>
+        <folder>src</folder>
+
         <filename plugin="ars">ars.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>

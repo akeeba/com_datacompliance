@@ -15,9 +15,10 @@ use Joomla\Database\DatabaseDriver;
 use Joomla\Event\DispatcherInterface;
 
 /**
- * Common class for all DataCompliance plugins
+ * Formerly used as the common class for all DataCompliance plugins
  *
  * @since  3.0.0
+ * @deprecated 4.0
  */
 abstract class AbstractPlugin extends CMSPlugin
 {

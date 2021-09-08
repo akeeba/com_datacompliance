@@ -29,6 +29,7 @@ use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\CMS\User\UserHelper;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
 
@@ -52,6 +53,17 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	 */
 	protected $db;
 
+	/**
+	 * Constructor
+	 *
+	 * @param   DispatcherInterface  &    $subject     The object to observe
+	 * @param   array                     $config      An optional associative array of configuration settings.
+	 *                                                 Recognized key values include 'name', 'group', 'params',
+	 *                                                 'language' (this list is not meant to be comprehensive).
+	 * @param   MVCFactoryInterface|null  $mvcFactory  The MVC factory for the Data Compliance component.
+	 *
+	 * @since   3.0.0
+	 */
 	public function __construct(&$subject, $config = [], MVCFactoryInterface $mvcFactory = null)
 	{
 		if (!empty($mvcFactory))
@@ -62,7 +74,12 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		parent::__construct($subject, $config);
 	}
 
-
+	/**
+	 * Return the mapping of event names and public methods in this object which handle them
+	 *
+	 * @return string[]
+	 * @since  3.0.0
+	 */
 	public static function getSubscribedEvents(): array
 	{
 		if (!ComponentHelper::isEnabled('com_datacompliance'))
@@ -82,7 +99,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @param   Event  $event  The event to process
 	 *
-	 * @return  boolean
+	 * @return  void
 	 *
 	 * @since   1.0.0
 	 */

@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/component/backend/src" isTestSource="false" packagePrefix="Akeeba\Component\DataCompliance\Administrator" />
       <sourceFolder url="file://$MODULE_DIR$/component/frontend/src" isTestSource="false" packagePrefix="Akeeba\Component\DataCompliance\Site" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/system/datacompliance/src" isTestSource="false" packagePrefix="Joomla\Plugin\System\DataCompliance" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/datacompliance/ars/src" isTestSource="false" packagePrefix="Joomla\Plugin\DataCompliance\ARS" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/user/datacompliance/src" isTestSource="false" packagePrefix="Joomla\Plugin\User\DataCompliance" />
       <excludeFolder url="file://$MODULE_DIR$/old" />
       <excludeFolder url="file://$MODULE_DIR$/component/backend/vendor/composer" />
