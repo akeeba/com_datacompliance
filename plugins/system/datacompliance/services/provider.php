@@ -33,12 +33,12 @@ return new class implements ServiceProviderInterface {
 
 		$container->set(
 			PluginInterface::class,
-			function (Container $container) use ($mvcFactory) {
+			function (Container $container)  {
 				$plugin     = PluginHelper::getPlugin('system', 'datacompliance');
 				$dispatcher = $container->get(DispatcherInterface::class);
 
 				return new DataCompliance(
-					$dispatcher, (array) $plugin, $mvcFactory
+					$dispatcher, (array) $plugin, new \Joomla\CMS\MVC\Factory\MVCFactory('Akeeba\\Component\\DataCompliance')
 				);
 			}
 		);
