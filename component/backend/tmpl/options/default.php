@@ -30,15 +30,17 @@ $token  = Factory::getApplication()->getFormToken();
 		</p>
 		<div class="my-4">
 			<p>
-				<a class="akeebaDataComplianceArticleToggle">
+				<a class="akeebaDataComplianceArticleToggle" href="#">
 					<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_CLICKTOREAD') ?>
 				</a>
 			</p>
-			<div class="m-2 p-2 border border-2 d-none" id="datacompliance-article">
-				<h4 class="h2">
+			<div class="m-2 border-info card" id="datacompliance-article" style="display: none">
+				<h4 class="h2 card-header bg-info text-white">
 					<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_POLICYHEADER') ?>
 				</h4>
-				<?= $this->article ?>
+				<div class="card-body">
+					<?= $this->article ?>
+				</div>
 			</div>
 		</div>
 		<p>
@@ -52,10 +54,10 @@ $token  = Factory::getApplication()->getFormToken();
 		<form
 			class="border border-primary rounded-3 p-3 m-2"
 			method="post"
-			action="<?= Route::_('index.php?option=com_datacompliance&view=Options&task=consent') ?>">
+			action="<?= Route::_('index.php?option=com_datacompliance&view=options&task=consent') ?>">
 
 			<div class="mb-3">
-				<label for="enabled" class="fw-bold text-primary">
+				<label for="enabled" class="fw-bold">
 					<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL', $this->siteName) ?>
 				</label>
 				<?= HTMLHelper::_('datacompliance.booleanlist', 'enabled', 0, Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL')) ?>

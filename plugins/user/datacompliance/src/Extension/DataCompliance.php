@@ -121,7 +121,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 		if (!in_array($name, ['com_admin.profile', 'com_users.user', 'com_users.profile', 'com_users.registration']))
 		{
-			$event->setArgument('result', true);
+			$this->setEventResult($event, true);
 
 			return;
 		}
@@ -143,7 +143,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 				if (!$menuItem->load($itemId))
 				{
-					$event->setArgument('result', true);
+					$this->setEventResult($event, true);
 
 					return;
 				}
@@ -158,7 +158,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 		if ($this->app->isClient('site') && !in_array($layout, ['edit', 'default']))
 		{
-			$event->setArgument('result', true);
+			$this->setEventResult($event, true);
 
 			return;
 		}
@@ -181,7 +181,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 		$user = empty($id)
 			? $this->app->getIdentity()
-			: Factory::getContainer()->get(UserFactoryInterface::class)->loadUserByUsername($id);
+			: Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($id);
 
 		// Make sure the loaded user is the correct one
 		if ($user->id != $id)
@@ -192,13 +192,13 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		// Make sure I am either editing myself (you can NOT make choices on behalf of another user).
 		if (!$this->canEditUser($user))
 		{
-			$event->setArgument('result', true);
+			$this->setEventResult($event, true);
 
 			return;
 		}
 
 		// Add the fields to the form.
-		Form::addFormPath(dirname(__FILE__) . '/datacompliance');
+		Form::addFormPath(__DIR__ . '/../../datacompliance');
 
 		// At this point we should load our language files.
 		$this->loadLanguage();
@@ -220,14 +220,14 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			];
 
 			$form->loadFile('list', false);
-			$event->setArgument('result', true);
+			$this->setEventResult($event, true);
 
 			return;
 		}
 
 		// Profile edit page
 		$form->loadFile('datacompliance', false);
-		$event->setArgument('result', true);
+		$this->setEventResult($event, true);
 	}
 
 	/**
@@ -438,7 +438,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			// Ignore it
 		}
 
-		$event->setArgument('result', true);
+		$this->setEventResult($event, true);
 	}
 
 	/**
@@ -459,7 +459,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			return true;
 		}
 
-		// Guests can't have data complaince preferences
+		// Guests can't have data compliance preferences
 		if ($user->guest)
 		{
 			return false;
@@ -715,4 +715,26 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		];
 	}
 
+	/**
+	 * Sets the 'result' argument of an event, building upon previous results
+	 *
+	 * @param   Event  $event       The event you are handling
+	 * @param   mixed  $yourResult  The result value to add to the 'result' argument.
+	 *
+	 * @return  void
+	 * @since   3.0.0
+	 */
+	private function setEventResult(Event $event, $yourResult): void
+	{
+		$result = $event->hasArgument('result') ? $event->getArgument('result') : [];
+
+		if (!is_array($result))
+		{
+			$result = [$result];
+		}
+
+		$result[] = $yourResult;
+
+		$event->setArgument('result', $result);
+	}
 }

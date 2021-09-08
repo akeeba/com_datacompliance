@@ -197,7 +197,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		unset($deleteQuery);
 		unset($db);
 
-		$event->setArgument('result', $ret);
+		$this->setEventResult($event, $ret);
 	}
 
 	/**
@@ -256,7 +256,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 			unset($record);
 		}
 
-		$event->setArgument('result', $export);
+		$this->setEventResult($event, $export);
 	}
 
 	/**
@@ -276,8 +276,31 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		 */
 		[$userID, $type] = $event->getArguments();
 
-		$event->setArgument('result', [
+		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_ARS_ACTIONS_1'),
 		]);
+	}
+
+	/**
+	 * Sets the 'result' argument of an event, building upon previous results
+	 *
+	 * @param   Event  $event       The event you are handling
+	 * @param   mixed  $yourResult  The result value to add to the 'result' argument.
+	 *
+	 * @return  void
+	 * @since   3.0.0
+	 */
+	private function setEventResult(Event $event, $yourResult): void
+	{
+		$result = $event->hasArgument('result') ? $event->getArgument('result') : [];
+
+		if (!is_array($result))
+		{
+			$result = [$result];
+		}
+
+		$result[] = $yourResult;
+
+		$event->setArgument('result', $result);
 	}
 }

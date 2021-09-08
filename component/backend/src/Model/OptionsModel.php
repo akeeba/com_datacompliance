@@ -49,9 +49,9 @@ class OptionsModel extends BaseDatabaseModel
 		try
 		{
 			/** @var MVCFactoryInterface $factory */
-			$mvFactory = Factory::getApplication()->bootComponent('com_content')->getMVCFactory();;
+			$mvcFactory = Factory::getApplication()->bootComponent('com_content')->getMVCFactory();;
 			/** @var \Joomla\Component\Content\Administrator\Model\ArticleModel $contentModel */
-			$contentModel = $factory->createModel('Article', 'Administrator');
+			$contentModel = $mvcFactory->createModel('Article', 'Administrator');
 			$article      = $contentModel->getItem($articleId);
 		}
 		catch (Exception $e)
@@ -161,7 +161,7 @@ class OptionsModel extends BaseDatabaseModel
 		}
 
 		$consent->requester_ip = IpHelper::getIp();
-		$consent->enabled      = $preference;
+		$consent->enabled      = $preference ? 1 : 0;
 		$consent->store(true);
 
 		/**

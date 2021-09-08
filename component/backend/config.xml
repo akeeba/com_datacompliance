@@ -4,16 +4,16 @@
   ~ @copyright Copyright (c)2018-2021 Nicholas K. Dionysopoulos / Akeeba Ltd
   ~ @license   GNU General Public License version 3, or later
   -->
-<config addfieldpath="/administrator/components/com_datacompliance/fields">
+<config >
     <fieldset
             name="consent"
             label="COM_DATACOMPLIANCE_CONFIG_CONSENT_LABEL"
             description="COM_DATACOMPLIANCE_CONFIG_CONSENT_DESC"
-            addfieldpath="/administrator/components/com_content/models/fields"
+            addfieldprefix="Akeeba\Component\DataCompliance\Administrator\Field"
     >
         <field
                 name="policyarticle"
-                type="modal_article"
+                type="article"
                 label="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_LABEL"
                 description="COM_DATACOMPLIANCE_CONFIG_POLICYARTICLE_DESC"
                 select="true"
