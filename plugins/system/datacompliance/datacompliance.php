@@ -37,7 +37,6 @@ use Joomla\CMS\Plugin\CMSPlugin;
  *
  * @since 7.0.0
  */
-
 class PlgSystemDatacompliance extends CMSPlugin
 {
 

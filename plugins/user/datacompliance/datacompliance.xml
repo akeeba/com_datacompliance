@@ -5,7 +5,7 @@
   ~ @license   GNU General Public License version 3, or later
   -->
 
-<extension version="3.7" type="plugin" group="user" method="upgrade">
+<extension version="4.0" type="plugin" group="user" method="upgrade">
     <name>PLG_USER_DATACOMPLIANCE</name>
     <author>Nicholas K. Dionysopoulos</author>
     <authorEmail>nicholas@akeeba.com</authorEmail>
@@ -15,18 +15,24 @@
     <creationDate>2021-08-12</creationDate>
     <version>2.0.3</version>
     <description>PLG_USER_DATACOMPLIANCE_DESCRIPTION</description>
+    <namespace path="src">Joomla\Plugin\User\DataCompliance</namespace>
 
     <files>
-        <filename plugin="datacompliance">datacompliance.php</filename>
-        <filename>.htaccess</filename>
-        <filename>web.config</filename>
         <folder>datacompliance</folder>
         <folder>fields</folder>
+        <folder>language</folder>
+        <folder>services</folder>
+        <folder>src</folder>
+
+        <filename plugin="datacompliance">datacompliance.php</filename>
+
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
     </files>
 
     <languages folder="language">
-        <language tag="en-GB">en-GB/en-GB.plg_user_datacompliance.ini</language>
-        <language tag="en-GB">en-GB/en-GB.plg_user_datacompliance.sys.ini</language>
+        <language tag="en-GB">en-GB/plg_user_datacompliance.ini</language>
+        <language tag="en-GB">en-GB/plg_user_datacompliance.sys.ini</language>
     </languages>
 
     <scriptfile>script.php</scriptfile>
