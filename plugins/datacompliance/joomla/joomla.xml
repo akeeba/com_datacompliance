@@ -32,8 +32,6 @@
 		<language tag="en-GB">en-GB/plg_datacompliance_joomla.sys.ini</language>
 	</languages>
 
-	<scriptfile>script.php</scriptfile>
-
 	<config addfieldpath="/administrator/components/com_datacompliance/fields">
 		<fields name="params">
 			<fieldset name="basic">

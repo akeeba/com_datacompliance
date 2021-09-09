@@ -30,6 +30,4 @@
         <language tag="en-GB">en-GB/plg_datacompliance_ats.ini</language>
         <language tag="en-GB">en-GB/plg_datacompliance_ats.sys.ini</language>
     </languages>
-
-    <scriptfile>script.php</scriptfile>
 </extension>

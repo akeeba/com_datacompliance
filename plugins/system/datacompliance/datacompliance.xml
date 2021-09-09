@@ -31,8 +31,6 @@
         <language tag="en-GB">en-GB/plg_system_datacompliance.sys.ini</language>
     </languages>
 
-    <scriptfile>script.php</scriptfile>
-
     <config>
         <fields name="params">
             <fieldset name="basic">

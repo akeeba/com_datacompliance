@@ -15,17 +15,20 @@
     <creationDate>2021-08-12</creationDate>
     <version>2.0.3</version>
     <description>PLG_DATACOMPLIANCE_LOGINGUARD_DESCRIPTION</description>
+    <namespace path="src">Joomla\Plugin\DataCompliance\LoginGuard</namespace>
 
     <files>
+        <folder>language</folder>
+        <folder>services</folder>
+        <folder>src</folder>
+
         <filename plugin="loginguard">loginguard.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>
 
     <languages folder="language">
-        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_loginguard.ini</language>
-        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_loginguard.sys.ini</language>
+        <language tag="en-GB">en-GB/plg_datacompliance_loginguard.ini</language>
+        <language tag="en-GB">en-GB/plg_datacompliance_loginguard.sys.ini</language>
     </languages>
-
-    <scriptfile>script.php</scriptfile>
 </extension>

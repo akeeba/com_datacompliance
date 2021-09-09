@@ -31,6 +31,4 @@
         <language tag="en-GB">en-GB/en-GB.plg_datacompliance_ars.ini</language>
         <language tag="en-GB">en-GB/en-GB.plg_datacompliance_ars.sys.ini</language>
     </languages>
-
-    <scriptfile>script.php</scriptfile>
 </extension>
