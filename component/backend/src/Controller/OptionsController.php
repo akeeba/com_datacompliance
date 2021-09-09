@@ -59,7 +59,7 @@ class OptionsController extends BaseController
 
 		$model->recordPreference($this->input->getBool('enabled', false));
 
-		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=Options', false);
+		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=options', false);
 		$returnUrl  = $this->app->getSession()->get('com_datacompliance.return_url', $defaultUrl);
 
 		$message = Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');
@@ -158,7 +158,7 @@ class OptionsController extends BaseController
 		if (!$wipeModel->checkWipeAbility($user->id))
 		{
 			$msg         = Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $wipeModel->getError());
-			$url         = 'index.php?option=com_datacompliance&view=Options';
+			$url         = 'index.php?option=com_datacompliance&view=options';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
 			$this->setRedirect($redirectUrl, $msg, 'error');
@@ -177,7 +177,7 @@ class OptionsController extends BaseController
 		if ($phrase != Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE'))
 		{
 			$token       = $this->app->getFormToken();
-			$url         = 'index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1';
+			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
 			$this->setRedirect($redirectUrl, Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_BADPHRASE'), 'error');
@@ -194,7 +194,7 @@ class OptionsController extends BaseController
 		if (!$result)
 		{
 			$token       = $this->app->getFormToken();
-			$url         = 'index.php?option=com_datacompliance&view=Options&task=wipe&' . $token . '=1';
+			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
 			$message     = Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $wipeModel->getError());

@@ -105,7 +105,7 @@ $userLayout = new FileLayout('akeeba.datacompliance.common.user', JPATH_ADMINIST
 						</td>
 						<?php if($canManage): ?>
 						<td>
-							<a href="<?= Route::_(sprintf('index.php?option=com_datacompliance&view=Options&user_id=%d', $item->id)) ?>"
+							<a href="<?= Route::_(sprintf('index.php?option=com_datacompliance&view=options&user_id=%d', $item->id)) ?>"
 							   class="btn btn-outline-warning">
 								<span class="fa fa-user" aria-hidden="true"></span>
 								<?= Text::_('COM_DATACOMPLIANCE_LIFECYCLE_BTN_OPTIONS_MANAGE') ?>

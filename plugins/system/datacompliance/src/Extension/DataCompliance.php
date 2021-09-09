@@ -235,7 +235,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			$this->loadLanguage();
 			$message = Text::_('PLG_SYSTEM_DATACOMPLIANCE_MSG_MUSTACCEPT');
 			$this->app->enqueueMessage($message, 'warning');
-			$url = Route::_('index.php?option=com_datacompliance&view=Options', false);
+			$url = Route::_('index.php?option=com_datacompliance&view=options', false);
 			$this->app->redirect($url, 307);
 
 			return;

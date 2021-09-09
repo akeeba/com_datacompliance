@@ -35,7 +35,7 @@ class JFormFieldDatacompliance extends JFormField
 		 * with this.
 		 */
 
-		$url       = JRoute::_('index.php?option=com_datacompliance&view=Options&user_id=' . $user_id);
+		$url       = JRoute::_('index.php?option=com_datacompliance&view=options&user_id=' . $user_id);
 		$isAdmin   = $user_id != \Joomla\CMS\Factory::getUser()->id;
 		$key       = $isAdmin ? 'PLG_USER_DATACOMPLIANCE_FIELD_INFO_ADMIN' : 'PLG_USER_DATACOMPLIANCE_FIELD_INFO';
 		$labelText = JText::_($key);

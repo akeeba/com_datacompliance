@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   AkeebaDataCompliance
+  ~ @copyright Copyright (c)2018-2021 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+<metadata>
+	<layout title="COM_DATACOMPLIANCE_MENUMANAGER_VIEW_OPTIONS_LABEL">
+		<message>
+				<![CDATA[COM_DATACOMPLIANCE_MENUMANAGER_VIEW_OPTIONS_DESC]]>
+		</message>
+	</layout>
+	<state>
+		<name>COM_DATACOMPLIANCE_MENUMANAGER_VIEW_OPTIONS_LABEL</name>
+		<description>COM_DATACOMPLIANCE_MENUMANAGER_VIEW_OPTIONS_DESC</description>
+	</state>
+</metadata>
