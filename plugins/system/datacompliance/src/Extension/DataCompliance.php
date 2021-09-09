@@ -207,7 +207,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 * Smart users will read the fine manual and disable Joomla's stupid plugin instead, using the superior Akeeba
 		 * Data Compliance consent experience instead.
 		 */
-		if (!PluginHelper::isEnabled('system', 'privacyconsent'))
+		if (PluginHelper::isEnabled('system', 'privacyconsent'))
 		{
 			return;
 		}
@@ -262,27 +262,19 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	 */
 	private function hasJoomlaConsent(User $user): bool
 	{
-		// Only transcribe if there is no consent record yet
-		/** @var ConsenttrailsTable $consentTable */
-		$consentTable = $this->getMVCFactory()->createTable('Consenttrails', 'Administrator');
-
-		if ($consentTable->load($user->id))
-		{
-			return false;
-		}
-
 		// Get the consent information from Joomla
 		$db     = $this->db;
 		$query  = $db->getQuery(true)
-			->select($db->quoteName('profile_value'))
-			->from($db->quoteName('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->where($db->quoteName('profile_key') . ' = ' . $db->quote('privacyconsent.privacy'))
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->select('COUNT(*)')
+			->from($db->quoteName('#__privacy_consents'))
+			->where($db->quoteName('user_id') . ' = :userid')
+			->where($db->quoteName('subject') . ' = ' . $db->quote('PLG_SYSTEM_PRIVACYCONSENT_SUBJECT'))
+			->where($db->quoteName('state') . ' = 1')
+			->bind(':userid', $user->id, ParameterType::INTEGER);
 
 		$result = $db->setQuery($query)->loadResult() ?: null;
 
-		if (is_null($result) && ($result != 1))
+		if (is_null($result) || ((int)$result <= 0))
 		{
 			// They have not consented
 			return false;
@@ -290,8 +282,17 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 		/**
 		 * They have consented. Since Joomla! does not collect consent date and IP information as machine readable data
-		 * we will record the current date and IP address.
+		 * we will record the current date and IP address. The transcription only takes place is there is no Data
+		 * Compliance consent record yet.
 		 */
+		/** @var ConsenttrailsTable $consentTable */
+		$consentTable = $this->getMVCFactory()->createTable('Consenttrails', 'Administrator');
+
+		if ($consentTable->load($user->id))
+		{
+			return true;
+		}
+
 		$consentTable->save([
 			'created_on' => (new Date())->toSql(),
 			'created_by' => $user->id,
