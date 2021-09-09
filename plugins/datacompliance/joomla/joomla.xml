@@ -15,16 +15,21 @@
 	<creationDate>2021-08-12</creationDate>
 	<version>2.0.3</version>
 	<description>PLG_DATACOMPLIANCE_JOOMLA_DESCRIPTION</description>
+	<namespace path="src">Joomla\Plugin\DataCompliance\Joomla</namespace>
 
 	<files>
+		<folder>language</folder>
+		<folder>services</folder>
+		<folder>src</folder>
+
 		<filename plugin="joomla">joomla.php</filename>
 		<filename>.htaccess</filename>
 		<filename>web.config</filename>
 	</files>
 
 	<languages folder="language">
-		<language tag="en-GB">en-GB/en-GB.plg_datacompliance_joomla.ini</language>
-		<language tag="en-GB">en-GB/en-GB.plg_datacompliance_joomla.sys.ini</language>
+		<language tag="en-GB">en-GB/plg_datacompliance_joomla.ini</language>
+		<language tag="en-GB">en-GB/plg_datacompliance_joomla.sys.ini</language>
 	</languages>
 
 	<scriptfile>script.php</scriptfile>
@@ -40,11 +45,12 @@
 					   description="PLG_DATACOMPLIANCE_JOOMLA_USERGROUPLIST_DESC" />
 
 				<field name="lifecycle"
-					   type="fancyradio"
-					   class="btn-group btn-yesno"
+					   type="radio"
 					   default="1"
 					   label="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_LABEL"
-					   description="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_DESC">
+					   description="PLG_DATACOMPLIANCE_JOOMLA_LIFECYCLE_DESC"
+					   layout="joomla.form.field.radio.switcher"
+				>
 					<option value="0">JNo</option>
 					<option value="1">JYes</option>
 				</field>
@@ -60,21 +66,23 @@
 					   description="PLG_DATACOMPLIANCE_JOOMLA_THRESHOLD_DESC" />
 
 				<field name="nevervisited"
-					   type="fancyradio"
-					   class="btn-group btn-yesno"
+					   type="radio"
 					   default="1"
 					   label="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISITED_LABEL"
-					   description="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISITED_DESC">
+					   description="PLG_DATACOMPLIANCE_JOOMLA_NEVERVISITED_DESC"
+					   layout="joomla.form.field.radio.switcher"
+				>
 					<option value="0">JNo</option>
 					<option value="1">JYes</option>
 				</field>
 
 				<field name="blocked"
-					   type="fancyradio"
-					   class="btn-group btn-yesno"
+					   type="radio"
 					   default="1"
 					   label="PLG_DATACOMPLIANCE_JOOMLA_BLOCKED_LABEL"
-					   description="PLG_DATACOMPLIANCE_JOOMLA_BLOCKED_DESC">
+					   description="PLG_DATACOMPLIANCE_JOOMLA_BLOCKED_DESC"
+					   layout="joomla.form.field.radio.switcher"
+				>
 					<option value="0">JNo</option>
 					<option value="1">JYes</option>
 				</field>

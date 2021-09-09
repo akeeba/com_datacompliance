@@ -23,22 +23,23 @@
         />
 
         <field name="showexport"
-               type="fancyradio"
+               type="radio"
                default="1"
                label="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_LABEL"
                description="COM_DATACOMPLIANCE_CONFIG_SHOWEXPORT_DESC"
-               class="btn-group btn-yesno"
+               layout="joomla.form.field.radio.switcher"
         >
             <option value="0">JNo</option>
             <option value="1">JYes</option>
         </field>
 
         <field name="showwipe"
-               type="fancyradio"
+               type="radio"
                default="1"
                label="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_LABEL"
                description="COM_DATACOMPLIANCE_CONFIG_SHOWWIPE_DESC"
-               class="btn-group btn-yesno">
+               layout="joomla.form.field.radio.switcher"
+        >
             <option value="0">JNo</option>
             <option value="1">JYes</option>
         </field>
