@@ -15,19 +15,22 @@
     <creationDate>2021-08-12</creationDate>
     <version>2.0.3</version>
     <description>PLG_DATACOMPLIANCE_S3_DESCRIPTION</description>
+    <namespace path="src">Joomla\Plugin\DataCompliance\S3</namespace>
 
     <files>
+        <folder>language</folder>
+        <folder>services</folder>
+        <folder>src</folder>
+
         <filename plugin="s3">s3.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>
 
     <languages folder="language">
-        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_s3.ini</language>
-        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_s3.sys.ini</language>
+        <language tag="en-GB">en-GB/plg_datacompliance_s3.ini</language>
+        <language tag="en-GB">en-GB/plg_datacompliance_s3.sys.ini</language>
     </languages>
-
-    <scriptfile>script.php</scriptfile>
 
     <config addfieldpath="/administrator/components/com_datacompliance/fields">
         <fields name="params">
@@ -49,8 +52,8 @@
                        filter="raw"/>
 
                 <field name="ssl"
-                       type="fancyradio"
-                       class="btn-group btn-yesno"
+                       type="radio"
+                       layout="joomla.form.field.radio.switcher"
                        default="1"
                        label="PLG_DATACOMPLIANCE_S3_SSL_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_SSL_DESC">

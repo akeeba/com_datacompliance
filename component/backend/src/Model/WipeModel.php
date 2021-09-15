@@ -26,6 +26,7 @@ use Joomla\Component\Privacy\Administrator\Removal\Status;
 use Joomla\Component\Privacy\Administrator\Table\RequestTable;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
+use Joomla\Event\Event;
 use RuntimeException;
 
 /**
@@ -562,5 +563,11 @@ class WipeModel extends BaseDatabaseModel
 		// Update audit record with $auditItems
 		$this->auditRecord->items = $auditItems;
 		$this->auditRecord->store();
+
+		// Notify plugins
+		$eventName  = 'onDataComplianceSaveWipeAuditRecord';
+		$event      = new Event($eventName, [$this->auditRecord]);
+
+		Factory::getApplication()->getDispatcher()->dispatch($eventName, $event);
 	}
 }
