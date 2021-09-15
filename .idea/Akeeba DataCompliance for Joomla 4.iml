@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/datacompliance/ars/src" isTestSource="false" packagePrefix="Joomla\Plugin\DataCompliance\ARS" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/user/datacompliance/src" isTestSource="false" packagePrefix="Joomla\Plugin\User\DataCompliance" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/datacompliance/ats/src" isTestSource="false" packagePrefix="Joomla\Plugin\DataCompliance\ATS" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/datacompliance/email/src" isTestSource="false" packagePrefix="Joomla\Plugin\DataCompliance\Email" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/datacompliance/joomla/src" isTestSource="false" packagePrefix="Joomla\Plugin\DataCompliance\Joomla" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/datacompliance/loginguard/src" isTestSource="false" packagePrefix="Joomla\Plugin\DataCompliance\LoginGuard" />
       <excludeFolder url="file://$MODULE_DIR$/old" />

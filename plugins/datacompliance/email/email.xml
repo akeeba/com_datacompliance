@@ -5,7 +5,7 @@
   ~ @license   GNU General Public License version 3, or later
   -->
 
-<extension version="3.7" type="plugin" group="datacompliance" method="upgrade">
+<extension version="4.0" type="plugin" group="datacompliance" method="upgrade">
     <name>PLG_DATACOMPLIANCE_EMAIL</name>
     <author>Nicholas K. Dionysopoulos</author>
     <authorEmail>nicholas@akeeba.com</authorEmail>
@@ -15,16 +15,21 @@
     <creationDate>2021-08-12</creationDate>
     <version>2.0.3</version>
     <description>PLG_DATACOMPLIANCE_EMAIL_DESCRIPTION</description>
+    <namespace path="src">Joomla\Plugin\DataCompliance\Email</namespace>
 
     <files>
+        <folder>language</folder>
+        <folder>services</folder>
+        <folder>src</folder>
+
         <filename plugin="email">email.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>
 
     <languages folder="language">
-        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_email.ini</language>
-        <language tag="en-GB">en-GB/en-GB.plg_datacompliance_email.sys.ini</language>
+        <language tag="en-GB">en-GB/plg_datacompliance_email.ini</language>
+        <language tag="en-GB">en-GB/plg_datacompliance_email.sys.ini</language>
     </languages>
 
     <scriptfile>script.php</scriptfile>
@@ -33,8 +38,8 @@
         <fields name="params">
             <fieldset name="basic">
                 <field name="users"
-                       type="fancyradio"
-                       class="btn-group btn-yesno"
+                       type="radio"
+                       layout="joomla.form.field.radio.switcher"
                        default="1"
                        label="PLG_DATACOMPLIANCE_EMAIL_USERS_LABEL"
                        description="PLG_DATACOMPLIANCE_EMAIL_USERS_DESC">
@@ -43,8 +48,8 @@
                 </field>
 
                 <field name="admins"
-                       type="fancyradio"
-                       class="btn-group btn-yesno"
+                       type="radio"
+                       layout="joomla.form.field.radio.switcher"
                        default="1"
                        label="PLG_DATACOMPLIANCE_EMAIL_ADMINS_LABEL"
                        description="PLG_DATACOMPLIANCE_EMAIL_ADMINS_DESC">
@@ -59,9 +64,6 @@
                        default=""
                        label="PLG_DATACOMPLIANCE_JOOMLA_ADMINEMAILS_LABEL"
                        description="PLG_DATACOMPLIANCE_JOOMLA_ADMINEMAILS_DESC" />
-
-
-
             </fieldset>
         </fields>
     </config>
