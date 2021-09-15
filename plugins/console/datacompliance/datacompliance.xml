@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   datacompliance
+  ~ @copyright Copyright (c)2010-2021 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
+<extension version="4.0.0" type="plugin" group="console" method="upgrade">
+	<name>PLG_CONSOLE_DATACOMPLIANCE</name>
+	<version>7.0.4</version>
+	<creationDate>2021-09-09</creationDate>
+	<author>Nicholas K. Dionysopoulos</author>
+	<authorEmail>nicholas@dionysopoulos.me</authorEmail>
+	<authorUrl>https://www.akeeba.com</authorUrl>
+	<copyright>Copyright (c)2010-2021 Nicholas K. Dionysopoulos</copyright>
+	<license>GNU General Public License version 3, or later</license>
+	<description>PLG_CONSOLE_DATACOMPLIANCE_XML_DESCRIPTION</description>
+	<namespace path="src">Joomla\Plugin\Console\DataCompliance</namespace>
+	<files>
+		<folder>services</folder>
+		<folder>src</folder>
+
+		<filename plugin="datacompliance">datacompliance.php</filename>
+		<filename>.htaccess</filename>
+		<filename>web.config</filename>
+	</files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/plg_console_datacompliance.ini</language>
+		<language tag="en-GB">en-GB/plg_console_datacompliance.sys.ini</language>
+	</languages>
+</extension>
