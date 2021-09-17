@@ -88,7 +88,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 		}
 
 		return [
-			'onDataComplianceDeleteUser'          => 'onDataComplianceDeleteUser',
+			'onDataComplianceDeleteUser' => 'onDataComplianceDeleteUser',
 		];
 	}
 
@@ -165,6 +165,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 				'block'         => $user->block ? Text::_('JYES') : Text::_('JNO'),
 				'id'            => $user->id,
 				'actions'       => $actionsHtml,
+				'actions_text'  => implode("\n", $actionsList),
 			];
 
 		// Send an email to the user

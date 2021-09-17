@@ -20,13 +20,14 @@ use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\CMS\User\UserHelper;
+use Joomla\Console\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 defined('_JEXEC') or die;
 
-class AccountDelete extends \Joomla\Console\Command\AbstractCommand
+class AccountDelete extends AbstractCommand
 {
 	use ConfigureIO;
 	use MemoryInfo;
