@@ -106,7 +106,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceDeleteUser(Event $event)
 	{
 		/**
-		 * @var int    $userID The user ID we are asked to delete
+		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
 		[$userId, $type] = $event->getArguments();
@@ -123,7 +123,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			],
 		];
 
-		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Ticket System data", Log::INFO, 'com_datacompliance');
+		Log::add("Deleting user #$userId, type ‘{$type}’, Akeeba Ticket System data", Log::INFO, 'com_datacompliance');
 
 		$db = $this->db;
 		$db->setMonitor(null);
@@ -134,8 +134,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$ticketsQuery = $db->getQuery(true)
 			->select($db->quoteName('ats_ticket_id'))
 			->from($db->quoteName('#__ats_tickets'))
-			->where($db->qn('created_by') . ' = :user_id')
-			->bind(':user_id', $userId);
+			->where($db->qn('created_by') . ' = ' . $db->quote($userId));
 
 		if ($type == 'lifecycle')
 		{
@@ -208,16 +207,16 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$query                            = $db->getQuery(true)
 			->select($db->quoteName('ats_creditconsumption_id'))
 			->from($db->quoteName('#__ats_creditconsumptions'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userId, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
 		$ret['ats']['creditconsumptions'] = $db->setQuery($query)->loadColumn();
 
 		if (!empty($ret['ats']['creditconsumptions']))
 		{
 			$query = $db->getQuery(true)
 				->delete($db->quoteName('#__ats_creditconsumptions'))
-				->where($db->quoteName('user_id') . ' = :user_id')
-				->bind(':user_id', $userId, ParameterType::INTEGER);
+				->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
 			$db->setQuery($query)->execute();
 		}
 
@@ -225,16 +224,16 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$query                            = $db->getQuery(true)
 			->select($db->quoteName('ats_credittransaction_id'))
 			->from($db->quoteName('#__ats_credittransactions'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userId, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
 		$ret['ats']['credittransactions'] = $db->setQuery($query)->loadColumn();
 
 		if (!empty($ret['ats']['credittransactions']))
 		{
 			$query = $db->getQuery(true)
 				->delete($db->quoteName('#__ats_credittransactions'))
-				->where($db->quoteName('user_id') . ' = :user_id')
-				->bind(':user_id', $userId, ParameterType::INTEGER);
+				->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
 			$db->setQuery($query)->execute();
 		}
 
@@ -242,16 +241,16 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$query                  = $db->getQuery(true)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ats_users_usertags'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userId, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
 		$ret['ats']['usertags'] = $db->setQuery($query)->loadColumn();
 
 		if (!empty($ret['ats']['usertags']))
 		{
 			$query = $db->getQuery(true)
 				->delete($db->quoteName('#__ats_users_usertags'))
-				->where($db->quoteName('user_id') . ' = :user_id')
-				->bind(':user_id', $userId, ParameterType::INTEGER);
+				->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
 			$db->setQuery($query)->execute();
 		}
 
@@ -272,8 +271,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
-		/** @var int $userID */
-		[$userID] = $event->getArguments();
+		/** @var int $userId */
+		[$userId] = $event->getArguments();
 
 		$export = new SimpleXMLElement("<root></root>");
 
@@ -282,7 +281,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$domainTickets->addAttribute('name', 'ats_tickets');
 		$domainTickets->addAttribute('description', 'Akeeba Ticket System tickets');
 
-		$tickets   = $this->getTickets($userID);
+		$tickets   = $this->getTickets($userId);
 		$ticketIDs = [];
 
 		array_map(function ($ticket) use (&$domainTickets, &$ticketIDs) {
@@ -349,8 +348,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__ats_creditconsumptions'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		$items = $db->setQuery($selectQuery)->loadObjectList();
 
@@ -367,8 +365,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__ats_credittransactions'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		$items = $db->setQuery($selectQuery)->loadObjectList();
 
@@ -385,8 +382,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__ats_users_usertags'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		$items = $db->setQuery($selectQuery)->loadObjectList();
 
@@ -409,10 +405,10 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceGetWipeBulletpoints(Event $event)
 	{
 		/**
-		 * @var   int    $userID The user ID we are asked to delete
+		 * @var   int    $userId The user ID we are asked to delete
 		 * @var   string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userID, $type] = $event->getArguments();
+		[$userId, $type] = $event->getArguments();
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_ATS_ACTIONS_1'),
@@ -457,8 +453,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$query = $db->getQuery(true)
 			->select('*')
 			->from('#__ats_tickets')
-			->where($db->quoteName('created_by') . ' = :user_id')
-			->bind(':user_id', $user_id, ParameterType::INTEGER);
+			->where($db->quoteName('created_by') . ' = ' . $db->quote($user_id));
 
 		return $db->setQuery($query)->loadObjectList();
 	}

@@ -107,7 +107,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceDeleteUser(Event $event)
 	{
 		/**
-		 * @var int    $userID The user ID we are asked to delete
+		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
 		[$userId, $type] = $event->getArguments();
@@ -119,7 +119,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		];
 
 
-		Log::add("Deleting user #$userID, type ‘{$type}’, LoginGuard data", Log::INFO, 'com_datacompliance');
+		Log::add("Deleting user #$userId, type ‘{$type}’, LoginGuard data", Log::INFO, 'com_datacompliance');
 
 		$db = $this->db;
 		$db->setMonitor(null);
@@ -128,12 +128,12 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__loginguard_tfa'))
 			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->bind(':user_id', $userId, ParameterType::INTEGER);
 
 		$deleteQuery = $db->getQuery(true)
 			->delete($db->quoteName('#__loginguard_tfa'))
 			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->bind(':user_id', $userId, ParameterType::INTEGER);
 
 		try
 		{
@@ -165,8 +165,8 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
-		/** @var int $userID */
-		[$userID] = $event->getArguments();
+		/** @var int $userId */
+		[$userId] = $event->getArguments();
 
 		$db = $this->db;
 
@@ -181,7 +181,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 			->select('*')
 			->from('#__loginguard_tfa')
 			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->bind(':user_id', $userId, ParameterType::INTEGER);
 		$records = $db->setQuery($query)->loadObjectList();
 
 		foreach ($records as $record)
@@ -204,10 +204,10 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceGetWipeBulletpoints(Event $event)
 	{
 		/**
-		 * @var   int    $userID The user ID we are asked to delete
+		 * @var   int    $userId The user ID we are asked to delete
 		 * @var   string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userID, $type] = $event->getArguments();
+		[$userId, $type] = $event->getArguments();
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_LOGINGUARD_ACTIONS_1'),

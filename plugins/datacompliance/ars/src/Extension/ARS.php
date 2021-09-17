@@ -107,7 +107,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceDeleteUser(Event $event)
 	{
 		/**
-		 * @var int    $userID The user ID we are asked to delete
+		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
 		[$userId, $type] = $event->getArguments();
@@ -119,7 +119,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 			],
 		];
 
-		Log::add("Deleting user #$userID, type ‘{$type}’, Akeeba Release System data", Log::INFO, 'com_datacompliance');
+		Log::add("Deleting user #$userId, type ‘{$type}’, Akeeba Release System data", Log::INFO, 'com_datacompliance');
 
 		$db = $this->db;
 		$db->setMonitor(null);
@@ -129,13 +129,10 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_log'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
-
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 		$deleteQuery = $db->getQuery(true)
 			->delete($db->quoteName('#__ars_log'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		try
 		{
@@ -151,7 +148,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		}
 		catch (Exception $e)
 		{
-			Log::add("Could not delete ARS log data for user #$userID: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Could not delete ARS log data for user #$userId: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Debug backtrace: {$e->getTraceAsString()}", Log::DEBUG, 'com_datacompliance');
 
 			// No problem if deleting fails.
@@ -163,15 +160,13 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		// ======================================== Download IDs ========================================
 
 		$selectQuery = $db->getQuery(true)
-			->select($db->quoteName('ars_dlidlabel_id'))
+			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_dlidlabels'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		$deleteQuery = $db->getQuery(true)
 			->delete($db->quoteName('#__ars_dlidlabels'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		try
 		{
@@ -187,7 +182,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		}
 		catch (Exception $e)
 		{
-			Log::add("Could not delete ARS Download ID data for user #$userID: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Could not delete ARS Download ID data for user #$userId: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Debug backtrace: {$e->getTraceAsString()}", Log::DEBUG, 'com_datacompliance');
 
 			// No problem if deleting fails.
@@ -214,8 +209,8 @@ class ARS extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
-		/** @var int $userID */
-		[$userID] = $event->getArguments();
+		/** @var int $userId */
+		[$userId] = $event->getArguments();
 
 		$export = new SimpleXMLElement("<root></root>");
 		$db     = $this->db;
@@ -228,8 +223,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__ars_log'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		foreach ($db->setQuery($selectQuery)->getIterator() as $record)
 		{
@@ -246,8 +240,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__ars_dlidlabels'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userID, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
 		foreach ($db->setQuery($selectQuery)->getIterator() as $record)
 		{
@@ -271,10 +264,10 @@ class ARS extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceGetWipeBulletpoints(Event $event)
 	{
 		/**
-		 * @var   int    $userID The user ID we are asked to delete
+		 * @var   int    $userId The user ID we are asked to delete
 		 * @var   string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userID, $type] = $event->getArguments();
+		[$userId, $type] = $event->getArguments();
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_ARS_ACTIONS_1'),

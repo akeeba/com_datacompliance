@@ -56,7 +56,8 @@ class AccountDelete extends \Joomla\Console\Command\AbstractCommand
 		$this->addOption('username', 'u', InputOption::VALUE_OPTIONAL, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_USERNAME'));
 		$this->addOption('id', 'i', InputOption::VALUE_OPTIONAL, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_USER_ID'));
 		$this->addOption('force', 'f', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_FORCE'));
-		$this->addOption('dry-run', 'd', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_DRYRUN'));
+		$this->addOption('dry-run', 'r', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_DRYRUN'));
+		$this->addOption('debug', 'd', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_COMMON_OPT_DEBUG'));
 
 	}
 
@@ -67,6 +68,8 @@ class AccountDelete extends \Joomla\Console\Command\AbstractCommand
 	 */
 	protected function doExecute(InputInterface $input, OutputInterface $output): int
 	{
+		$this->configureSymfonyIO($input, $output);
+
 		// Get the options
 		$debug    = (bool) $input->getOption('debug', false);
 		$force    = (bool) $input->getOption('force', false);

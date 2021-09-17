@@ -114,14 +114,14 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceCanDelete(Event $event)
 	{
 		/**
-		 * @var   int      $userID The user ID we are asked for permission to delete
+		 * @var   int      $userId The user ID we are asked for permission to delete
 		 * @var   string   $type   user, admin or lifecycle
 		 * @var   DateTime $when   When is the deletion going to take place? Leaving null means "right now"
 		 */
-		[$userID, $type, $when] = $event->getArguments();
+		[$userId, $type, $when] = $event->getArguments();
 
 		$exemptGroups = $this->params->get('exemptgroups', []);
-		$jUser        = $this->getJoomlaUserObject($userID);
+		$jUser        = $this->getJoomlaUserObject($userId);
 		$userGroups   = $jUser->getAuthorisedGroups();
 		$foundGroups  = array_intersect($userGroups, $exemptGroups);
 
@@ -130,11 +130,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 			throw new RuntimeException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_EXEMPTGROUPS'));
 		}
 
-		$user = $this->getJoomlaUserObject($userID);
+		$user = $this->getJoomlaUserObject($userId);
 
 		if (empty($user))
 		{
-			throw new RuntimeException(Text::sprintf('PLG_DATACOMPLIANCE_JOOMLA_ERR_UNKNOWNUSER', $userID));
+			throw new RuntimeException(Text::sprintf('PLG_DATACOMPLIANCE_JOOMLA_ERR_UNKNOWNUSER', $userId));
 		}
 
 		if ($user->authorise('core.admin'))
@@ -171,23 +171,28 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceDeleteUser(Event $event)
 	{
 		/**
-		 * @var int    $userID The user ID we are asked to delete
+		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
 		[$userId, $type] = $event->getArguments();
 
+		if (empty($userId))
+		{
+			return;
+		}
+
 		$ret = [
 			'joomla' => [
-				'user'   => $userID,
+				'user'   => $userId,
 				'notes'  => [],
 				'fields' => [],
 				'keys'   => [],
 			],
 		];
 
-		Log::add("Deleting user #$userID, type ‘{$type}’, Joomla! Core Data", Log::INFO, 'com_datacompliance');
+		Log::add("Deleting user #$userId, type ‘{$type}’, Joomla! Core Data", Log::INFO, 'com_datacompliance');
 
-		$user = $this->getJoomlaUserObject($userID);
+		$user = $this->getJoomlaUserObject($userId);
 
 		$ret['joomla']['notes']  = $this->deleteNotes($user);
 		$ret['joomla']['fields'] = $this->deleteFields($user);
@@ -217,15 +222,15 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
-		/** @var int $userID */
-		[$userID] = $event->getArguments();
+		/** @var int $userId */
+		[$userId] = $event->getArguments();
 
 		$db   = $this->db;
-		$user = self::getJoomlaUserObject($userID);
+		$user = self::getJoomlaUserObject($userId);
 
 		if (empty($user))
 		{
-			throw new RuntimeException(Text::sprintf('PLG_DATACOMPLIANCE_JOOMLA_ERR_UNKNOWNUSER', $userID));
+			throw new RuntimeException(Text::sprintf('PLG_DATACOMPLIANCE_JOOMLA_ERR_UNKNOWNUSER', $userId));
 		}
 
 		$export = new SimpleXMLElement("<root></root>");
@@ -237,7 +242,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		/** @var \Joomla\CMS\Table\User $userTable */
 		$userTable = User::getTable();
-		$userTable->load($userID);
+		$userTable->load($userId);
 		Export::adoptChild($domainUser, Export::exportItemFromJTable($userTable));
 
 		// #__user_notes
@@ -248,8 +253,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__user_notes'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+
 		$items = $db->setQuery($query)->loadObjectList();
 
 		foreach ($items as $item)
@@ -265,8 +270,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+
 		$items = $db->setQuery($query)->loadObjectList();
 
 		foreach ($items as $item)
@@ -282,8 +287,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__user_usergroup_map'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+
 		$items = $db->setQuery($query)->loadObjectList();
 
 		foreach ($items as $item)
@@ -299,8 +304,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+
 		$items = $db->setQuery($query)->loadObjectList();
 
 		foreach ($items as $item)
@@ -388,10 +393,10 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceGetWipeBulletpoints(Event $event)
 	{
 		/**
-		 * @var   int    $userID The user ID we are asked to delete
+		 * @var   int    $userId The user ID we are asked to delete
 		 * @var   string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userID, $type] = $event->getArguments();
+		[$userId, $type] = $event->getArguments();
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_10'),
@@ -410,21 +415,21 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	/**
 	 * Get the Joomla! user object for the given user ID
 	 *
-	 * @param   int  $userID  The user ID to return the user for
+	 * @param   int  $userId  The user ID to return the user for
 	 *
 	 * @return  User|null
 	 * @since   1.0.0
 	 */
-	protected function getJoomlaUserObject(int $userID): ?User
+	protected function getJoomlaUserObject(int $userId): ?User
 	{
-		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userId);
 
 		if (!is_object($user))
 		{
 			return null;
 		}
 
-		if ($user->id != $userID)
+		if ($user->id != $userId)
 		{
 			return null;
 		}
@@ -452,13 +457,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
 		$deleteQuery = $db->getQuery(true)
 			->delete($db->quoteName('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
 		try
 		{
@@ -489,19 +492,17 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		$db = $this->db;
 		$db->setMonitor(null);
-		$ids = [];
+		$ids    = [];
+		$userId = $user->id;
 
+		// WTAF?! Trying to bind the user id with bind() results in a fatal error.
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
-
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 		$deleteQuery = $db->getQuery(true)
 			->delete($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
-
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 		try
 		{
 			$ids = $db->setQuery($selectQuery)->loadColumn(0);
@@ -537,13 +538,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$selectQuery = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__user_notes'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
 		$deleteQuery = $db->getQuery(true)
 			->delete($db->quoteName('#__user_notes'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
 		try
 		{
@@ -581,8 +580,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$db->setMonitor(null);
 		$query = $db->getQuery(true)
 			->delete($db->quoteName('#__user_usergroup_map'))
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
 		try
 		{

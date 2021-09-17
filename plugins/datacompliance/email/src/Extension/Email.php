@@ -108,7 +108,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceDeleteUser(Event $event)
 	{
 		/**
-		 * @var int    $userID The user ID we are asked to delete
+		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
 		[$userId, $type] = $event->getArguments();
@@ -133,10 +133,10 @@ class Email extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
-		Log::add("Sending email about deleting user #$userID, type ‘{$type}’", Log::INFO, 'com_datacompliance');
+		Log::add("Sending email about deleting user #$userId, type ‘{$type}’", Log::INFO, 'com_datacompliance');
 
 		// Get the actions
-		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userId);
 
 		// Get the actions carried out for the user
 		/** @var OptionsModel $optionsModel */
