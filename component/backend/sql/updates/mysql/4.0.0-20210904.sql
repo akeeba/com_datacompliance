@@ -13,5 +13,3 @@ ALTER TABLE `#__datacompliance_exporttrails` ENGINE InnoDB;
 ALTER TABLE `#__datacompliance_wipetrails` ENGINE InnoDB;
 ALTER TABLE `#__datacompliance_consenttrails` ENGINE InnoDB;
 ALTER TABLE `#__datacompliance_usertrails` ENGINE InnoDB;
-ALTER TABLE `#__datacompliance_cookietrails` ENGINE InnoDB;
-ALTER TABLE `#__datacompliance_emailtemplates` ENGINE InnoDB;
