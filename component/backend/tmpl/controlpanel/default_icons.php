@@ -78,3 +78,21 @@ use Joomla\CMS\Router\Route;
 		</a>
 	</div>
 </div>
+
+<div class="card mb-3">
+	<h3 class="card-header bg-dark text-white">
+		<?= Text::_('COM_DATACOMPLIANCE_CONTROLPANEL_HEADER_EMAIL'); ?>
+	</h3>
+
+	<div class="card-body d-flex flex-row flex-wrap align-items-stretch">
+		<a class="text-center btn btn-outline-dark border-0" style="width: 10em"
+		   href="<?= Route::_('index.php?option=com_datacompliance&view=Emailtemplates') ?>">
+			<div class="bg-dark text-white d-block text-center p-3 h2">
+				<span class="fa fa-envelope-open-text"></span>
+			</div>
+			<span>
+				<?= Text::_('COM_DATACOMPLIANCE_EMAILTEMPLATES_BTN_MAILTEMPLATES') ?>
+			</span>
+		</a>
+	</div>
+</div>
