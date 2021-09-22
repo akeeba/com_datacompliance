@@ -33,7 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 defined('_JEXEC') or die;
 
-class LifecycleNotify extends AbstractCommand
+class LifecycleDelete extends AbstractCommand
 {
 	use ConfigureIO;
 	use MemoryInfo;
@@ -57,11 +57,11 @@ class LifecycleNotify extends AbstractCommand
 	 */
 	protected function configure(): void
 	{
-		$this->setDescription(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_DESC'));
-		$this->setHelp(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_HELP'));
+		$this->setDescription(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_DESC'));
+		$this->setHelp(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_HELP'));
 
-		$this->addOption('period', 'p', InputOption::VALUE_REQUIRED, Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_OPT_PERIOD'));
-		$this->addOption('dry-run', 'r', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_OPT_DRYRUN'));
+		$this->addOption('dry-run', 'r', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_OPT_DRYRUN'));
+		$this->addOption('force', 'f', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_OPT_FORCE'));
 		$this->addOption('debug', 'd', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_COMMON_OPT_DEBUG'));
 
 	}
@@ -78,7 +78,7 @@ class LifecycleNotify extends AbstractCommand
 		// Get the options
 		$debug  = (bool) $input->getOption('debug', false);
 		$dryRun = (bool) $input->getOption('dry-run', false);
-		$period = $input->getOption('period', '');
+		$force = (bool) $input->getOption('force', false);
 
 		if (!defined('JDEBUG'))
 		{
@@ -118,47 +118,35 @@ class LifecycleNotify extends AbstractCommand
 		$db = Factory::getContainer()->get('DatabaseDriver');
 		$db->setMonitor(null);
 
-		try
-		{
-			$interval = new DateInterval($period);
-		}
-		catch (Exception $e)
-		{
-			$this->ioStyle->error([
-				Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_ERR_INVALIDPERIOD', $period),
-			]);
-
-
-			return 102;
-		}
-
-		$when = (new Date())->add($interval);
-
-		$this->ioStyle->section(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_NOTIFYPERIOD', $when->toISO8601()));
+		$this->ioStyle->section(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_HEAD'));
 
 		/** @var WipeModel $wipeModel */
 		$wipeModel = $this->mvcFactory->createModel('Wipe', 'Administrator');
-		$userIDs   = $wipeModel->getLifecycleUserIDs(true, $when);
+		$userIDs   = $wipeModel->getLifecycleUserIDs();
 
 		if (empty($userIDs))
 		{
-			$this->ioStyle->warning(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_NOUSERS'));
+			$this->ioStyle->warning(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_NOACTION'));
 
 			return 0;
 		}
 
-		$numRecords      = count($userIDs);
-		$notified        = 0;
-		$alreadyNotified = 0;
-		$cannotNotify    = 0;
+		$numRecords   = count($userIDs);
+		$deleted      = 0;
+		$notNotified  = 0;
+		$cannotDelete = 0;
 
-		$this->ioStyle->text(Text::plural('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_FOUNDUSERS', $numRecords));
+		$this->ioStyle->text(Text::plural('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_FOUNDUSERS', $numRecords));
 
 		if ($dryRun)
 		{
-			$this->ioStyle->text(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_DRYRUN'));
+			$this->ioStyle->text(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_DRYRUN'));
 		}
 
+		// Current deletion date, used to confirm that the user has been notified
+		$deletionDate = new Date();
+
+		// Loop all users to be deleted
 		foreach ($userIDs as $id)
 		{
 			$freeMemory = $this->getFreeMemory();
@@ -171,7 +159,7 @@ class LifecycleNotify extends AbstractCommand
 			}
 
 			// Skip records which cannot be deleted
-			if (!$wipeModel->checkWipeAbility($id, 'lifecycle', $when))
+			if (!$force && !$wipeModel->checkWipeAbility($id, 'lifecycle', $deletionDate))
 			{
 				$this->ioStyle->text(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_SKIPUSER', $id));
 
@@ -180,58 +168,51 @@ class LifecycleNotify extends AbstractCommand
 				continue;
 			}
 
-			// Skip records already notified
-			if ($wipeModel->isUserNotified($id))
+			if (!$force && !$wipeModel->isUserNotified($id, $deletionDate))
 			{
-				$this->ioStyle->text(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_ALREADYNOTIFIED', $id));
+				$this->ioStyle->text(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_NOTNOTIFIED', $id));
 
-				$alreadyNotified++;
+				$notNotified++;
 
 				continue;
 			}
 
-			$this->ioStyle->write(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_NOTIFYING', $id), false);
+			$this->ioStyle->write(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_DELETING', $id), false);
 
 			$result = true;
 
 			if (!$dryRun)
 			{
-				// Mark the user notified
-				$result = $wipeModel->notifyUser($id, $when);
-				$error  = $wipeModel->getError();
-
-				// Send the email
-				if ($result && !$this->sendEmail($id, new DateTime($when->getTimestamp())))
-				{
-					// If the email failed, reset the user's notification
-					$wipeModel->resetUserNotification($id);
-					$error  = "Cannot send email";
-					$result = false;
-				}
+				$result = $wipeModel->wipe($id, 'lifecycle');
 			}
 
 			if ($result)
 			{
 				$this->ioStyle->text(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_OK'));
 
-				$notified++;
+				$deleted++;
 
 				continue;
 			}
 
+			$error = $wipeModel->getError();
+
 			$this->ioStyle->text(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_FAILED'));
 			$this->ioStyle->text("\t<error>$error</error>");
 
-			$cannotNotify++;
+			$cannotDelete++;
 		}
+
+		$end = microtime(true);
+		$timeElapsed = $this->timeago($start, $end, 's', false);
 
 		$this->ioStyle->section(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_SUMMARY'));
 
 		$this->ioStyle->success([
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_TOTAL', $numRecords),
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_NOTIFIED', $notified),
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_NOTNOTIFIED', $cannotNotify),
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_SKIPPED', $alreadyNotified),
+			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_TOTAL', $numRecords),
+			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_DELETED', $deleted),
+			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_NOTNOTIFIED', $cannotNotify),
+			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_SKIPPED', $notNotified),
 		]);
 
 		return 0;
@@ -319,78 +300,5 @@ class LifecycleNotify extends AbstractCommand
 		}
 
 		return (int) $val;
-	}
-
-	/**
-	 * Send the email notification to the user
-	 *
-	 * @param   int       $userID  The user to notify
-	 * @param   DateTime  $when    When their account will be deleted
-	 *
-	 * @return  bool  True if the email sent successfully
-	 * @throws  Exception
-	 *
-	 * @since   1.0.0
-	 */
-	private function sendEmail(int $userID, DateTime $when): bool
-	{
-		$user     = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
-		$registry = is_object($user->params) ? $user->params : new Registry($user->params);
-		$tzString = $registry->get('timezone', 'GMT');
-
-		try
-		{
-			$tz = new DateTimeZone($tzString);
-		}
-		catch (Exception $e)
-		{
-			$tz = new DateTimeZone('GMT');
-		}
-
-		$deleteDate = new Date($when);
-		$format     = Text::_('DATE_FORMAT_LC2') . ' T';
-		$deleteDate->setTimezone($tz);
-
-		// Get the actions carried out for the user
-		/** @var OptionsModel $optionsModel */
-		$optionsModel = $this->mvcFactory->createModel('Options', 'Administrator');
-		$actionsList  = $optionsModel->getBulletPoints($user, 'lifecycle');
-		$actionsHtml  = "<ul>\n" . array_map(function ($x) {
-				return "<li>$x</li>\n";
-			}, $actionsList) . "</ul>";
-
-		$emailVariables =
-			[
-				'name'          => $user->name,
-				'email'         => $user->email,
-				'username'      => $user->username,
-				'registerdate'  => $user->registerDate,
-				'lastvisitdate' => $user->lastvisitDate,
-				'requirereset'  => $user->requireReset,
-				'resetcount'    => $user->resetCount,
-				'lastresettime' => $user->lastResetTime,
-				'activation'    => empty($user->activation) ? Text::_('JNO') : $user->activation,
-				'block'         => $user->block ? Text::_('JYES') : Text::_('JNO'),
-				'id'            => $user->id,
-				'actions'       => $actionsHtml,
-				'actions_text'  => implode("\n", $actionsList),
-				'deletedate'    => $deleteDate->format($format, true),
-			];
-
-
-		Log::add("Emailing the user", Log::DEBUG, 'com_datacompliance');
-
-		try
-		{
-			TemplateEmails::sendMail('user_warnlifecycle', $emailVariables, $user);
-
-			return true;
-		}
-		catch (Exception $e)
-		{
-			Log::add("Emailing user $userID has failed", Log::ERROR, 'com_datacompliance');
-		}
-
-		return false;
 	}
 }
