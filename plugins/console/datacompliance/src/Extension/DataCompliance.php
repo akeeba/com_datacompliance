@@ -10,6 +10,7 @@ namespace Joomla\Plugin\Console\DataCompliance\Extension;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\CliCommand\AccountDelete;
+use Akeeba\Component\DataCompliance\Administrator\CliCommand\LifecycleDelete;
 use Akeeba\Component\DataCompliance\Administrator\CliCommand\LifecycleNotify;
 use Joomla\Application\ApplicationEvents;
 use Joomla\Application\Event\ApplicationEvent;
@@ -28,6 +29,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	private static $commands = [
 		AccountDelete::class,
 		LifecycleNotify::class,
+		LifecycleDelete::class,
 	];
 
 	/**

@@ -46,7 +46,7 @@ class LifecycleDelete extends AbstractCommand
 	 * @var    string
 	 * @since  3.0.0
 	 */
-	protected static $defaultName = 'datacompliance:lifecycle:notify';
+	protected static $defaultName = 'datacompliance:lifecycle:delete';
 
 	/**
 	 * Configure the command.

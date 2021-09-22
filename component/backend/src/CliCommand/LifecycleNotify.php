@@ -201,7 +201,7 @@ class LifecycleNotify extends AbstractCommand
 				$error  = $wipeModel->getError();
 
 				// Send the email
-				if ($result && !$this->sendEmail($id, new DateTime($when->getTimestamp())))
+				if ($result && !$this->sendEmail($id, $when))
 				{
 					// If the email failed, reset the user's notification
 					$wipeModel->resetUserNotification($id);
@@ -382,9 +382,7 @@ class LifecycleNotify extends AbstractCommand
 
 		try
 		{
-			TemplateEmails::sendMail('user_warnlifecycle', $emailVariables, $user);
-
-			return true;
+			return TemplateEmails::sendMail('user_warnlifecycle', $emailVariables, $user);
 		}
 		catch (Exception $e)
 		{
