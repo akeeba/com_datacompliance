@@ -316,6 +316,10 @@ abstract class TemplateEmails
 				return false;
 			}
 
+			$data = array_merge([
+				'sitename' => Factory::getApplication()->get('sitename', 'A Joomla! Site')
+			], $data);
+
 			$templateMailer = new MailTemplate($key, $langTag, $mailer);
 			$templateMailer->addTemplateData($data);
 			$templateMailer->addRecipient(trim($user->email), $user->name);

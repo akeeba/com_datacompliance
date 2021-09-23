@@ -68,6 +68,8 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 			$this->setMVCFactory($mvcFactory);
 		}
 
+		$this->autoloadLanguage = true;
+
 		parent::__construct($subject, $config);
 	}
 

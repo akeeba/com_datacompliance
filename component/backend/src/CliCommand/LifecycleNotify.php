@@ -355,9 +355,9 @@ class LifecycleNotify extends AbstractCommand
 		/** @var OptionsModel $optionsModel */
 		$optionsModel = $this->mvcFactory->createModel('Options', 'Administrator');
 		$actionsList  = $optionsModel->getBulletPoints($user, 'lifecycle');
-		$actionsHtml  = "<ul>\n" . array_map(function ($x) {
+		$actionsHtml  = "<ul>\n" . implode("\n", array_map(function ($x) {
 				return "<li>$x</li>\n";
-			}, $actionsList) . "</ul>";
+			}, $actionsList)) . "</ul>";
 
 		$emailVariables =
 			[
@@ -382,7 +382,7 @@ class LifecycleNotify extends AbstractCommand
 
 		try
 		{
-			return TemplateEmails::sendMail('user_warnlifecycle', $emailVariables, $user);
+			return TemplateEmails::sendMail('com_datacompliance.user_warnlifecycle', $emailVariables, $user);
 		}
 		catch (Exception $e)
 		{

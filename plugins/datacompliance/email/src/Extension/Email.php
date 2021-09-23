@@ -175,7 +175,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 
 			try
 			{
-				TemplateEmails::sendMail('user_' . $type, $emailVariables, $user);
+				TemplateEmails::sendMail('com_datacompliance.user_' . $type, $emailVariables, $user);
 			}
 			catch (Exception $e)
 			{
@@ -211,7 +211,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 
 			try
 			{
-				TemplateEmails::sendMail('admin_' . $type, $emailVariables, $sa);
+				TemplateEmails::sendMail('com_datacompliance.admin_' . $type, $emailVariables, $sa);
 			}
 			catch (Exception $e)
 			{
