@@ -170,7 +170,7 @@ class OptionsModel extends BaseDatabaseModel
 		 * This means that if you go from Consent to Non-consent the plugin will evaluate your option again and redirect
 		 * you to the consent page, preventing you from using the site (as it should).
 		 */
-		$app->getSession()->set('com_datacompliance.has_consented', 0);
+		$app->getSession()->set('com_datacompliance.has_consented', $preference ? 1 : 0);
 	}
 
 	/**

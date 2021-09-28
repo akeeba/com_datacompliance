@@ -9,7 +9,9 @@ namespace Akeeba\Component\DataCompliance\Administrator\Table;
 
 use Akeeba\Component\DataCompliance\Administrator\Mixin\AssertionAware;
 use Akeeba\Component\DataCompliance\Administrator\Table\Mixin\CreateModifyAware;
+use Joomla\CMS\Event\AbstractEvent;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Utilities\IpHelper;
 
@@ -43,4 +45,70 @@ class ConsenttrailsTable extends AbstractTable
 	{
 		$this->requester_ip = $this->requester_ip ?: (IpHelper::getIp() ?: '(CLI)');
 	}
+
+	public function store($updateNulls = false)
+	{
+		$this->triggerEvent('onBeforeStore', [&$updateNulls]);
+
+		$result = true;
+
+		// Pre-processing by observers
+		$event = AbstractEvent::create(
+			'onTableBeforeStore',
+			[
+				'subject'		=> $this,
+				'updateNulls'	=> $updateNulls,
+				'k'				=> $this->created_by,
+			]
+		);
+		$this->getDispatcher()->dispatch('onTableBeforeStore', $event);
+
+		try
+		{
+			if (!$this->hasPrimaryKey())
+			{
+				$result = false;
+			}
+			else
+			{
+				$db = $this->getDbo();
+				$query = $db->getQuery(true)
+					->delete($this->_tbl)
+					->where($db->quoteName('created_by') . ' = :created_by')
+					->bind(':created_by', $this->created_by, ParameterType::INTEGER);
+
+				try
+				{
+					$db->setQuery($query)->execute();
+					$db->insertObject($this->_tbl, $this, $this->_tbl_keys[0]);
+				}
+				catch (\Exception $e)
+				{
+					$this->setError($e->getMessage());
+					$result = false;
+				}
+			}
+		}
+		catch (\Exception $e)
+		{
+			$this->setError($e->getMessage());
+			$result = false;
+		}
+
+		// Post-processing by observers
+		$event = AbstractEvent::create(
+			'onTableAfterStore',
+			[
+				'subject'	=> $this,
+				'result'	=> &$result,
+			]
+		);
+		$this->getDispatcher()->dispatch('onTableAfterStore', $event);
+
+		$this->triggerEvent('onAfterStore', [&$result, $updateNulls]);
+
+		return $result;
+	}
+
+
 }
