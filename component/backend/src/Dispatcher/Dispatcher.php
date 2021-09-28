@@ -10,6 +10,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Dispatcher;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Mixin\TriggerEvent;
+use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Dispatcher\ComponentDispatcher;
 use Joomla\CMS\Document\HtmlDocument;
@@ -47,6 +48,22 @@ class Dispatcher extends ComponentDispatcher
 			{
 				throw $e;
 			}
+		}
+	}
+
+	/** @inheritdoc  */
+	protected function checkAccess()
+	{
+		// Always allow access to the options view
+		if ($this->input->getCmd('view', null) === 'options')
+		{
+			return true;
+		}
+
+		// Check the user has permission to access this component if in the backend
+		if ($this->app->isClient('administrator') && !$this->app->getIdentity()->authorise('core.manage', $this->option))
+		{
+			throw new NotAllowed($this->app->getLanguage()->_('JERROR_ALERTNOAUTHOR'), 403);
 		}
 	}
 
