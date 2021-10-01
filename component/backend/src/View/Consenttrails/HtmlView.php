@@ -82,15 +82,15 @@ class HtmlView extends BaseHtmlView
 		$this->activeFilters = $model->getActiveFilters();
 		$this->isEmptyState  = $this->get('IsEmptyState');
 
-		if (!\count($this->items) && $this->isEmptyState)
-		{
-			$this->setLayout('emptystate');
-		}
-
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
 			throw new GenericDataException(implode("\n", $errors), 500);
+		}
+
+		if (!\count($this->items) && $this->isEmptyState)
+		{
+			$this->setLayout('emptystate');
 		}
 
 		ToolbarHelper::title(Text::_('COM_DATACOMPLIANCE_TITLE_CONSENTTRAILS'), 'datacompliance');
