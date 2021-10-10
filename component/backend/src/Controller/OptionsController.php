@@ -51,11 +51,7 @@ class OptionsController extends BaseController
 	 */
 	public function consent()
 	{
-		if (!$this->checkToken($this->input->getMethod()))
-		{
-			throw new RuntimeException(Text::_('JINVALID_TOKEN'), 403);
-		}
-
+		$this->checkToken($this->input->getMethod());
 		$this->assertUserAccess('consent');
 
 		/** @var OptionsModel $model */
@@ -82,11 +78,7 @@ class OptionsController extends BaseController
 	 */
 	public function export()
 	{
-		if (!$this->checkToken($this->input->getMethod()))
-		{
-			throw new RuntimeException(Text::_('JINVALID_TOKEN'), 403);
-		}
-
+		$this->checkToken($this->input->getMethod());
 		$this->assertUserAccess('export');
 
 		$currentUser = $this->app->getIdentity();
@@ -150,11 +142,7 @@ class OptionsController extends BaseController
 	 */
 	public function wipe()
 	{
-		if (!$this->checkToken($this->input->getMethod()))
-		{
-			throw new RuntimeException(Text::_('JINVALID_TOKEN'), 403);
-		}
-
+		$this->checkToken($this->input->getMethod());
 		$this->assertUserAccess('wipe');
 
 		$currentUser = $this->app->getIdentity();
