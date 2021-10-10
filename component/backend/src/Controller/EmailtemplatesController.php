@@ -14,6 +14,7 @@ use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Router\Route;
+use RuntimeException;
 
 class EmailtemplatesController extends BaseController
 {
@@ -21,7 +22,10 @@ class EmailtemplatesController extends BaseController
 
 	public function updateEmails($cachable = false, $urlparams = [])
 	{
-		$this->checkToken('get');
+		if (!$this->checkToken('get'))
+		{
+			throw new RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+		}
 
 		$returnURL = Route::_('index.php?option=com_datacompliance&view=Emailtemplates', false);
 		$this->setRedirect($returnURL);
@@ -37,7 +41,10 @@ class EmailtemplatesController extends BaseController
 
 	public function resetEmails($cachable = false, $urlparams = [])
 	{
-		$this->checkToken('get');
+		if (!$this->checkToken('get'))
+		{
+			throw new RuntimeException(Text::_('JINVALID_TOKEN'), 403);
+		}
 
 		$returnURL = Route::_('index.php?option=com_datacompliance&view=Emailtemplates', false);
 		$this->setRedirect($returnURL);
