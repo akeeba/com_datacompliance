@@ -9,7 +9,7 @@
     <name>Akeeba Data Compliance package</name>
     <author>Nicholas K. Dionysopoulos</author>
     <creationDate>##DATE##</creationDate>
-    <packagename>compliance</packagename>
+    <packagename>datacompliance</packagename>
     <version>##VERSION##</version>
     <url>https://www.akeeba.com</url>
     <packager>Akeeba Ltd</packager>
