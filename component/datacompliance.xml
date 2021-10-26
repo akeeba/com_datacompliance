@@ -5,7 +5,7 @@
   -->
 <extension type="component" version="4.0.0" method="upgrade">
 	<name>COM_DATACOMPLIANCE</name>
-	<creationDate>2021-09-04</creationDate>
+	<creationDate>2021-10-26</creationDate>
 	<author>Nicholas K. Dionysopoulos</author>
 	<authorEmail>nicholas@akeeba.com</authorEmail>
 	<authorUrl>https://www.akeeba.com</authorUrl>
