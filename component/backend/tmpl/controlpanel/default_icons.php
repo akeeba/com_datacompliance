@@ -19,7 +19,7 @@ use Joomla\CMS\Router\Route;
 	</h3>
 
 	<div class="card-body d-flex flex-row flex-wrap align-items-stretch">
-		<a class="text-center btn btn-outline-primary border-0" style="width: 10em"
+		<a class="text-center align-self-stretch btn btn-outline-primary border-0" style="width: 10em"
 		   href="<?= Route::_('index.php?option=com_datacompliance&view=Consenttrails') ?>">
 			<div class="bg-primary text-white d-block text-center p-3 h2">
 				<span class="fa fa-check-square"></span>
@@ -29,7 +29,7 @@ use Joomla\CMS\Router\Route;
 			</span>
 		</a>
 
-		<a class="text-center btn btn-outline-primary border-0" style="width: 10em"
+		<a class="text-center align-self-stretch btn btn-outline-primary border-0" style="width: 10em"
 		   href="<?= Route::_('index.php?option=com_datacompliance&view=Usertrails') ?>">
 			<div class="bg-primary text-white d-block text-center p-3 h2">
 				<span class="fa fa-users"></span>
@@ -39,7 +39,7 @@ use Joomla\CMS\Router\Route;
 			</span>
 		</a>
 
-		<a class="text-center btn btn-outline-warning text-dark border-0" style="width: 10em"
+		<a class="text-center align-self-stretch btn btn-outline-warning text-dark border-0" style="width: 10em"
 		   href="<?= Route::_('index.php?option=com_datacompliance&view=Exporttrails') ?>">
 			<div class="bg-warning d-block text-center p-3 h2">
 				<span class="fa fa-file-export"></span>
@@ -49,7 +49,7 @@ use Joomla\CMS\Router\Route;
 			</span>
 		</a>
 
-		<a class="text-center btn btn-outline-danger border-0" style="width: 10em"
+		<a class="text-center align-self-stretch btn btn-outline-danger border-0" style="width: 10em"
 		   href="<?= Route::_('index.php?option=com_datacompliance&view=Wipetrails') ?>">
 			<div class="bg-danger text-white d-block text-center p-3 h2">
 				<span class="fa fa-user-minus"></span>
@@ -67,7 +67,7 @@ use Joomla\CMS\Router\Route;
 	</h3>
 
 	<div class="card-body d-flex flex-row flex-wrap align-items-stretch">
-		<a class="text-center btn btn-outline-dark border-0" style="width: 10em"
+		<a class="text-center align-self-stretch btn btn-outline-dark border-0" style="width: 10em"
 		   href="<?= Route::_('index.php?option=com_datacompliance&view=Lifecycle') ?>">
 			<div class="bg-dark text-white d-block text-center p-3 h2">
 				<span class="fa fa-user-clock"></span>
@@ -85,7 +85,7 @@ use Joomla\CMS\Router\Route;
 	</h3>
 
 	<div class="card-body d-flex flex-row flex-wrap align-items-stretch">
-		<a class="text-center btn btn-outline-dark border-0" style="width: 10em"
+		<a class="text-center align-self-stretch btn btn-outline-dark border-0" style="width: 10em"
 		   href="<?= Route::_('index.php?option=com_datacompliance&view=Emailtemplates') ?>">
 			<div class="bg-dark text-white d-block text-center p-3 h2">
 				<span class="fa fa-envelope-open-text"></span>
