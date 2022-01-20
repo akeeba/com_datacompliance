@@ -1,6 +1,7 @@
 Akeeba Data Compliance 3.0.1
 ================================================================================
 # [LOW] Bootstrap 5.1.2 included in Joomla 4.0.4 broke the CSS for Control Panel icons
+# [LOW] Bad grammar “consent with” (sic) instead of “consent to” in COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL. Thanks, Peter for the heads up!
 
 Akeeba Data Compliance 3.0.0
 ================================================================================
