@@ -19,7 +19,7 @@ use Throwable;
 /**
  * Adds support for loading any template or layout, of any view of the current component, in an HTML view.
  *
- * @since  9.0.0
+ * @since  3.0.0
  */
 trait LoadAnyTemplate
 {
@@ -41,6 +41,8 @@ trait LoadAnyTemplate
 	 *
 	 * @return  string
 	 * @throws  Throwable
+	 *
+	 * @since   3.0.0
 	 */
 	public function loadAnyTemplate(string $viewTemplate, bool $fallbackToDefault = true, array $extraVariables = []): string
 	{
@@ -76,11 +78,10 @@ trait LoadAnyTemplate
 
 		// Create new view template paths
 		$newTemplatePaths = array_map(function ($path) use ($view) {
-			$parts = explode('/', rtrim($path, '/'));
-			array_pop($parts);
-			$parts[] = strtolower($view) . '/';
+			$path      = rtrim($path, DIRECTORY_SEPARATOR);
+			$lastSlash = strrpos($path, DIRECTORY_SEPARATOR);
 
-			return implode('/', $parts);
+			return substr($path, 0, $lastSlash) . DIRECTORY_SEPARATOR . strtolower($view) . DIRECTORY_SEPARATOR;
 		}, $previousTemplatePaths);
 
 		// Set up the default return HTML and thrown exception
@@ -155,8 +156,8 @@ HTML;
 	 *
 	 * @return  string  The output of the the template script.
 	 *
-	 * @throws Exception
-	 * @since   9.0.0
+	 * @throws  Exception
+	 * @since   3.0.0
 	 */
 	public function loadTemplate($tpl = null, bool $fallbackToDefault = true, array $extraVariables = []): string
 	{
