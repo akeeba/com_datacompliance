@@ -1,3 +1,7 @@
+Akeeba Data Compliance 3.0.2
+================================================================================
+# [HIGH] Unhandled exception when you have turned off email sending in your site's Global Configuration
+
 Akeeba Data Compliance 3.0.1
 ================================================================================
 # [LOW] Bootstrap 5.1.2 included in Joomla 4.0.4 broke the CSS for Control Panel icons

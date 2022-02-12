@@ -13,7 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\User\User;
 use Joomla\Database\DatabaseDriver;
-use PHPMailer\PHPMailer\Exception;
+use Exception;
 
 /**
  * Manage and send emails with Joomla's email templates component
