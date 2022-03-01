@@ -7,6 +7,7 @@
       <path value="$USER_HOME$/Sites/boot4/configuration.php" />
       <path value="$PROJECT_DIR$/component/backend/vendor/composer" />
       <path value="$PROJECT_DIR$/component/backend/vendor/akeeba/s3" />
+      <path value="/var/www/boot4/configuration.php" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
