@@ -1,5 +1,6 @@
 Akeeba Data Compliance 3.0.2
 ================================================================================
+# [HIGH] Cannot install on Joomla! 4.1
 # [HIGH] Unhandled exception when you have turned off email sending in your site's Global Configuration
 # [LOW] PHP 8.1 Notice when checking whether the user has agreed to the site's terms
 
