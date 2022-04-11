@@ -107,6 +107,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceDeleteUser(Event $event)
 	{
+		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
+
 		/**
 		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
@@ -134,9 +136,9 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		// Query for the ticket IDs
 		$ticketsQuery = $db->getQuery(true)
-			->select($db->quoteName('ats_ticket_id'))
-			->from($db->quoteName('#__ats_tickets'))
-			->where($db->qn('created_by') . ' = ' . $db->quote($userId));
+		                   ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_ticket_id'))
+		                   ->from($db->quoteName('#__ats_tickets'))
+		                   ->where($db->qn('created_by') . ' = ' . $db->quote($userId));
 
 		if ($type == 'lifecycle')
 		{
@@ -151,9 +153,9 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		{
 			// Query for the post IDs
 			$postsQuery = $db->getQuery(true)
-				->select($db->quoteName('ats_post_id'))
-				->from($db->quoteName('#__ats_posts'))
-				->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+			                 ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_post_id'))
+			                 ->from($db->quoteName('#__ats_posts'))
+			                 ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 
 			$postIDs             = $db->setQuery($postsQuery)->loadColumn(0);
 			$ret['ats']['posts'] = $postIDs;
@@ -163,22 +165,22 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		{
 			// Query for the attachment IDs
 			$attachmentsQuery          = $db->getQuery(true)
-				->select($db->quoteName('ats_attachment_id'))
-				->from($db->quoteName('#__ats_attachments'))
-				->whereIn($db->quoteName('ats_post_id'), $postIDs, ParameterType::INTEGER);
+			                                ->select($db->quoteName('ats_attachment_id'))
+			                                ->from($db->quoteName('#__ats_attachments'))
+			                                ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
 			$ret['ats']['attachments'] = $db->setQuery($attachmentsQuery)->loadColumn(0);
 
 			// Delete attachments
 			$query = $db->getQuery(true)
-				->delete($db->quoteName('#__ats_attachments'))
-				->whereIn($db->quoteName('ats_post_id'), $postIDs, ParameterType::INTEGER);
+			            ->delete($db->quoteName('#__ats_attachments'))
+			            ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
 			$db->setQuery($query)->execute();
 			unset($postIDs);
 
 			// Delete posts
 			$query = $db->getQuery(true)
-				->delete($db->quoteName('#__ats_posts'))
-				->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+			            ->delete($db->quoteName('#__ats_posts'))
+			            ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 			$db->setQuery($query)->execute();
 		}
 
@@ -186,74 +188,105 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		if (!empty($ticketIDs))
 		{
 			$query = $db->getQuery(true)
-				->delete($db->quoteName('#__ats_tickets'))
-				->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+			            ->delete($db->quoteName('#__ats_tickets'))
+			            ->whereIn($db->quoteName($isATS5OrLater ? 'id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 			$db->setQuery($query)->execute();
 
 			// ============================== attempts ==============================
-			$query                  = $db->getQuery(true)
-				->select($db->quoteName('ats_attempt_id'))
-				->from($db->quoteName('#__ats_attempts'))
-				->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
-			$ret['ats']['attempts'] = $db->setQuery($query)->loadColumn();
+			try
+			{
+				$query = $db->getQuery(true)
+				            ->select($db->quoteName('ats_attempt_id'))
+				            ->from($db->quoteName('#__ats_attempts'))
+				            ->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 
-			$query = $db->getQuery(true)
-				->delete($db->quoteName('#__ats_attempts'))
-				->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
-			$db->setQuery($query)->execute();
+				$ret['ats']['attempts'] = $db->setQuery($query)->loadColumn();
+
+				$query = $db->getQuery(true)
+				            ->delete($db->quoteName('#__ats_attempts'))
+				            ->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+				$db->setQuery($query)->execute();
+			}
+			catch (\Exception $e)
+			{
+				unset($ret['ats']['attempts']);
+			}
 		}
 
 		unset($ticketIDs);
 
 		// ============================== creditconsumptions ==============================
-		$query                            = $db->getQuery(true)
-			->select($db->quoteName('ats_creditconsumption_id'))
-			->from($db->quoteName('#__ats_creditconsumptions'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-		$ret['ats']['creditconsumptions'] = $db->setQuery($query)->loadColumn();
-
-		if (!empty($ret['ats']['creditconsumptions']))
+		try
 		{
 			$query = $db->getQuery(true)
-				->delete($db->quoteName('#__ats_creditconsumptions'))
-				->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			            ->select($db->quoteName('ats_creditconsumption_id'))
+			            ->from($db->quoteName('#__ats_creditconsumptions'))
+			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-			$db->setQuery($query)->execute();
+			$ret['ats']['creditconsumptions'] = $db->setQuery($query)->loadColumn();
+
+			if (!empty($ret['ats']['creditconsumptions']))
+			{
+				$query = $db->getQuery(true)
+				            ->delete($db->quoteName('#__ats_creditconsumptions'))
+				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
+				$db->setQuery($query)->execute();
+			}
+		}
+		catch (\Exception $e)
+		{
+			unset($ret['ats']['creditconsumptions']);
 		}
 
 		// ============================== credittransactions ==============================
-		$query                            = $db->getQuery(true)
-			->select($db->quoteName('ats_credittransaction_id'))
-			->from($db->quoteName('#__ats_credittransactions'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-		$ret['ats']['credittransactions'] = $db->setQuery($query)->loadColumn();
-
-		if (!empty($ret['ats']['credittransactions']))
+		try
 		{
 			$query = $db->getQuery(true)
-				->delete($db->quoteName('#__ats_credittransactions'))
-				->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			            ->select($db->quoteName('ats_credittransaction_id'))
+			            ->from($db->quoteName('#__ats_credittransactions'))
+			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-			$db->setQuery($query)->execute();
+			$ret['ats']['credittransactions'] = $db->setQuery($query)->loadColumn();
+
+			if (!empty($ret['ats']['credittransactions']))
+			{
+				$query = $db->getQuery(true)
+				            ->delete($db->quoteName('#__ats_credittransactions'))
+				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
+				$db->setQuery($query)->execute();
+			}
+		}
+		catch (\Exception $e)
+		{
+			unset($ret['ats']['credittransactions']);
 		}
 
 		// ============================== usertags ==============================
-		$query                  = $db->getQuery(true)
-			->select($db->quoteName('id'))
-			->from($db->quoteName('#__ats_users_usertags'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
-
-		$ret['ats']['usertags'] = $db->setQuery($query)->loadColumn();
-
-		if (!empty($ret['ats']['usertags']))
+		try
 		{
 			$query = $db->getQuery(true)
-				->delete($db->quoteName('#__ats_users_usertags'))
-				->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			            ->select($db->quoteName('id'))
+			            ->from($db->quoteName('#__ats_users_usertags'))
+			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-			$db->setQuery($query)->execute();
+			$ret['ats']['usertags'] = $db->setQuery($query)->loadColumn();
+
+			if (!empty($ret['ats']['usertags']))
+			{
+				$query = $db->getQuery(true)
+				            ->delete($db->quoteName('#__ats_users_usertags'))
+				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+
+				$db->setQuery($query)->execute();
+			}
+		}
+		catch (\Exception $e)
+		{
+			unset ($ret['ats']['usertags']);
 		}
 
 		$this->setEventResult($event, $ret);
@@ -273,6 +306,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
+		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
+
 		/** @var int $userId */
 		[$userId] = $event->getArguments();
 
@@ -286,30 +321,36 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$tickets   = $this->getTickets($userId);
 		$ticketIDs = [];
 
-		array_map(function ($ticket) use (&$domainTickets, &$ticketIDs) {
+		array_map(function ($ticket) use (&$domainTickets, &$ticketIDs, $isATS5OrLater) {
 			Export::adoptChild($domainTickets, Export::exportItemFromObject($ticket));
-			$ticketIDs[] = $ticket->ats_ticket_id;
+			$ticketIDs[] = $isATS5OrLater ? $ticket->id : $ticket->ats_ticket_id;
 		}, $tickets);
 		unset($tickets);
 
 		// Export #__ats_attempts entries
-		$domain = $export->addChild('domain');
-		$domain->addAttribute('name', 'ats_attempts');
-		$domain->addAttribute('description', 'Akeeba Ticket System ticket filing attempts (successful), linked to each ticket');
-
 		if (!empty($ticketIDs))
 		{
-			$db          = $this->db;
-			$selectQuery = $db->getQuery(true)
-				->select('*')
-				->from($db->quoteName('#__ats_attempts'))
-				->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+			try
+			{
+				$db          = $this->db;
+				$selectQuery = $db->getQuery(true)
+				                  ->select('*')
+				                  ->from($db->quoteName('#__ats_attempts'))
+				                  ->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 
-			$items = $db->setQuery($selectQuery)->loadObjectList();
+				$items = $db->setQuery($selectQuery)->loadObjectList();
 
-			array_map(function ($item) use (&$domainAttachments) {
-				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-			}, $items);
+				$domain = $export->addChild('domain');
+				$domain->addAttribute('name', 'ats_attempts');
+				$domain->addAttribute('description', 'Akeeba Ticket System ticket filing attempts (successful), linked to each ticket');
+
+				array_map(function ($item) use (&$domainAttachments) {
+					Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+				}, $items);
+			}
+			catch (\Exception $e)
+			{
+			}
 		}
 
 		// Posts
@@ -320,9 +361,9 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$posts   = $this->getPosts($ticketIDs);
 		$postIDs = [];
 
-		array_map(function ($post) use (&$domainPosts, &$postIDs) {
+		array_map(function ($post) use (&$domainPosts, &$postIDs, $isATS5OrLater) {
 			Export::adoptChild($domainPosts, Export::exportItemFromObject($post));
-			$postIDs[] = $post->ats_post_id;
+			$postIDs[] = $isATS5OrLater ? $post->id : $post->ats_post_id;
 		}, $posts);
 
 		unset($ticketIDs);
@@ -336,63 +377,83 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		$attachments = $this->getAttachments($postIDs);
 
-		array_map(function ($attachment) use (&$domainAttachments) {
+		array_map(function ($attachment) use (&$domainAttachments, $isATS5OrLater) {
 			Export::adoptChild($domainAttachments, Export::exportItemFromObject($attachment));
-			$postIDs[] = $attachment->ats_post_id;
+			$postIDs[] = $isATS5OrLater ? $attachment->id : $attachment->ats_post_id;
 		}, $attachments);
 
 		// Export #__ats_creditconsumptions entries
-		$domain = $export->addChild('domain');
-		$domain->addAttribute('name', 'ats_creditconsumptions');
-		$domain->addAttribute('description', 'Akeeba Ticket System credit consumption events, linked to each ticket');
+		try
+		{
+			$db          = $this->db;
+			$selectQuery = $db->getQuery(true)
+			                  ->select('*')
+			                  ->from($db->quoteName('#__ats_creditconsumptions'))
+			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-		$db          = $this->db;
-		$selectQuery = $db->getQuery(true)
-			->select('*')
-			->from($db->quoteName('#__ats_creditconsumptions'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			$items = $db->setQuery($selectQuery)->loadObjectList();
 
-		$items = $db->setQuery($selectQuery)->loadObjectList();
+			$domain = $export->addChild('domain');
+			$domain->addAttribute('name', 'ats_creditconsumptions');
+			$domain->addAttribute('description', 'Akeeba Ticket System credit consumption events, linked to each ticket');
 
-		array_map(function ($item) use (&$domainAttachments) {
-			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-		}, $items);
+			array_map(function ($item) use (&$domainAttachments) {
+				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+			}, $items);
+		}
+		catch (\Exception $e)
+		{
+		}
 
 		// Export #__ats_credittransactions entries
-		$domain = $export->addChild('domain');
-		$domain->addAttribute('name', 'ats_credittransactions');
-		$domain->addAttribute('description', 'Akeeba Ticket System credit transactions (credit purchases)');
+		try
+		{
+			$db          = $this->db;
+			$selectQuery = $db->getQuery(true)
+			                  ->select('*')
+			                  ->from($db->quoteName('#__ats_credittransactions'))
+			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-		$db          = $this->db;
-		$selectQuery = $db->getQuery(true)
-			->select('*')
-			->from($db->quoteName('#__ats_credittransactions'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			$items = $db->setQuery($selectQuery)->loadObjectList();
 
-		$items = $db->setQuery($selectQuery)->loadObjectList();
+			$domain = $export->addChild('domain');
+			$domain->addAttribute('name', 'ats_credittransactions');
+			$domain->addAttribute('description', 'Akeeba Ticket System credit transactions (credit purchases)');
 
-		array_map(function ($item) use (&$domainAttachments) {
-			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-		}, $items);
+			array_map(function ($item) use (&$domainAttachments) {
+				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+			}, $items);
+		}
+		catch (\Exception $e)
+		{
+
+		}
 
 		// Export #__ats_users_usertags entries
-		$domain = $export->addChild('domain');
-		$domain->addAttribute('name', 'ats_user_usertags');
-		$domain->addAttribute('description', 'Akeeba Ticket System user tags');
+		try
+		{
+			$db          = $this->db;
+			$selectQuery = $db->getQuery(true)
+			                  ->select('*')
+			                  ->from($db->quoteName('#__ats_users_usertags'))
+			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-		$db          = $this->db;
-		$selectQuery = $db->getQuery(true)
-			->select('*')
-			->from($db->quoteName('#__ats_users_usertags'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			$items = $db->setQuery($selectQuery)->loadObjectList();
 
-		$items = $db->setQuery($selectQuery)->loadObjectList();
+			$domain = $export->addChild('domain');
+			$domain->addAttribute('name', 'ats_user_usertags');
+			$domain->addAttribute('description', 'Akeeba Ticket System user tags');
 
-		array_map(function ($item) use (&$domainAttachments) {
-			Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-		}, $items);
+			array_map(function ($item) use (&$domainAttachments) {
+				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
+			}, $items);
 
-		$this->setEventResult($event, $export);
+			$this->setEventResult($event, $export);
+		}
+		catch (\Exception $e)
+		{
+
+		}
 	}
 
 	/**
@@ -424,11 +485,13 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			return [];
 		}
 
+		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
+
 		$db    = $this->db;
 		$query = $db->getQuery(true)
-			->select('*')
-			->from('#__ats_attachments')
-			->whereIn($db->quoteName('ats_post_id'), $postIDs, ParameterType::INTEGER);
+		            ->select('*')
+		            ->from('#__ats_attachments')
+		            ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
 
 		return $db->setQuery($query)->loadObjectList();
 	}
@@ -440,11 +503,13 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			return [];
 		}
 
+		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
+
 		$db    = $this->db;
 		$query = $db->getQuery(true)
-			->select('*')
-			->from('#__ats_posts')
-			->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+		            ->select('*')
+		            ->from('#__ats_posts')
+		            ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 
 		return $db->setQuery($query)->loadObjectList();
 	}
@@ -453,9 +518,9 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	{
 		$db    = $this->db;
 		$query = $db->getQuery(true)
-			->select('*')
-			->from('#__ats_tickets')
-			->where($db->quoteName('created_by') . ' = ' . $db->quote($user_id));
+		            ->select('*')
+		            ->from('#__ats_tickets')
+		            ->where($db->quoteName('created_by') . ' = ' . $db->quote($user_id));
 
 		return $db->setQuery($query)->loadObjectList();
 	}
