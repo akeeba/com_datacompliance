@@ -1,6 +1,7 @@
 Akeeba Data Compliance 3.0.3
 ================================================================================
 ~ Updated ATS plugin for ATS version 5 and later
+# [LOW] PHP warning when using legacy menu items with view=Options (with an uppercase letter) stored in the database
 
 Akeeba Data Compliance 3.0.2
 ================================================================================

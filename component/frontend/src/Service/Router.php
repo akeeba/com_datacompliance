@@ -32,9 +32,7 @@ class Router extends RouterView
 		$this->setDbo($db);
 		$this->setMVCFactory($factory);
 
-		$optionsRoute = new RouterViewConfiguration('options');
-		//$optionsRoute->path = '';
-		$this->registerView($optionsRoute);
+		$this->registerView(new RouterViewConfiguration('options'));
 
 		parent::__construct($app, $menu);
 
@@ -45,6 +43,8 @@ class Router extends RouterView
 
 	public function build(&$query)
 	{
+		$query['view'] = strtolower($query['view'] ?? 'options');
+
 		$segments = parent::build($query);
 
 		$task = strtolower($query['task'] ?? 'options');
