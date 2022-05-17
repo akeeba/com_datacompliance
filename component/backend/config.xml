@@ -5,6 +5,7 @@
   ~ @license   GNU General Public License version 3, or later
   -->
 <config >
+    <inlinehelp button="show"/>
     <fieldset
             name="consent"
             label="COM_DATACOMPLIANCE_CONFIG_CONSENT_LABEL"
