@@ -1,5 +1,9 @@
-Akeeba Data Compliance 3.0.4
+Akeeba Data Compliance 3.0.5
 ================================================================================
+# [LOW] PHP 8.1 deprecated notice when checking if FOF is still installed
+
+Akeeba Data Compliance 3.0.4
+======================================π==========================================
 + Add Show Inline Help support in component options for Joomla 4.1
 
 Akeeba Data Compliance 3.0.3
