@@ -6,7 +6,7 @@
   -->
 
 <extension version="3.3.0" type="package" method="upgrade">
-    <name>Akeeba Data Compliance package</name>
+    <name>PKG_DATACOMPLIANCE</name>
     <author>Nicholas K. Dionysopoulos</author>
     <creationDate>##DATE##</creationDate>
     <packagename>datacompliance</packagename>
@@ -16,18 +16,13 @@
     <packagerurl>https://www.akeeba.com</packagerurl>
     <copyright>Copyright (c)2018 Akeeba Ltd / Nicholas K. Dionysopoulos</copyright>
     <license>GNU GPL v3 or later</license>
-    <description>Akeeba Data Compliance installation package v.##VERSION##</description>
+    <description>PKG_DATACOMPLIANCE_XML_DESCRIPTION</description>
 
-    <!-- List of extensions to install -->
     <files>
-        <!-- Component -->
         <file type="component" id="com_datacompliance">com_datacompliance.zip</file>
 
-        <!-- CLI commands plugin -->
         <file type="plugin" group="console" id="datacompliance">plg_console_datacompliance.zip</file>
 
-        <!-- Plugins: datacompliance // DO NOT RE-ORDER!!! -->
-        <!-- IMPORTANT: The email plugin MUST be installed first to ensure the correct publish order -->
         <file type="plugin" group="datacompliance" id="email">plg_datacompliance_email.zip</file>
         <file type="plugin" group="datacompliance" id="joomla">plg_datacompliance_joomla.zip</file>
         <file type="plugin" group="datacompliance" id="ars">plg_datacompliance_ars.zip</file>
@@ -35,17 +30,17 @@
         <file type="plugin" group="datacompliance" id="loginguard">plg_datacompliance_loginguard.zip</file>
         <file type="plugin" group="datacompliance" id="s3">plg_datacompliance_s3.zip</file>
 
-        <!-- Plugins: system -->
         <file type="plugin" group="system" id="datacompliance">plg_system_datacompliance.zip</file>
 
-        <!-- Plugins: user -->
         <file type="plugin" group="user" id="datacompliance">plg_user_datacompliance.zip</file>
     </files>
 
-    <!-- Installation script -->
+    <languages folder="language">
+        <language tag="en-GB">en-GB/pkg_datacompliance.sys.ini</language>
+    </languages>
+
     <scriptfile>script.datacompliance.php</scriptfile>
 
-    <!-- Update servers -->
     <updateservers>
         <server type="extension" priority="1" name="Akeeba Data Compliance">https://cdn.akeeba.com/updates/pkgdatacompliance.xml</server>
     </updateservers>
