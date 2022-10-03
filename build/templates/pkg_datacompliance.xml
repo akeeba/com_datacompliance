@@ -6,7 +6,7 @@
   -->
 
 <extension version="3.3.0" type="package" method="upgrade">
-    <name>PKG_DATACOMPLIANCE</name>
+    <name>pkg_datacompliance</name>
     <author>Nicholas K. Dionysopoulos</author>
     <creationDate>##DATE##</creationDate>
     <packagename>datacompliance</packagename>
