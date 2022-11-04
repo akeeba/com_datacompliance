@@ -14,8 +14,8 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
-use Joomla\CMS\MVC\Model\DatabaseAwareTrait;
 use Joomla\CMS\User\UserFactoryInterface;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 
 class DataCompliance
@@ -24,7 +24,7 @@ class DataCompliance
 
 	public function __construct(DatabaseDriver $db)
 	{
-		$this->setDbo($db);
+		$this->setDatabase($db);
 	}
 
 	public function formatDate(?string $date, ?string $format = null, bool $tzAware = true): string

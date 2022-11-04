@@ -18,7 +18,7 @@ use Joomla\CMS\Component\Router\Rules\StandardRules;
 use Joomla\CMS\Menu\AbstractMenu;
 use Joomla\CMS\MVC\Factory\MVCFactory;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
-use Joomla\CMS\MVC\Model\DatabaseAwareTrait;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseInterface;
 
 
@@ -29,7 +29,7 @@ class Router extends RouterView
 
 	public function __construct(SiteApplication $app = null, AbstractMenu $menu = null, DatabaseInterface $db, MVCFactory $factory)
 	{
-		$this->setDbo($db);
+		$this->setDatabase($db);
 		$this->setMVCFactory($factory);
 
 		$this->registerView(new RouterViewConfiguration('options'));
