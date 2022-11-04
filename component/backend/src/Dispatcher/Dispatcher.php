@@ -14,6 +14,7 @@ use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Dispatcher\ComponentDispatcher;
 use Joomla\CMS\Document\HtmlDocument;
+use RuntimeException;
 use Throwable;
 
 class Dispatcher extends ComponentDispatcher
@@ -26,6 +27,11 @@ class Dispatcher extends ComponentDispatcher
 	{
 		try
 		{
+			if (version_compare(PHP_VERSION, '7.4.0', 'lt'))
+			{
+				throw new RuntimeException('Akeeba DataCompliance requires PHP 7.4.0 or later.');
+			}
+
 			$this->triggerEvent('onBeforeDispatch');
 
 			parent::dispatch();
