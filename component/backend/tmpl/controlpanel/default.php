@@ -11,11 +11,6 @@ defined('_JEXEC') or die;
 
 ?>
 
-<?= $this->loadAnyTemplate('common/phpversion_warning', false, [
-	'softwareName'  => 'Akeeba Data Compliance',
-	'minPHPVersion' => '7.4.0',
-]); ?>
-
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-lg">
