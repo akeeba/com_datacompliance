@@ -4,11 +4,11 @@
   "config": {
     "vendor-dir": "component/backend/vendor",
     "platform": {
-      "php": "7.2.0"
+      "php": "7.4.0"
     }
   },
   "require": {
-    "php": ">=7.2.0 <8.1",
+    "php": "^7.4.0||^8.0.0",
     "akeeba/s3": "^2.0.0",
     "ext-simplexml": "*",
     "ext-dom": "*",

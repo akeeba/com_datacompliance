@@ -8,9 +8,11 @@
       <path value="$PROJECT_DIR$/component/backend/vendor/composer" />
       <path value="$PROJECT_DIR$/component/backend/vendor/akeeba/s3" />
       <path value="/var/www/boot4/configuration.php" />
+      <path value="$PROJECT_DIR$/../fof4/fof" />
+      <path value="$PROJECT_DIR$/../akeebasubs/component" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
   <component name="PhpUnit">
     <phpunit_settings>
       <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/component/backend/vendor/autoload.php" />

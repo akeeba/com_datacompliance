@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a076b35cc4e60c71f9e4000e2b5ea5a",
+    "content-hash": "9bdbcc7b818421a8bc33f2d327bced4d",
     "packages": [
         {
             "name": "akeeba/s3",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "01520dae1f736555e08efda0ddc1044701bd340a"
+                "reference": "0c20807b1bfb9d955f9464c26b63f23fc17614ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/01520dae1f736555e08efda0ddc1044701bd340a",
-                "reference": "01520dae1f736555e08efda0ddc1044701bd340a",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/0c20807b1bfb9d955f9464c26b63f23fc17614ab",
+                "reference": "0c20807b1bfb9d955f9464c26b63f23fc17614ab",
                 "shasum": ""
             },
             "require": {
@@ -50,9 +50,9 @@
             ],
             "support": {
                 "issues": "https://github.com/akeeba/s3/issues",
-                "source": "https://github.com/akeeba/s3/tree/2.0.0"
+                "source": "https://github.com/akeeba/s3/tree/2.1.0"
             },
-            "time": "2020-11-30T14:03:55+00:00"
+            "time": "2022-05-30T09:14:13+00:00"
         }
     ],
     "packages-dev": [],
@@ -62,14 +62,14 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2.0 <8.1",
+        "php": "^7.4.0||^8.0.0",
         "ext-simplexml": "*",
         "ext-dom": "*",
         "ext-json": "*"
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "7.2.0"
+        "php": "7.4.0"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }
