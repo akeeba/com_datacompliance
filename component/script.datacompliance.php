@@ -9,7 +9,12 @@ defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
 use Akeeba\Component\DataCompliance\Administrator\Model\UpgradeModel;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\Adapter\PackageAdapter;
+use Joomla\CMS\Installer\InstallerAdapter;
+use Joomla\CMS\Installer\InstallerScript;
+use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 
 /**
  * Akeeba Data Compliance package extension installation script file.
@@ -17,8 +22,20 @@ use Joomla\CMS\Installer\Adapter\PackageAdapter;
  * @see https://docs.joomla.org/Manifest_files#Script_file
  * @see UpgradeModel
  */
-class Pkg_DatacomplianceInstallerScript
+class Pkg_DatacomplianceInstallerScript extends InstallerScript
 {
+	/**
+	 * @since 3.1.0
+	 * @var   DatabaseDriver|DatabaseInterface|null
+	 */
+	protected $dbo;
+
+	public function __construct()
+	{
+		$this->minimumJoomla = '4.2.0';
+		$this->minimumPhp    = '7.4.0';
+	}
+
 	/**
 	 * Called after any type of installation / uninstallation action.
 	 *
@@ -30,6 +47,8 @@ class Pkg_DatacomplianceInstallerScript
 	 */
 	public function postflight(string $type, PackageAdapter $parent): bool
 	{
+		$this->setDboFromAdapter($parent);
+
 		// Do not run on uninstall.
 		if ($type === 'uninstall')
 		{
@@ -97,12 +116,28 @@ class Pkg_DatacomplianceInstallerScript
 
 		try
 		{
-			return new UpgradeModel();
+			$upgradeModel = new UpgradeModel();
 		}
 		catch (Throwable $e)
 		{
 			return null;
 		}
+
+		if (method_exists($upgradeModel, 'setDatabase'))
+		{
+			$upgradeModel->setDatabase($this->dbo ?? Factory::getContainer()->get('DatabaseDriver'));
+		}
+		elseif (method_exists($upgradeModel, 'setDbo'))
+		{
+			$upgradeModel->setDbo($this->dbo ?? Factory::getContainer()->get('DatabaseDriver'));
+		}
+
+		if (method_exists($upgradeModel, 'init'))
+		{
+			$upgradeModel->init();
+		}
+
+		return $upgradeModel;
 	}
 
 	private function updateEmails(): void
@@ -140,4 +175,43 @@ class Pkg_DatacomplianceInstallerScript
 		}
 	}
 
+	/**
+	 * Set the database object from the installation adapter, if possible
+	 *
+	 * @param   InstallerAdapter|mixed  $adapter  The installation adapter, hopefully.
+	 *
+	 * @return  void
+	 * @since   3.1.0
+	 */
+	private function setDboFromAdapter($adapter): void
+	{
+		$this->dbo = null;
+
+		if (class_exists(InstallerAdapter::class) && ($adapter instanceof InstallerAdapter))
+		{
+			/**
+			 * If this is Joomla 4.2+ the adapter has a protected getDatabase() method which we can access with the
+			 * magic property $adapter->db. On Joomla 4.1 and lower this is not available. So, we have to first figure
+			 * out if we can actually use the magic property...
+			 */
+
+			try
+			{
+				$refObj = new ReflectionObject($adapter);
+
+				if ($refObj->hasMethod('getDatabase'))
+				{
+					$this->dbo = $adapter->db;
+
+					return;
+				}
+			}
+			catch (Throwable $e)
+			{
+				// If something breaks we will fall through
+			}
+		}
+
+		$this->dbo = Factory::getContainer()->get('DatabaseDriver');
+	}
 }
