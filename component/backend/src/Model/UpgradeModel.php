@@ -10,25 +10,20 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 defined('_JEXEC') or die;
 
 use DirectoryIterator;
-use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Installer\Adapter\PackageAdapter;
 use Joomla\CMS\Installer\Installer;
-use Joomla\CMS\MVC\Model\BaseModel;
-use Joomla\CMS\MVC\Model\DatabaseAwareTrait;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Table\Extension;
 use Joomla\CMS\User\UserHelper;
-use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use RuntimeException;
 use SimpleXMLElement;
 use Throwable;
 
-class UpgradeModel extends BaseModel
+class UpgradeModel extends BaseDatabaseModel
 {
-	use DatabaseAwareTrait;
-
 	/** @var string Relative directory to the custom handlers */
 	private const CUSTOM_HANDLERS_DIRECTORY = 'UpgradeHandler';
 
@@ -161,13 +156,8 @@ class UpgradeModel extends BaseModel
 	 */
 	private $extensionsList;
 
-	public function __construct($config = [])
+	public function init()
 	{
-		parent::__construct($config);
-
-		// Set the main Joomla database object
-		$this->setDbo(Factory::getContainer()->get(DatabaseDriver::class));
-
 		// Find out the common extensions
 		if ($this->isSamePackage())
 		{
@@ -221,7 +211,7 @@ class UpgradeModel extends BaseModel
 		$extensionIDs = array_merge($extensionIDs);
 
 		// Reassign all extensions
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->update($db->quoteName('#__extensions'))
 			->set($db->qn('package_id') . ' = :package_id')
@@ -255,7 +245,7 @@ class UpgradeModel extends BaseModel
 			return $this->extensionIds[$extension];
 		}
 
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->select($db->quoteName('extension_id'))
 			->from($db->quoteName('#__extensions'));
@@ -390,7 +380,7 @@ class UpgradeModel extends BaseModel
 			return;
 		}
 
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->update($db->quoteName('#__extensions'))
 			->set($db->qn('enabled') . ' = 1')
@@ -888,7 +878,7 @@ class UpgradeModel extends BaseModel
 			}
 
 			// Add the custom handler, passing a reference to ourselves
-			$this->customHandlers[$bareNameCanonical] = new $classFQN($this);
+			$this->customHandlers[$bareNameCanonical] = new $classFQN($this, $this->getDatabase());
 		}
 	}
 
@@ -929,7 +919,7 @@ class UpgradeModel extends BaseModel
 		$extensionIDs = array_merge($extensionIDs);
 
 		// Reassign all extensions
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->update($db->quoteName('#__extensions'))
 			->set($db->qn('package_id') . ' = :package_id')
@@ -1026,7 +1016,7 @@ class UpgradeModel extends BaseModel
 
 		// Get an Extension table object and Installer object.
 		/** @noinspection PhpParamsInspection */
-		$row       = new Extension($this->getDbo());
+		$row       = new Extension($this->getDatabase());
 		$installer = Installer::getInstance();
 
 		// Load the extension row or fail the uninstallation immediately.
@@ -1089,7 +1079,7 @@ class UpgradeModel extends BaseModel
 
 		// Get the existing list of extensions dependent on the specified version of FOF.
 		$keyName = 'fof' . $fofVersion . '0';
-		$db      = $this->getDbo();
+		$db      = $this->getDatabase();
 		$query   = $db->getQuery(true)
 			->select($db->quoteName('value'))
 			->from($db->quoteName('#__akeeba_common'))
