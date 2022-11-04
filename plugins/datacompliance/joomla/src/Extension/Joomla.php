@@ -24,6 +24,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\CMS\User\UserHelper;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
@@ -40,22 +41,7 @@ use SimpleXMLElement;
 class Joomla extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
-
-	/**
-	 * The CMS application we are running under.
-	 *
-	 * @var   CMSApplication
-	 * @since 3.0.0
-	 */
-	protected $app;
-
-	/**
-	 * The database driver object
-	 *
-	 * @var   DatabaseDriver
-	 * @since 3.0.0
-	 */
-	protected $db;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Constructor
@@ -227,7 +213,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		/** @var int $userId */
 		[$userId] = $event->getArguments();
 
-		$db   = $this->db;
+		$db   = $this->getDatabase();
 		$user = self::getJoomlaUserObject($userId);
 
 		if (empty($user))
@@ -342,7 +328,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 			$this->setEventResult($event, []);
 		}
 
-		$db    = $this->db;
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->select('id')
 			->from($db->quoteName('#__users'));
@@ -452,7 +438,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	{
 		Log::add("Deleting user fields", Log::DEBUG, 'com_datacompliance');
 
-		$db = $this->db;
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
 		$ids = [];
 
@@ -492,7 +478,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	{
 		Log::add("Deleting user keys", Log::DEBUG, 'com_datacompliance');
 
-		$db = $this->db;
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
 		$ids    = [];
 		$userId = $user->id;
@@ -533,7 +519,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	{
 		Log::add("Deleting user notes", Log::DEBUG, 'com_datacompliance');
 
-		$db = $this->db;
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
 
 		$ids         = [];
@@ -578,7 +564,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	{
 		Log::add("Deleting user groups", Log::DEBUG, 'com_datacompliance');
 
-		$db = $this->db;
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
 		$query = $db->getQuery(true)
 			->delete($db->quoteName('#__user_usergroup_map'))

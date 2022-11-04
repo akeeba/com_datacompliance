@@ -11,7 +11,6 @@ defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Table\ConsenttrailsTable;
 use Exception;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Language\Text;
@@ -22,7 +21,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\User;
-use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
@@ -31,22 +30,7 @@ use Joomla\Event\SubscriberInterface;
 class DataCompliance extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
-
-	/**
-	 * The CMS application we are running under.
-	 *
-	 * @var   CMSApplication
-	 * @since 3.0.0
-	 */
-	protected $app;
-
-	/**
-	 * The database driver object
-	 *
-	 * @var   DatabaseDriver
-	 * @since 3.0.0
-	 */
-	protected $db;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Constructor
@@ -99,7 +83,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onAfterRoute(Event $event)
 	{
-		$session = $this->app->getSession();
+		$session = $this->getApplication()->getSession();
 
 		// We only kick in if the session flag is not set (saves a lot of processing time)
 		if ($session->get('com_datacompliance.has_consented', 0))
@@ -110,7 +94,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		// Make sure we are logged in
 		try
 		{
-			$user = $this->app->getIdentity();
+			$user = $this->getApplication()->getIdentity();
 		}
 		catch (Exception $e)
 		{
@@ -123,10 +107,10 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
-		$isBackend = $this->app->isClient('administrator');
+		$isBackend = $this->getApplication()->isClient('administrator');
 
 		// This is not applicable under CLI
-		if ($this->app->isClient('cli'))
+		if ($this->getApplication()->isClient('cli'))
 		{
 			return;
 		}
@@ -138,7 +122,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// We only kick in if the option and task are not the ones of the captive page
-		$input  = $this->app->input;
+		$input  = $this->getApplication()->input;
 		$option = strtolower($input->getCmd('option') ?: '');
 		$task   = strtolower($input->getCmd('task') ?: '');
 		$view   = strtolower($input->getCmd('view', $input->getCmd('controller', '')) ?: '');
@@ -234,9 +218,9 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			// Redirect
 			$this->loadLanguage();
 			$message = Text::_('PLG_SYSTEM_DATACOMPLIANCE_MSG_MUSTACCEPT');
-			$this->app->enqueueMessage($message, 'warning');
+			$this->getApplication()->enqueueMessage($message, 'warning');
 			$url = Route::_('index.php?option=com_datacompliance&view=options', false);
-			$this->app->redirect($url, 307);
+			$this->getApplication()->redirect($url, 307);
 
 			return;
 		}
@@ -263,7 +247,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	private function hasJoomlaConsent(User $user): bool
 	{
 		// Get the consent information from Joomla
-		$db     = $this->db;
+		$db     = $this->getDatabase();
 		$query  = $db->getQuery(true)
 			->select('COUNT(*)')
 			->from($db->quoteName('#__privacy_consents'))
@@ -317,7 +301,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	private function isExempt($option, $view, $task): bool
 	{
 		// If Joomla requires a password reset we should not try to redirect or it'll cause an infinite redirection loop
-		if ($this->app->getIdentity()->get('requireReset', 0))
+		if ($this->getApplication()->getIdentity()->get('requireReset', 0))
 		{
 			return true;
 		}

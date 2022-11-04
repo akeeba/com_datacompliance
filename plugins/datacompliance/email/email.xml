@@ -20,9 +20,8 @@
     <files>
         <folder>language</folder>
         <folder>services</folder>
-        <folder>src</folder>
+        <folder plugin="email">src</folder>
 
-        <filename plugin="email">email.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>

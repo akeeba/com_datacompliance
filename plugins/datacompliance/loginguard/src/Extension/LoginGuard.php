@@ -18,6 +18,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
@@ -33,22 +34,7 @@ use SimpleXMLElement;
 class LoginGuard extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
-
-	/**
-	 * The CMS application we are running under.
-	 *
-	 * @var   CMSApplication
-	 * @since 3.0.0
-	 */
-	protected $app;
-
-	/**
-	 * The database driver object
-	 *
-	 * @var   DatabaseDriver
-	 * @since 3.0.0
-	 */
-	protected $db;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Constructor
@@ -123,7 +109,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 
 		Log::add("Deleting user #$userId, type ‘{$type}’, LoginGuard data", Log::INFO, 'com_datacompliance');
 
-		$db = $this->db;
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
 
 		$selectQuery = $db->getQuery(true)
@@ -170,7 +156,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		/** @var int $userId */
 		[$userId] = $event->getArguments();
 
-		$db = $this->db;
+		$db = $this->getDatabase();
 
 		$export = new SimpleXMLElement("<root></root>");
 

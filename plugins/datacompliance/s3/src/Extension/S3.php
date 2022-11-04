@@ -21,6 +21,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
@@ -34,22 +35,7 @@ use Joomla\Event\SubscriberInterface;
 class S3 extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
-
-	/**
-	 * The CMS application we are running under.
-	 *
-	 * @var   CMSApplication
-	 * @since 3.0.0
-	 */
-	protected $app;
-
-	/**
-	 * The database driver object
-	 *
-	 * @var   DatabaseDriver
-	 * @since 3.0.0
-	 */
-	protected $db;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Constructor
@@ -105,7 +91,7 @@ class S3 extends CMSPlugin implements SubscriberInterface
 		/** @var WipetrailsTable $auditRecord */
 		[$auditRecord] = $event->getArguments();
 
-		if ($this->app->getSession()->get('com_datacompliance.__audit_replay', 0))
+		if ($this->getApplication()->getSession()->get('com_datacompliance.__audit_replay', 0))
 		{
 			Log::add("Will NOT upload an audit trail to S3", Log::DEBUG, 'com_datacompliance');
 

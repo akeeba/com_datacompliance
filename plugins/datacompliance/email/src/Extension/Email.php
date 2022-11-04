@@ -22,6 +22,7 @@ use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\User\UserFactoryInterface;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
@@ -36,22 +37,7 @@ use Joomla\Event\SubscriberInterface;
 class Email extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
-
-	/**
-	 * The CMS application we are running under.
-	 *
-	 * @var   CMSApplication
-	 * @since 3.0.0
-	 */
-	protected $app;
-
-	/**
-	 * The database driver object
-	 *
-	 * @var   DatabaseDriver
-	 * @since 3.0.0
-	 */
-	protected $db;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Constructor
@@ -115,7 +101,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 
 		$this->setEventResult($event, []);
 
-		$session = $this->app->getSession();
+		$session = $this->getApplication()->getSession();
 
 		if ($session->get('com_datacompliance.__audit_replay', 0))
 		{
@@ -231,7 +217,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 	private function getSuperUserEmails(array $email = []): array
 	{
 		// Get a reference to the database object
-		$db = $this->db;
+		$db = $this->getDatabase();
 
 		// Convert the email list to an array
 		if (empty($email))

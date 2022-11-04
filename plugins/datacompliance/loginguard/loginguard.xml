@@ -20,9 +20,8 @@
     <files>
         <folder>language</folder>
         <folder>services</folder>
-        <folder>src</folder>
+        <folder plugin="loginguard">src</folder>
 
-        <filename plugin="loginguard">loginguard.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>

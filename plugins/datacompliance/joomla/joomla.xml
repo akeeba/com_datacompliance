@@ -20,9 +20,8 @@
 	<files>
 		<folder>language</folder>
 		<folder>services</folder>
-		<folder>src</folder>
+		<folder plugin="joomla">src</folder>
 
-		<filename plugin="joomla">joomla.php</filename>
 		<filename>.htaccess</filename>
 		<filename>web.config</filename>
 	</files>

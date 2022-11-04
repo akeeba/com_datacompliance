@@ -20,9 +20,8 @@
     <files>
         <folder>language</folder>
         <folder>services</folder>
-        <folder>src</folder>
+        <folder plugin="ars">src</folder>
 
-        <filename plugin="ars">ars.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>

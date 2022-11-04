@@ -19,9 +19,8 @@
     <files>
         <folder>language</folder>
         <folder>services</folder>
-        <folder>src</folder>
+        <folder plugin="ats">src</folder>
 
-        <filename plugin="ats">ats.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>

@@ -20,9 +20,8 @@
     <files>
         <folder>language</folder>
         <folder>services</folder>
-        <folder>src</folder>
+        <folder plugin="s3">src</folder>
 
-        <filename plugin="s3">s3.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>

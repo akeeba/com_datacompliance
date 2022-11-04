@@ -19,9 +19,8 @@
 
     <files>
         <folder>services</folder>
-        <folder>src</folder>
+        <folder plugin="datacompliance">src</folder>
 
-        <filename plugin="datacompliance">datacompliance.php</filename>
         <filename>.htaccess</filename>
         <filename>web.config</filename>
     </files>

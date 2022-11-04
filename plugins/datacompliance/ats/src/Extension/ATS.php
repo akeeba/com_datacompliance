@@ -17,6 +17,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
@@ -32,22 +33,7 @@ use SimpleXMLElement;
 class ATS extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
-
-	/**
-	 * The CMS application we are running under.
-	 *
-	 * @var   CMSApplication
-	 * @since 3.0.0
-	 */
-	protected $app;
-
-	/**
-	 * The database driver object
-	 *
-	 * @var   DatabaseDriver
-	 * @since 3.0.0
-	 */
-	protected $db;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Constructor
@@ -129,7 +115,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		Log::add("Deleting user #$userId, type ‘{$type}’, Akeeba Ticket System data", Log::INFO, 'com_datacompliance');
 
-		$db = $this->db;
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
 
 		// ============================== tickets, posts, attachments ==============================
@@ -332,7 +318,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		{
 			try
 			{
-				$db          = $this->db;
+				$db          = $this->getDatabase();
 				$selectQuery = $db->getQuery(true)
 				                  ->select('*')
 				                  ->from($db->quoteName('#__ats_attempts'))
@@ -385,7 +371,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		// Export #__ats_creditconsumptions entries
 		try
 		{
-			$db          = $this->db;
+			$db          = $this->getDatabase();
 			$selectQuery = $db->getQuery(true)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_creditconsumptions'))
@@ -408,7 +394,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		// Export #__ats_credittransactions entries
 		try
 		{
-			$db          = $this->db;
+			$db          = $this->getDatabase();
 			$selectQuery = $db->getQuery(true)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_credittransactions'))
@@ -432,7 +418,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		// Export #__ats_users_usertags entries
 		try
 		{
-			$db          = $this->db;
+			$db          = $this->getDatabase();
 			$selectQuery = $db->getQuery(true)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_users_usertags'))
@@ -487,7 +473,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
 
-		$db    = $this->db;
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 		            ->select('*')
 		            ->from('#__ats_attachments')
@@ -505,7 +491,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
 
-		$db    = $this->db;
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 		            ->select('*')
 		            ->from('#__ats_posts')
@@ -516,7 +502,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 	private function getTickets(int $user_id)
 	{
-		$db    = $this->db;
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 		            ->select('*')
 		            ->from('#__ats_tickets')

@@ -33,14 +33,6 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	];
 
 	/**
-	 * Application object.
-	 *
-	 * @var    ConsoleApplication
-	 * @since  3.0.0
-	 */
-	protected $app;
-
-	/**
 	 * Load the language file on instantiation.
 	 *
 	 * @var    boolean
@@ -83,10 +75,17 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	 */
 	public function registerCLICommands(ApplicationEvent $event)
 	{
+		$app = $this->getApplication();
+
+		if (!$app instanceof ConsoleApplication)
+		{
+			return;
+		}
+
 		// Only register CLI commands if we can boot up the Akeeba Backup component enough to make it usable.
 		try
 		{
-			$this->initialiseComponent($this->app);
+			$this->initialiseComponent($app);
 		}
 		catch (Throwable $e)
 		{
@@ -109,7 +108,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 					$command->setMVCFactory($this->getMVCFactory());
 				}
 
-				$this->app->addCommand($command);
+				$app->addCommand($command);
 			}
 			catch (Throwable $e)
 			{

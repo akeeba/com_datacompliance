@@ -22,9 +22,7 @@
         <folder>fields</folder>
         <folder>language</folder>
         <folder>services</folder>
-        <folder>src</folder>
-
-        <filename plugin="datacompliance">datacompliance.php</filename>
+        <folder plugin="datacompliance">src</folder>
 
         <filename>.htaccess</filename>
         <filename>web.config</filename>

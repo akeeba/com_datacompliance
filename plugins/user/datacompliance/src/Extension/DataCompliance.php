@@ -13,7 +13,6 @@ use Akeeba\Component\DataCompliance\Administrator\Table\ConsenttrailsTable;
 use Akeeba\Component\DataCompliance\Administrator\Table\UsertrailsTable;
 use Exception;
 use InvalidArgumentException;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
@@ -28,6 +27,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\CMS\User\UserHelper;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
@@ -36,22 +36,7 @@ use Joomla\Event\SubscriberInterface;
 class DataCompliance extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
-
-	/**
-	 * The CMS application we are running under.
-	 *
-	 * @var   CMSApplication
-	 * @since 3.0.0
-	 */
-	protected $app;
-
-	/**
-	 * The database driver object
-	 *
-	 * @var   DatabaseDriver
-	 * @since 3.0.0
-	 */
-	protected $db;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Constructor
@@ -126,20 +111,20 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
-		$layout = $this->app->input->getCmd('layout', 'default');
+		$layout = $this->getApplication()->input->getCmd('layout', 'default');
 
 		/**
 		 * Joomla is kinda brain-dead. When we have a menu item to the Edit Profile page it does not push the layout
 		 * into the Input (as opposed with option and view) so I have to go in and dig it out myself. Yikes!
 		 */
-		$itemId = $this->app->input->getInt('Itemid');
+		$itemId = $this->getApplication()->input->getInt('Itemid');
 
 		if ($itemId)
 		{
 			try
 			{
 				/** @var Menu $menuItem */
-				$menuItem = new Menu($this->db);
+				$menuItem = new Menu($this->getDatabase());
 
 				if (!$menuItem->load($itemId))
 				{
@@ -156,7 +141,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			}
 		}
 
-		if ($this->app->isClient('site') && !in_array($layout, ['edit', 'default']))
+		if ($this->getApplication()->isClient('site') && !in_array($layout, ['edit', 'default']))
 		{
 			$this->setEventResult($event, true);
 
@@ -180,13 +165,13 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		$user = empty($id)
-			? $this->app->getIdentity()
+			? $this->getApplication()->getIdentity()
 			: Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($id);
 
 		// Make sure the loaded user is the correct one
 		if ($user->id != $id)
 		{
-			$currentUser = $this->app->getIdentity();
+			$currentUser = $this->getApplication()->getIdentity();
 		}
 
 		// Make sure I am either editing myself (you can NOT make choices on behalf of another user).
@@ -207,7 +192,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		if ($layout == 'default')
 		{
 			/** @var ConsenttrailsTable $consentTable */
-			$consentTable = new ConsenttrailsTable($this->db);
+			$consentTable = new ConsenttrailsTable($this->getDatabase());
 			$hasConsent   = $consentTable->load($id) && ($consentTable->enabled == 1);
 
 			/**
@@ -247,7 +232,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 * @var   array   $newUser Holds the new user data.
 		 */
 		[$oldUser, $isNew, $newUser] = $event->getArguments();
-		$session = $this->app->getSession();
+		$session = $this->getApplication()->getSession();
 
 		/**
 		 * Are we wiping a user data profile? If so, we have to NOT log anything.
@@ -269,7 +254,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 		// Generate the log of user account changes
 		$changes = [];
-		$db      = $this->db;
+		$db      = $this->getDatabase();
 
 		/**
 		 * Check all the main user fields for changes. We exclude the following fields:
@@ -397,7 +382,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			'user_id'    => $newUser['id'],
 			'items'      => $changes,
 			'created_on' => (new Date())->toSql(),
-			'created_by' => $this->app->getIdentity()->id,
+			'created_by' => $this->getApplication()->getIdentity()->id,
 		]);
 	}
 
@@ -423,7 +408,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 * back in.
 		 */
 		$userid = UserHelper::getUserId($response['username']);
-		$db     = $this->db;
+		$db     = $this->getDatabase();
 		$query  = $db->getQuery(true)
 			->delete($db->qn('#__user_profiles'))
 			->where($db->qn('user_id') . ' = ' . $userid)
@@ -466,7 +451,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// Get the currently logged in used
-		$myUser = $this->app->getIdentity();
+		$myUser = $this->getApplication()->getIdentity();
 
 		// Same user? I can edit myself
 		if ($myUser->id == $user->id)

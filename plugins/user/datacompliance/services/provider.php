@@ -9,6 +9,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Extension\PluginInterface;
 use Joomla\CMS\Extension\Service\Provider\MVCFactory;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
@@ -33,12 +34,17 @@ return new class implements ServiceProviderInterface {
 		$container->set(
 			PluginInterface::class,
 			function (Container $container) {
-				$plugin     = PluginHelper::getPlugin('user', 'datacompliance');
+				$params     = (array) PluginHelper::getPlugin('user', 'datacompliance');
 				$dispatcher = $container->get(DispatcherInterface::class);
 
-				return new DataCompliance(
-					$dispatcher, (array) $plugin, new \Joomla\CMS\MVC\Factory\MVCFactory('Akeeba\\Component\\DataCompliance')
+				$plugin = new DataCompliance(
+					$dispatcher, $params, new \Joomla\CMS\MVC\Factory\MVCFactory('Akeeba\\Component\\DataCompliance')
 				);
+
+				$plugin->setApplication(Factory::getApplication());
+				$plugin->setDatabase($container->get('DatabaseDriver'));
+
+				return $plugin;
 			}
 		);
 	}
