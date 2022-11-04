@@ -9,9 +9,9 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ControllerEvents;
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\RegisterControllerTasks;
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ReusableModels;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerRegisterTasksTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModelsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Model\ExportModel;
 use Akeeba\Component\DataCompliance\Administrator\Model\OptionsModel;
 use Akeeba\Component\DataCompliance\Administrator\Model\WipeModel;
@@ -29,9 +29,9 @@ use RuntimeException;
 
 class OptionsController extends BaseController
 {
-	use ControllerEvents;
-	use RegisterControllerTasks;
-	use ReusableModels;
+	use ControllerEventsTrait;
+	use ControllerRegisterTasksTrait;
+	use ControllerReusableModelsTrait;
 
 	public function __construct($config = [], MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)
 	{

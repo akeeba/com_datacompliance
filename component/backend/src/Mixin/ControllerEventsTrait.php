@@ -5,11 +5,10 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\DataCompliance\Administrator\Controller\Mixin;
+namespace Akeeba\Component\DataCompliance\Administrator\Mixin;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Mixin\TriggerEvent;
 use Exception;
 use Joomla\CMS\Language\Text;
 use RuntimeException;
@@ -19,9 +18,9 @@ use RuntimeException;
  *
  * @since  3.0.0
  */
-trait ControllerEvents
+trait ControllerEventsTrait
 {
-	use TriggerEvent;
+	use TriggerEventTrait;
 
 	/**
 	 * Execute a task by triggering a method in the derived class.

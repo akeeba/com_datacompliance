@@ -9,7 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Dispatcher;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Mixin\TriggerEvent;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\TriggerEventTrait;
 use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Dispatcher\ComponentDispatcher;
@@ -19,7 +19,7 @@ use Throwable;
 
 class Dispatcher extends ComponentDispatcher
 {
-	use TriggerEvent;
+	use TriggerEventTrait;
 
 	protected $defaultController = 'controlpanel';
 

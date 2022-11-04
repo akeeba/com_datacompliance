@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\DataCompliance\Administrator\Controller\Mixin;
+namespace Akeeba\Component\DataCompliance\Administrator\Mixin;
 
 defined('_JEXEC') || die;
 
@@ -17,7 +17,7 @@ use ReflectionObject;
  *
  * @since   3.0.0
  */
-trait RegisterControllerTasks
+trait ControllerRegisterTasksTrait
 {
 	/**
 	 * Automatically register controller tasks.

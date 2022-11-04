@@ -9,7 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ControllerEvents;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
@@ -17,7 +17,7 @@ use Joomla\Input\Input;
 
 class ExporttrailsController extends AdminController
 {
-	use ControllerEvents;
+	use ControllerEventsTrait;
 
 	protected $text_prefix = 'COM_DATACOMPLIANCE_EXPORTTRAILS';
 

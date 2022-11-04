@@ -9,7 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\View\Controlpanel;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\View\Mixin\LoadAnyTemplate;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ViewLoadAnyTemplateTrait;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Router\Route;
@@ -17,7 +17,7 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 
 class HtmlView extends BaseHtmlView
 {
-	use LoadAnyTemplate;
+	use ViewLoadAnyTemplateTrait;
 
 	public function display($tpl = null)
 	{

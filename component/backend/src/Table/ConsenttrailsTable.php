@@ -7,8 +7,8 @@
 
 namespace Akeeba\Component\DataCompliance\Administrator\Table;
 
-use Akeeba\Component\DataCompliance\Administrator\Mixin\AssertionAware;
-use Akeeba\Component\DataCompliance\Administrator\Table\Mixin\CreateModifyAware;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\TableAssertionTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\TableCreateModifyTrait;
 use Joomla\CMS\Event\AbstractEvent;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
@@ -29,8 +29,8 @@ defined('_JEXEC') or die;
  */
 class ConsenttrailsTable extends AbstractTable
 {
-	use CreateModifyAware;
-	use AssertionAware;
+	use TableCreateModifyTrait;
+	use TableAssertionTrait;
 
 	public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
 	{

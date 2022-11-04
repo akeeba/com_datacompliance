@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\DataCompliance\Administrator\Controller\Mixin;
+namespace Akeeba\Component\DataCompliance\Administrator\Mixin;
 
 defined('_JEXEC') || die;
 
@@ -22,7 +22,7 @@ use Joomla\CMS\MVC\View\ViewInterface;
  * this problem by making getModel() and getView() work in the more logical and consistent manner we are used to from
  * FOF.
  */
-trait ReusableModels
+trait ControllerReusableModelsTrait
 {
 	static $_models = [];
 

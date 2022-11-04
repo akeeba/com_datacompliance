@@ -5,11 +5,11 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\DataCompliance\Administrator\Table\Mixin;
+namespace Akeeba\Component\DataCompliance\Administrator\Mixin;
 
 defined('_JEXEC') or die;
 
-trait ColumnAliasAware
+trait TableColumnAliasTrait
 {
 	public function __get($name)
 	{

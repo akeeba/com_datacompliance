@@ -9,10 +9,10 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\CacheAware;
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ControllerEvents;
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\RegisterControllerTasks;
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ReusableModels;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerCacheTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerRegisterTasksTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModelsTrait;
 use DateInterval;
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
@@ -29,10 +29,10 @@ use Joomla\Input\Input;
  */
 class ControlpanelController extends BaseController
 {
-	use ControllerEvents;
-	use RegisterControllerTasks;
-	use CacheAware;
-	use ReusableModels;
+	use ControllerEventsTrait;
+	use ControllerRegisterTasksTrait;
+	use ControllerCacheTrait;
+	use ControllerReusableModelsTrait;
 
 	/** @inheritdoc  */
 	public function __construct($config = [], MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)

@@ -9,15 +9,15 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ControllerEvents;
 use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Router\Route;
 
 class EmailtemplatesController extends BaseController
 {
-	use ControllerEvents;
+	use ControllerEventsTrait;
 
 	public function updateEmails($cachable = false, $urlparams = [])
 	{

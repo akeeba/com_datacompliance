@@ -9,8 +9,8 @@ namespace Akeeba\Component\DataCompliance\Administrator\View\Wipetrails;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ViewLoadAnyTemplateTrait;
 use Akeeba\Component\DataCompliance\Administrator\Model\ConsenttrailsModel;
-use Akeeba\Component\DataCompliance\Administrator\View\Mixin\LoadAnyTemplate;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\GenericDataException;
@@ -21,7 +21,7 @@ use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
-	use LoadAnyTemplate;
+	use ViewLoadAnyTemplateTrait;
 
 	/**
 	 * The active search filters

@@ -9,8 +9,8 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ControllerEvents;
-use Akeeba\Component\DataCompliance\Administrator\Controller\Mixin\ReusableModels;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModelsTrait;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
@@ -18,8 +18,8 @@ use Joomla\Input\Input;
 
 class LifecycleController extends AdminController
 {
-	use ControllerEvents;
-	use ReusableModels;
+	use ControllerEventsTrait;
+	use ControllerReusableModelsTrait;
 
 	protected $text_prefix = 'COM_DATACOMPLIANCE_LIFECYCLE';
 

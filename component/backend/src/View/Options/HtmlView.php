@@ -9,9 +9,9 @@ namespace Akeeba\Component\DataCompliance\Administrator\View\Options;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ViewLoadAnyTemplateTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\ViewTaskBasedEventsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Model\OptionsModel;
-use Akeeba\Component\DataCompliance\Administrator\View\Mixin\LoadAnyTemplate;
-use Akeeba\Component\DataCompliance\Administrator\View\Mixin\TaskBasedEvents;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
@@ -87,8 +87,8 @@ class HtmlView extends BaseHtmlView
 	 */
 	public $user;
 
-	use TaskBasedEvents;
-	use LoadAnyTemplate;
+	use ViewTaskBasedEventsTrait;
+	use ViewLoadAnyTemplateTrait;
 
 	/**
 	 * View the Data Options page

@@ -82,42 +82,47 @@ class UpgradeModel extends BaseModel
 	private const REMOVE_FROM_ALL_VERSIONS = [
 		'files'   => [
 			// Old charting library
-			'media/com_datacompliance/js/Chart.bundle.min.js',
+			JPATH_SITE . '/media/com_datacompliance/js/Chart.bundle.min.js',
 
 			// FOF 4 stuff
-			'administrator/components/com_datacompliance/datacompliance.php',
-			'administrator/components/com_datacompliance/fof.xml',
-			'administrator/components/com_datacompliance/version.php',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/datacompliance.php',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/fof.xml',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/version.php',
 
-			'components/com_datacompliance/datacompliance.php',
+			JPATH_SITE . '/components/com_datacompliance/datacompliance.php',
 
-			'cli/datacompliance_account_delete.php',
-			'cli/datacompliance_account_lifecycle.php',
-			'cli/datacompliance_audit_replay.php',
-			'cli/datacompliance_lifecycle_notify.php',
+			JPATH_SITE . '/cli/datacompliance_account_delete.php',
+			JPATH_SITE . '/cli/datacompliance_account_lifecycle.php',
+			JPATH_SITE . '/cli/datacompliance_audit_replay.php',
+			JPATH_SITE . '/cli/datacompliance_lifecycle_notify.php',
 
 		],
 		'folders' => [
 			// Old CLI base script
-			'administrator/components/com_datacompliance/assets/cli',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/assets/cli',
 
 			// FOF 3 stuff
-			'administrator/components/com_datacompliance/ViewTemplates',
-			'components/com_datacompliance/ViewTemplates',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/ViewTemplates',
+			JPATH_SITE . '/components/com_datacompliance/ViewTemplates',
 
 			// FOF 4 stuff
-			'administrator/components/com_datacompliance/Controller',
-			'administrator/components/com_datacompliance/Dispatcher',
-			'administrator/components/com_datacompliance/fields',
-			'administrator/components/com_datacompliance/Helper',
-			'administrator/components/com_datacompliance/Model',
-			'administrator/components/com_datacompliance/Toolbar',
-			'administrator/components/com_datacompliance/View',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Controller',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Dispatcher',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/fields',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Helper',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Model',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Toolbar',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/View',
 
-			'components/com_datacompliance/Controller',
-			'components/com_datacompliance/Dispatcher',
-			'components/com_datacompliance/Model',
-			'components/com_datacompliance/View',
+			JPATH_SITE . '/components/com_datacompliance/Controller',
+			JPATH_SITE . '/components/com_datacompliance/Dispatcher',
+			JPATH_SITE . '/components/com_datacompliance/Model',
+			JPATH_SITE . '/components/com_datacompliance/View',
+
+			// Moved traits
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Controller/Mixin',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Table/Mixin',
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/View/Mixin',
 		],
 	];
 

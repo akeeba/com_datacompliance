@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\DataCompliance\Administrator\Controller\Mixin;
+namespace Akeeba\Component\DataCompliance\Administrator\Mixin;
 
 use Joomla\CMS\Cache\CacheController;
 use Joomla\CMS\Cache\CacheControllerFactoryInterface;
@@ -18,7 +18,7 @@ defined('_JEXEC') or die;
  *
  * @since  3.0.0
  */
-trait CacheAware
+trait ControllerCacheTrait
 {
 	/**
 	 * Already created Joomla cache controllers

@@ -7,11 +7,10 @@
 
 namespace Akeeba\Component\DataCompliance\Administrator\Table;
 
-use Akeeba\Component\DataCompliance\Administrator\Mixin\AssertionAware;
-use Akeeba\Component\DataCompliance\Administrator\Table\Mixin\CreateModifyAware;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\TableAssertionTrait;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\TableCreateModifyTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Registry\Registry;
 use Joomla\Utilities\IpHelper;
 
 defined('_JEXEC') or die;
@@ -31,11 +30,11 @@ defined('_JEXEC') or die;
  */
 class WipetrailsTable extends AbstractTable
 {
-	use CreateModifyAware
+	use TableCreateModifyTrait
 	{
-		CreateModifyAware::onBeforeStore as onBeforeStoreCreateModifyAware;
+		TableCreateModifyTrait::onBeforeStore as onBeforeStoreCreateModifyAware;
 	}
-	use AssertionAware;
+	use TableAssertionTrait;
 
 	public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
 	{
