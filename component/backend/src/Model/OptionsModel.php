@@ -22,6 +22,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\User\User;
 use Joomla\Utilities\IpHelper;
 
+#[\AllowDynamicProperties]
 class OptionsModel extends BaseDatabaseModel
 {
 	/**

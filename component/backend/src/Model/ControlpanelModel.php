@@ -15,6 +15,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel as BaseDatabaseModelAlias;
 use Joomla\CMS\Uri\Uri;
 
+#[\AllowDynamicProperties]
 class ControlpanelModel extends BaseDatabaseModelAlias
 {
 	/**
@@ -34,7 +35,7 @@ class ControlpanelModel extends BaseDatabaseModelAlias
 		];
 
 		// Total number of users
-		$db         = $this->getDbo();
+		$db         = $this->getDatabase();
 		$query      = $db->getQuery(true)
 			->select('COUNT(' . $db->quoteName('id') . ')')
 			->from($db->quoteName('#__users'));

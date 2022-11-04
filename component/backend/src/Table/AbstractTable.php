@@ -15,6 +15,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Event\DispatcherInterface;
 
+#[\AllowDynamicProperties]
 abstract class AbstractTable extends Table
 {
 	use TriggerEventTrait;

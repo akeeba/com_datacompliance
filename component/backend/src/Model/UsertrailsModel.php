@@ -16,6 +16,7 @@ use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\ParameterType;
 
+#[\AllowDynamicProperties]
 class UsertrailsModel extends ListModel
 {
 	/** @inheritdoc */
@@ -34,7 +35,7 @@ class UsertrailsModel extends ListModel
 	/** @inheritdoc */
 	protected function getListQuery()
 	{
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->select([
 				$db->quoteName('a') . '.*',

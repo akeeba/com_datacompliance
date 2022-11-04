@@ -22,6 +22,7 @@ use RuntimeException;
 use SimpleXMLElement;
 use Throwable;
 
+#[\AllowDynamicProperties]
 class UpgradeModel extends BaseDatabaseModel
 {
 	/** @var string Relative directory to the custom handlers */

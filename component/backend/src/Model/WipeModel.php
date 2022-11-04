@@ -34,6 +34,7 @@ use RuntimeException;
  *
  * @since  1.0.0
  */
+#[\AllowDynamicProperties]
 class WipeModel extends BaseDatabaseModel
 {
 	/** @var WipetrailsTable $auditRecord */
@@ -141,7 +142,7 @@ class WipeModel extends BaseDatabaseModel
 	 */
 	public function getWipedUserIDs(): array
 	{
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->select('user_id')
 			->from($db->quoteName('#__datacompliance_wipetrails'))
@@ -166,7 +167,7 @@ class WipeModel extends BaseDatabaseModel
 	 */
 	public function isUserNotified(int $userId, ?Date $when = null): bool
 	{
-		$db     = $this->getDbo();
+		$db     = $this->getDatabase();
 		$query  = $db->getQuery(true)
 			->select([
 				$db->quoteName('profile_key'),
@@ -241,7 +242,7 @@ class WipeModel extends BaseDatabaseModel
 		}
 
 		// Mark the user notified
-		$db = $this->getDbo();
+		$db = $this->getDatabase();
 
 		// -- Delete old records
 		$this->resetUserNotification($userId);
@@ -282,7 +283,7 @@ class WipeModel extends BaseDatabaseModel
 	 */
 	public function resetUserNotification(int $userId): void
 	{
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->delete($db->quoteName('#__user_profiles'))
 			->where($db->quoteName('user_id') . ' = :userId')
@@ -398,7 +399,7 @@ class WipeModel extends BaseDatabaseModel
 
 		// Create a (fake) request table object for Joomla's privacy plugins
 		/** @var DatabaseDriver $db */
-		$db      = $this->getDbo();
+		$db      = $this->getDatabase();
 		$request = new RequestTable($db);
 
 		$request->email                    = $user->email;
@@ -500,7 +501,7 @@ class WipeModel extends BaseDatabaseModel
 
 		// Create a (fake) request table object for Joomla's privacy plugins
 		/** @var DatabaseDriver $db */
-		$db      = $this->getDbo();
+		$db      = $this->getDatabase();
 		$request = new RequestTable($db);
 
 		$when                              = new Date();

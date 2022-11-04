@@ -31,6 +31,7 @@ use SimpleXMLElement;
  * @since        1.0.0
  * @noinspection PhpUnused
  */
+#[\AllowDynamicProperties]
 class ExportModel extends BaseDatabaseModel
 {
 	/**
@@ -176,7 +177,7 @@ class ExportModel extends BaseDatabaseModel
 
 		// Create a (fake) request table object for Joomla's privacy plugins
 		/** @var DatabaseDriver $db */
-		$db      = $this->getDbo();
+		$db      = $this->getDatabase();
 		$request = new RequestTable($db);
 
 		$rightNow                          = (new Date())->toSql();

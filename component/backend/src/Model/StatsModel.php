@@ -21,6 +21,7 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
  *
  * @noinspection PhpUnused
  */
+#[\AllowDynamicProperties]
 class StatsModel extends BaseDatabaseModel
 {
 	/**
@@ -35,7 +36,7 @@ class StatsModel extends BaseDatabaseModel
 	public function wipeStats(Date $from, Date $to): array
 	{
 		// Get raw data
-		$db      = $this->getDbo();
+		$db      = $this->getDatabase();
 		$fromSql = $from->toSql();
 		$toSql   = $to->toSql();
 		$query   = $db->getQuery(true)

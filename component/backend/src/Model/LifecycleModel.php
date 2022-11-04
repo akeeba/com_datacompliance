@@ -18,6 +18,7 @@ use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\ParameterType;
 
+#[\AllowDynamicProperties]
 class LifecycleModel extends ListModel
 {
 	/** @inheritdoc */
@@ -37,7 +38,7 @@ class LifecycleModel extends ListModel
 	/** @inheritdoc */
 	protected function getListQuery()
 	{
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->quoteName('#__users'));
