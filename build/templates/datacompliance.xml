@@ -3,7 +3,7 @@
   ~ @copyright Copyright (c)2018-2022 Nicholas K. Dionysopoulos / Akeeba Ltd
   ~ @license   GNU General Public License version 3, or later
   -->
-<extension type="component" version="2.5.0" method="upgrade">
+<extension type="component" method="upgrade">
 	<name>COM_DATACOMPLIANCE</name>
 	<creationDate>##DATE##</creationDate>
 	<author>Nicholas K. Dionysopoulos</author>
