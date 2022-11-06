@@ -5,7 +5,7 @@
   ~ @license   GNU General Public License version 3, or later
   -->
 
-<extension version="4.0" type="plugin" group="system" method="upgrade">
+<extension type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_DATACOMPLIANCE</name>
     <author>Nicholas K. Dionysopoulos</author>
     <authorEmail>nicholas@akeeba.com</authorEmail>
