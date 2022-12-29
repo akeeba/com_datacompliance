@@ -13,7 +13,6 @@ use Akeeba\Component\DataCompliance\Administrator\Helper\Export as ExportHelper;
 use Akeeba\Component\DataCompliance\Administrator\Table\ExporttrailsTable;
 use DOMDocument;
 use Exception;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -180,7 +179,7 @@ class ExportModel extends BaseDatabaseModel
 		$db      = $this->getDatabase();
 		$request = new RequestTable($db);
 
-		$rightNow                          = (new Date())->toSql();
+		$rightNow                          = (clone Factory::getDate())->toSql();
 		$request->email                    = $user->email;
 		$request->requested_at             = $rightNow;
 		$request->status                   = 1;

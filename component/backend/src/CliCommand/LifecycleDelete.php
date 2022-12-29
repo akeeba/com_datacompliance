@@ -10,23 +10,14 @@ namespace Akeeba\Component\DataCompliance\Administrator\CliCommand;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\ConfigureIO;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\MemoryInfo;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\TimeInfo;
-use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
 use Akeeba\Component\DataCompliance\Administrator\Model\WipeModel;
-use Akeeba\Component\DataCompliance\Site\Model\OptionsModel;
-use DateInterval;
-use DateTime;
-use DateTimeZone;
-use Exception;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
-use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Console\Command\AbstractCommand;
 use Joomla\Database\DatabaseDriver;
-use Joomla\Registry\Registry;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -144,7 +135,7 @@ class LifecycleDelete extends AbstractCommand
 		}
 
 		// Current deletion date, used to confirm that the user has been notified
-		$deletionDate = new Date();
+		$deletionDate = clone Factory::getDate();
 
 		// Loop all users to be deleted
 		foreach ($userIDs as $id)

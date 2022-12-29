@@ -9,7 +9,6 @@ namespace Akeeba\Component\DataCompliance\Administrator\Service\Html;
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -56,7 +55,7 @@ class DataCompliance
 			$tz   = $user->getParam('timezone', $tzDefault);
 		}
 
-		$jDate = new Date($date, $tz);
+		$jDate = clone Factory::getDate($date, $tz);
 
 		return $jDate->format($format ?: 'Y-m-d H:i T', true);
 	}

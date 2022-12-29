@@ -16,7 +16,7 @@ use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModels
 use DateInterval;
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
-use Joomla\CMS\Date\Date;
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Input\Input;
@@ -71,9 +71,9 @@ class ControlpanelController extends BaseController
 	 */
 	public function wipedstats(): void
 	{
-		$to = new Date();
+		$to = clone Factory::getDate();
 		$to->setTime(0, 0);
-		$from = new Date();
+		$from = clone Factory::getDate();
 		$from->sub(new DateInterval('P1M'));
 		$from->setTime(0, 0);
 		$to->setTime(23, 59, 59);

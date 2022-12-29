@@ -1,5 +1,9 @@
 Akeeba Data Compliance 3.1.0
 ================================================================================
+# [LOW] Wrong grammatical case (nominative instead of genitive) in months in some languages e.g. Greek
+
+Akeeba Data Compliance 3.1.0
+================================================================================
 + Minimum Joomla 4.2, PHP 7.4
 - Removed PHP version warnings
 

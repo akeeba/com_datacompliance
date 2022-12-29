@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 use Akeeba\Component\DataCompliance\Administrator\Table\ConsenttrailsTable;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Date\Date;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
@@ -278,7 +278,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		$consentTable->save([
-			'created_on' => (new Date())->toSql(),
+			'created_on' => (clone Factory::getDate())->toSql(),
 			'created_by' => $user->id,
 			'enabled' => 1
 		]);

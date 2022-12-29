@@ -12,9 +12,7 @@ defined('_JEXEC') or die;
 use Akeeba\Component\DataCompliance\Administrator\Helper\Export;
 use DateTime;
 use Exception;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -25,7 +23,6 @@ use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\CMS\User\UserHelper;
 use Joomla\Database\DatabaseAwareTrait;
-use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
@@ -336,7 +333,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		// Users who have not been logged in for at least $threshold months
 		$threshold   = (int) $this->params->get('threshold', 18);
 		$threshold   = max(1, $threshold);
-		$jLastYear   = (new Date())->sub(new \DateInterval("P{$threshold}M"));
+		$jLastYear   = (clone Factory::getDate())->sub(new \DateInterval("P{$threshold}M"));
 		$sqlLastYear = $jLastYear->toSql();
 		$query->where($db->quoteName('lastvisitDate') . ' < :lastYear', 'OR')
 			->bind(':lastYear', $sqlLastYear, ParameterType::STRING);
@@ -599,7 +596,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	{
 		Log::add("Pseudonymizing user", Log::DEBUG, 'com_datacompliance');
 
-		$jFake               = new Date('1999-01-01 00:00:00');
+		$jFake               = clone Factory::getDate('1999-01-01 00:00:00');
 		$user->name          = "User {$user->id}";
 		$user->username      = "user{$user->id}";
 		$user->email         = "user{$user->id}@example.com";

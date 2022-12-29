@@ -17,7 +17,6 @@ use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -132,7 +131,7 @@ class LifecycleNotify extends AbstractCommand
 			return 102;
 		}
 
-		$when = (new Date())->add($interval);
+		$when = (clone Factory::getDate())->add($interval);
 
 		$this->ioStyle->section(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_NOTIFYPERIOD', $when->toISO8601()));
 
@@ -347,7 +346,7 @@ class LifecycleNotify extends AbstractCommand
 			$tz = new DateTimeZone('GMT');
 		}
 
-		$deleteDate = new Date($when);
+		$deleteDate = clone Factory::getDate($when);
 		$format     = Text::_('DATE_FORMAT_LC2') . ' T';
 		$deleteDate->setTimezone($tz);
 

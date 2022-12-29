@@ -63,7 +63,7 @@ class WipeModel extends BaseDatabaseModel
 		try
 		{
 			// Joomla Privacy
-			$this->checkJoomlaPrivacyWipeAbility($userId, new Date($when));
+			$this->checkJoomlaPrivacyWipeAbility($userId, clone Factory::getDate($when));
 			// Akeeba DataCompliance
 			$this->runPlugins('onDataComplianceCanDelete', [$userId, $type, $when]);
 		}
@@ -98,7 +98,7 @@ class WipeModel extends BaseDatabaseModel
 		try
 		{
 			// Run the plugin events to get lifecycle user records
-			$jNow    = new Date(empty($when) ? 'now' : $when);
+			$jNow    = clone Factory::getDate(empty($when) ? 'now' : $when);
 			$results = $this->runPlugins('onDataComplianceGetEOLRecords', [$jNow]);
 		}
 		catch (RuntimeException $e)
@@ -259,7 +259,7 @@ class WipeModel extends BaseDatabaseModel
 		$o = (object) [
 			'user_id'       => $userId,
 			'profile_key'   => 'datacompliance.notified_on',
-			'profile_value' => (new Date())->toSql(),
+			'profile_value' => (clone Factory::getDate())->toSql(),
 		];
 		$db->insertObject('#__user_profiles', $o);
 
@@ -267,7 +267,7 @@ class WipeModel extends BaseDatabaseModel
 		$o = (object) [
 			'user_id'       => $userId,
 			'profile_key'   => 'datacompliance.notified_for',
-			'profile_value' => (new Date($when->getTimestamp()))->toSql(),
+			'profile_value' => (clone Factory::getDate($when->getTimestamp()))->toSql(),
 		];
 		$db->insertObject('#__user_profiles', $o);
 
@@ -504,7 +504,7 @@ class WipeModel extends BaseDatabaseModel
 		$db      = $this->getDatabase();
 		$request = new RequestTable($db);
 
-		$when                              = new Date();
+		$when                              = clone Factory::getDate();
 		$request->email                    = $user->email;
 		$request->requested_at             = $when->toSql();
 		$request->status                   = 1;

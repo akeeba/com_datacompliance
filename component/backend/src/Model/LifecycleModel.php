@@ -92,7 +92,7 @@ class LifecycleModel extends ListModel
 		$lifecycle = $this->getState('filter.lifecycle', '');
 		if (is_numeric($lifecycle))
 		{
-			$when             = new Date($this->getState('filter.when', 'now') ?: 'now');
+			$when             = clone Factory::getDate($this->getState('filter.when', 'now') ?: 'now');
 			$lifecycleUserIDs = $this->getLifecycleUserIDs($when);
 
 			if ($lifecycle == 1)

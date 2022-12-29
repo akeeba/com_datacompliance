@@ -14,7 +14,6 @@ use Akeeba\Component\DataCompliance\Administrator\Table\UsertrailsTable;
 use Exception;
 use InvalidArgumentException;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\HTML\Registry;
@@ -254,6 +253,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 		// Generate the log of user account changes
 		$changes = [];
+		/** @var DatabaseDriver $db */
 		$db      = $this->getDatabase();
 
 		/**
@@ -381,7 +381,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		$trail->save([
 			'user_id'    => $newUser['id'],
 			'items'      => $changes,
-			'created_on' => (new Date())->toSql(),
+			'created_on' => (clone Factory::getDate())->toSql(),
 			'created_by' => $this->getApplication()->getIdentity()->id,
 		]);
 	}

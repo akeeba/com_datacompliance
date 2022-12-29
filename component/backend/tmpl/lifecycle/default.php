@@ -9,7 +9,6 @@ defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Model\LifecycleModel;
 use Akeeba\Component\DataCompliance\Administrator\Model\WipeModel;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -34,7 +33,7 @@ $model = $this->getModel();
 /** @var WipeModel $wipeModel */
 $wipeModel = $this->getModel('Wipe');
 
-$when = new Date($model->getState('filter.when', 'now') ?: 'now');
+$when = clone Factory::getDate($model->getState('filter.when', 'now') ?: 'now');
 
 $i = 0;
 

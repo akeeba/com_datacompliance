@@ -13,7 +13,6 @@ use Akeeba\Component\DataCompliance\Administrator\Table\ConsenttrailsTable;
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
@@ -158,7 +157,7 @@ class OptionsModel extends BaseDatabaseModel
 		{
 			$consent->reset();
 			$consent->created_by = $user->id;
-			$consent->created_on = (new Date())->toSql();
+			$consent->created_on = (clone Factory::getDate())->toSql();
 		}
 
 		$consent->requester_ip = IpHelper::getIp();

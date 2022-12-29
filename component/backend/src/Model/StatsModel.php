@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 use DateInterval;
 use Exception;
 use Joomla\CMS\Date\Date;
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
@@ -89,8 +90,8 @@ class StatsModel extends BaseDatabaseModel
 	{
 		$ret      = [];
 		$interval = new DateInterval('P1D');
-		$to       = new Date(clone $to);
-		$from     = new Date(clone $from);
+		$to       = clone Factory::getDate(clone $to);
+		$from     = clone Factory::getDate(clone $from);
 		$from->setTime(0, 0);
 		$to->setTime(0, 0);
 
