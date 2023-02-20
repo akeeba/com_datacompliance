@@ -14,17 +14,20 @@ use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Installer\Adapter\PackageAdapter;
 use Joomla\CMS\Installer\Installer;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\MVC\Model\BaseModel;
 use Joomla\CMS\Table\Extension;
 use Joomla\CMS\User\UserHelper;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\ParameterType;
 use RuntimeException;
 use SimpleXMLElement;
 use Throwable;
 
 #[\AllowDynamicProperties]
-class UpgradeModel extends BaseDatabaseModel
+class UpgradeModel extends BaseModel
 {
+	use DatabaseAwareTrait;
+
 	/** @var string Relative directory to the custom handlers */
 	private const CUSTOM_HANDLERS_DIRECTORY = 'UpgradeHandler';
 
@@ -534,10 +537,10 @@ class UpgradeModel extends BaseDatabaseModel
 		}
 
 		// Tell Joomla to uninstall the Pro-only extensions.
-		foreach (self::PRO_ONLY_EXTENSIONS as $extension)
-		{
-			$this->uninstallExtension($extension);
-		}
+//		foreach (self::PRO_ONLY_EXTENSIONS as $extension)
+//		{
+//			$this->uninstallExtension($extension);
+//		}
 	}
 
 	/**
