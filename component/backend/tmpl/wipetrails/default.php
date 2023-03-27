@@ -159,7 +159,11 @@ $userLayout = new FileLayout('akeeba.datacompliance.common.user', JPATH_ADMINIST
 														<?= $this->escape($what) ?>
 													</th>
 													<td>
-														<?= implode(', ', array_map([$this, 'escape'], $ids)) ?>
+														<?=
+															is_array($ids)
+															? implode(', ', array_map([$this, 'escape'], $ids))
+															: $ids
+														?>
 													</td>
 												</tr>
 												<?php endforeach ?>
