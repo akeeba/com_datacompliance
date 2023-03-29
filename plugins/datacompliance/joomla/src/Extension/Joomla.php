@@ -599,7 +599,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$jFake               = clone Factory::getDate('1999-01-01 00:00:00');
 		$user->name          = "User {$user->id}";
 		$user->username      = "user{$user->id}";
-		$user->email         = "user{$user->id}@example.com";
+		$user->email         = "UserID{$user->id}@removed@email.invalid";
 		$user->password      = UserHelper::genRandomPassword(64);
 		$user->block         = 0;
 		$user->sendEmail     = 0;
@@ -611,16 +611,18 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$user->resetCount    = 0;
 		$user->requireReset  = 1;
 
+		ComponentHelper::getParams('com_users');
+
 		try
 		{
 			$result = $user->save();
+
+			if (!$result)
+			{
+				Log::add("Could not pseudonymise user: {$user->getError()}", Log::ERROR, 'com_datacompliance');
+			}
 		}
 		catch (Exception $e)
-		{
-			$result = false;
-		}
-
-		if (!$result)
 		{
 			Log::add("Could not pseudonymise user: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
