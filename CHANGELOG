@@ -1,6 +1,7 @@
 Akeeba Data Compliance 3.1.1
 ================================================================================
 ~ Changed the fake email domain used when pseudonymising users
+# [HIGH] Joomla 4.2 made it extra hard to restart the session (gh-40)
 # [HIGH] The Profile Deletions page threw an exception (gh-39)
 # [MEDIUM] Plugins not enabled on clean installation
 

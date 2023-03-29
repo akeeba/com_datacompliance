@@ -209,7 +209,9 @@ class OptionsController extends BaseController
 		if ($isCurrent)
 		{
 			$this->app->getSession()->close();
+			$this->app->getSession()->destroy();
 			$this->app->getSession()->restart();
+			$this->app->getSession()->start();
 		}
 
 		// Redirect them to the home page
