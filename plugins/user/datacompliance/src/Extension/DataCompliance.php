@@ -199,9 +199,18 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			 * cannot use a list field to display it in a human readable format, Joomla! just dumps the raw value if you
 			 * use such a field. So all I can do is pass raw text. Um, whatever.
 			 */
-			$data->datacompliance = [
-				'hasconsent' => $hasConsent ? Text::_('JYES') : Text::_('JNO'),
-			];
+			if (is_object($data))
+			{
+				$data->datacompliance = [
+					'hasconsent' => $hasConsent ? Text::_('JYES') : Text::_('JNO'),
+				];
+			}
+			elseif (is_array($data))
+			{
+				$data['datacompliance'] = [
+					'hasconsent' => $hasConsent ? Text::_('JYES') : Text::_('JNO'),
+				];
+			}
 
 			$form->loadFile('list', false);
 			$this->setEventResult($event, true);
