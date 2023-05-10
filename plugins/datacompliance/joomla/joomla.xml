@@ -12,8 +12,8 @@
 	<authorUrl>https://www.akeeba.com</authorUrl>
 	<copyright>Copyright (c)2018-2023 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
 	<license>GNU General Public License version 3, or later</license>
-	<creationDate>2022-12-05</creationDate>
-	<version>3.1.0</version>
+	<creationDate>2023-05-10</creationDate>
+	<version>3.1.1</version>
 	<description>PLG_DATACOMPLIANCE_JOOMLA_DESCRIPTION</description>
 	<namespace path="src">Joomla\Plugin\DataCompliance\Joomla</namespace>
 
