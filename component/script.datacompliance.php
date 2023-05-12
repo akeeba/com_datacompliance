@@ -95,7 +95,7 @@ class Pkg_DatacomplianceInstallerScript extends InstallerScript
 
 		if (function_exists('opcache_invalidate'))
 		{
-			opcache_invalidate($filePath = JPATH_ADMINISTRATOR . '/components/com_datacompliance/src/Model/UpgradeModel.php');
+			opcache_invalidate($filePath = JPATH_ADMINISTRATOR . '/components/com_datacompliance/src/Model/UpgradeModel.php', true);
 		}
 
 		// Can I please load the model?
@@ -147,7 +147,7 @@ class Pkg_DatacomplianceInstallerScript extends InstallerScript
 
 		if (function_exists('opcache_invalidate'))
 		{
-			opcache_invalidate($filePath);
+			opcache_invalidate($filePath, true);
 		}
 
 		if (!class_exists('\Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails'))

@@ -1,3 +1,7 @@
+Akeeba Data Compliance 3.1.2
+================================================================================
+# [LOW] opcache_invalidate may not invalidate a file
+
 Akeeba Data Compliance 3.1.1
 ================================================================================
 ~ Changed the fake email domain used when pseudonymising users
