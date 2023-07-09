@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Joomla\Plugin\DataCompliance\S3\Extension;
+namespace Akeeba\Plugin\DataCompliance\S3\Extension;
 
 defined('_JEXEC') or die;
 

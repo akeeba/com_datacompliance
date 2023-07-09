@@ -15,7 +15,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Plugin\DataCompliance\ATS\Extension\ATS;
+use Akeeba\Plugin\DataCompliance\ATS\Extension\ATS;
 
 return new class implements ServiceProviderInterface {
 	/**

@@ -15,7 +15,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Plugin\DataCompliance\LoginGuard\Extension\LoginGuard;
+use Akeeba\Plugin\DataCompliance\LoginGuard\Extension\LoginGuard;
 
 return new class implements ServiceProviderInterface {
 	/**

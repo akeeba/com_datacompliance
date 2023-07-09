@@ -15,7 +15,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Plugin\DataCompliance\S3\Extension\S3;
+use Akeeba\Plugin\DataCompliance\S3\Extension\S3;
 
 return new class implements ServiceProviderInterface {
 	/**

@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Joomla\Plugin\DataCompliance\ARS\Extension;
+namespace Akeeba\Plugin\DataCompliance\ARS\Extension;
 
 defined('_JEXEC') or die;
 

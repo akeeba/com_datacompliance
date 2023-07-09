@@ -1,8 +1,9 @@
-Akeeba Data Compliance 3.1.2
+Akeeba Data Compliance 3.2.0
 ================================================================================
 ~ Joomla 5 preparation: Use DatabaseInterface instead of DatabaseDriver
 ~ Joomla 5 preparation: Remove obsolete class names
 ~ Block uninstallation of child extensions
+~ Changed the plugins' namespace
 # [LOW] opcache_invalidate may not invalidate a file
 
 Akeeba Data Compliance 3.1.1

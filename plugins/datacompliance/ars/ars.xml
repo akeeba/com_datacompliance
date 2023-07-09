@@ -15,7 +15,7 @@
     <creationDate>2023-05-10</creationDate>
     <version>3.1.1</version>
     <description>PLG_DATACOMPLIANCE_ARS_DESCRIPTION</description>
-    <namespace path="src">Joomla\Plugin\DataCompliance\ARS</namespace>
+    <namespace path="src">Akeeba\Plugin\DataCompliance\ARS</namespace>
 
     <files>
         <folder>language</folder>

@@ -15,12 +15,12 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Plugin\Console\DataCompliance\Extension\DataCompliance;
+use Akeeba\Plugin\Console\DataCompliance\Extension\DataCompliance;
 
 // Make sure that Joomla has registered the namespace for the plugin
-if (!class_exists('\Joomla\Plugin\Console\DataCompliance\Extension\DataCompliance'))
+if (!class_exists('\Akeeba\Plugin\Console\DataCompliance\Extension\DataCompliance'))
 {
-	JLoader::registerNamespace('\Joomla\Plugin\Console\DataCompliance', realpath(__DIR__ . '/../src'));
+	JLoader::registerNamespace('\Akeeba\Plugin\Console\DataCompliance', realpath(__DIR__ . '/../src'));
 }
 
 return new class implements ServiceProviderInterface {

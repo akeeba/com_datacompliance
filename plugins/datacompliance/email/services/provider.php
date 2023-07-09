@@ -15,7 +15,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Plugin\DataCompliance\Email\Extension\Email;
+use Akeeba\Plugin\DataCompliance\Email\Extension\Email;
 
 return new class implements ServiceProviderInterface {
 	/**
