@@ -8,7 +8,11 @@
 // Prevent direct access
 defined('_JEXEC') or die;
 
-class JFormFieldDatacompliance extends JFormField
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+
+class JFormFieldDatacompliance extends FormField
 {
 	/**
 	 * Element name
@@ -23,7 +27,7 @@ class JFormFieldDatacompliance extends JFormField
 
 		if (is_null($user_id))
 		{
-			return JText::_('PLG_USER_DATACOMPLIANCE_ERR_NOUSER');
+			return Text::_('PLG_USER_DATACOMPLIANCE_ERR_NOUSER');
 		}
 
 		/**
@@ -35,10 +39,10 @@ class JFormFieldDatacompliance extends JFormField
 		 * with this.
 		 */
 
-		$url       = JRoute::_('index.php?option=com_datacompliance&view=options&user_id=' . $user_id);
+		$url       = Route::_('index.php?option=com_datacompliance&view=options&user_id=' . $user_id);
 		$isAdmin   = $user_id != \Joomla\CMS\Factory::getUser()->id;
 		$key       = $isAdmin ? 'PLG_USER_DATACOMPLIANCE_FIELD_INFO_ADMIN' : 'PLG_USER_DATACOMPLIANCE_FIELD_INFO';
-		$labelText = JText::_($key);
+		$labelText = Text::_($key);
 		$html      = <<< HTML
 <a href="$url">$labelText</a>
  
