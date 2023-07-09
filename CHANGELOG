@@ -1,5 +1,6 @@
 Akeeba Data Compliance 3.1.2
 ================================================================================
+~ Joomla 5 preparation: Use DatabaseInterface instead of DatabaseDriver
 ~ Block uninstallation of child extensions
 # [LOW] opcache_invalidate may not invalidate a file
 

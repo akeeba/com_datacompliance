@@ -25,6 +25,7 @@ use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Console\Command\AbstractCommand;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -114,7 +115,7 @@ class LifecycleNotify extends AbstractCommand
 
 		// Disable database driver logging to conserve memory
 		/** @var DatabaseDriver $db */
-		$db = Factory::getContainer()->get('DatabaseDriver');
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$db->setMonitor(null);
 
 		try

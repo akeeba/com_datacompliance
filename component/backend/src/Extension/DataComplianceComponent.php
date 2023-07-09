@@ -17,6 +17,7 @@ use Joomla\CMS\Component\Router\RouterServiceTrait;
 use Joomla\CMS\Extension\BootableExtensionInterface;
 use Joomla\CMS\Extension\MVCComponent;
 use Joomla\CMS\HTML\HTMLRegistryAwareTrait;
+use Joomla\Database\DatabaseInterface;
 use Psr\Container\ContainerInterface;
 
 class DataComplianceComponent extends MVCComponent implements
@@ -29,7 +30,7 @@ class DataComplianceComponent extends MVCComponent implements
 	public function boot(ContainerInterface $container)
 	{
 		// Register the HTML helper
-		$dbo = $container->get('DatabaseDriver');
+		$dbo = $container->get(DatabaseInterface::class);
 		$this->getRegistry()->register('datacompliance', new DataCompliance($dbo));
 
 		// Make sure the Composer autoloader for our dependencies is loaded

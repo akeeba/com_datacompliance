@@ -125,11 +125,11 @@ class Pkg_DatacomplianceInstallerScript extends InstallerScript
 
 		if (method_exists($upgradeModel, 'setDatabase'))
 		{
-			$upgradeModel->setDatabase($this->dbo ?? Factory::getContainer()->get('DatabaseDriver'));
+			$upgradeModel->setDatabase($this->dbo ?? Factory::getContainer()->get(DatabaseInterface::class));
 		}
 		elseif (method_exists($upgradeModel, 'setDbo'))
 		{
-			$upgradeModel->setDbo($this->dbo ?? Factory::getContainer()->get('DatabaseDriver'));
+			$upgradeModel->setDbo($this->dbo ?? Factory::getContainer()->get(DatabaseInterface::class));
 		}
 
 		if (method_exists($upgradeModel, 'init'))
@@ -212,6 +212,6 @@ class Pkg_DatacomplianceInstallerScript extends InstallerScript
 			}
 		}
 
-		$this->dbo = Factory::getContainer()->get('DatabaseDriver');
+		$this->dbo = Factory::getContainer()->get(DatabaseInterface::class);
 	}
 }

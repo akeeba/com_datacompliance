@@ -18,6 +18,7 @@ use Joomla\CMS\Log\LogEntry;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\Console\Command\AbstractCommand;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -106,7 +107,7 @@ class LifecycleDelete extends AbstractCommand
 
 		// Disable database driver logging to conserve memory
 		/** @var DatabaseDriver $db */
-		$db = Factory::getContainer()->get('DatabaseDriver');
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$db->setMonitor(null);
 
 		$this->ioStyle->section(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_HEAD'));

@@ -14,6 +14,7 @@ use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\User\User;
 use Joomla\Database\DatabaseDriver;
 use Exception;
+use Joomla\Database\DatabaseInterface;
 
 /**
  * Manage and send emails with Joomla's email templates component
@@ -377,7 +378,7 @@ abstract class TemplateEmails
 		try
 		{
 			/** @var DatabaseDriver $db */
-			$db    = Factory::getContainer()->get('DatabaseDriver');
+			$db    = Factory::getContainer()->get(DatabaseInterface::class);
 			$query = $db->getQuery(true);
 			$query->select('*')
 				->from($db->quoteName('#__mail_templates'))
@@ -532,7 +533,7 @@ abstract class TemplateEmails
 	private static function createTemplate(string $key, string $subject, string $body, array $tags, string $htmlbody = ''): bool
 	{
 		/** @var DatabaseDriver $db */
-		$db = Factory::getContainer()->get('DatabaseDriver');
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		$template              = new \stdClass;
 		$template->template_id = $key;
@@ -567,7 +568,7 @@ abstract class TemplateEmails
 	private static function updateTemplateInDB($key, $subject, $body, $tags, $htmlbody = '')
 	{
 		/** @var DatabaseDriver $db */
-		$db = Factory::getContainer()->get('DatabaseDriver');
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
 
 		$template              = new \stdClass;
 		$template->template_id = $key;
