@@ -22,6 +22,7 @@
 /component/backend/vendor
 
 /release/*
+/pkg_*.xml
 
 # Symlink to FEF to let phpStorm auto-complete the CSS class names
 /fef.min.css
