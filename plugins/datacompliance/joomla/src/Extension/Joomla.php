@@ -103,7 +103,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		 * @var   string   $type   user, admin or lifecycle
 		 * @var   DateTime $when   When is the deletion going to take place? Leaving null means "right now"
 		 */
-		[$userId, $type, $when] = $event->getArguments();
+		[$userId, $type, $when] = array_values($event->getArguments());
 
 		$exemptGroups = $this->params->get('exemptgroups', []);
 		$jUser        = $this->getJoomlaUserObject($userId);
@@ -159,7 +159,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userId, $type] = $event->getArguments();
+		[$userId, $type] = array_values($event->getArguments());
 
 		if (empty($userId))
 		{
@@ -208,7 +208,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceExportUser(Event $event): void
 	{
 		/** @var int $userId */
-		[$userId] = $event->getArguments();
+		[$userId] = array_values($event->getArguments());
 
 		$db   = $this->getDatabase();
 		$user = self::getJoomlaUserObject($userId);
@@ -318,7 +318,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceGetEOLRecords(Event $event): void
 	{
 		/** @var DateTime $date */
-		[$date] = $event->getArguments();
+		[$date] = array_values($event->getArguments());
 
 		if (!$this->params->get('lifecycle', 1))
 		{
@@ -381,7 +381,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		 * @var   int    $userId The user ID we are asked to delete
 		 * @var   string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userId, $type] = $event->getArguments();
+		[$userId, $type] = array_values($event->getArguments());
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_JOOMLA_ACTIONS_10'),

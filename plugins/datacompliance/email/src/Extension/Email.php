@@ -97,7 +97,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userId, $type] = $event->getArguments();
+		[$userId, $type] = array_values($event->getArguments());
 
 		$this->setEventResult($event, []);
 

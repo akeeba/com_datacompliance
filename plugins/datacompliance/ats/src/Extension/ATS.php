@@ -99,7 +99,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userId, $type] = $event->getArguments();
+		[$userId, $type] = array_values($event->getArguments());
 
 		$ret = [
 			'ats' => [
@@ -295,7 +295,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
 
 		/** @var int $userId */
-		[$userId] = $event->getArguments();
+		[$userId] = array_values($event->getArguments());
 
 		$export = new SimpleXMLElement("<root></root>");
 
@@ -457,7 +457,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		 * @var   int    $userId The user ID we are asked to delete
 		 * @var   string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userId, $type] = $event->getArguments();
+		[$userId, $type] = array_values($event->getArguments());
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_ATS_ACTIONS_1'),

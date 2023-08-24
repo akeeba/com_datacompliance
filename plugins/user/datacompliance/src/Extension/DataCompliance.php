@@ -93,7 +93,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 * @var Form  $form The form to be altered.
 		 * @var mixed $data The associated data for the form.
 		 */
-		[$form, $data] = $event->getArguments();
+		[$form, $data] = array_values($event->getArguments());
 
 		if (!($form instanceof Form))
 		{
@@ -239,7 +239,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 * @var   boolean $isNew   True if a new user is stored.
 		 * @var   array   $newUser Holds the new user data.
 		 */
-		[$oldUser, $isNew, $newUser] = $event->getArguments();
+		[$oldUser, $isNew, $newUser] = array_values($event->getArguments());
 		$session = $this->getApplication()->getSession();
 
 		/**
@@ -410,7 +410,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 * @var   array $response User login response
 		 * @var   array $options  Options to the user login
 		 */
-		[$response, $options] = $event->getArguments();
+		[$response, $options] = array_values($event->getArguments());
 
 		/**
 		 * Do not go through the model as it ends up destroying the session when the Remember Me plugin tries to log you

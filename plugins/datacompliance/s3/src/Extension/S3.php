@@ -89,7 +89,7 @@ class S3 extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceSaveWipeAuditRecord(Event $event)
 	{
 		/** @var WipetrailsTable $auditRecord */
-		[$auditRecord] = $event->getArguments();
+		[$auditRecord] = array_values($event->getArguments());
 
 		if ($this->getApplication()->getSession()->get('com_datacompliance.__audit_replay', 0))
 		{

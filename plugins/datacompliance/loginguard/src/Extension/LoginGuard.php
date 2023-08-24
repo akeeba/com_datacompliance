@@ -98,7 +98,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		 * @var int    $userId The user ID we are asked to delete
 		 * @var string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userId, $type] = $event->getArguments();
+		[$userId, $type] = array_values($event->getArguments());
 
 		$ret = [
 			'loginguard' => [
@@ -154,7 +154,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 	public function onDataComplianceExportUser(Event $event): void
 	{
 		/** @var int $userId */
-		[$userId] = $event->getArguments();
+		[$userId] = array_values($event->getArguments());
 
 		$db = $this->getDatabase();
 
@@ -195,7 +195,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		 * @var   int    $userId The user ID we are asked to delete
 		 * @var   string $type   The export type (user, admin, lifecycle)
 		 */
-		[$userId, $type] = $event->getArguments();
+		[$userId, $type] = array_values($event->getArguments());
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_LOGINGUARD_ACTIONS_1'),
