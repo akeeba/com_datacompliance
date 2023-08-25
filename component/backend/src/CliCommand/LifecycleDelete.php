@@ -17,20 +17,22 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Log\LogEntry;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\Console\Command\AbstractCommand;
+use Joomla\Database\DatabaseAwareInterface;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
-use Joomla\Database\DatabaseInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 defined('_JEXEC') or die;
 
-class LifecycleDelete extends AbstractCommand
+class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 {
 	use ConfigureIO;
 	use MemoryInfo;
 	use TimeInfo;
 	use MVCFactoryAwareTrait;
+	use DatabaseAwareTrait;
 
 	/**
 	 * The default command name
@@ -107,8 +109,10 @@ class LifecycleDelete extends AbstractCommand
 
 		// Disable database driver logging to conserve memory
 		/** @var DatabaseDriver $db */
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
+
+		$start = microtime(true);
 
 		$this->ioStyle->section(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_HEAD'));
 

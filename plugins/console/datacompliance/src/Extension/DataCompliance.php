@@ -19,12 +19,16 @@ use Joomla\CMS\Factory as JoomlaFactory;
 use Joomla\CMS\MVC\Factory\MVCFactory;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Console\Command\AbstractCommand;
+use Joomla\Database\DatabaseAwareInterface;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Event\SubscriberInterface;
 use Throwable;
 
-class DataCompliance extends CMSPlugin implements SubscriberInterface
+class DataCompliance extends CMSPlugin implements SubscriberInterface, DatabaseAwareInterface
 {
 	use MVCFactoryAwareTrait;
+	use DatabaseAwareTrait;
 
 	private static $commands = [
 		AccountDelete::class,
@@ -101,12 +105,20 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 					continue;
 				}
 
+				/** @var AbstractCommand $command */
 				$command = new $commandFQN();
 
 				if (method_exists($command, 'setMVCFactory'))
 				{
 					$command->setMVCFactory($this->getMVCFactory());
 				}
+
+				if ($command instanceof DatabaseAwareInterface)
+				{
+					$command->setDatabase($this->getDatabase());
+				}
+
+				$command->setApplication($app);
 
 				$app->addCommand($command);
 			}
@@ -120,7 +132,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	private function initialiseComponent(ConsoleApplication $app): void
 	{
 		// Load the Admin Tools language files
-		$lang = JoomlaFactory::getApplication()->getLanguage();
+		$lang = $this->getApplication()->getLanguage();
 		$lang->load('com_datacompliance', JPATH_SITE, 'en-GB', true, true);
 		$lang->load('com_datacompliance', JPATH_SITE, null, true, false);
 		$lang->load('com_datacompliance', JPATH_ADMINISTRATOR, 'en-GB', true, true);

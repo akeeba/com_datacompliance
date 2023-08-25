@@ -19,7 +19,6 @@
 
     <files>
         <folder>datacompliance</folder>
-        <folder>fields</folder>
         <folder>language</folder>
         <folder>services</folder>
         <folder plugin="datacompliance">src</folder>

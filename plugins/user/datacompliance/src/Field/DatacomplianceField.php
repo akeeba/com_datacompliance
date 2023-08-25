@@ -5,14 +5,18 @@
  * @license   GNU General Public License version 3, or later
  */
 
+namespace Akeeba\Plugin\User\DataCompliance\Field;
+
 // Prevent direct access
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\User\User;
 
-class JFormFieldDatacompliance extends FormField
+class DatacomplianceField extends FormField
 {
 	/**
 	 * Element name
@@ -40,7 +44,8 @@ class JFormFieldDatacompliance extends FormField
 		 */
 
 		$url       = Route::_('index.php?option=com_datacompliance&view=options&user_id=' . $user_id);
-		$isAdmin   = $user_id != \Joomla\CMS\Factory::getUser()->id;
+		$user      = Factory::getApplication()->getIdentity() ?? new User();
+		$isAdmin   = $user_id != $user->id;
 		$key       = $isAdmin ? 'PLG_USER_DATACOMPLIANCE_FIELD_INFO_ADMIN' : 'PLG_USER_DATACOMPLIANCE_FIELD_INFO';
 		$labelText = Text::_($key);
 		$html      = <<< HTML

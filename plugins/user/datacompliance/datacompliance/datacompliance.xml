@@ -6,7 +6,7 @@
   -->
 
 <form>
-	<fields name="datacompliance" addfieldpath="plugins/user/datacompliance/fields">
+	<fields name="datacompliance" addfieldprefix="Akeeba\Plugin\User\DataCompliance\Field">
 		<fieldset name="datacompliance"
 			label="PLG_USER_DATACOMPLIANCE_HEADER"
 		>

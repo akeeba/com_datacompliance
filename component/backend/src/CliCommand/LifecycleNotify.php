@@ -24,6 +24,8 @@ use Joomla\CMS\Log\LogEntry;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Console\Command\AbstractCommand;
+use Joomla\Database\DatabaseAwareInterface;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
@@ -33,12 +35,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 defined('_JEXEC') or die;
 
-class LifecycleNotify extends AbstractCommand
+class LifecycleNotify extends AbstractCommand implements DatabaseAwareInterface
 {
 	use ConfigureIO;
 	use MemoryInfo;
 	use TimeInfo;
 	use MVCFactoryAwareTrait;
+	use DatabaseAwareTrait;
 
 	/**
 	 * The default command name
@@ -115,7 +118,7 @@ class LifecycleNotify extends AbstractCommand
 
 		// Disable database driver logging to conserve memory
 		/** @var DatabaseDriver $db */
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
+		$db = $this->getDatabase();
 		$db->setMonitor(null);
 
 		try
