@@ -11,6 +11,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Mixin\RunPluginsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Table\WipetrailsTable;
 use DateTime;
 use Exception;
@@ -37,6 +38,8 @@ use RuntimeException;
 #[\AllowDynamicProperties]
 class WipeModel extends BaseDatabaseModel
 {
+	use RunPluginsTrait;
+
 	/** @var WipetrailsTable $auditRecord */
 	protected $auditRecord;
 
@@ -543,7 +546,7 @@ class WipeModel extends BaseDatabaseModel
 	private function runPlugins(string $event, array $data = []): array
 	{
 		/** @noinspection PhpDeprecationInspection */
-		return Factory::getApplication()->triggerEvent($event, $data);
+		return $this->triggerPluginEvent($event, $data);
 	}
 
 	/**

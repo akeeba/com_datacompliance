@@ -10,6 +10,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Helper\Export as ExportHelper;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\RunPluginsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Table\ExporttrailsTable;
 use DOMDocument;
 use Exception;
@@ -33,6 +34,8 @@ use SimpleXMLElement;
 #[\AllowDynamicProperties]
 class ExportModel extends BaseDatabaseModel
 {
+	use RunPluginsTrait;
+
 	/**
 	 * Export a user profile as pretty formatted XML text
 	 *
@@ -206,8 +209,7 @@ class ExportModel extends BaseDatabaseModel
 	 */
 	private function runPlugins(string $event, array $data = []): array
 	{
-		/** @noinspection PhpDeprecationInspection */
-		return Factory::getApplication()->triggerEvent($event, $data);
+		return $this->triggerPluginEvent($event, $data);
 	}
 
 }

@@ -9,6 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Mixin\RunPluginsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Table\ConsenttrailsTable;
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
@@ -24,6 +25,8 @@ use Joomla\Utilities\IpHelper;
 #[\AllowDynamicProperties]
 class OptionsModel extends BaseDatabaseModel
 {
+	use RunPluginsTrait;
+
 	/**
 	 * Returns the text of the article containing the Privacy and Cookies Policy in simple and clear language per the
 	 * GDPR.
@@ -187,6 +190,6 @@ class OptionsModel extends BaseDatabaseModel
 	 */
 	public function runPlugins(string $event, array $data): array
 	{
-		return Factory::getApplication()->triggerEvent($event, $data);
+		return $this->triggerPluginEvent($event, $data);
 	}
 }
