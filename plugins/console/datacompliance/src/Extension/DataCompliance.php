@@ -75,7 +75,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	 */
 	public function registerCLICommands(ApplicationEvent $event)
 	{
-		$app = $this->getApplication();
+		$app = $event->getApplication();
 
 		if (!$app instanceof ConsoleApplication)
 		{

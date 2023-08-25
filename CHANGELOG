@@ -5,6 +5,7 @@ Akeeba Data Compliance 3.2.0
 ~ Joomla 5 preparation: Remove obsolete class names
 ~ Joomla 5 preparation: Work around backwards incompatible changes in core plugin events
 ~ Joomla 5 preparation: Normalise plugin event calling
+~ Joomla 5 preparation: Plugin event handlers clean-up
 ~ Block uninstallation of child extensions
 ~ Changed the plugins' namespace
 ~ Force Joomla to create its namespace map afresh at the end of installation, in case it failed to do that automatically

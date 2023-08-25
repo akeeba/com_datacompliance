@@ -431,8 +431,6 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		{
 			// Ignore it
 		}
-
-		$this->setEventResult($event, true);
 	}
 
 	/**
