@@ -38,11 +38,11 @@
     ====================================================================================================
     -->
 
-    <target name="documentation" description="Creates the documentation packages" depends="doc-j-pdf">
+    <target name="documentation" description="Creates the documentation packages" depends="doc-epub">
     </target>
 
-    <target name="doc-j-pdf" description="Documentation for Joomla! in PDF format">
-        <phingcall target="docbook-pdf">
+    <target name="doc-epub" description="Documentation for Joomla! in PDF format">
+        <phingcall target="docbook-epub">
             <property name="docs.input" value="datacompliance.xml" />
         </phingcall>
     </target>
