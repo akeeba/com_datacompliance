@@ -7,8 +7,8 @@
 
 <extension type="plugin" group="console" method="upgrade">
 	<name>PLG_CONSOLE_DATACOMPLIANCE</name>
-	<version>3.1.1</version>
-	<creationDate>2023-05-10</creationDate>
+	<version>3.2.0</version>
+	<creationDate>2023-09-05</creationDate>
 	<author>Nicholas K. Dionysopoulos</author>
 	<authorEmail>nicholas@dionysopoulos.me</authorEmail>
 	<authorUrl>https://www.akeeba.com</authorUrl>
