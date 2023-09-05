@@ -1,3 +1,7 @@
+Akeeba Data Compliance 3.2.1
+================================================================================
+# [LOW] Possible PHP error when updating this along other extensions using the same post-installation script
+
 Akeeba Data Compliance 3.2.0
 ================================================================================
 + Notice about Joomla 4 End of Service
