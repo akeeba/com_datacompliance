@@ -12,8 +12,8 @@
     <authorUrl>https://www.akeeba.com</authorUrl>
     <copyright>Copyright (c)2018-2023 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
     <license>GNU General Public License version 3, or later</license>
-    <creationDate>2023-09-05</creationDate>
-    <version>3.2.0</version>
+    <creationDate>2023-09-06</creationDate>
+    <version>3.2.1</version>
     <description>PLG_DATACOMPLIANCE_ARS_DESCRIPTION</description>
     <namespace path="src">Akeeba\Plugin\DataCompliance\ARS</namespace>
 
