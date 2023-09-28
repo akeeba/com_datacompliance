@@ -151,7 +151,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		{
 			// Query for the attachment IDs
 			$attachmentsQuery          = $db->getQuery(true)
-			                                ->select($db->quoteName('ats_attachment_id'))
+			                                ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_attachment_id'))
 			                                ->from($db->quoteName('#__ats_attachments'))
 			                                ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
 			$ret['ats']['attachments'] = $db->setQuery($attachmentsQuery)->loadColumn(0);
