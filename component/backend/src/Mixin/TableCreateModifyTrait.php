@@ -53,7 +53,13 @@ trait TableCreateModifyTrait
 			// Existing item
 			if ($this->hasField('modified_by'))
 			{
-				$this->modified_by = $user->id;
+                // Set a default value and update it only if we have a valid user object (i.e. we're not under CLI), otherwise the db will complain
+                $this->modified_by = 0;
+
+                if ($user)
+                {
+                    $this->modified_by = $user->id;
+                }
 			}
 			if ($this->hasField('modified'))
 			{
@@ -66,7 +72,13 @@ trait TableCreateModifyTrait
 			// Field created_by can be set by the user, so we don't touch it if it's set.
 			if ($this->updateCreated && $this->hasField('created_by') && empty($this->created_by))
 			{
-				$this->created_by = $user->id;
+                // Set a default value and update it only if we have a valid user object (i.e. we're not under CLI), otherwise the db will complain
+                $this->created_by = 0;
+
+                if ($user)
+                {
+                    $this->created_by = $user->id;
+                }
 			}
 
 			// Set modified to created date if not set
