@@ -465,8 +465,16 @@ class WipeModel extends BaseDatabaseModel
 			return;
 		}
 
+        $isSuperUser = false;
+        $user        = Factory::getApplication()->getIdentity();
+
+        // Perform the check on permissions only if we're not in CLI
+        if ($user)
+        {
+            $isSuperUser = $user->authorise('core.admin');
+        }
+
 		$isDebug     = defined('JDEBUG') && JDEBUG;
-		$isSuperUser = Factory::getApplication()->getIdentity()->authorise('core.admin');
 		$isCli       = Factory::getApplication()->isClient('cli');
 
 		if (!($isDebug && ($isCli || $isSuperUser)))
