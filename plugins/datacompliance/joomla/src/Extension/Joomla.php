@@ -599,7 +599,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$jFake               = clone Factory::getDate('1999-01-01 00:00:00');
 		$user->name          = "User {$user->id}";
 		$user->username      = "user{$user->id}";
-		$user->email         = "UserID{$user->id}@removed@email.invalid";
+		$user->email         = "UserID{$user->id}removed@email.invalid";
 		$user->password      = UserHelper::genRandomPassword(64);
 		$user->block         = 0;
 		$user->sendEmail     = 0;
