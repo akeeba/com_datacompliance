@@ -127,6 +127,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 		// Get the actions carried out for the user
 		/** @var OptionsModel $optionsModel */
 		$optionsModel = $this->mvcFactory->createModel('Options', 'Administrator');
+        $optionsModel->setDispatcher($this->getDispatcher());
 		$actionsList  = $optionsModel->getBulletPoints($user, $type);
 		$actionsHtml  = "<ul>\n";
 
