@@ -190,6 +190,15 @@ class OptionsModel extends BaseDatabaseModel
 	 */
 	public function runPlugins(string $event, array $data): array
 	{
+		try
+		{
+			$dispatcher = $this->getDispatcher();
+		}
+		catch (Exception $e)
+		{
+			$this->setDispatcher(Factory::getApplication()->getDispatcher());
+		}
+
 		return $this->triggerPluginEvent($event, $data);
 	}
 }
