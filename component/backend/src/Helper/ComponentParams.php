@@ -56,7 +56,15 @@ class ComponentParams
 
 		$refProp->setAccessible(true);
 
-		$components                               = $refProp->getValue();
+		if (version_compare(PHP_VERSION, '8.3.0', 'ge'))
+		{
+			$components = $refClass->getStaticPropertyValue('components');
+		}
+		else
+		{
+			$components = $refProp->getValue();
+		}
+
 		$components['com_datacompliance']->params = $params;
 
 		if (version_compare(PHP_VERSION, '8.3.0', 'ge'))
