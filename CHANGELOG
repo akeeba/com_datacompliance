@@ -2,6 +2,7 @@ Akeeba Data Compliance 3.2.2
 ================================================================================
 ~ Update Gravatar URLs with SHA-256
 # [HIGH] The ATS integration plugin failed with ATS 5
+# [LOW] PHP 8.3 deprecated notice in ComponentParameters service (no functional issue)
 
 Akeeba Data Compliance 3.2.1
 ================================================================================
