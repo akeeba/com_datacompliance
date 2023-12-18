@@ -5,13 +5,13 @@
   -->
 <extension type="component" method="upgrade">
 	<name>COM_DATACOMPLIANCE</name>
-	<creationDate>2023-09-06</creationDate>
+	<creationDate>2023-12-18</creationDate>
 	<author>Nicholas K. Dionysopoulos</author>
 	<authorEmail>nicholas@akeeba.com</authorEmail>
 	<authorUrl>https://www.akeeba.com</authorUrl>
 	<copyright>Copyright (c)2018-2023 Nicholas K. Dionysopoulos</copyright>
 	<license>This component in released under the GNU/GPL v3 or later license</license>
-	<version>3.2.1</version>
+	<version>3.2.2</version>
 	<description>COM_DATACOMPLIANCE_XML_DESCRIPTION</description>
 	<namespace path="src">Akeeba\Component\DataCompliance</namespace>
 
