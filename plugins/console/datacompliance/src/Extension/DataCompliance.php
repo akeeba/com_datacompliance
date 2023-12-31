@@ -1,7 +1,7 @@
 <?php
 /**
  * @package   DataCompliance
- * @copyright 2018-2023 Akeeba Ltd / Nicholas K. Dionysopoulos
+ * @copyright Copyright (c)2018-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
  */
 

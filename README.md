@@ -21,7 +21,7 @@ There is a Joomla CLI integration plugin. You can use the CLI commands to, among
 ## Copyright notice and license 
 
 Akeeba Data Compliance — A tool to facilitate GDPR conformance of your Joomla! sites
-Copyright (C) 2018-2023  Nicholas K. Dionysopoulos / Akeeba Ltd
+Copyright (C) 2018-2024  Nicholas K. Dionysopoulos / Akeeba Ltd
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
