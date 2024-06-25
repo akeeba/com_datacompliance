@@ -40,7 +40,7 @@ class StatsModel extends BaseDatabaseModel
 		$db      = $this->getDatabase();
 		$fromSql = $from->toSql();
 		$toSql   = $to->toSql();
-		$query   = $db->getQuery(true)
+		$query   = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select([
 				'count(*) AS ' . $db->quoteName('records'),
 				$db->quoteName('type'),

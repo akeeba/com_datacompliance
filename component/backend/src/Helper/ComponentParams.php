@@ -30,7 +30,7 @@ class ComponentParams
 		$db   = JoomlaFactory::getContainer()->get(DatabaseInterface::class);
 		$data = $params->toString('JSON');
 
-		$sql = $db->getQuery(true)
+		$sql = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->update($db->qn('#__extensions'))
 			->set($db->qn('params') . ' = ' . $db->q($data))
 			->where($db->qn('element') . ' = ' . $db->q('com_datacompliance'))

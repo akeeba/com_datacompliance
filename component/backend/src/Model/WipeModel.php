@@ -146,7 +146,7 @@ class WipeModel extends BaseDatabaseModel
 	public function getWipedUserIDs(): array
 	{
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('user_id')
 			->from($db->quoteName('#__datacompliance_wipetrails'))
 			->group($db->quoteName('user_id'));
@@ -171,7 +171,7 @@ class WipeModel extends BaseDatabaseModel
 	public function isUserNotified(int $userId, ?Date $when = null): bool
 	{
 		$db     = $this->getDatabase();
-		$query  = $db->getQuery(true)
+		$query  = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select([
 				$db->quoteName('profile_key'),
 				$db->quoteName('profile_value'),
@@ -287,7 +287,7 @@ class WipeModel extends BaseDatabaseModel
 	public function resetUserNotification(int $userId): void
 	{
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__user_profiles'))
 			->where($db->quoteName('user_id') . ' = :userId')
 			->where($db->quoteName('profile_key') . ' LIKE ' .

@@ -248,7 +248,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	{
 		// Get the consent information from Joomla
 		$db     = $this->getDatabase();
-		$query  = $db->getQuery(true)
+		$query  = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('COUNT(*)')
 			->from($db->quoteName('#__privacy_consents'))
 			->where($db->quoteName('user_id') . ' = :userid')

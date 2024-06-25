@@ -112,13 +112,13 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		$db = $this->getDatabase();
 		$db->setMonitor(null);
 
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__loginguard_tfa'))
 			->where($db->quoteName('user_id') . ' = :user_id')
 			->bind(':user_id', $userId, ParameterType::INTEGER);
 
-		$deleteQuery = $db->getQuery(true)
+		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__loginguard_tfa'))
 			->where($db->quoteName('user_id') . ' = :user_id')
 			->bind(':user_id', $userId, ParameterType::INTEGER);
@@ -165,7 +165,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		$domainTfa->addAttribute('name', 'loginguard_tfa');
 		$domainTfa->addAttribute('description', 'Akeeba LoginGuard TFA records');
 
-		$query   = $db->getQuery(true)
+		$query   = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from('#__loginguard_tfa')
 			->where($db->quoteName('user_id') . ' = :user_id')

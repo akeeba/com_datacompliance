@@ -114,11 +114,11 @@ class ARS extends CMSPlugin implements SubscriberInterface
 
 		// ======================================== Log entries ========================================
 
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_log'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
-		$deleteQuery = $db->getQuery(true)
+		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__ars_log'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
@@ -147,12 +147,12 @@ class ARS extends CMSPlugin implements SubscriberInterface
 
 		// ======================================== Download IDs ========================================
 
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_dlidlabels'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-		$deleteQuery = $db->getQuery(true)
+		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__ars_dlidlabels'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
@@ -208,7 +208,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$domain->addAttribute('name', 'ars_log');
 		$domain->addAttribute('description', 'Akeeba Release System download log');
 
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__ars_log'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -225,7 +225,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$domain->addAttribute('name', 'ars_dlidlables');
 		$domain->addAttribute('description', 'Akeeba Release System download IDs (main and add-on)');
 
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__ars_dlidlabels'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));

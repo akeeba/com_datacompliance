@@ -418,7 +418,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 */
 		$userid = UserHelper::getUserId($response['username']);
 		$db     = $this->getDatabase();
-		$query  = $db->getQuery(true)
+		$query  = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->qn('#__user_profiles'))
 			->where($db->qn('user_id') . ' = ' . $userid)
 			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
@@ -510,7 +510,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		$postedCustomFields = array_map([$db, 'quote'], $postedCustomFields);
 		$postedCustomFields = implode(',', $postedCustomFields);
 
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select([
 				$db->qn('name', 'key'),
 				$db->qn('value'),
@@ -600,14 +600,14 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		try
 		{
 			// Get the names of old groups
-			$query     = $db->getQuery(true)
+			$query     = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				->select($db->qn('title'))
 				->from($db->qn('#__usergroups'))
 				->where($db->qn('id') . 'IN (' . implode(',', $oldGroupIDs) . ')');
 			$oldGroups = $db->setQuery($query)->loadColumn();
 
 			// Get the names of old groups
-			$query     = $db->getQuery(true)
+			$query     = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				->select($db->qn('title'))
 				->from($db->qn('#__usergroups'))
 				->where($db->qn('id') . 'IN (' . implode(',', $newGroupIDs) . ')');
@@ -648,7 +648,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// Found an extended user profile, go on and load old values to compare
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select([
 				$db->qn('profile_key', 'key'),
 				$db->qn('profile_value', 'value'),

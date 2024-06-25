@@ -235,7 +235,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$domainNotes->addAttribute('name', 'user_notes');
 		$domainNotes->addAttribute('description', 'Joomla! #__user_notes records');
 
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__user_notes'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
@@ -252,7 +252,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$domainProfiles->addAttribute('name', 'user_profiles');
 		$domainProfiles->addAttribute('description', 'Joomla! #__user_profiles records');
 
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__user_profiles'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
@@ -269,7 +269,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$domainGroups->addAttribute('name', 'user_usergroup_map');
 		$domainGroups->addAttribute('description', 'Joomla! #__user_usergroup_map records');
 
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__user_usergroup_map'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
@@ -286,7 +286,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$domainKeys->addAttribute('name', 'user_keys');
 		$domainKeys->addAttribute('description', 'Joomla! #__user_keys records');
 
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
@@ -326,7 +326,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		}
 
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('id')
 			->from($db->quoteName('#__users'));
 
@@ -439,12 +439,12 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$db->setMonitor(null);
 		$ids = [];
 
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__user_profiles'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
-		$deleteQuery = $db->getQuery(true)
+		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__user_profiles'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
@@ -481,11 +481,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$userId = $user->id;
 
 		// WTAF?! Trying to bind the user id with bind() results in a fatal error.
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
-		$deleteQuery = $db->getQuery(true)
+		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__user_keys'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 		try
@@ -520,12 +520,12 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$db->setMonitor(null);
 
 		$ids         = [];
-		$selectQuery = $db->getQuery(true)
+		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__user_notes'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
-		$deleteQuery = $db->getQuery(true)
+		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__user_notes'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 
@@ -563,7 +563,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		$db = $this->getDatabase();
 		$db->setMonitor(null);
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->quoteName('#__user_usergroup_map'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
 

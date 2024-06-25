@@ -121,7 +121,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		// ============================== tickets, posts, attachments ==============================
 
 		// Query for the ticket IDs
-		$ticketsQuery = $db->getQuery(true)
+		$ticketsQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 		                   ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_ticket_id'))
 		                   ->from($db->quoteName('#__ats_tickets'))
 		                   ->where($db->qn('created_by') . ' = ' . $db->quote($userId));
@@ -138,7 +138,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		if (!empty($ticketIDs))
 		{
 			// Query for the post IDs
-			$postsQuery = $db->getQuery(true)
+			$postsQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			                 ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_post_id'))
 			                 ->from($db->quoteName('#__ats_posts'))
 			                 ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
@@ -150,21 +150,21 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		if (!empty($postIDs))
 		{
 			// Query for the attachment IDs
-			$attachmentsQuery          = $db->getQuery(true)
+			$attachmentsQuery          = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			                                ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_attachment_id'))
 			                                ->from($db->quoteName('#__ats_attachments'))
 			                                ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
 			$ret['ats']['attachments'] = $db->setQuery($attachmentsQuery)->loadColumn(0);
 
 			// Delete attachments
-			$query = $db->getQuery(true)
+			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			            ->delete($db->quoteName('#__ats_attachments'))
 			            ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
 			$db->setQuery($query)->execute();
 			unset($postIDs);
 
 			// Delete posts
-			$query = $db->getQuery(true)
+			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			            ->delete($db->quoteName('#__ats_posts'))
 			            ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 			$db->setQuery($query)->execute();
@@ -173,7 +173,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		// Delete tickets
 		if (!empty($ticketIDs))
 		{
-			$query = $db->getQuery(true)
+			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			            ->delete($db->quoteName('#__ats_tickets'))
 			            ->whereIn($db->quoteName($isATS5OrLater ? 'id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 			$db->setQuery($query)->execute();
@@ -181,14 +181,14 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			// ============================== attempts ==============================
 			try
 			{
-				$query = $db->getQuery(true)
+				$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				            ->select($db->quoteName('ats_attempt_id'))
 				            ->from($db->quoteName('#__ats_attempts'))
 				            ->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 
 				$ret['ats']['attempts'] = $db->setQuery($query)->loadColumn();
 
-				$query = $db->getQuery(true)
+				$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				            ->delete($db->quoteName('#__ats_attempts'))
 				            ->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 				$db->setQuery($query)->execute();
@@ -205,7 +205,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		try
 		{
-			$query = $db->getQuery(true)
+			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			            ->select($db->quoteName('ats_creditconsumption_id'))
 			            ->from($db->quoteName('#__ats_creditconsumptions'))
 			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -214,7 +214,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 			if (!empty($ret['ats']['creditconsumptions']))
 			{
-				$query = $db->getQuery(true)
+				$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				            ->delete($db->quoteName('#__ats_creditconsumptions'))
 				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
@@ -230,7 +230,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		try
 		{
-			$query = $db->getQuery(true)
+			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			            ->select($db->quoteName('ats_credittransaction_id'))
 			            ->from($db->quoteName('#__ats_credittransactions'))
 			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -239,7 +239,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 			if (!empty($ret['ats']['credittransactions']))
 			{
-				$query = $db->getQuery(true)
+				$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				            ->delete($db->quoteName('#__ats_credittransactions'))
 				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
@@ -254,7 +254,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		// ============================== usertags ==============================
 		try
 		{
-			$query = $db->getQuery(true)
+			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			            ->select($db->quoteName('id'))
 			            ->from($db->quoteName('#__ats_users_usertags'))
 			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -263,7 +263,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 			if (!empty($ret['ats']['usertags']))
 			{
-				$query = $db->getQuery(true)
+				$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				            ->delete($db->quoteName('#__ats_users_usertags'))
 				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
@@ -319,7 +319,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			try
 			{
 				$db          = $this->getDatabase();
-				$selectQuery = $db->getQuery(true)
+				$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 				                  ->select('*')
 				                  ->from($db->quoteName('#__ats_attempts'))
 				                  ->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
@@ -372,7 +372,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		try
 		{
 			$db          = $this->getDatabase();
-			$selectQuery = $db->getQuery(true)
+			$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_creditconsumptions'))
 			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -395,7 +395,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		try
 		{
 			$db          = $this->getDatabase();
-			$selectQuery = $db->getQuery(true)
+			$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_credittransactions'))
 			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -419,7 +419,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		try
 		{
 			$db          = $this->getDatabase();
-			$selectQuery = $db->getQuery(true)
+			$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_users_usertags'))
 			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -474,7 +474,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
 
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 		            ->select('*')
 		            ->from('#__ats_attachments')
 		            ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
@@ -492,7 +492,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$isATS5OrLater = @is_dir(JPATH_ADMINISTRATOR . '/components/com_ats/services');
 
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 		            ->select('*')
 		            ->from('#__ats_posts')
 		            ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
@@ -503,7 +503,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	private function getTickets(int $user_id)
 	{
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 		            ->select('*')
 		            ->from('#__ats_tickets')
 		            ->where($db->quoteName('created_by') . ' = ' . $db->quote($user_id));

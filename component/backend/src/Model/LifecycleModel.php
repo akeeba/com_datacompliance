@@ -39,7 +39,7 @@ class LifecycleModel extends ListModel
 	protected function getListQuery()
 	{
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
 			->from($db->quoteName('#__users'));
 

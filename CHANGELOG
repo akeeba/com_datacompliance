@@ -1,3 +1,7 @@
+Akeeba Data Compliance 3.2.3
+================================================================================
+~ Support for Joomla! 5.1's createQuery method in the db object
+
 Akeeba Data Compliance 3.2.2
 ================================================================================
 ~ Update Gravatar URLs with SHA-256

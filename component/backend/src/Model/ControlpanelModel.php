@@ -36,7 +36,7 @@ class ControlpanelModel extends BaseDatabaseModelAlias
 
 		// Total number of users
 		$db         = $this->getDatabase();
-		$query      = $db->getQuery(true)
+		$query      = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('COUNT(' . $db->quoteName('id') . ')')
 			->from($db->quoteName('#__users'));
 		$totalUsers = $db->setQuery($query)->loadResult();

@@ -379,7 +379,7 @@ abstract class TemplateEmails
 		{
 			/** @var DatabaseDriver $db */
 			$db    = Factory::getContainer()->get(DatabaseInterface::class);
-			$query = $db->getQuery(true);
+			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true));
 			$query->select('*')
 				->from($db->quoteName('#__mail_templates'))
 				->where($db->quoteName('template_id') . ' = :key')

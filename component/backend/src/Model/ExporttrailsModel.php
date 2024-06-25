@@ -36,7 +36,7 @@ class ExporttrailsModel extends ListModel
 	protected function getListQuery()
 	{
 		$db    = $this->getDatabase();
-		$query = $db->getQuery(true)
+		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select([
 				$db->quoteName('a') . '.*',
 				$db->quoteName('u.name', 'user_name'),

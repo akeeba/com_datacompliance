@@ -72,7 +72,7 @@ class ConsenttrailsTable extends AbstractTable
 			else
 			{
 				$db = $this->getDbo();
-				$query = $db->getQuery(true)
+				$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 					->delete($this->_tbl)
 					->where($db->quoteName('created_by') . ' = :created_by')
 					->bind(':created_by', $this->created_by, ParameterType::INTEGER);
