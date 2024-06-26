@@ -149,5 +149,9 @@ class Dispatcher extends ComponentDispatcher
 		$document->getWebAssetManager()
 			->usePreset('com_datacompliance.backend');
 
+		if (version_compare(JVERSION, '4.99999.99999', 'gt')) {
+			$document->getWebAssetManager()
+				->usePreset('com_datacompliance.j5');
+		}
 	}
 }

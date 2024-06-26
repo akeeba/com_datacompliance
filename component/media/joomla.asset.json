@@ -13,6 +13,13 @@
 		},
 
 		{
+			"name": "com_datacompliance.j5",
+			"description": "Backend CSS for Joomla! 5",
+			"type": "style",
+			"uri": "com_datacompliance/j5.css"
+		},
+
+		{
 			"name": "com_datacompliance.controlpanel",
 			"description": "Control Panel JavaScript",
 			"type": "script",

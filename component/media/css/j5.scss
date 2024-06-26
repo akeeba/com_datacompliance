@@ -1,0 +1,20 @@
+/*!*
+ * @package   DocImport
+ * @copyright Copyright (c)2011-2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license   GNU General Public License version 3, or later
+ */
+
+@media screen
+{
+  // Fix button colors in alert DIVs
+  section#content main .alert[class*="alert-"] a {
+    &[class*='btn-'] { color: var(--btn-color); }
+
+    &.btn-primary { color: var(--btn-primary-color); }
+    &.btn-secondary { color: var(--btn-secondary-color); }
+
+    &[class*='btn-outline-'] { color: var(--btn-color); }
+
+    &.btn:hover { color: var(--btn-hover-color); }
+  }
+}
