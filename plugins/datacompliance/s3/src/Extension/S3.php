@@ -110,7 +110,7 @@ class S3 extends CMSPlugin implements SubscriberInterface
 		}
 
 		$json     = json_encode($data);
-		$fileName = $auditRecord->user_id . '_' . sha1($json) . '.json';
+		$fileName = $auditRecord->user_id . '_' . hash('sha1', $json) . '.json';
 
 		// Get an Amazon S3 uploader
 		try

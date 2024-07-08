@@ -37,11 +37,11 @@ trait ControllerCacheTrait
 	 * @return CacheController
 	 * @since  3.0.0
 	 */
-	protected function getCache(string $group = '', string $handler = 'callback', ?string $storage = null): CacheController
+	protected function getCache(string $group = '', string $handler = 'callback', ?string $storage = null
+	): CacheController
 	{
 		$group = $group ?: $this->input->get('option', 'com_datacompliance');
-
-		$hash = md5($group . $handler . $storage);
+		$hash  = hash('md5', $group . $handler . $storage);
 
 		if (isset(self::$cacheControllers[$hash]))
 		{

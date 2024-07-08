@@ -59,7 +59,7 @@ $gravatarUrl = sprintf(
 	'https://www.gravatar.com/avatar/%s?s=%s',
 	function_exists('hash') && function_exists('hash_algos') && in_array('sha256', hash_algos())
 		? hash('sha256', strtolower(trim($email)))
-		: md5(strtolower(trim($email))),
+		: hash('md5', strtolower(trim($email))),
 	$gravatarSize
 );
 

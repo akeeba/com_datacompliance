@@ -35,7 +35,7 @@ trait ControllerReusableModelsTrait
 
 		$prefix = ucfirst($prefix ?: $this->app->getName());
 
-		$hash = md5(strtolower($name . $prefix));
+		$hash = hash('md5', strtolower($name . $prefix));
 
 		if (isset(self::$_models[$hash]))
 		{
