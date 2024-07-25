@@ -6,7 +6,7 @@
   -->
 
 <project name="DataCompliance" description="DataCompliance for Joomla" default="git" >
-    <import file="${phing.dir}/../../buildfiles/phing/common.xml" />
+    <import file="${phing.dir}/../buildfiles/phing/common.xml" />
 
 	<!--
 	====================================================================================================
