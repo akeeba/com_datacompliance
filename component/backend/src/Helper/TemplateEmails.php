@@ -9,6 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Helper;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\User\User;
@@ -321,7 +322,15 @@ abstract class TemplateEmails
 				'sitename' => Factory::getApplication()->get('sitename', 'A Joomla! Site')
 			], $data);
 
-			$templateMailer = new MailTemplate($key, $langTag, $mailer);
+			if (ComponentHelper::getParams('com_datacompliance')->get('workaround_mailtemplate', 1))
+			{
+				$templateMailer = MailTemplateHotFix::getAWorkingMailTemplate($key, $langTag, $mailer);
+			}
+			else
+			{
+				$templateMailer = new MailTemplate($key, $langTag, $mailer);
+			}
+
 			$templateMailer->addTemplateData($data);
 			$templateMailer->addRecipient(trim($user->email), $user->name);
 

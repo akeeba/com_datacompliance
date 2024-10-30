@@ -49,6 +49,23 @@
     </fieldset>
 
     <fieldset
+            name="advanced"
+            label="COM_DATACOMPLIANCE_CONFIG_ADVANCED_LABEL"
+    >
+        <field name="workaround_mailtemplate"
+               type="radio"
+               label="COM_DATACOMPLIANCE_CONFIG_WORKAROUND_MAILTEMPLATE_LABEL"
+               description="COM_DATACOMPLIANCE_CONFIG_WORKAROUND_MAILTEMPLATE_DESC"
+               default="1"
+               layout="joomla.form.field.radio.switcher"
+        >
+            <option value="0">JNo</option>
+            <option value="1">JYes</option>
+        </field>
+
+    </fieldset>
+
+    <fieldset
             name="permissions"
             label="JCONFIG_PERMISSIONS_LABEL"
             description="JCONFIG_PERMISSIONS_DESC"
