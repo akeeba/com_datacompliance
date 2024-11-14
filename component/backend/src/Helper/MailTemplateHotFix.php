@@ -190,7 +190,7 @@ class MailTemplateHotFix
 			$sourceCode
 		);
 
-		self:;self::registerStreamWrapper();
+		self::registerStreamWrapper();
 
 		$tempFile = self::WRAPPER_NAME . 'akeebamailtemplate.php';
 

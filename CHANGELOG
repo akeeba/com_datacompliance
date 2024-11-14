@@ -4,6 +4,7 @@ Akeeba Data Compliance 3.2.3
 ~ Support for Joomla! 5.1's createQuery method in the db object
 ~ Workaround for Joomla! 5.1 CSS in alert DIVs
 ~ PHP 8.4 compatibility: MD5 and SHA-1 functions are deprecated
+# [LOW] Typo in MailTemplateHotFix
 
 Akeeba Data Compliance 3.2.2
 ================================================================================
