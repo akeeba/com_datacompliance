@@ -86,23 +86,55 @@
                        default="us-east-1"
                        label="PLG_DATACOMPLIANCE_S3_REGION_LABEL"
                        description="PLG_DATACOMPLIANCE_S3_REGION_DESC">
-                    <option value="">PLG_DATACOMPLIANCE_S3_REGION_NONE</option>
-                    <option value="us-east-1">PLG_DATACOMPLIANCE_S3_REGION_USEAST1</option>
-                    <option value="us-east-2">PLG_DATACOMPLIANCE_S3_REGION_USEAST2</option>
-                    <option value="us-west-2">PLG_DATACOMPLIANCE_S3_REGION_USWEST2</option>
-                    <option value="us-west-1">PLG_DATACOMPLIANCE_S3_REGION_USWEST1</option>
-                    <option value="eu-west-1">PLG_DATACOMPLIANCE_S3_REGION_EUWEST1</option>
-                    <option value="eu-west-2">PLG_DATACOMPLIANCE_S3_REGION_EUWEST2</option>
-                    <option value="eu-central-1">PLG_DATACOMPLIANCE_S3_REGION_EUCENTRAL1</option>
-                    <option value="eu-central-2">PLG_DATACOMPLIANCE_S3_REGION_EUCENTRAL2</option>
-                    <option value="ap-southeast-1">PLG_DATACOMPLIANCE_S3_REGION_APSE1</option>
-                    <option value="ap-southeast-2">PLG_DATACOMPLIANCE_S3_REGION_APSE2</option>
-                    <option value="ap-northeast-1">PLG_DATACOMPLIANCE_S3_REGION_APNE1</option>
-                    <option value="ap-northeast-2">PLG_DATACOMPLIANCE_S3_REGION_APNE2</option>
-                    <option value="sa-east-1">PLG_DATACOMPLIANCE_S3_REGION_SAEAST1</option>
-                    <option value="sa-east-2">PLG_DATACOMPLIANCE_S3_REGION_SAEAST2</option>
-                    <option value="sa-west-1">PLG_DATACOMPLIANCE_S3_REGION_SAWEST1</option>
-                    <option value="sa-west-2">PLG_DATACOMPLIANCE_S3_REGION_SAWEST2</option>
+                    <option value="">PLG_DATACOMPLIANCE_S3_REGION_CUSTOM_OR_NONE</option>
+                    <option value="useast1">PLG_DATACOMPLIANCE_S3_REGION_USEAST1</option>
+                    <option value="useast2">PLG_DATACOMPLIANCE_S3_REGION_USEAST2</option>
+                    <option value="uswest1">PLG_DATACOMPLIANCE_S3_REGION_USWEST1</option>
+                    <option value="uswest2">PLG_DATACOMPLIANCE_S3_REGION_USWEST2</option>
+                    <option value="cacentral1">PLG_DATACOMPLIANCE_S3_REGION_CACENTRAL1</option>
+                    <option value="eucentral1">PLG_DATACOMPLIANCE_S3_REGION_EUCENTRAL1</option>
+                    <option value="eucentral2">PLG_DATACOMPLIANCE_S3_REGION_EUCENTRAL2</option>
+                    <option value="eunorth1">PLG_DATACOMPLIANCE_S3_REGION_EUNORTH1</option>
+                    <option value="eusouth1">PLG_DATACOMPLIANCE_S3_REGION_EUSOUTH1</option>
+                    <option value="eusouth2">PLG_DATACOMPLIANCE_S3_REGION_EUSOUTH2</option>
+                    <option value="euwest1">PLG_DATACOMPLIANCE_S3_REGION_EUWEST1</option>
+                    <option value="euwest2">PLG_DATACOMPLIANCE_S3_REGION_EUWEST2</option>
+                    <option value="euwest3">PLG_DATACOMPLIANCE_S3_REGION_EUWEST3</option>
+                    <option value="apeast1">PLG_DATACOMPLIANCE_S3_REGION_APEAST1</option>
+                    <option value="apnortheast1">PLG_DATACOMPLIANCE_S3_REGION_APNORTHEAST1</option>
+                    <option value="apnortheast2">PLG_DATACOMPLIANCE_S3_REGION_APNORTHEAST2</option>
+                    <option value="apnortheast3">PLG_DATACOMPLIANCE_S3_REGION_APNORTHEAST3</option>
+                    <option value="apsouth1">PLG_DATACOMPLIANCE_S3_REGION_APSOUTH1</option>
+                    <option value="apsouth2">PLG_DATACOMPLIANCE_S3_REGION_APSOUTH2</option>
+                    <option value="apsoutheast1">PLG_DATACOMPLIANCE_S3_REGION_APSOUTHEAST1</option>
+                    <option value="apsoutheast2">PLG_DATACOMPLIANCE_S3_REGION_APSOUTHEAST2</option>
+                    <option value="apsoutheast3">PLG_DATACOMPLIANCE_S3_REGION_APSOUTHEAST3</option>
+                    <option value="apsoutheast4">PLG_DATACOMPLIANCE_S3_REGION_APSOUTHEAST4</option>
+                    <option value="saeast1">PLG_DATACOMPLIANCE_S3_REGION_SAEAST1</option>
+                    <option value="mecentral1">PLG_DATACOMPLIANCE_S3_REGION_MECENTRAL1</option>
+                    <option value="mesouth1">PLG_DATACOMPLIANCE_S3_REGION_MESOUTH1</option>
+                    <option value="afsouth1">PLG_DATACOMPLIANCE_S3_REGION_AFSOUTH1</option>
+                    <option value="cnnorth1">PLG_DATACOMPLIANCE_S3_REGION_CNNORTH1</option>
+                    <option value="cnnorthwest1">PLG_DATACOMPLIANCE_S3_REGION_CNNORTHWEST1</option>
+                    <option value="usgoveast1">PLG_DATACOMPLIANCE_S3_REGION_USGOVEAST1</option>
+                    <option value="usgoveast2">PLG_DATACOMPLIANCE_S3_REGION_USGOVEAST2</option>
+                </field>
+
+                <field name="custom_region"
+                       type="text"
+                       default=""
+                       label="PLG_DATACOMPLIANCE_S3_CUSTOM_REGION_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_CUSTOM_REGION_DESC"
+                       showon="region:"
+                />
+
+                <field name="pathaccess"
+                       type="radio"
+                       default="0"
+                       label="PLG_DATACOMPLIANCE_PATHACCESS_LABEL"
+                       description="PLG_DATACOMPLIANCE_PATHACCESS_DESC">
+                    <option value="0">PLG_DATACOMPLIANCE_PATHACCESS_VIRTUALHOST</option>
+                    <option value="1">PLG_DATACOMPLIANCE_PATHACCESS_PATH</option>
                 </field>
 
                 <field name="class"
@@ -114,6 +146,39 @@
                     <option value="REDUCED_REDUNDANCY">PLG_DATACOMPLIANCE_S3_CLASS_REDUCED_REDUNDANCY</option>
                     <option value="STANDARD_IA">PLG_DATACOMPLIANCE_S3_CLASS_STANDARD_IA</option>
                     <option value="ONEZONE_IA">PLG_DATACOMPLIANCE_S3_CLASS_ONEZONE_IA</option>
+                    <option value="INTELLIGENT_TIERING">PLG_DATACOMPLIANCE_S3_CLASS_INTELLIGENT_TIERING</option>
+                    <option value="GLACIER">PLG_DATACOMPLIANCE_S3_CLASS_GLACIER</option>
+                    <option value="DEEP_ARCHIVE">PLG_DATACOMPLIANCE_S3_CLASS_DEEP_ARCHIVE</option>
+                </field>
+
+                <field name="custom_endpoint"
+                       type="text"
+                       default=""
+                       label="PLG_DATACOMPLIANCE_S3_CUSTOM_ENDPOINT_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_CUSTOM_ENDPOINT_DESC"
+                />
+
+                <field name="alternateDateHeaderFormat"
+                       type="radio"
+                       layout="joomla.form.field.radio.switcher"
+                       default="1"
+                       label="PLG_DATACOMPLIANCE_S3_ALTERNATEDATEHEADERFORMAT_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_ALTERNATEDATEHEADERFORMAT_DESC"
+                       showon="custom_endpoint!:"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+
+                <field name="useHTTPDateHeader"
+                       type="radio"
+                       layout="joomla.form.field.radio.switcher"
+                       default="0"
+                       label="PLG_DATACOMPLIANCE_S3_USEHTTPDATEHEADER_LABEL"
+                       description="PLG_DATACOMPLIANCE_S3_USEHTTPDATEHEADER_DESC"
+                >
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
                 </field>
             </fieldset>
         </fields>

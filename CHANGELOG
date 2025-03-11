@@ -1,3 +1,7 @@
+Akeeba Data Compliance 3.2.4
+================================================================================
+~ Add support for non-Amazon S3 storage service in the audit log plugin
+
 Akeeba Data Compliance 3.2.3
 ================================================================================
 + Workaround for Joomla! 5.2 broken mail template layout

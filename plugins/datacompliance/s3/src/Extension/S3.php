@@ -10,19 +10,17 @@ namespace Akeeba\Plugin\DataCompliance\S3\Extension;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Table\WipetrailsTable;
-use Akeeba\Engine\Postproc\Connector\S3v4\Acl;
-use Akeeba\Engine\Postproc\Connector\S3v4\Configuration;
-use Akeeba\Engine\Postproc\Connector\S3v4\Connector;
-use Akeeba\Engine\Postproc\Connector\S3v4\Input;
+use Akeeba\S3\Acl;
+use Akeeba\S3\Configuration;
+use Akeeba\S3\Connector;
+use Akeeba\S3\Input;
 use Exception;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Database\DatabaseAwareTrait;
-use Joomla\Database\DatabaseDriver;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
@@ -143,6 +141,8 @@ class S3 extends CMSPlugin implements SubscriberInterface
 		// We actually need a bucket
 		if (empty($bucket))
 		{
+			Log::add("No bucket has been specified", Log::ERROR, 'com_datacompliance');
+
 			$this->setEventResult($event, false);
 
 			return;
@@ -166,6 +166,8 @@ class S3 extends CMSPlugin implements SubscriberInterface
 
 			$this->setEventResult($event, false);
 		}
+
+		Log::add("Profile deletion audit trail record uploaded to S3", Log::DEBUG, 'com_datacompliance');
 
 		$this->setEventResult($event, true);
 	}
@@ -197,11 +199,13 @@ class S3 extends CMSPlugin implements SubscriberInterface
 			$this->params->get('access', ''),
 			$this->params->get('secret', ''),
 			$this->params->get('method', ''),
-			$this->params->get('region', '')
+			$this->params->get('region', '') ?: $this->params->get('custom_region', '')
 		);
 
 		$useSSL = $this->params->get('ssl', '1');
 		$s3Configuration->setSSL($useSSL);
+
+		$s3Configuration->setUseLegacyPathStyle($this->params->get('pathaccess', '0'));
 
 		// If SSL is not enabled you must not provide the CA root file.
 		if ($useSSL && !defined('AKEEBA_CACERT_PEM'))
@@ -212,6 +216,22 @@ class S3 extends CMSPlugin implements SubscriberInterface
 
 			define('AKEEBA_CACERT_PEM', $caCertPath);
 		}
+
+		$endpoint = trim($this->params->get('custom_endpoint', '') ?: '');
+
+		if (!empty($endpoint))
+		{
+			if (strpos($endpoint, '://') !== false)
+			{
+				$parts = explode('://', $endpoint, 2);
+				$endpoint = $parts[1];
+			}
+
+			$s3Configuration->setEndpoint($endpoint);
+		}
+
+		$s3Configuration->setAlternateDateHeaderFormat($this->params->get('alternateDateHeaderFormat', '1'));
+		$s3Configuration->setUseHTTPDateHeader($this->params->get('useHTTPDateHeader', '0'));
 
 		// Create the S3 client instance
 		return new Connector($s3Configuration);
