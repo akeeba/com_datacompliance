@@ -13,7 +13,6 @@ use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
 use Akeeba\Component\DataCompliance\Site\Model\OptionsModel;
 use Exception;
 use Joomla\CMS\Access\Access;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -23,7 +22,6 @@ use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Database\DatabaseAwareTrait;
-use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
@@ -50,7 +48,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @since   3.0.0
 	 */
-	public function __construct(&$subject, $config = [], MVCFactoryInterface $mvcFactory = null)
+	public function __construct(&$subject, $config = [], ?MVCFactoryInterface $mvcFactory = null)
 	{
 		if (!empty($mvcFactory))
 		{

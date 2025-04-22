@@ -10,7 +10,6 @@ namespace Akeeba\Plugin\DataCompliance\ATS\Extension;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Helper\Export;
-use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -18,7 +17,6 @@ use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Database\DatabaseAwareTrait;
-use Joomla\Database\DatabaseDriver;
 use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
@@ -46,7 +44,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @since   3.0.0
 	 */
-	public function __construct(&$subject, $config = [], MVCFactoryInterface $mvcFactory = null)
+	public function __construct(&$subject, $config = [], ?MVCFactoryInterface $mvcFactory = null)
 	{
 		if (!empty($mvcFactory))
 		{

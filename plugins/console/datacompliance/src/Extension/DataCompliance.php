@@ -15,7 +15,6 @@ use Akeeba\Component\DataCompliance\Administrator\CliCommand\LifecycleNotify;
 use Joomla\Application\ApplicationEvents;
 use Joomla\Application\Event\ApplicationEvent;
 use Joomla\CMS\Application\ConsoleApplication;
-use Joomla\CMS\Factory as JoomlaFactory;
 use Joomla\CMS\MVC\Factory\MVCFactory;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\Plugin\CMSPlugin;

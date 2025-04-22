@@ -51,7 +51,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @since   3.0.0
 	 */
-	public function __construct(&$subject, $config = [], MVCFactoryInterface $mvcFactory = null)
+	public function __construct(&$subject, $config = [], ?MVCFactoryInterface $mvcFactory = null)
 	{
 		if (!empty($mvcFactory))
 		{

@@ -1,6 +1,7 @@
 Akeeba Data Compliance 3.2.4
 ================================================================================
 ~ Add support for non-Amazon S3 storage service in the audit log plugin
+~ PHP 8.4 compat: implicitly nullable parameters in plugin constructors
 
 Akeeba Data Compliance 3.2.3
 ================================================================================
