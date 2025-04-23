@@ -52,10 +52,27 @@
     </target>
 
     <target name="docsdeploy">
-        <phingcall target="docbook-deploy">
-            <property name="docsdeploy.path.source" value=""/>
-            <property name="docsdeploy.path.target" value="datacompliance"/>
+        <phingcall target="docbook-zip">
+            <property name="docs.input" value="datacompliance.xml" />
         </phingcall>
+
+        <property name="docsdeploy.path.source" value="datacompliance-import.zip"/>
+        <property name="docsdeploy.path.target" value="datacompliance"/>
+
+        <curlsftp
+                host="${scp.host}"
+                port="${scp.port}"
+                username="${scp.username}"
+                password="${scp.password}"
+                pubkeyfile="${scp.pubkeyfile}"
+                privkeyfile="${scp.privkeyfile}"
+                privkeyfilepassphrase="${scp.privkeyfilepassphrase}"
+                todir="${scp.dir.docs}/${docsdeploy.path.target}"
+                level="debug">
+            <fileset dir="${dirs.release}">
+                <include name="${docsdeploy.path.source}"/>
+            </fileset>
+        </curlsftp>
     </target>
 
     <target name="compile-javascript" description="Transpile and minify JavaScript files">
