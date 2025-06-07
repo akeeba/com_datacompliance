@@ -10,8 +10,8 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 defined('_JEXEC') or die;
 
 use DirectoryIterator;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Installer\Adapter\PackageAdapter;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\MVC\Model\BaseModel;
@@ -479,7 +479,14 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		$lowercaseTestFile = $altPath . '/' . $testBasename;
 		$uppercaseTestFile = $path . '/' . $testBasename;
 
-		File::write($lowercaseTestFile, $data);
+		try
+		{
+			File::write($lowercaseTestFile, $data);
+		}
+		catch (\Exception $e)
+		{
+			// Swallow.
+		}
 
 		$readData = file_get_contents($uppercaseTestFile);
 
@@ -502,8 +509,15 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		$intermediateBasename = $lowercaseBaseName . '_' . UserHelper::genRandomPassword(8);
 		$intermediatePath     = dirname($path) . '/' . $intermediateBasename;
 
-		Folder::move($path, $intermediatePath);
-		Folder::move($intermediatePath, $altPath);
+		try
+		{
+			Folder::move($path, $intermediatePath);
+			Folder::move($intermediatePath, $altPath);
+		}
+		catch (\Exception $e)
+		{
+			// Swallow.
+		}
 
 		return false;
 	}
@@ -977,7 +991,14 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		$filePath = $this->getCachedManifestPath($oldPackage);
 		$contents = $xml->asXML();
 
-		File::write($filePath, $contents);
+		try
+		{
+			File::write($filePath, $contents);
+		}
+		catch (\Exception $e)
+		{
+			// Swallow.
+		}
 	}
 
 	/**
