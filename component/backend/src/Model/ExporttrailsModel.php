@@ -119,8 +119,8 @@ class ExporttrailsModel extends ListModel
 		}
 
 		// List ordering clause
-		$orderCol  = $this->state->get('list.ordering', 'created_on');
-		$orderDirn = $this->state->get('list.direction', 'desc');
+		$orderCol  = $this->getState('list.ordering', 'created_on');
+		$orderDirn = $this->getState('list.direction', 'desc');
 		$ordering  = $db->escape($orderCol) . ' ' . $db->escape($orderDirn);
 
 		$query->order($ordering);

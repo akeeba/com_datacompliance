@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Mail\MailerFactoryInterface;
 use Joomla\CMS\Mail\MailTemplate;
 use Joomla\CMS\User\User;
 use Joomla\Database\DatabaseDriver;
@@ -295,7 +296,10 @@ abstract class TemplateEmails
 			 * Even though the Priority is nominally optional, SpamAssassin will reject emails without a priority.
 			 * That's a major WTF which even Joomla itself doesn't know about :O
 			 */
-			$mailer           = Factory::getMailer();
+			/** @noinspection PhpDeprecationInspection */
+			$mailer           = clone (class_exists(MailerFactoryInterface::class)
+				? Factory::getContainer()->get(MailerFactoryInterface::class)->createMailer()
+				: Factory::getMailer());
 			$mailer->Priority = 3;
 
 			$app              = Factory::getApplication();

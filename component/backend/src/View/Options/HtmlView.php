@@ -116,7 +116,7 @@ class HtmlView extends BaseHtmlView
 			$this->siteName = '(Unknown site)';
 		}
 
-		$this->document->getWebAssetManager()
+		$this->getDocument()->getWebAssetManager()
 			->useScript('com_datacompliance.options');
 	}
 

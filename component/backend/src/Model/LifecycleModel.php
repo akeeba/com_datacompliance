@@ -114,8 +114,8 @@ class LifecycleModel extends ListModel
 		}
 
 		// List ordering clause
-		$orderCol  = $this->state->get('list.ordering', 'id');
-		$orderDirn = $this->state->get('list.direction', 'asc');
+		$orderCol  = $this->getState('list.ordering', 'id');
+		$orderDirn = $this->getState('list.direction', 'asc');
 		$ordering  = $db->escape($orderCol) . ' ' . $db->escape($orderDirn);
 
 		$query->order($ordering);

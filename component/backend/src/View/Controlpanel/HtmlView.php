@@ -21,15 +21,16 @@ class HtmlView extends BaseHtmlView
 
 	public function display($tpl = null)
 	{
-		$this->document->getWebAssetManager()
+		$document = $this->getDocument();
+		$document->getWebAssetManager()
 			->useScript('com_datacompliance.controlpanel')
 			->useScript('com_datacompliance.chart_moment_adapter');
 
-		$this->document->addScriptOptions(
+		$document->addScriptOptions(
 			'com_datacompliance.controlpanel.userGraphsUrl',
 			Route::_('index.php?option=com_datacompliance&task=controlpanel.userstats', false, Route::TLS_IGNORE, true)
 		);
-		$this->document->addScriptOptions(
+		$document->addScriptOptions(
 			'com_datacompliance.controlpanel.wipedGraphsUrl',
 			Route::_('index.php?option=com_datacompliance&task=controlpanel.wipedstats', false, Route::TLS_IGNORE, true)
 		);

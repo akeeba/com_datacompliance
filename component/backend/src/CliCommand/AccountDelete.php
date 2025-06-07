@@ -54,10 +54,18 @@ class AccountDelete extends AbstractCommand
 		$this->setDescription(Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_DESC'));
 		$this->setHelp(Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_HELP'));
 
-		$this->addOption('username', 'u', InputOption::VALUE_OPTIONAL, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_USERNAME'));
-		$this->addOption('id', 'i', InputOption::VALUE_OPTIONAL, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_USER_ID'));
-		$this->addOption('force', 'f', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_FORCE'));
-		$this->addOption('dry-run', 'r', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_DRYRUN'));
+		$this->addOption(
+			'username', 'u', InputOption::VALUE_OPTIONAL, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_USERNAME')
+		);
+		$this->addOption(
+			'id', 'i', InputOption::VALUE_OPTIONAL, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_USER_ID')
+		);
+		$this->addOption(
+			'force', 'f', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_FORCE')
+		);
+		$this->addOption(
+			'dry-run', 'r', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_DRYRUN')
+		);
 		$this->addOption('debug', 'd', InputOption::VALUE_NONE, Text::_('COM_DATACOMPLIANCE_CLI_COMMON_OPT_DEBUG'));
 
 	}
@@ -97,28 +105,30 @@ class AccountDelete extends AbstractCommand
 
 		if (JDEBUG)
 		{
-			Log::addLogger([
-				// Logger format. "echo" passes the log message verbatim.
-				'logger'   => 'callback',
-				'callback' => function (LogEntry $entry) {
-					$priorities = [
-						Log::EMERGENCY => 'EMERGENCY',
-						Log::ALERT     => 'ALERT',
-						Log::CRITICAL  => 'CRITICAL',
-						Log::ERROR     => 'ERROR',
-						Log::WARNING   => 'WARNING',
-						Log::NOTICE    => 'NOTICE',
-						Log::INFO      => 'INFO',
-						Log::DEBUG     => 'DEBUG',
-					];
+			Log::addLogger(
+				[
+					// Logger format. "echo" passes the log message verbatim.
+					'logger'   => 'callback',
+					'callback' => function (LogEntry $entry) {
+						$priorities = [
+							Log::EMERGENCY => 'EMERGENCY',
+							Log::ALERT     => 'ALERT',
+							Log::CRITICAL  => 'CRITICAL',
+							Log::ERROR     => 'ERROR',
+							Log::WARNING   => 'WARNING',
+							Log::NOTICE    => 'NOTICE',
+							Log::INFO      => 'INFO',
+							Log::DEBUG     => 'DEBUG',
+						];
 
-					$priority = $priorities[$entry->priority];
-					$date     = $entry->date->format(Text::_('DATE_FORMAT_FILTER_DATETIME'));
+						$priority = $priorities[$entry->priority];
+						$date     = $entry->date->format(Text::_('DATE_FORMAT_FILTER_DATETIME'));
 
-					$this->ioStyle->writeln(sprintf("[%-9s] %20s -- %s", $priority, $date, $entry->message));
-				},
+						$this->ioStyle->writeln(sprintf("[%-9s] %20s -- %s", $priority, $date, $entry->message));
+					},
 
-			], Log::ALL, 'com_datacompliance');
+				], Log::ALL, 'com_datacompliance'
+			);
 
 			Log::add('Test', Log::DEBUG, 'com_datacompliance');
 		}
@@ -142,12 +152,14 @@ class AccountDelete extends AbstractCommand
 			return 254;
 		}
 
-		$this->ioStyle->info([
-			Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_INFO_ABOUT_TO_DELETE'),
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_USERNAME', $user->username),
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_FULLNAME', $user->name),
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_EMAIL', $user->email),
-		]);
+		$this->ioStyle->info(
+			[
+				Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_INFO_ABOUT_TO_DELETE'),
+				Text::sprintf('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_USERNAME', $user->username),
+				Text::sprintf('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_FULLNAME', $user->name),
+				Text::sprintf('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_EMAIL', $user->email),
+			]
+		);
 
 		/** @var WipeModel $wipeModel */
 		$wipeModel = $this->mvcFactory->createModel('Wipe', 'Administrator');
@@ -159,8 +171,10 @@ class AccountDelete extends AbstractCommand
 		elseif (!$wipeModel->checkWipeAbility($user_id, 'admin'))
 		{
 			$this->ioStyle->error(
-				Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_ERR_CANNOTDELETE'),
-				$wipeModel->getError()
+				[
+					Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_ERR_CANNOTDELETE'),
+					$wipeModel->getError(),
+				]
 			);
 
 			return 127;
@@ -181,8 +195,10 @@ class AccountDelete extends AbstractCommand
 		}
 
 		$this->ioStyle->error(
-			Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_FAILED'),
-			$wipeModel->getError()
+			[
+				Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_FAILED'),
+				$wipeModel->getError(),
+			]
 		);
 
 		return 127;

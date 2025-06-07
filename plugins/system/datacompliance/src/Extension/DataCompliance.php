@@ -102,7 +102,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// The plugin only needs to kick in when you have logged in
-		if ($user->get('guest'))
+		if ($user->guest)
 		{
 			return;
 		}
@@ -301,7 +301,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	private function isExempt($option, $view, $task): bool
 	{
 		// If Joomla requires a password reset we should not try to redirect or it'll cause an infinite redirection loop
-		if ($this->getApplication()->getIdentity()->get('requireReset', 0))
+		if ($this->getApplication()->getIdentity()->requireReset ?? 0)
 		{
 			return true;
 		}

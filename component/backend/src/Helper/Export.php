@@ -98,7 +98,7 @@ abstract class Export
 
 		foreach ($tableFields as $fieldName => $fieldDefinition)
 		{
-			$data[$fieldName] = $table->get($fieldName);
+			$data[$fieldName] = $table->{$fieldName};
 		}
 
 		return self::exportItemFromArray($data, $idCol);

@@ -13,16 +13,17 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\Database\DatabaseInterface;
 
 /** @var \Akeeba\Component\DataCompliance\Administrator\View\Consenttrails\HtmlView $this */
 
 HTMLHelper::_('behavior.multiselect');
 
 $user      = Factory::getApplication()->getIdentity();
-$userId    = $user->get('id');
+$userId    = $user->id;
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
-$nullDate  = Factory::getDbo()->getNullDate();
+$nullDate  = Factory::getContainer()->get(DatabaseInterface::class)->getNullDate();
 
 $i = 0;
 
