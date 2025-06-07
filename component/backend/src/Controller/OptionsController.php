@@ -9,6 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerRegisterTasksTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModelsTrait;
@@ -32,6 +33,7 @@ class OptionsController extends BaseController
 	use ControllerEventsTrait;
 	use ControllerRegisterTasksTrait;
 	use ControllerReusableModelsTrait;
+	use CMSObjectWorkaroundTrait;
 
 	public function __construct($config = [], MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)
 	{
@@ -155,9 +157,11 @@ class OptionsController extends BaseController
 		$wipeModel = $this->getModel('Wipe', 'Administrator');
 
 		// Can the user be wiped, at all?
-		if (!$wipeModel->checkWipeAbility($user->id))
+		[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'checkWipeAbility', $user->id);
+
+		if (!$result)
 		{
-			$msg         = Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $wipeModel->getError());
+			$msg         = Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_CANNOTBEERASED', $error);
 			$url         = 'index.php?option=com_datacompliance&view=options';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
@@ -189,7 +193,7 @@ class OptionsController extends BaseController
 		// Try to delete the user
 		$currentUser = $this->app->getIdentity();
 		$wipeType    = ($currentUser->id == $user->id) ? 'user' : 'admin';
-		$result      = $wipeModel->wipe($user->id, $wipeType);
+		[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'wipe', $user->id, $wipeType);
 
 		if (!$result)
 		{
@@ -197,7 +201,7 @@ class OptionsController extends BaseController
 			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
-			$message     = Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $wipeModel->getError());
+			$message     = Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $error);
 			$this->setRedirect($redirectUrl, $message, 'error');
 			$this->redirect();
 

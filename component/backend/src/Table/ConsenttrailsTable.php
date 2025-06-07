@@ -7,6 +7,7 @@
 
 namespace Akeeba\Component\DataCompliance\Administrator\Table;
 
+use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\TableAssertionTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\TableCreateModifyTrait;
 use Joomla\CMS\Event\AbstractEvent;
@@ -31,6 +32,7 @@ class ConsenttrailsTable extends AbstractTable
 {
 	use TableCreateModifyTrait;
 	use TableAssertionTrait;
+	use CMSObjectWorkaroundTrait;
 
 	public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
 	{
@@ -84,14 +86,16 @@ class ConsenttrailsTable extends AbstractTable
 				}
 				catch (\Exception $e)
 				{
-					$this->setError($e->getMessage());
+					$this->setErrorOrThrow($e->getMessage());
+
 					$result = false;
 				}
 			}
 		}
 		catch (\Exception $e)
 		{
-			$this->setError($e->getMessage());
+			$this->setErrorOrThrow($e->getMessage());
+
 			$result = false;
 		}
 

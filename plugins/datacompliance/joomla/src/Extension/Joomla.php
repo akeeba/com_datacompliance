@@ -10,6 +10,7 @@ namespace Akeeba\Plugin\DataCompliance\Joomla\Extension;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Helper\Export;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use DateTime;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
@@ -39,6 +40,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 {
 	use MVCFactoryAwareTrait;
 	use DatabaseAwareTrait;
+	use CMSObjectWorkaroundTrait;
 
 	/**
 	 * Constructor
@@ -615,11 +617,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		try
 		{
-			$result = $user->save();
+			[$result, $error, ] = $this->cmsObjectSafeCall($user, 'save');
 
 			if (!$result)
 			{
-				Log::add("Could not pseudonymise user: {$user->getError()}", Log::ERROR, 'com_datacompliance');
+				Log::add("Could not pseudonymise user: $error", Log::ERROR, 'com_datacompliance');
 			}
 		}
 		catch (Exception $e)

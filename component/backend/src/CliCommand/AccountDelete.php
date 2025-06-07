@@ -10,6 +10,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\CliCommand;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\ConfigureIO;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\MemoryInfo;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\TimeInfo;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use Akeeba\Component\DataCompliance\Administrator\Model\WipeModel;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
@@ -33,6 +34,7 @@ class AccountDelete extends AbstractCommand
 	use MemoryInfo;
 	use TimeInfo;
 	use MVCFactoryAwareTrait;
+	use CMSObjectWorkaroundTrait;
 
 	/**
 	 * The default command name
@@ -168,16 +170,22 @@ class AccountDelete extends AbstractCommand
 		{
 			$this->ioStyle->warning(Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_WARN_FORCE'));
 		}
-		elseif (!$wipeModel->checkWipeAbility($user_id, 'admin'))
-		{
-			$this->ioStyle->error(
-				[
-					Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_ERR_CANNOTDELETE'),
-					$wipeModel->getError(),
-				]
-			);
 
-			return 127;
+		if (!$force && !$dryRun)
+		{
+			[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'checkWipeAbility', $user_id, 'admin');
+
+			if (!$result)
+			{
+				$this->ioStyle->error(
+					[
+						Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_ERR_CANNOTDELETE'),
+						$error,
+					]
+				);
+
+				return 127;
+			}
 		}
 
 		if (!$force && $dryRun)
@@ -187,7 +195,9 @@ class AccountDelete extends AbstractCommand
 			return 1;
 		}
 
-		if ($wipeModel->wipe($user_id, 'admin', $force))
+		[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'wipe', $user_id, 'admin', $force);
+
+		if ($result)
 		{
 			$this->ioStyle->success(Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_SUCCESS'));
 
@@ -197,7 +207,7 @@ class AccountDelete extends AbstractCommand
 		$this->ioStyle->error(
 			[
 				Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_LBL_FAILED'),
-				$wipeModel->getError(),
+				$error,
 			]
 		);
 

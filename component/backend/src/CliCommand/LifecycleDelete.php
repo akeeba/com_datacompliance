@@ -10,6 +10,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\CliCommand;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\ConfigureIO;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\MemoryInfo;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\TimeInfo;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use Akeeba\Component\DataCompliance\Administrator\Model\WipeModel;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -33,6 +34,7 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 	use TimeInfo;
 	use MVCFactoryAwareTrait;
 	use DatabaseAwareTrait;
+	use CMSObjectWorkaroundTrait;
 
 	/**
 	 * The default command name
@@ -155,7 +157,16 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 			}
 
 			// Skip records which cannot be deleted
-			if (!$force && !$wipeModel->checkWipeAbility($id, 'lifecycle', $deletionDate))
+			if ($force)
+			{
+				$canWipe = true;
+			}
+			else
+			{
+				[$canWipe, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'checkWipeAbility', $id, 'lifecycle', $deletionDate);
+			}
+
+			if (!$force && !$canWipe)
 			{
 				$this->ioStyle->text(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_SKIPUSER', $id));
 
@@ -179,7 +190,7 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 
 			if (!$dryRun)
 			{
-				$result = $wipeModel->wipe($id, 'lifecycle');
+				[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'wipe', $id, 'lifecycle');
 			}
 
 			if ($result)
@@ -190,8 +201,6 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 
 				continue;
 			}
-
-			$error = $wipeModel->getError();
 
 			$this->ioStyle->text(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_FAILED'));
 			$this->ioStyle->text("\t<error>$error</error>");

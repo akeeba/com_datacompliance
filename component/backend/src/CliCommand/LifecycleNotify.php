@@ -11,6 +11,7 @@ use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\ConfigureIO;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\MemoryInfo;
 use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\TimeInfo;
 use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
+use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use Akeeba\Component\DataCompliance\Administrator\Model\WipeModel;
 use Akeeba\Component\DataCompliance\Site\Model\OptionsModel;
 use DateInterval;
@@ -42,6 +43,7 @@ class LifecycleNotify extends AbstractCommand implements DatabaseAwareInterface
 	use TimeInfo;
 	use MVCFactoryAwareTrait;
 	use DatabaseAwareTrait;
+	use CMSObjectWorkaroundTrait;
 
 	/**
 	 * The default command name
@@ -200,8 +202,7 @@ class LifecycleNotify extends AbstractCommand implements DatabaseAwareInterface
 			if (!$dryRun)
 			{
 				// Mark the user notified
-				$result = $wipeModel->notifyUser($id, $when);
-				$error  = $wipeModel->getError();
+				[$result, $error] = $this->cmsObjectSafeCall($wipeModel, 'notifyUser', $id, $when);
 
 				// Send the email
 				if ($result && !$this->sendEmail($id, $when))
