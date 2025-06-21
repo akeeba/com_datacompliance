@@ -58,12 +58,12 @@ $link = $showLink
 $gravatarUrl = sprintf(
 	'https://www.gravatar.com/avatar/%s?s=%s',
 	function_exists('hash') && function_exists('hash_algos') && in_array('sha256', hash_algos())
-		? hash('sha256', strtolower(trim($email)))
-		: hash('md5', strtolower(trim($email))),
+		? hash('sha256', strtolower(trim($email ?? '')))
+		: hash('md5', strtolower(trim($email ?? ''))),
 	$gravatarSize
 );
 
-$email = str_replace(['@', '.'],['<wbr>@', '<wbr>.'], $email);
+$email = str_replace(['@', '.'],['<wbr>@', '<wbr>.'], $email ?? '');
 
 if ($showCountry) {
 	HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
