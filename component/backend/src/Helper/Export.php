@@ -74,7 +74,7 @@ abstract class Export
 				$v = (array) $v;
 			}
 
-			$v     = htmlspecialchars($v, ENT_QUOTES);
+			$v     = htmlspecialchars($v ?? '', ENT_QUOTES);
 			$elCol = $elItem->addChild('column', $v ?? '');
 			$elCol->addAttribute('name', $k ?? '');
 		}

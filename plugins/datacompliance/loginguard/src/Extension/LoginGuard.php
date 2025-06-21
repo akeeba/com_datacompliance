@@ -163,12 +163,19 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		$domainTfa->addAttribute('name', 'loginguard_tfa');
 		$domainTfa->addAttribute('description', 'Akeeba LoginGuard TFA records');
 
-		$query   = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
-			->select('*')
-			->from('#__loginguard_tfa')
-			->where($db->quoteName('user_id') . ' = :user_id')
-			->bind(':user_id', $userId, ParameterType::INTEGER);
-		$records = $db->setQuery($query)->loadObjectList();
+		try
+		{
+			$query   = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+				->select('*')
+				->from('#__loginguard_tfa')
+				->where($db->quoteName('user_id') . ' = :user_id')
+				->bind(':user_id', $userId, ParameterType::INTEGER);
+			$records = $db->setQuery($query)->loadObjectList();
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
 
 		foreach ($records as $record)
 		{
