@@ -19,30 +19,24 @@ steps: [%%RELEASESTEPS%%]
 
 # File upload connections
 connections:
-  s3:
-    type: 's3'
-    access: '%%S3.ACCESS%%'
-    secret: '%%S3.SECRET%%'
-    bucket: '%%S3.BUCKET%%'
-    tls: true
-    signature: '%%S3.SIGNATURE%%'
-    region: '%%S3.REGION%%'
+  bunny:
+    type: 'bunny'
+    key: '%%BUNNY.ACCESS%%'
+    zone: '%%BUNNY.ZONE%%'
+    region: '%%BUNNY.REGION%%'
+    cdnhostname: '%%BUNNY.CDNHOSTNAME%%'
     directory: 'downloads/datacompliance'
-    cdnhostname: '%%S3.CDNHOSTNAME%%'
-    acl: 'public-read'
-    storage_class: 'STANDARD'
-    maximum_age: 600
 
 # Release source files configuration.
 files:
   -
     title: 'Akeeba DataCompliance'
-    connection: s3
+    connection: bunny
     source: '%%RELEASEDIR%%/pkg_datacompliance-*.zip'
     access: 1
   -
     title: 'Documentation (PDF)'
-    connection: s3
+    connection: bunny
     source: '%%RELEASEDIR%%/datacompliance.pdf'
     access: 1
 
@@ -50,7 +44,7 @@ files:
 updates:
   -
     title: 'Akeeba DataCompliance updates'
-    connection: s3
+    connection: bunny
     directory: 'updates'
     stream: 42
     base_name: 'pkgdatacompliance'
