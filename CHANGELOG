@@ -3,6 +3,7 @@ Akeeba Data Compliance 4.0.0
 + PostgreSQL support (experimental)
 ~ Add support for non-Amazon S3 storage service in the audit log plugin
 ~ PHP 8.4 compat: implicitly nullable parameters in plugin constructors
+~ Preliminary support for Joomla 6
 
 Akeeba Data Compliance 3.2.3
 ================================================================================

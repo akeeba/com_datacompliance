@@ -160,7 +160,7 @@ class HtmlView extends BaseHtmlView
 		$canWipe     = $currentUser->authorise('wipe', 'com_datacompliance');
 		$isSuper     = $currentUser->authorise('core.admin');
 		$isAdmin     = $isSuper || $canWipe || $canExport;
-		$userID      = $isAdmin ? Factory::getApplication()->input->getInt('user_id', null) : null;
+		$userID      = $isAdmin ? Factory::getApplication()->getInput()->getInt('user_id', null) : null;
 		$cParams     = ComponentHelper::getParams('com_datacompliance');
 
 		$this->showExport = $cParams->get('showexport', 1);

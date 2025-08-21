@@ -110,13 +110,13 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
-		$layout = $this->getApplication()->input->getCmd('layout', 'default');
+		$layout = $this->getApplication()->getInput()->getCmd('layout', 'default');
 
 		/**
 		 * Joomla is kinda brain-dead. When we have a menu item to the Edit Profile page it does not push the layout
 		 * into the Input (as opposed with option and view) so I have to go in and dig it out myself. Yikes!
 		 */
-		$itemId = $this->getApplication()->input->getInt('Itemid');
+		$itemId = $this->getApplication()->getInput()->getInt('Itemid');
 
 		if ($itemId)
 		{

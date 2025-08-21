@@ -122,7 +122,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// We only kick in if the option and task are not the ones of the captive page
-		$input  = $this->getApplication()->input;
+		$input  = $this->getApplication()->getInput();
 		$option = strtolower($input->getCmd('option') ?: '');
 		$task   = strtolower($input->getCmd('task') ?: '');
 		$view   = strtolower($input->getCmd('view', $input->getCmd('controller', '')) ?: '');
