@@ -1,5 +1,17 @@
 <h3>What's new?</h3>
 
 <p>
-	<strong>Workaround for Joomla! 5.2 broken mail template layout</strong>. Joomla! 5.2 introduced the new Mail Template Layout feature. Unfortunately, this feature is breaking URLs in emails by prefixing them with the site's URL even if they are absolute URLs. Something like <code>https://www.akeeba.com</code> will turn into this jumbled mess <code>https://www.example.com/https://www.akeeba.com</code>. This happens to all URLs in anchor (<code>&lt;a&gt;</code>), link, and a few other HTML tags and affects all URLs which come from an email template variable – even those in mail templates of core Joomla! components such as the users component (think account activation, username reminders, password reset, etc). There was simple no QA done before the release of Joomla! 5.2. While we cannot fix Joomla! 5.2 ourselves and we cannot ask our clients to disable the Mail Template Layout feature (it is a nice feature, despite its shoddy implementation), we can work around the problems it brought with it. We added this workaround, as well as a toggle in the component's Options in case you need to disable this workaround, presumably when Joomla finally addresses this issue.
+	<strong>Preliminary support for Joomla 6</strong>. This version comes with <strong>preliminary</strong> compatibility with Joomla! 6. At the time of this writing, Joomla 6.0.0 Beta 1 has been released. That's our compatibility target. We expect more changes to take place before Joomla! 6 stable is released, with an as yet unknown impact on compatibility. We will keep following Joomla 6 development and adapting our software as necessary.
+</p>
+
+<p>
+	<strong>PostgreSQL support (experimental)</strong>. You can now install Akeeba DataCompliance on Joomla sites regardless of whether they use a MySQL, MariaDB, or PostgreSQL database.
+</p>
+
+<p>
+	<strong>Add support for non-Amazon S3 storage service in the audit log plugin</strong>. The audit log plugin now allows you to define custom endpoints. It lets you store audit log files in S3-compatible storage services not run by Amazon, such as Wasabi.
+</p>
+
+<p>
+	<strong>Bug fixes and minor improvements</strong>.
 </p>
