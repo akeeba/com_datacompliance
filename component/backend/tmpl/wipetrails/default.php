@@ -17,7 +17,24 @@ use Joomla\Database\DatabaseInterface;
 
 /** @var \Akeeba\Component\DataCompliance\Administrator\View\Wipetrails\HtmlView $this */
 
-HTMLHelper::_('behavior.multiselect');
+/**
+ * HTMLHelper's `behavior.multiselect` is deprecated in Joomla 6.
+ *
+ * See Joomla PR 45925.
+ */
+call_user_func(function(string $formName = 'adminForm') {
+	if (version_compare(JVERSION, '5.999.999', 'lt'))
+	{
+		HTMLHelper::_('behavior.multiselect');
+
+		return;
+	}
+
+	$doc       = Factory::getApplication()->getDocument();
+	$doc->addScriptOptions('js-multiselect', ['formName' => $formName]);
+	$doc->getWebAssetManager()->useScript('multiselect');
+});
+
 HTMLHelper::_('bootstrap.modal', '.comDatacomplianceModal', [
 	'backdrop' => 'static',
 	'keyboard' => true,
