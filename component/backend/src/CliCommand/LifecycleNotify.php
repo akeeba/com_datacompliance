@@ -7,9 +7,9 @@
 
 namespace Akeeba\Component\DataCompliance\Administrator\CliCommand;
 
-use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\ConfigureIO;
-use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\MemoryInfo;
-use Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt\TimeInfo;
+use Akeeba\Component\DataCompliance\Administrator\CliCommand\MixIt\ConfigureIO;
+use Akeeba\Component\DataCompliance\Administrator\CliCommand\MixIt\MemoryInfo;
+use Akeeba\Component\DataCompliance\Administrator\CliCommand\MixIt\TimeInfo;
 use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use Akeeba\Component\DataCompliance\Administrator\Model\WipeModel;
@@ -28,7 +28,6 @@ use Joomla\Console\Command\AbstractCommand;
 use Joomla\Database\DatabaseAwareInterface;
 use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
-use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

@@ -5,7 +5,7 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\AdminTools\Administrator\CliCommand\MixIt;
+namespace Akeeba\Component\DataCompliance\Administrator\CliCommand\MixIt;
 
 defined('_JEXEC') || die;
 
