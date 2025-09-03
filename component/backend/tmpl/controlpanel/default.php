@@ -9,11 +9,6 @@ defined('_JEXEC') or die;
 
 /** @var \Akeeba\Component\DataCompliance\Administrator\View\Controlpanel\HtmlView $this */
 
-if (version_compare(JVERSION, '4.999.999', 'lt'))
-{
-	$this->loadAnyTemplate('Controlpanel/joomla_eol');
-}
-
 ?>
 
 <div class="container-fluid">
