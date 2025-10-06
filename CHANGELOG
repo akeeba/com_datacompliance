@@ -1,6 +1,7 @@
 Akeeba Data Compliance 4.0.1
 ================================================================================
 ~ PHP 8.5 compatibility: setAccessible is deprecated for reflection objects
+~ PHP 8.5 compatibility: implicit nullable method parameters are deprecated
 
 Akeeba Data Compliance 4.0.0
 ================================================================================

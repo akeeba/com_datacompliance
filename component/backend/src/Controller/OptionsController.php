@@ -35,7 +35,7 @@ class OptionsController extends BaseController
 	use ControllerReusableModelsTrait;
 	use CMSObjectWorkaroundTrait;
 
-	public function __construct($config = [], MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)
 	{
 		parent::__construct($config, $factory, $app, $input);
 

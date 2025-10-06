@@ -20,7 +20,7 @@ use Joomla\Database\ParameterType;
 class WipetrailsModel extends ListModel
 {
 	/** @inheritdoc */
-	public function __construct($config = [], MVCFactoryInterface $factory = null)
+	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		$config['filter_fields'] = $config['filter_fields'] ?? [];
 		$config['filter_fields'] = $config['filter_fields'] ?: [
