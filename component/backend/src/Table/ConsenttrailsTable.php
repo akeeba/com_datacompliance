@@ -34,7 +34,7 @@ class ConsenttrailsTable extends AbstractTable
 	use TableAssertionTrait;
 	use CMSObjectWorkaroundTrait;
 
-	public function __construct(DatabaseDriver $db, DispatcherInterface $dispatcher = null)
+	public function __construct(DatabaseDriver $db, ?DispatcherInterface $dispatcher = null)
 	{
 		$this->_supportNullValue = false;
 		$this->setColumnAlias('created', 'created_on');

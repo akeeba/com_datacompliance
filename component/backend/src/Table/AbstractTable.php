@@ -22,7 +22,7 @@ abstract class AbstractTable extends Table
 	use TableColumnAliasTrait;
 	use GetPropertiesAwareTrait;
 
-	public function __construct($table, $key, DatabaseDriver $db, DispatcherInterface $dispatcher = null)
+	public function __construct($table, $key, DatabaseDriver $db, ?DispatcherInterface $dispatcher = null)
 	{
 		parent::__construct($table, $key, $db, $dispatcher);
 
