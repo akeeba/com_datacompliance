@@ -1,3 +1,7 @@
+Akeeba Data Compliance 4.0.1
+================================================================================
+~ PHP 8.5 compatibility: setAccessible is deprecated for reflection objects
+
 Akeeba Data Compliance 4.0.0
 ================================================================================
 + PostgreSQL support (experimental)
