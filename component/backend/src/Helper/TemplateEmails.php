@@ -275,7 +275,7 @@ abstract class TemplateEmails
 	 * @return  bool True if the email was sent.
 	 * @throws  Exception When $throw === true and there's an error sending the email
 	 */
-	public static function sendMail(string $key, array $data, User $user = null, string $forceLanguage = null, bool $throw = false): bool
+	public static function sendMail(string $key, array $data, ?User $user = null, string $forceLanguage = null, bool $throw = false): bool
 	{
 		if (empty($user))
 		{
