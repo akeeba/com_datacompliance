@@ -1,13 +1,10 @@
-Akeeba Data Compliance 4.0.1
-================================================================================
-~ PHP 8.5 compatibility: setAccessible is deprecated for reflection objects
-~ PHP 8.5 compatibility: implicit nullable method parameters are deprecated
-
 Akeeba Data Compliance 4.0.0
 ================================================================================
 + PostgreSQL support (experimental)
 ~ Add support for non-Amazon S3 storage service in the audit log plugin
-~ PHP 8.4 compat: implicitly nullable parameters in plugin constructors
+~ PHP 8.5 compat: implicitly nullable parameters in plugin constructors
+~ PHP 8.5 compatibility: setAccessible is deprecated for reflection objects
+~ PHP 8.5 compatibility: implicit nullable method parameters are deprecated
 ~ Preliminary support for Joomla 6
 # [HIGH] Typo in CLI command namespace could lead to fatal PHP error
 
