@@ -1,15 +1,21 @@
 <h3>What's new?</h3>
 
 <p>
-	<strong>Preliminary support for Joomla 6</strong>. This version comes with <strong>preliminary</strong> compatibility with Joomla! 6. At the time of this writing, Joomla 6.0.0 Beta 1 has been released. That's our compatibility target. We expect more changes to take place before Joomla! 6 stable is released, with an as yet unknown impact on compatibility. We will keep following Joomla 6 development and adapting our software as necessary.
+	<strong>Support for Joomla 6</strong>.
+	We now officially support Joomla 6. Please note that our software's compatibility has been validated with Joomla 6.0.0 Release Candidate 3, the final pre-release version of Joomla! 6.0.
 </p>
 
 <p>
-	<strong>PostgreSQL support (experimental)</strong>. You can now install Akeeba DataCompliance on Joomla sites regardless of whether they use a MySQL, MariaDB, or PostgreSQL database.
+	<strong>PostgreSQL support (experimental)</strong>. You can now install Akeeba DataCompliance on Joomla sites regardless of whether they use a MySQL, MariaDB, or a PostgreSQL database.
 </p>
 
 <p>
 	<strong>Add support for non-Amazon S3 storage service in the audit log plugin</strong>. The audit log plugin now allows you to define custom endpoints. It lets you store audit log files in S3-compatible storage services not run by Amazon, such as Wasabi.
+</p>
+
+<p>
+	<strong>Preliminary PHP 8.5 compatibility</strong>.
+	We continue to work on compatibility with the upcoming PHP 8.5 version. Please note that PHP 8.5 is still in a testing (Release Candidate) phase. As such, support for it is currently marked as preliminary. The compatibility goal for new PHP versions is to not have any errors and warnings in our software running under that version. Errors and warnings coming from the CMS and/or third-party software are outside our control. Our software may result in deprecation notices being emitted. While we do try to address them, doing so is not always possible as we have to support older PHP versions which may lack support for the newer PHP language features necessary to suppress these deprecation notices.
 </p>
 
 <p>
