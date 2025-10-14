@@ -24,7 +24,7 @@ class RouterFactory implements RouterFactoryInterface
 
 	private $db;
 
-	public function __construct($namespace, DatabaseInterface $db = null, MVCFactoryInterface $factory)
+	public function __construct($namespace, DatabaseInterface $db, MVCFactoryInterface $factory)
 	{
 		$this->namespace = $namespace;
 		$this->factory   = $factory;

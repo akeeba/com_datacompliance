@@ -27,7 +27,7 @@ class Router extends RouterView
 	use MVCFactoryAwareTrait;
 	use DatabaseAwareTrait;
 
-	public function __construct(SiteApplication $app = null, AbstractMenu $menu = null, DatabaseInterface $db, MVCFactory $factory)
+	public function __construct(?SiteApplication $app, ?AbstractMenu $menu, DatabaseInterface $db, MVCFactory $factory)
 	{
 		$this->setDatabase($db);
 		$this->setMVCFactory($factory);

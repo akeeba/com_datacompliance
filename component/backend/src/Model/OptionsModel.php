@@ -117,7 +117,7 @@ class OptionsModel extends BaseDatabaseModel
 	 * @throws  Exception
 	 * @since   1.0.0
 	 */
-	public function getPreference(User $user = null): bool
+	public function getPreference(?User $user = null): bool
 	{
 		if (is_null($user))
 		{
@@ -143,7 +143,7 @@ class OptionsModel extends BaseDatabaseModel
 	 * @throws  Exception
 	 * @since   1.0.0
 	 */
-	public function recordPreference(bool $preference = false, User $user = null): void
+	public function recordPreference(bool $preference = false, ?User $user = null): void
 	{
 		/** @var CMSApplication $app */
 		$app = Factory::getApplication();
