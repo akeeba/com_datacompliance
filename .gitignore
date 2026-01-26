@@ -20,3 +20,4 @@
 ### Other generated files
 /assets/email/*.ini
 .DS_Store
+/.idea/laravel-idea.xml
