@@ -1,3 +1,7 @@
+Akeeba Data Compliance 4.0.2
+================================================================================
+# [HIGH] Infinite redirect loop with forced MFA and pending DataCompliance consent
+
 Akeeba Data Compliance 4.0.1
 ================================================================================
 ~ PHP 8.5 compatiblity

@@ -174,6 +174,14 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
+		// Allow Joomla's built-in MFA (Multi-factor Authentication) views in com_users to
+		// prevent an infinite redirect loop when MFA setup/verification is forced for the
+		// user's group. This mirrors Joomla's own isMultiFactorAuthenticationPage() view list.
+		if (($option == 'com_users') && in_array($view, ['captive', 'method', 'methods', 'callback']))
+		{
+			return;
+		}
+
 		// We only kick in when the user has not consented already
 		$needsConsent = $this->needsConsent($user);
 
