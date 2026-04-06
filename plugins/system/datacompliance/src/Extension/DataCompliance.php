@@ -135,7 +135,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// DO NOT kick in if we are in an exempt component / view / task
-		if ($this->isExempt($option, $task, $view))
+		if ($this->isExempt($option, $view, $task))
 		{
 			return;
 		}

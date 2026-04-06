@@ -1,6 +1,7 @@
 Akeeba Data Compliance 4.0.2
 ================================================================================
 # [HIGH] Infinite redirect loop with forced MFA and pending DataCompliance consent
+# [LOW] isExempt() had view and task arguments swapped, breaking specific-view/task exempt rules
 
 Akeeba Data Compliance 4.0.1
 ================================================================================
