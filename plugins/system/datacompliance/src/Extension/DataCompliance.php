@@ -13,7 +13,6 @@ use Akeeba\Component\DataCompliance\Administrator\Table\ConsenttrailsTable;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
@@ -223,10 +222,10 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 				]));
 			}
 
-			// Redirect
-			$this->loadLanguage();
-			$message = Text::_('PLG_SYSTEM_DATACOMPLIANCE_MSG_MUSTACCEPT');
-			$this->getApplication()->enqueueMessage($message, 'warning');
+			// Redirect to the consent page. We intentionally do NOT enqueue a flash message here: if Joomla's MFA
+			// plugin intercepts this redirect and sends the user to MFA setup/verification first, any queued message
+			// would persist in the session and appear on the MFA pages — which have no consent form and confuse the
+			// user. The consent page template already contains its own explanatory text.
 			$url = Route::_('index.php?option=com_datacompliance&view=options', false);
 			$this->getApplication()->redirect($url, 307);
 
