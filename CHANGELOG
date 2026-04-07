@@ -2,6 +2,7 @@ Akeeba Data Compliance 4.0.2
 ================================================================================
 # [HIGH] Infinite redirect loop with forced MFA and pending DataCompliance consent
 # [LOW] isExempt() had view and task arguments swapped, breaking specific-view/task exempt rules
+# [LOW] Flash message from consent redirect appears on Joomla MFA pages
 
 Akeeba Data Compliance 4.0.1
 ================================================================================
