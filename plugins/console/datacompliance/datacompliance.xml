@@ -26,5 +26,17 @@
 	<languages folder="language">
 		<language tag="en-GB">en-GB/plg_console_datacompliance.ini</language>
 		<language tag="en-GB">en-GB/plg_console_datacompliance.sys.ini</language>
+		<language tag="el-GR">el-GR/plg_console_datacompliance.ini</language>
+		<language tag="el-GR">el-GR/plg_console_datacompliance.sys.ini</language>
+		<language tag="fr-FR">fr-FR/plg_console_datacompliance.ini</language>
+		<language tag="fr-FR">fr-FR/plg_console_datacompliance.sys.ini</language>
+		<language tag="de-DE">de-DE/plg_console_datacompliance.ini</language>
+		<language tag="de-DE">de-DE/plg_console_datacompliance.sys.ini</language>
+		<language tag="es-ES">es-ES/plg_console_datacompliance.ini</language>
+		<language tag="es-ES">es-ES/plg_console_datacompliance.sys.ini</language>
+		<language tag="it-IT">it-IT/plg_console_datacompliance.ini</language>
+		<language tag="it-IT">it-IT/plg_console_datacompliance.sys.ini</language>
+		<language tag="pt-PT">pt-PT/plg_console_datacompliance.ini</language>
+		<language tag="pt-PT">pt-PT/plg_console_datacompliance.sys.ini</language>
 	</languages>
 </extension>

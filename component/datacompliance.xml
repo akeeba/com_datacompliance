@@ -28,6 +28,12 @@
 	<!-- Front end translation files -->
 	<languages folder="frontend/language">
 		<language tag="en-GB">en-GB/com_datacompliance.ini</language>
+		<language tag="el-GR">el-GR/com_datacompliance.ini</language>
+		<language tag="fr-FR">fr-FR/com_datacompliance.ini</language>
+		<language tag="de-DE">de-DE/com_datacompliance.ini</language>
+		<language tag="es-ES">es-ES/com_datacompliance.ini</language>
+		<language tag="it-IT">it-IT/com_datacompliance.ini</language>
+		<language tag="pt-PT">pt-PT/com_datacompliance.ini</language>
 	</languages>
 
 	<!-- Administrator back-end section -->
@@ -55,6 +61,18 @@
 		<languages folder="backend/language">
 			<language tag="en-GB">en-GB/com_datacompliance.ini</language>
 			<language tag="en-GB">en-GB/com_datacompliance.sys.ini</language>
+			<language tag="el-GR">el-GR/com_datacompliance.ini</language>
+			<language tag="el-GR">el-GR/com_datacompliance.sys.ini</language>
+			<language tag="fr-FR">fr-FR/com_datacompliance.ini</language>
+			<language tag="fr-FR">fr-FR/com_datacompliance.sys.ini</language>
+			<language tag="de-DE">de-DE/com_datacompliance.ini</language>
+			<language tag="de-DE">de-DE/com_datacompliance.sys.ini</language>
+			<language tag="es-ES">es-ES/com_datacompliance.ini</language>
+			<language tag="es-ES">es-ES/com_datacompliance.sys.ini</language>
+			<language tag="it-IT">it-IT/com_datacompliance.ini</language>
+			<language tag="it-IT">it-IT/com_datacompliance.sys.ini</language>
+			<language tag="pt-PT">pt-PT/com_datacompliance.ini</language>
+			<language tag="pt-PT">pt-PT/com_datacompliance.sys.ini</language>
 		</languages>
 
 	</administration>

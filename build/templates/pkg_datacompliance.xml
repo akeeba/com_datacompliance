@@ -38,6 +38,12 @@
 
     <languages folder="language">
         <language tag="en-GB">en-GB/pkg_datacompliance.sys.ini</language>
+        <language tag="el-GR">el-GR/pkg_datacompliance.sys.ini</language>
+        <language tag="fr-FR">fr-FR/pkg_datacompliance.sys.ini</language>
+        <language tag="de-DE">de-DE/pkg_datacompliance.sys.ini</language>
+        <language tag="es-ES">es-ES/pkg_datacompliance.sys.ini</language>
+        <language tag="it-IT">it-IT/pkg_datacompliance.sys.ini</language>
+        <language tag="pt-PT">pt-PT/pkg_datacompliance.sys.ini</language>
     </languages>
 
     <scriptfile>script.datacompliance.php</scriptfile>

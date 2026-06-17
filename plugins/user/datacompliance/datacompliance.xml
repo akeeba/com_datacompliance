@@ -30,5 +30,17 @@
     <languages folder="language">
         <language tag="en-GB">en-GB/plg_user_datacompliance.ini</language>
         <language tag="en-GB">en-GB/plg_user_datacompliance.sys.ini</language>
+        <language tag="el-GR">el-GR/plg_user_datacompliance.ini</language>
+        <language tag="el-GR">el-GR/plg_user_datacompliance.sys.ini</language>
+        <language tag="fr-FR">fr-FR/plg_user_datacompliance.ini</language>
+        <language tag="fr-FR">fr-FR/plg_user_datacompliance.sys.ini</language>
+        <language tag="de-DE">de-DE/plg_user_datacompliance.ini</language>
+        <language tag="de-DE">de-DE/plg_user_datacompliance.sys.ini</language>
+        <language tag="es-ES">es-ES/plg_user_datacompliance.ini</language>
+        <language tag="es-ES">es-ES/plg_user_datacompliance.sys.ini</language>
+        <language tag="it-IT">it-IT/plg_user_datacompliance.ini</language>
+        <language tag="it-IT">it-IT/plg_user_datacompliance.sys.ini</language>
+        <language tag="pt-PT">pt-PT/plg_user_datacompliance.ini</language>
+        <language tag="pt-PT">pt-PT/plg_user_datacompliance.sys.ini</language>
     </languages>
 </extension>
