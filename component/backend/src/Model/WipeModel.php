@@ -72,13 +72,6 @@ class WipeModel extends BaseDatabaseModel
 		}
 		catch (RuntimeException $e)
 		{
-			// On Joomla 7+ the legacy error handling (CMSObject::setError) no longer exists.
-			if (method_exists($this, 'setError'))
-			{
-				/** @noinspection PhpDeprecationInspection */
-				$this->setError($e->getMessage());
-			}
-
 			return false;
 		}
 
@@ -110,13 +103,6 @@ class WipeModel extends BaseDatabaseModel
 		}
 		catch (RuntimeException $e)
 		{
-			// On Joomla 7+ the legacy error handling (CMSObject::setError) no longer exists.
-			if (method_exists($this, 'setError'))
-			{
-				/** @noinspection PhpDeprecationInspection */
-				$this->setError($e->getMessage());
-			}
-
 			return [];
 		}
 
