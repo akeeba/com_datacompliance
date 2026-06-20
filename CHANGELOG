@@ -1,5 +1,7 @@
 Akeeba Data Compliance 4.0.2
 ================================================================================
+~ Preliminary support for Joomla 7 (removal of CMSObject legacy error handling and getDbo())
+~ Minimum supported Joomla version raised to 4.4
 # [HIGH] Infinite redirect loop with forced MFA and pending DataCompliance consent
 # [LOW] isExempt() had view and task arguments swapped, breaking specific-view/task exempt rules
 # [LOW] Flash message from consent redirect appears on Joomla MFA pages
