@@ -343,11 +343,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		// Users who have never visited the site
 		if ($this->params->get('nevervisited', 1))
 		{
-			$sqlNullDate = $db->getNullDate();
+			// A "never visited" user has a NULL or '0000-00-00 00:00:00' last visit date. We avoid the deprecated
+			// (and eventually removed) DatabaseDriver::getNullDate() method by checking for both explicitly.
 			$query
-				->where($db->qn('lastvisitDate') . ' = :nullDate', 'OR')
-				->where($db->qn('lastvisitDate') . ' IS NULL ', 'OR')
-				->bind(':nullDate', $sqlNullDate);
+				->where($db->qn('lastvisitDate') . ' = ' . $db->quote('0000-00-00 00:00:00'), 'OR')
+				->where($db->qn('lastvisitDate') . ' IS NULL ', 'OR');
 		}
 
 		// Blocked users (unless they were created or have visited the site during the threshold period)
