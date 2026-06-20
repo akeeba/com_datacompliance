@@ -42,7 +42,6 @@ $canManage = $user->authorise('wipe', 'com_datacompliance')
 $userId    = $user->id;
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
-$nullDate  = $this->getModel()->getDbo()->getNullDate();
 
 /** @var LifecycleModel $model */
 $model = $this->getModel();

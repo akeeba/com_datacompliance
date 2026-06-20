@@ -13,7 +13,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
-use Joomla\Database\DatabaseInterface;
 
 /** @var \Akeeba\Component\DataCompliance\Administrator\View\Usertrails\HtmlView $this */
 
@@ -45,7 +44,6 @@ $user      = Factory::getApplication()->getIdentity();
 $userId    = $user->id;
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
-$nullDate  = Factory::getContainer()->get(DatabaseInterface::class)->getNullDate();
 
 $i = 0;
 
