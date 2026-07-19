@@ -24,7 +24,7 @@ class ConsenttrailsModel extends ListModel
 	{
 		$config['filter_fields'] = $config['filter_fields'] ?? [];
 		$config['filter_fields'] = $config['filter_fields'] ?: [
-			'search', 'enabled',
+			'search', 'enabled', 'created_on',
 		];
 
 		parent::__construct($config, $factory);

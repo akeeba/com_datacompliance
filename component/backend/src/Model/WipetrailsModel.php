@@ -24,8 +24,7 @@ class WipetrailsModel extends ListModel
 	{
 		$config['filter_fields'] = $config['filter_fields'] ?? [];
 		$config['filter_fields'] = $config['filter_fields'] ?: [
-			'search',
-			'search',
+			'search', 'created_on',
 		];
 
 		parent::__construct($config, $factory);

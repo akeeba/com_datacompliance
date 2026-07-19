@@ -33,12 +33,12 @@
                 label="JGLOBAL_SORT_BY"
                 statuses="*,0,1"
                 onchange="this.form.submit();"
-                default="a.created DESC"
+                default="created_on DESC"
                 validate="options"
         >
             <option value="">JGLOBAL_SORT_BY</option>
-            <option value="a.created ASC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_ASC</option>
-            <option value="a.created DESC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_DESC</option>
+            <option value="created_on ASC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_ASC</option>
+            <option value="created_on DESC">COM_DATACOMPLIANCE_COMMON_FILTERS_LBL_CREATED_DESC</option>
         </field>
 
         <field
