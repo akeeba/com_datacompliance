@@ -1,5 +1,7 @@
 Akeeba Data Compliance 4.0.3
 ================================================================================
+~ Hardening: the frontend dispatcher now fails closed, rejecting any view other than the public user options page
+~ Hardening: removed a redundant access check that could wrongly block Super Users and component managers from acting on another user's behalf
 ~ Hardening: re-validate list ordering column and direction against the whitelist before composing the ORDER BY clause
 ~ Hardening: use a bound integer parameter for the user ID in the login-time notification cleanup query
 # [LOW] The "creator_id:" search prefix was parsed with the wrong offset, always yielding user 0

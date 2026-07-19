@@ -66,11 +66,19 @@ class Dispatcher extends ComponentDispatcher
 			return true;
 		}
 
-		// Check the user has permission to access this component if in the backend
-		if ($this->app->isClient('administrator') && !$this->app->getIdentity()->authorise('core.manage', $this->option))
+		// In the backend, only users with the core.manage privilege may access any other view.
+		if ($this->app->isClient('administrator'))
 		{
-			throw new NotAllowed($this->app->getLanguage()->_('JERROR_ALERTNOAUTHOR'), 403);
+			if (!$this->app->getIdentity()->authorise('core.manage', $this->option))
+			{
+				throw new NotAllowed($this->app->getLanguage()->_('JERROR_ALERTNOAUTHOR'), 403);
+			}
+
+			return true;
 		}
+
+		// Fail closed on the frontend: the 'options' view above is the only publicly reachable view.
+		throw new NotAllowed($this->app->getLanguage()->_('JERROR_ALERTNOAUTHOR'), 403);
 	}
 
 	protected function onBeforeDispatch()

@@ -301,12 +301,6 @@ class OptionsController extends BaseController
 
 				break;
 		}
-
-		if (!$canExport && !$canWipe)
-		{
-			// Neither privilege is granted. You are trying to do something naughty.
-			throw new RuntimeException(JText::_('JERROR_ALERTNOAUTHOR'), 403);
-		}
 	}
 
 }
