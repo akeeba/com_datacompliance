@@ -118,12 +118,21 @@ class UsertrailsModel extends ListModel
 			}
 		}
 
-		// List ordering clause
+		// List ordering clause. Re-validate against the whitelist as defence in depth.
 		$orderCol  = $this->getState('list.ordering', 'created_on');
-		$orderDirn = $this->getState('list.direction', 'desc');
-		$ordering  = $db->escape($orderCol) . ' ' . $db->escape($orderDirn);
+		$orderDirn = strtoupper($this->getState('list.direction', 'desc'));
 
-		$query->order($ordering);
+		if (!in_array($orderCol, $this->filter_fields, true))
+		{
+			$orderCol = 'created_on';
+		}
+
+		if (!in_array($orderDirn, ['ASC', 'DESC'], true))
+		{
+			$orderDirn = 'DESC';
+		}
+
+		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 
 		return $query;
 	}

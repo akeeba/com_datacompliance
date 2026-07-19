@@ -113,12 +113,21 @@ class LifecycleModel extends ListModel
 			}
 		}
 
-		// List ordering clause
+		// List ordering clause. Re-validate against the whitelist as defence in depth.
 		$orderCol  = $this->getState('list.ordering', 'id');
-		$orderDirn = $this->getState('list.direction', 'asc');
-		$ordering  = $db->escape($orderCol) . ' ' . $db->escape($orderDirn);
+		$orderDirn = strtoupper($this->getState('list.direction', 'asc'));
 
-		$query->order($ordering);
+		if (!in_array($orderCol, $this->filter_fields, true))
+		{
+			$orderCol = 'id';
+		}
+
+		if (!in_array($orderDirn, ['ASC', 'DESC'], true))
+		{
+			$orderDirn = 'ASC';
+		}
+
+		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 
 		return $query;
 	}

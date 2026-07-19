@@ -1,3 +1,8 @@
+Akeeba Data Compliance 4.0.3
+================================================================================
+~ Hardening: re-validate list ordering column and direction against the whitelist before composing the ORDER BY clause
+~ Hardening: use a bound integer parameter for the user ID in the login-time notification cleanup query
+
 Akeeba Data Compliance 4.0.2
 ================================================================================
 ~ Preliminary support for Joomla 7 (removal of CMSObject legacy error handling, getDbo() and getNullDate())

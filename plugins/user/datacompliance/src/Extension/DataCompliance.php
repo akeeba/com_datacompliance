@@ -28,6 +28,7 @@ use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\CMS\User\UserHelper;
 use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
@@ -420,8 +421,9 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		$db     = $this->getDatabase();
 		$query  = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->delete($db->qn('#__user_profiles'))
-			->where($db->qn('user_id') . ' = ' . $userid)
-			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'));
+			->where($db->qn('user_id') . ' = :user_id')
+			->where($db->qn('profile_key') . ' LIKE ' . $db->q('datacompliance.notified%'))
+			->bind(':user_id', $userid, ParameterType::INTEGER);
 
 		try
 		{
