@@ -68,7 +68,7 @@ class UsertrailsModel extends ListModel
 			}
 			elseif (stripos($search, 'creator_id:') === 0)
 			{
-				$id = (int) substr($search, 8);
+				$id = (int) substr($search, 11);
 				$query->where($db->quoteName('a.created_by') . ' = :id')
 					->bind(':id', $id, ParameterType::INTEGER);
 			}
