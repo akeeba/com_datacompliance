@@ -58,7 +58,7 @@ class WipetrailsModel extends ListModel
 			if (stripos($search, 'id:') === 0)
 			{
 				$id = (int) substr($search, 3);
-				$query->where($db->quoteName('a.datacompliance_exporttrail_id') . ' = :id')
+				$query->where($db->quoteName('a.datacompliance_wipetrail_id') . ' = :id')
 					->bind(':id', $id, ParameterType::INTEGER);
 			}
 			elseif (stripos($search, 'user_id:') === 0)

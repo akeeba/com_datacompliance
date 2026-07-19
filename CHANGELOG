@@ -3,6 +3,7 @@ Akeeba Data Compliance 4.0.3
 ~ Hardening: re-validate list ordering column and direction against the whitelist before composing the ORDER BY clause
 ~ Hardening: use a bound integer parameter for the user ID in the login-time notification cleanup query
 # [LOW] The "creator_id:" search prefix was parsed with the wrong offset, always yielding user 0
+# [LOW] The wipe trails "id:" search filtered on the export trails primary key column name
 
 Akeeba Data Compliance 4.0.2
 ================================================================================
