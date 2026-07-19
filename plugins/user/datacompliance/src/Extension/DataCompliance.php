@@ -656,7 +656,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 				$db->qn('profile_value', 'value'),
 			])
 			->from($db->qn('#__user_profiles'))
-			->where($db->qn('user_id') . ' == ' . (int) $newUser['id']);
+			->where($db->qn('user_id') . ' = ' . (int) $newUser['id']);
 
 		try
 		{
