@@ -6,6 +6,7 @@ Akeeba Data Compliance 4.0.3
 # [LOW] The wipe trails "id:" search filtered on the export trails primary key column name
 # [LOW] Invalid SQL "==" operator when loading old user profile values for change logging
 # [LOW] Trail list views could not be sorted: filter_fields and the sort dropdown referenced non-existent columns
+# [LOW] Removed the non-functional Enabled/Published filter from the export and wipe trail list views
 
 Akeeba Data Compliance 4.0.2
 ================================================================================

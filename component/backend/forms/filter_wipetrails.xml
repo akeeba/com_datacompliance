@@ -14,17 +14,6 @@
                 label="JSEARCH_FILTER"
                 hint="JSEARCH_FILTER"
         />
-
-        <field
-                name="enabled"
-                type="status"
-                optionsFilter="*,0,1"
-                label="JENABLED"
-                description="JFIELD_ENABLED_DESC"
-                onchange="this.form.submit();"
-        >
-            <option value="">JOPTION_SELECT_PUBLISHED</option>
-        </field>
     </fields>
     <fields name="list">
         <field
