@@ -7,6 +7,8 @@
 
 namespace Akeeba\Component\DataCompliance\Administrator\Table;
 
+defined('_JEXEC') || die;
+
 trait GetPropertiesAwareTrait
 {
 	/**

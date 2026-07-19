@@ -7,6 +7,8 @@
 
 namespace Akeeba\Component\DataCompliance\Administrator\Mixin;
 
+defined('_JEXEC') || die;
+
 trait CMSObjectWorkaroundTrait
 {
 	/**
