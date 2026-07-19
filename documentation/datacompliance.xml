@@ -46,7 +46,7 @@
         allows you to easily handle users giving or revoking their consent to
         data processing, as well as provide a self-service approach to data
         export and user profile deletion. Further to that it can help you with
-        the data minimization requirements of GDPR by deleting inactive user
+        the data minimisation requirements of GDPR by deleting inactive user
         profiles automatically, after users are suitably notified.</para>
 
         <para><application>Akeeba Data Compliance</application> is Free
@@ -64,7 +64,7 @@
 
         <para>Akeeba Ltd has chosen not to charge a fee for this software and
         its documentation. However, we cannot guarantee user support or
-        customization (including implementation of features we don't need on
+        customisation (including implementation of features we don't need on
         our own site). Thank you for your understanding!</para>
       </section>
 
@@ -97,20 +97,20 @@
           <listitem>
             <para>Ability to run <emphasis role="bold">command line</emphasis>
             CRON jobs. If your host only allows you to call a URL you will not
-            be able to use the data minimization features.</para>
+            be able to use the data minimisation features.</para>
           </listitem>
         </itemizedlist>
 
         <para>As far as the browser is concerned, you can use any modern
         version (i.e. published within the last year) of Microsoft Edge,
-        Safari, Opera, Firefox or Google Chrome. We no longer support Internet
-        Explorer; our software will display incorrectly or not work at all on
-        this old, buggy and obsolete browser.</para>
+        Safari, Opera, Firefox, or Google Chrome. We no longer support
+        Internet Explorer; our software will display incorrectly or not work
+        at all on this old, buggy, and obsolete browser.</para>
 
         <para>In any case, you must make sure that Javascript is enabled on
-        your browser for the backup to work. If you are using AVG antivirus,
-        please disable its Link Checker feature (and reboot your computer) as
-        it is known to cause problems.</para>
+        your browser for the component to work. If you are using AVG
+        antivirus, please disable its Link Checker feature (and reboot your
+        computer) as it is known to cause problems.</para>
 
         <para>You are very strongly advised to disable Internet firewalls,
         antivirus applications and browser extensions which interfere with the
@@ -126,7 +126,7 @@
       <section xml:id="technology-overview">
         <title>Technology overview</title>
 
-        <para><application>Akeeba DataCompliance </application>is more than
+        <para><application>Akeeba Data Compliance </application>is more than
         just a component. In fact, its component is only used to render the
         interface and handle some common work. Most of the features are
         implemented as plugins to ensure extensibility, even by third
@@ -154,7 +154,7 @@
     </chapter>
 
     <chapter xml:id="installation-updates-upgrades">
-      <title>Installation, updates and upgrades</title>
+      <title>Installation, updates, and upgrades</title>
 
       <section xml:id="installing">
         <title>Installing Akeeba Data Compliance</title>
@@ -246,14 +246,14 @@
 
             <para>If Joomla! cannot download the package, please use one of
             the methods described in this section of the documentation. If,
-            however you get an error about copying files, folder not found or
-            a cryptic "-1" error please follow <link
+            however, you get an error about copying files, folder not found,
+            or a cryptic "-1" error please follow <link
             xlink:href="https://www.akeeba.com/documentation/troubleshooter/abinstallation.html">our
             installation troubleshooting instructions</link>.</para>
           </section>
 
           <section xml:id="installing-upload">
-            <title>Upload and install.</title>
+            <title>Upload and install</title>
 
             <para>You can download the latest installation packages from <link
             xlink:href="https://www.akeeba.com/download/official/datacompliance.html">the
@@ -385,8 +385,8 @@
         download and install the update.</para>
 
         <para>If Joomla! cannot download the package, please use one of the
-        manual update methods described below. If, however you get an error
-        about copying files, folder not found or a cryptic "-1" error please
+        manual update methods described below. If, however, you get an error
+        about copying files, folder not found, or a cryptic "-1" error please
         follow <link
         xlink:href="https://www.akeeba.com/documentation/troubleshooter/abinstallation.html">our
         installation troubleshooting instructions</link>.</para>
@@ -436,7 +436,7 @@
       <title>Using Akeeba Data Compliance</title>
 
       <para>In this chapter you are going to find detailed reference of all
-      the pages, options and features of the <application>Akeeba Data
+      the pages, options, and features of the <application>Akeeba Data
       Compliance </application>component.</para>
 
       <section xml:id="initial-setup">
@@ -466,7 +466,7 @@
         <link
         xlink:href="https://www.itgovernance.co.uk/blog/how-to-write-a-gdpr-privacy-notice-with-documentation-template-example/">an
         example</link>. Or you could even take a look at what other companies
-        have. For example. here is <link
+        have. For example, here is <link
         xlink:href="https://www.akeeba.com/privacy">our Privacy
         Statement</link>. It's best to publish the article in the
         Uncategorized section of your site.</para>
@@ -529,7 +529,7 @@
         who can see sensitive personal information in Data Compliance.</para>
 
         <para>Finally, you may want to set up CRON jobs for <link
-        linkend="data-minimization">automating data minimization</link>
+        linkend="data-minimization">automating data minimisation</link>
         (deletion of expired data profiles).</para>
       </section>
 
@@ -569,15 +569,15 @@
         <bridgehead>Can I change the default PII processing preference to be
         "consent has been given"?</bridgehead>
 
-        <para>No. This is illegal. The GPDR requires you to obtain explicit
-        consent and also record the date, time and IP address of the user
+        <para>No. This is illegal. The GDPR requires you to obtain explicit
+        consent and also record the date, time, and IP address of the user
         giving or revoking their explicit consent. Implied consent is no
         longer admissible.</para>
 
         <bridgehead>Can I change the default option of the slider to Yes
         instead of No?</bridgehead>
 
-        <para>No. The GPDR requires the users to take explicit action to
+        <para>No. The GDPR requires the users to take explicit action to
         provide their consent. According to most analysts this means that the
         default state of a slider / radio selection must be No and the default
         state of a checkbox must be unchecked.</para>
@@ -602,7 +602,7 @@
         a user?</bridgehead>
 
         <para>No. This is illegal. The GDPR requires you to obtain explicit
-        consent and also record the date, time and IP address of the user
+        consent and also record the date, time, and IP address of the user
         giving or revoking their explicit consent. As a result you cannot give
         consent on behalf of a user.</para>
 
@@ -638,8 +638,8 @@
         <bridgehead>Can you create a plugin for a third party extension? It
         shouldn't be too hard...</bridgehead>
 
-        <para>No. We do not have the necessary time to analyze how a third
-        party extensions works, figure out what PII it stores and how. Then we
+        <para>No. We do not have the necessary time to analyse how a third
+        party extension works, figure out what PII it stores and how. Then we
         would have to create and test the plugin. And then we would have to
         maintain it forever, even when the third party extension changes
         substantially. This is a cost of several thousand Euros per year. It's
@@ -748,10 +748,10 @@
           change it. Please note that the default option in the controls is
           always set to No, per the GDPR requirement for explicit action to
           provide consent. If you want to give your consent set it to
-          <guilabel>Yes</guilabel>, then click on <guibutton>Apply My
-          Preference</guibutton>. Conversely, if you want to revoke your
+          <guilabel>Yes</guilabel>, then click on <guibutton>Apply my
+          preference</guibutton>. Conversely, if you want to revoke your
           consent set this to <guilabel>No</guilabel> and then click on
-          <guibutton>Apply My Preference</guibutton>.</para>
+          <guibutton>Apply my preference</guibutton>.</para>
 
           <para>Above the controls there is a link which reads <guilabel>Click
           here to read the Privacy Statement</guilabel>. Clicking on it opens
@@ -770,7 +770,7 @@
           buttons. The first button allows you to export your user profile in
           a common, machine-readable format (XML). This lets you exercise your
           Data Portability Rights under the GDPR. Click on <guibutton>Export
-          your Data</guibutton> to download an XML file to your computer. This
+          your data</guibutton> to download an XML file to your computer. This
           contains all the PII about you which is currently known to Akeeba
           Data Compliance through its plugins.</para>
 
@@ -784,20 +784,20 @@
           site. Please note that this process is <emphasis
           role="bold">irreversible</emphasis>. Furthermore, once it's complete
           it will be impossible to restore your user account and its PII.
-          Therefore, clicking the <guibutton>Delete your user account
-          button</guibutton> exercises your Right To Be Forgotten under the
-          GDPR.</para>
+          Therefore, clicking the <guibutton>Delete your user
+          account</guibutton> button exercises your Right To Be Forgotten
+          under the GDPR.</para>
 
           <para>Sometimes it's not possible to exercise your right to be
           forgotten. This depends on the settings of the various Akeeba Data
-          Compliance through its plugins. For example, people belonging to a
-          privileged group (by default: Super Users) or who have bought a
-          subscription within the last few days may be denied this right. You
-          are told exactly why deletion is not possible though a standard
-          Joomla error message. Having an administrator of the site resolve
-          that condition is necessary before wiping the user account is
-          possible. Administrators should look at the settings of the various
-          Akeeba Data Compliance plugins to understand why th deletion is
+          Compliance plugins. For example, people belonging to a privileged
+          group (by default: Super Users) or who have bought a subscription
+          within the last few days may be denied this right. You are told
+          exactly why deletion is not possible through a standard Joomla
+          error message. Having an administrator of the site resolve that
+          condition is necessary before wiping the user account is possible.
+          Administrators should look at the settings of the various Akeeba
+          Data Compliance plugins to understand why the deletion is
           prevented.</para>
 
           <para>If the deletion can proceed you are taken to the confirmation
@@ -822,15 +822,14 @@
           xlink:href="https://github.com/akeeba/fof/wiki/Blade-Templates">FOF
           3's Blade template language syntax</link>. You can use <link
           xlink:href="https://docs.joomla.org/How_to_override_the_output_from_the_Joomla!_core">standard
-          Joomla template overrides</link> to modify the look, feel and
+          Joomla template overrides</link> to modify the look, feel, and
           functionality of this page. By default, the HTML structure follows
-          our Akeeba Frontend Framework which provides a unified look and feel
+          Bootstrap and our own custom CSS, providing a unified look and feel
           for all of our extensions. If you need to use a different template
-          framework, such as Bootstrap, you will have to do template
-          overrides.</para>
+          framework you will have to do template overrides.</para>
 
           <important>
-            <para>Do not change the URLs, the hidden fields or remove form
+            <para>Do not change the URLs, the hidden fields, or remove form
             elements when doing overrides. This could cause Akeeba Data
             Compliance to behave erratically with your overrides.</para>
 
@@ -961,8 +960,8 @@
         site. Active (non-expired) profiles are shown in green. <link
         linkend="expired-profiles">Expired profiles</link> which have not been
         deleted are shown in red. Expired profiles which have already been
-        deleted are shown in grey. To conform with the GDPR data minimization
-        rules the red area of this graph needs to be minimized and converted
+        deleted are shown in grey. To conform with the GDPR data minimisation
+        rules the red area of this graph needs to be minimised and converted
         to grey. Not all red can disappear: some expired profiles are not
         allowed to be deleted according to the rules applied by the Data
         Compliance plugins, e.g. you can't remove Super User accounts even if
@@ -1001,11 +1000,12 @@
         lifecycle policy.</para>
 
         <important>
-          <para>The Akeeba Data Compliance - Emails plugin must be activated
-          and have the access level Public for emails to work.</para>
+          <para>The Data Compliance - Send emails on account deletion plugin
+          must be activated and have the access level Public for emails to
+          work.</para>
         </important>
 
-        <para>Each template can be customized <emphasis>per
+        <para>Each template can be customised <emphasis>per
         language</emphasis>. Akeeba Data Compliance will determine the correct
         language to use by looking at the user profile. If no language
         preference is set for the user's site (frontend) language, it will use
@@ -1018,7 +1018,7 @@
         used.</para>
 
         <para>While Data Compliance comes with built in email templates we
-        strongly advise you to customize them to match your site's branding
+        strongly advise you to customise them to match your site's branding
         and the tone of language you commonly use. All email templates fully
         support HTML.</para>
 
@@ -1152,7 +1152,7 @@
 
           <para>You can search by consent status ("Enabled") and by user. The
           user search box allows you to type a numeric user ID or a partial
-          username, full name or email address.</para>
+          username, full name, or email address.</para>
         </section>
 
         <section xml:id="profile-changes">
@@ -1166,7 +1166,7 @@
 
           <para>You can search by the user being modified. The user search box
           allows you to type a numeric user ID or a partial username, full
-          name or email address.</para>
+          name, or email address.</para>
 
           <para>If you click on the profile being modified you can see a
           detail page with all the information which was changed in the
@@ -1175,7 +1175,7 @@
 
           <important>
             <para>This audit log's records are deleted when a user account is
-            wiped trough Data Compliance since it contains Personally
+            wiped through Data Compliance since it contains Personally
             Identifiable Information.</para>
           </important>
         </section>
@@ -1185,13 +1185,13 @@
 
           <para>This audit log keeps track of who and when exported the PII
           for a user. It records the profile the data was exported for, who
-          exported the profile, when the profile was exported and the IP
+          exported the profile, when the profile was exported, and the IP
           address which initiated the export. The exported data is NOT logged
           for privacy reasons.</para>
 
           <para>You can search by the user whose profile was exported. The
           user search box allows you to type a numeric user ID or a partial
-          username, full name or email address.</para>
+          username, full name, or email address.</para>
         </section>
 
         <section xml:id="profile-deletions">
@@ -1200,14 +1200,14 @@
           <para>This audit log keeps track of the user profiles which have
           been deleted from the site. It records which user profile has been
           deleted, who initiated the deletion, what kind of deletion it was
-          (user initiated, administrator initiated or lifecycle management),
+          (user initiated, administrator initiated, or lifecycle management),
           when the deletion took place and the IP address which initiated the
           deletion (or the text CLI when it was initiated by the lifecycle
           management CRON job).</para>
 
           <para>You can search by the user whose profile was deleted and by
           who initiated the deletion. The user search boxes allow you to type
-          a numeric user ID or a partial username, full name or email
+          a numeric user ID or a partial username, full name, or email
           address.</para>
         </section>
       </section>
@@ -1228,7 +1228,7 @@
           Expired profiles are determined by your Data Compliance plugin
           settings. Some of the profiles cannot be deleted even though they
           are expired, e.g. when they belong to a privileged user group. These
-          profiles appear in pink background color.</para>
+          profiles appear in pink background colour.</para>
 
           <note>
             <para>Why not hide the profiles which cannot be deleted? For
@@ -1255,20 +1255,20 @@
             exclude the exceptions from the display.</para>
           </note>
 
-          <para>Each profile has a Manage Data Options button at the right
-          hand corner. This takes you to the page to manage data options, i.e.
-          export the user's profile or delete it.</para>
+          <para>Each profile has a Manage Data Options button at the
+          right-hand corner. This takes you to the page to manage data
+          options, i.e. export the user's profile or delete it.</para>
 
           <para>You can search by the maximum expiration date and by user. The
           user search box allows you to type a numeric user ID or a partial
-          username, full name or email address.</para>
+          username, full name, or email address.</para>
         </section>
       </section>
 
       <section xml:id="data-minimization">
-        <title>Automating data minimization actions</title>
+        <title>Automating data minimisation actions</title>
 
-        <para>The GDPR calls for data minimization, i.e. removing the
+        <para>The GDPR calls for data minimisation, i.e. removing the
         personally identifiable information of users when it's no longer
         needed for business purposes. While there are no hard limits in the
         law, it's generally agreed that a reasonable amount of time for
@@ -1431,7 +1431,7 @@
         personally identifiable information. Decisions about how to delete
         this data or when a profile is expired, or when it shouldn't be
         deleted, may also vary depending on your business needs and what your
-        lawyer has consulted you.</para>
+        lawyer has advised you.</para>
 
         <para>Akeeba Data Compliance gives you plenty of options to tailor it
         to your needs. These options can be found either at the component
@@ -1457,7 +1457,7 @@
           Options</guilabel> and it controls the way the self-service page of
           Data Compliance works on your site.</para>
 
-          <para>The <guilabel>Policy Article</guilabel> options lets you
+          <para>The <guilabel>Policy article</guilabel> option lets you
           choose a Joomla article which contains your site's Privacy Statement
           per the GDPR requirements. Remember that when the self-service page
           is shown to a user who has not yet provided their consent they
@@ -1465,36 +1465,12 @@
           not include any links to other pages on your site in this article as
           they will be inaccessible to the user.</para>
 
-          <para>The <guilabel>Show Export Button</guilabel> and <guilabel>Show
-          Delete Button</guilabel> options control whether the button to
+          <para>The <guilabel>Show export button</guilabel> and <guilabel>Show
+          delete button</guilabel> options control whether the button to
           export the personal information to XML and to delete the user
           profile, respectively, will be shown to the user. If they are not
           shown you will have to take and fulfil these requests
           manually.</para>
-
-          <bridgehead>FEF Handling</bridgehead>
-
-          <para>Our software is using Akeeba Frontend Framework (FEF) to style
-          its output in the frontend (public site) and backend (administrator)
-          of your site. If you would rather provide your own styling by doing
-          template overrides and / or loading your own CSS it's recommended
-          that you disable loading of FEF's CSS files. You can control this
-          behavior with these options.</para>
-
-          <para><guilabel>Load Akeeba FEF</guilabel> controls when the FEF CSS
-          will be loaded: Never, Frontend Only, Backend Only or Both (frontend
-          and backend). Kindly note that the backend interface will look
-          broken if you do not load FEF and you do not supply template
-          overrides for every single backend page.</para>
-
-          <para><guilabel>Load CSS reset with Akeeba FEF</guilabel> controls
-          an optional behavior of FEF. We load a CSS reset (forcing the values
-          of several CSS attributes to predictable values) inside the DIV that
-          contains Akeeba Data Compliance's output. This is done to prevent
-          third party CSS, such as the Joomla-supplied Bootstrap 2 files, from
-          interfering with the layout. If you are going to be overriding the
-          layout with your own CSS you should not be loading the CSS reset.
-          The options here are the same as for the previous setting.</para>
 
           <bridgehead>Permissions</bridgehead>
 
@@ -1612,43 +1588,6 @@
             AGAINST using this option.</para>
           </section>
 
-          <section xml:id="source-akeebasubs">
-            <title>Akeeba Subscriptions</title>
-
-            <para>Plugin: Data Compliance - Akeeba Subscriptions</para>
-
-            <para>It allows Data Compliance to handle information stored by
-            Akeeba Subscriptions.</para>
-
-            <para><bridgehead>Options</bridgehead></para>
-
-            <para><guilabel>User account lifecycle</guilabel>. Do you want
-            this plugin to tell Akeeba Data Compliance which user records are
-            considered expired according to the options below? If you set this
-            to No the following options are ignored.</para>
-
-            <para><guilabel>Last expired subscription this many months
-            ago</guilabel>. User accounts whose last subscription expired at
-            least this many months ago are considered expired.</para>
-
-            <para><guilabel>Exclude users who have visited the site in the
-            meantime</guilabel>. Modifies the above option. If the user with
-            the expired subscription has visited the site after their
-            subscription expires they are not considered expired accounts. For
-            most sites it's recommended to set this to Yes and use the “Last
-            login threshold (months)” option in the Data Compliance - Joomla!
-            Core User Data plugin to handle expiration of these user
-            accounts.</para>
-
-            <para><guilabel>Non-lifecycle deletion exemption threshold
-            (days)</guilabel>. Users who created a subscription within this
-            many days ago will not be allowed to be deleted. It's recommended
-            to set this to the maximum chargeback period allowed by the
-            payment services you are using on your site. For example, if they
-            allow chargebacks for up to 90 days since the transaction was made
-            you should put 90 in here.</para>
-          </section>
-
           <section xml:id="source-ars">
             <title>Akeeba Release System</title>
 
@@ -1743,7 +1682,7 @@
           <section xml:id="plugin-email">
             <title>Send emails on account deletion</title>
 
-            <para>Plugin: Akeeba Data Compliance - Send emails on account
+            <para>Plugin: Data Compliance - Send emails on account
             deletion</para>
 
             <para>Enables all email features for Akeeba Data Compliance. It's
@@ -1766,17 +1705,18 @@
           </section>
 
           <section xml:id="plugin-s3">
-            <title>Upload user deletion audit trail to Amazon S3</title>
+            <title>Upload user deletion audit trail to S3-compatible
+            storage</title>
 
             <para>Plugin: Data Compliance - Upload user deletion audit trail
-            to Amazon S3</para>
+            to S3-compatible storage</para>
 
-            <para>Uploads the user deletion audit log records to Amazon S3.
-            One JSON file per deleted user account is uploaded. You should
-            configure it to use an Amazon S3 bucket with a suitable policy
-            which disallows deletion of files. This helps you positively
-            fulfill the recommendation of having an immutable audit log for
-            data deletion actions on your site.</para>
+            <para>Uploads the user deletion audit log records to Amazon S3 or
+            another S3-compatible storage provider. One JSON file per deleted
+            user account is uploaded. You should configure it to use a bucket
+            with a suitable policy which disallows deletion of files. This
+            helps you positively fulfil the recommendation of having an
+            immutable audit log for data deletion actions on your site.</para>
 
             <bridgehead>Options</bridgehead>
 
@@ -1858,6 +1798,19 @@
               </varlistentry>
 
               <varlistentry>
+                <term>Custom region</term>
+
+                <listitem>
+                  <para>Only used when you select <guilabel>Custom /
+                  None</guilabel> in the <guilabel>Amazon S3 Region</guilabel>
+                  option above. Enter the region identifier to use with the v4
+                  signature method here. This is useful for third-party,
+                  S3-compatible storage providers which are not Amazon S3
+                  itself.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
                 <term>Signature method</term>
 
                 <listitem>
@@ -1898,6 +1851,23 @@
               </varlistentry>
 
               <varlistentry>
+                <term>Bucket access</term>
+
+                <listitem>
+                  <para>How the plugin should access your bucket. If unsure,
+                  use <guilabel>Virtual Hosting (recommended)</guilabel>, the
+                  recommended and supported method for Amazon S3, which
+                  accesses the bucket using a URL of the form
+                  <literal>https://BUCKET.ENDPOINT</literal>.
+                  <guilabel>Path Access (legacy)</guilabel> is a deprecated,
+                  unsupported method which accesses the bucket using a URL of
+                  the form <literal>https://ENDPOINT/BUCKET</literal>. Only
+                  use Path Access if a third party, S3-compatible storage
+                  provider specifically asks you to.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
                 <term>Storage Class</term>
 
                 <listitem>
@@ -1905,7 +1875,41 @@
                   recommend using Standard - Infrequent Access. This offers
                   decent data durability and results in smaller storage costs
                   if you don't retrieve the files too often, as is the case
-                  with the audit log files.</para>
+                  with the audit log files. Not all third-party, S3-compatible
+                  storage providers support every storage class listed here,
+                  or indeed any storage class other than Standard; consult
+                  your provider's documentation.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Custom endpoint</term>
+
+                <listitem>
+                  <para>For use with third party storage services which
+                  implement an S3-compatible API. Enter the endpoint (API URL)
+                  of the third party storage service here. <emphasis
+                  role="bold">If you are using Amazon S3 you MUST leave this
+                  blank.</emphasis></para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Alternate date format</term>
+
+                <listitem>
+                  <para>Only shown when a <guilabel>Custom endpoint</guilabel>
+                  is set. Only disable this setting if Akeeba support asks you
+                  to.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Use the HTTP header Date instead of X-Amz-Date</term>
+
+                <listitem>
+                  <para>Only enable this setting if Akeeba support asks you
+                  to.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
