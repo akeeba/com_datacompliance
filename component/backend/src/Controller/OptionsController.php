@@ -300,9 +300,11 @@ class OptionsController extends BaseController
 				}
 				break;
 
-			// Change a user's consent. Only Super Users and DataCompliance administrators are allowed to do that.
+			// Change a user's consent. Super Users and DataCompliance administrators can always do that.
+			// Users with the dedicated `wipe` or `export` privilege can also do so, matching the
+			// data-subject view in View/Options/HtmlView::populateBasicViewParameters.
 			case 'consent':
-				if (!$isSuper && !$isAdmin)
+				if (!$isSuper && !$isAdmin && !$canWipe && !$canExport)
 				{
 					throw new RuntimeException(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 				}
