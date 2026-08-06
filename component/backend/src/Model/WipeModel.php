@@ -307,9 +307,12 @@ class WipeModel extends BaseDatabaseModel
 	/**
 	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
 	 *
-	 * @param   int     $userId   The user ID to export
-	 * @param   string  $type     user, admin or lifecycle
-	 * @param   bool    $godMode  If true all checks are off. INCREDIBLY DANGEROUS! CAN EVEN REMOVE SUPER USERS.
+	 * @param   int     $userId        The user ID to export
+	 * @param   string  $type          user, admin or lifecycle
+	 * @param   bool    $godMode       If true all checks are off. INCREDIBLY DANGEROUS! CAN EVEN REMOVE SUPER USERS.
+	 * @param   bool    $allowReWipe   If true, allow overwriting an existing wipe audit trail for this user.
+	 *                                 Default false preserves the existing safety; only callers that intentionally
+	 *                                 replay an audit should pass true.
 	 *
 	 * @return  bool  True on success.
 	 *
@@ -318,14 +321,14 @@ class WipeModel extends BaseDatabaseModel
 	 *
 	 * @noinspection PhpUnused
 	 */
-	public function wipe(int $userId, string $type = 'user', bool $godMode = false): bool
+	public function wipe(int $userId, string $type = 'user', bool $godMode = false, bool $allowReWipe = false): bool
 	{
 		if (!$godMode && !$this->checkWipeAbility($userId, $type))
 		{
 			return false;
 		}
 
-		$this->createAuditRecord($userId, $type);
+		$this->createAuditRecord($userId, $type, $allowReWipe);
 
 		// Actually delete the records
 		PluginHelper::importPlugin('datacompliance');
@@ -428,13 +431,14 @@ class WipeModel extends BaseDatabaseModel
 	/**
 	 * Creates (if requested) an audit record for current operation
 	 *
-	 * @param   int     $userId  The user ID to export
-	 * @param   string  $type    user, admin or lifecycle
+	 * @param   int     $userId        The user ID to export
+	 * @param   string  $type          user, admin or lifecycle
+	 * @param   bool    $allowReWipe   If true, allow overwriting an existing wipe audit trail for this user.
 	 *
 	 * @throws  Exception
 	 * @since   1.0.0
 	 */
-	private function createAuditRecord(int $userId, string $type): void
+	private function createAuditRecord(int $userId, string $type, bool $allowReWipe = false): void
 	{
 		// Always nuke current audit record instance
 		$this->auditRecord = null;
@@ -459,19 +463,7 @@ class WipeModel extends BaseDatabaseModel
 			return;
 		}
 
-        $isSuperUser = false;
-        $user        = Factory::getApplication()->getIdentity();
-
-        // Perform the check on permissions only if we're not in CLI
-        if ($user)
-        {
-            $isSuperUser = $user->authorise('core.admin');
-        }
-
-		$isDebug     = defined('JDEBUG') && JDEBUG;
-		$isCli       = Factory::getApplication()->isClient('cli');
-
-		if (!($isDebug && ($isCli || $isSuperUser)))
+		if (!$allowReWipe)
 		{
 			throw new RuntimeException(Text::_('COM_DATACOMPLIANCE_WIPE_ERR_TRAILEXISTS'));
 		}

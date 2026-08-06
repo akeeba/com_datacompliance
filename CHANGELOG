@@ -13,6 +13,7 @@ Akeeba Data Compliance 4.0.3
 # [LOW] Trail list views could not be sorted: filter_fields and the sort dropdown referenced non-existent columns
 # [LOW] Removed the non-functional Enabled/Published filter from the export and wipe trail list views
 # [LOW] Plain search terms in the Lifecycle list view raised an SQL error because the users table was not aliased
+# [LOW] WipeModel::createAuditRecord() decided whether an existing wipe audit trail could be overwritten based on the application identity; replace this with an explicit $allowReWipe parameter on wipe()
 
 Akeeba Data Compliance 4.0.2
 ================================================================================
