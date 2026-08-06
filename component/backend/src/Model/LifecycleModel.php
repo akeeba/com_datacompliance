@@ -41,7 +41,7 @@ class LifecycleModel extends ListModel
 		$db    = $this->getDatabase();
 		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
 			->select('*')
-			->from($db->quoteName('#__users'));
+			->from($db->quoteName('#__users', 'u'));
 
 		$search = $this->getState('filter.search');
 
