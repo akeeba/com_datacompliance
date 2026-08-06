@@ -10,7 +10,10 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
+use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Input\Input;
@@ -39,6 +42,24 @@ class ConsenttrailsController extends AdminController
 		$this->unregisterTask('checkin');
 		$this->unregisterTask('saveOrderAjax');
 		$this->unregisterTask('runTransition');
+	}
+
+	public function display($cachable = false, $urlparams = [])
+	{
+		// Defence in depth: the dispatcher already enforces core.manage, but if a future
+		// contributor re-registers a state-changing task on this controller they would
+		// bypass every line of defence. Re-check the privilege here too.
+		$user = Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('core.manage', 'com_datacompliance'))
+		{
+			throw new \Joomla\CMS\Access\Exception\NotAllowed(
+				Text::_('JERROR_ALERTNOAUTHOR'),
+				403
+			);
+		}
+
+		return parent::display($cachable, $urlparams);
 	}
 
 	public function getModel($name = 'Consenttrails', $prefix = 'Administrator', $config = ['ignore_request' => true])

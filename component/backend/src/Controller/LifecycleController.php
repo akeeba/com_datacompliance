@@ -11,7 +11,10 @@ defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModelsTrait;
+use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Input\Input;
@@ -45,6 +48,19 @@ class LifecycleController extends AdminController
 
 	public function display($cachable = false, $urlparams = [])
 	{
+		// Defence in depth: the dispatcher already enforces core.manage, but if a future
+		// contributor re-registers a state-changing task on this controller they would
+		// bypass every line of defence. Re-check the privilege here too.
+		$user = Factory::getApplication()->getIdentity();
+
+		if (!$user->authorise('core.manage', 'com_datacompliance'))
+		{
+			throw new \Joomla\CMS\Access\Exception\NotAllowed(
+				Text::_('JERROR_ALERTNOAUTHOR'),
+				403
+			);
+		}
+
 		$view      = $this->getView();
 		$wipeModel = $this->getModel('Wipe');
 		$view->setModel($wipeModel, false);

@@ -1,6 +1,7 @@
 Akeeba Data Compliance 4.0.3
 ================================================================================
 ~ A user with the `wipe` or `export` privilege can now record consent on another user's behalf (matches the data-subject view)
+~ Defence in depth: the audit-trail list controllers now re-check core.manage in their display() method
 ~ Hardening: the frontend dispatcher now fails closed, rejecting any view other than the public user options page
 ~ Hardening: removed a redundant access check that could wrongly block Super Users and component managers from acting on another user's behalf
 ~ Hardening: re-validate list ordering column and direction against the whitelist before composing the ORDER BY clause
