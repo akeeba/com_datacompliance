@@ -21,3 +21,6 @@
 /assets/email/*.ini
 .DS_Store
 /.idea/laravel-idea.xml
+
+### Temporary plan files
+/.plans
