@@ -4,6 +4,7 @@ Akeeba Data Compliance 4.0.3
 ~ Hardening: removed a redundant access check that could wrongly block Super Users and component managers from acting on another user's behalf
 ~ Hardening: re-validate list ordering column and direction against the whitelist before composing the ORDER BY clause
 ~ Hardening: use a bound integer parameter for the user ID in the login-time notification cleanup query
+# [HIGH] Open redirect via the post-consent and post-wipe return URL: the com_datacompliance.return_url session value was not re-validated before being passed to setRedirect()
 # [LOW] The "creator_id:" search prefix was parsed with the wrong offset, always yielding user 0
 # [LOW] The wipe trails "id:" search filtered on the export trails primary key column name
 # [LOW] Invalid SQL "==" operator when loading old user profile values for change logging

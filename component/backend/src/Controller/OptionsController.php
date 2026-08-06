@@ -64,6 +64,11 @@ class OptionsController extends BaseController
 		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=options', false);
 		$returnUrl  = $this->app->getSession()->get('com_datacompliance.return_url', $defaultUrl);
 
+		if (!JUri::isInternal($returnUrl))
+		{
+			$returnUrl = $defaultUrl;
+		}
+
 		$message = Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');
 		$this->setRedirect($returnUrl, $message);
 		$this->redirect();
@@ -151,6 +156,8 @@ class OptionsController extends BaseController
 		$userID      = $this->input->getInt('user_id', $currentUser->id);
 		$isCurrent   = $userID == $currentUser->id;
 
+		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=options', false);
+
 		$phrase = $this->input->getString('phrase', null);
 		$user   = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
 		/** @var WipeModel $wipeModel */
@@ -165,6 +172,12 @@ class OptionsController extends BaseController
 			$url         = 'index.php?option=com_datacompliance&view=options';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
+
+			if (!JUri::isInternal($redirectUrl))
+			{
+				$redirectUrl = $defaultUrl;
+			}
+
 			$this->setRedirect($redirectUrl, $msg, 'error');
 			$this->redirect();
 		}
@@ -184,6 +197,12 @@ class OptionsController extends BaseController
 			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
+
+			if (!JUri::isInternal($redirectUrl))
+			{
+				$redirectUrl = $defaultUrl;
+			}
+
 			$this->setRedirect($redirectUrl, Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_BADPHRASE'), 'error');
 			$this->redirect();
 
@@ -201,6 +220,12 @@ class OptionsController extends BaseController
 			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
+
+			if (!JUri::isInternal($redirectUrl))
+			{
+				$redirectUrl = $defaultUrl;
+			}
+
 			$message     = Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_DELETEFAILED', $error);
 			$this->setRedirect($redirectUrl, $message, 'error');
 			$this->redirect();

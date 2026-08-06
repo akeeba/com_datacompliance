@@ -205,12 +205,27 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 
 		if ($needsConsent)
 		{
-			// Save the current URL, but only if we haven't saved a URL or if the saved URL is NOT internal to the site.
+			// Manage the return URL stored in the session.
+			//
+			// - If a URL is already saved AND internal: keep it (current valid behaviour).
+			// - If a URL is saved but NOT internal: clear it, do NOT overwrite with the current URL. This prevents a
+			//   poisoned session value from being silently replaced just before we redirect, and forces the controller
+			//   to fall back to its default internal URL.
+			// - If no URL is saved: capture the current URL, but only if it is internal. We must never write a value
+			//   that is not internal, even if doing so would later be replaced; an unsafe write is still an unsafe
+			//   write while it lives in the session.
 			$return_url = $session->get('com_datacompliance.return_url', '');
 
-			if (empty($return_url) || !Uri::isInternal($return_url))
+			if (!empty($return_url))
 			{
-				$session->set('com_datacompliance.return_url', Uri::getInstance()->toString([
+				if (!Uri::isInternal($return_url))
+				{
+					$session->set('com_datacompliance.return_url', '');
+				}
+			}
+			else
+			{
+				$currentUrl = Uri::getInstance()->toString([
 					'scheme',
 					'user',
 					'pass',
@@ -219,7 +234,12 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 					'path',
 					'query',
 					'fragment',
-				]));
+				]);
+
+				if (Uri::isInternal($currentUrl))
+				{
+					$session->set('com_datacompliance.return_url', $currentUrl);
+				}
 			}
 
 			// Redirect to the consent page. We intentionally do NOT enqueue a flash message here: if Joomla's MFA
