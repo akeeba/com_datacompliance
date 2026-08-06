@@ -6,6 +6,7 @@ Akeeba Data Compliance 4.0.3
 ~ Hardening: removed a redundant access check that could wrongly block Super Users and component managers from acting on another user's behalf
 ~ Hardening: re-validate list ordering column and direction against the whitelist before composing the ORDER BY clause
 ~ Hardening: use a bound integer parameter for the user ID in the login-time notification cleanup query
+~ Removed the dead `old/` directory (legacy FOF-era CLI scripts; not part of the installable extension; superseded by the Joomla console plugin)
 # [HIGH] Open redirect via the post-consent and post-wipe return URL: the com_datacompliance.return_url session value was not re-validated before being passed to setRedirect()
 # [HIGH] Admin recording consent without evidence breaks GDPR Article 7(1): when an admin records consent on a user's behalf, an evidence reference (support ticket ID, email transcript, signed form, etc.) is now required and is shown in the consent form with the Article 7(1) rationale
 # [MEDIUM] Declare the export and wipe ACL actions in access.xml; block non-Super-Users from wiping a Super User
