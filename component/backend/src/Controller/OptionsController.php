@@ -56,10 +56,21 @@ class OptionsController extends BaseController
 		$this->checkToken($this->input->getMethod());
 		$this->assertUserAccess('consent');
 
-		/** @var OptionsModel $model */
-		$model = $this->getModel();
+		$currentUser = $this->app->getIdentity();
+		$userID      = $this->input->getInt('user_id', $currentUser->id);
 
-		$model->recordPreference($this->input->getBool('enabled', false));
+		// Resolve the target user. Self-consent uses the current identity; otherwise load the requested user.
+		if ($userID === $currentUser->id)
+		{
+			$user = $currentUser;
+		}
+		else
+		{
+			$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+		}
+
+		$enabled = $this->input->getBool('enabled', false);
+		$reason  = $this->input->getString('reason', '');
 
 		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=options', false);
 		$returnUrl  = $this->app->getSession()->get('com_datacompliance.return_url', $defaultUrl);
@@ -67,6 +78,22 @@ class OptionsController extends BaseController
 		if (!JUri::isInternal($returnUrl))
 		{
 			$returnUrl = $defaultUrl;
+		}
+
+		/** @var OptionsModel $model */
+		$model = $this->getModel();
+
+		try
+		{
+			$model->recordPreference($enabled, $user, $reason);
+		}
+		catch (RuntimeException $e)
+		{
+			$this->app->enqueueMessage($e->getMessage(), 'error');
+			$this->setRedirect($returnUrl);
+			$this->redirect();
+
+			return;
 		}
 
 		$message = Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MSG_RECORDED');

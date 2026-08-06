@@ -11,7 +11,7 @@
 	<authorUrl>https://www.akeeba.com</authorUrl>
 	<copyright>Copyright (c)2018-2025 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
 	<license>This component in released under the GNU/GPL v3 or later license</license>
-	<version>4.0.2</version>
+	<version>4.0.3</version>
 	<description>COM_DATACOMPLIANCE_XML_DESCRIPTION</description>
 	<namespace path="src">Akeeba\Component\DataCompliance</namespace>
 

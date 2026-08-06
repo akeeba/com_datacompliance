@@ -98,6 +98,38 @@ $token  = Factory::getApplication()->getFormToken();
 					</strong>
 				</span>
 			</p>
+			<form
+				class="border border-primary rounded-3 p-3 m-2"
+				method="post"
+				action="<?= Route::_('index.php?option=com_datacompliance&view=options&task=consent&user_id=' . (int) $this->user->id) ?>">
+
+				<div class="mb-3">
+					<label for="datacompliance-consent-reason" class="fw-bold">
+						<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_REASON_LABEL') ?>
+					</label>
+					<textarea
+						name="reason"
+						id="datacompliance-consent-reason"
+						required
+						rows="6"
+						class="form-control"></textarea>
+				</div>
+
+				<div class="alert alert-info mt-3 mb-3">
+					<p class="mb-2">
+						<span class="fa fa-info-circle" aria-hidden="true"></span>
+						<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_REASON_DESC') ?>
+					</p>
+				</div>
+
+				<div class="mb-3">
+					<button type="submit" class="btn btn-primary">
+						<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCEBUTTON_ADMIN') ?>
+					</button>
+				</div>
+
+				<?= HTMLHelper::_('form.token') ?>
+			</form>
 		</div>
     </div>
 <?php endif; ?>

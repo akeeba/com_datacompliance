@@ -16,11 +16,13 @@ use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\User\User;
 use Joomla\Utilities\IpHelper;
+use RuntimeException;
 
 #[\AllowDynamicProperties]
 class OptionsModel extends BaseDatabaseModel
@@ -138,12 +140,14 @@ class OptionsModel extends BaseDatabaseModel
 	/**
 	 * Record the user preference (or update their preference)
 	 *
-	 * @param   bool  $preference  Their data protection preference
+	 * @param   bool        $preference  Their data protection preference
+	 * @param   User|null   $user        The user whose preference is being recorded (defaults to the current identity)
+	 * @param   string|null $reason      Evidence of consent (required when recording on behalf of another user)
 	 *
 	 * @throws  Exception
 	 * @since   1.0.0
 	 */
-	public function recordPreference(bool $preference = false, ?User $user = null): void
+	public function recordPreference(bool $preference = false, ?User $user = null, ?string $reason = null): void
 	{
 		/** @var CMSApplication $app */
 		$app = Factory::getApplication();
@@ -151,6 +155,16 @@ class OptionsModel extends BaseDatabaseModel
 		if (is_null($user))
 		{
 			$user = $app->getIdentity();
+		}
+
+		// When recording consent on another user's behalf, Article 7(1) GDPR requires the controller to demonstrate
+		// that the data subject consented. A non-empty reason describing the evidence is therefore mandatory.
+		$actor     = $app->getIdentity();
+		$isOnBehalf = $user->id !== $actor->id;
+
+		if ($isOnBehalf && trim((string) $reason) === '')
+		{
+			throw new RuntimeException(Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_ERR_REASON_REQUIRED'));
 		}
 
 		/** @var ConsenttrailsTable $consent */
@@ -164,6 +178,7 @@ class OptionsModel extends BaseDatabaseModel
 		}
 
 		$consent->requester_ip = IpHelper::getIp();
+		$consent->reason       = $reason === null ? null : trim($reason);
 		$consent->enabled      = $preference ? 1 : 0;
 		$consent->store(true);
 
