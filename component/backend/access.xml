@@ -8,5 +8,7 @@
 	<section name="component">
 		<action name="core.admin" title="JACTION_ADMIN"/>
 		<action name="core.manage" title="JACTION_MANAGE"/>
+		<action name="export" title="COM_DATACOMPLIANCE_ACTION_EXPORT"/>
+		<action name="wipe" title="COM_DATACOMPLIANCE_ACTION_WIPE"/>
 	</section>
 </access>

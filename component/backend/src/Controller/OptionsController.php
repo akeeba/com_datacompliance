@@ -315,6 +315,18 @@ class OptionsController extends BaseController
 					throw new RuntimeException(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 				}
 
+				// Only Super Users may wipe other Super Users.
+				if (!$isSuper && !empty($user_id))
+				{
+					$target = Factory::getContainer()
+						->get(UserFactoryInterface::class)
+						->loadUserById($user_id);
+					if ($target->authorise('core.admin'))
+					{
+						throw new RuntimeException(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+					}
+				}
+
 				break;
 
 			// Export a user profile. Only Super Users, DataCompliance administrators and users with 'export' privilege.
