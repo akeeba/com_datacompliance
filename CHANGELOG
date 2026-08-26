@@ -1,22 +1,21 @@
 Akeeba Data Compliance 4.0.3
 ================================================================================
-~ A user with the `wipe` or `export` privilege can now record consent on another user's behalf (matches the data-subject view)
-~ Defence in depth: the audit-trail list controllers now re-check core.manage in their display() method
-~ Hardening: the frontend dispatcher now fails closed, rejecting any view other than the public user options page
-~ Hardening: removed a redundant access check that could wrongly block Super Users and component managers from acting on another user's behalf
-~ Hardening: re-validate list ordering column and direction against the whitelist before composing the ORDER BY clause
-~ Hardening: use a bound integer parameter for the user ID in the login-time notification cleanup query
-~ Removed the dead `old/` directory (legacy FOF-era CLI scripts; not part of the installable extension; superseded by the Joomla console plugin)
-# [HIGH] Open redirect via the post-consent and post-wipe return URL: the com_datacompliance.return_url session value was not re-validated before being passed to setRedirect()
-# [HIGH] Admin recording consent without evidence breaks GDPR Article 7(1): when an admin records consent on a user's behalf, an evidence reference (support ticket ID, email transcript, signed form, etc.) is now required and is shown in the consent form with the Article 7(1) rationale
-# [MEDIUM] Declare the export and wipe ACL actions in access.xml; block non-Super-Users from wiping a Super User
-# [LOW] The "creator_id:" search prefix was parsed with the wrong offset, always yielding user 0
-# [LOW] The wipe trails "id:" search filtered on the export trails primary key column name
-# [LOW] Invalid SQL "==" operator when loading old user profile values for change logging
-# [LOW] Trail list views could not be sorted: filter_fields and the sort dropdown referenced non-existent columns
-# [LOW] Removed the non-functional Enabled/Published filter from the export and wipe trail list views
-# [LOW] Plain search terms in the Lifecycle list view raised an SQL error because the users table was not aliased
-# [LOW] WipeModel::createAuditRecord() decided whether an existing wipe audit trail could be overwritten based on the application identity; replace this with an explicit $allowReWipe parameter on wipe()
+~ Admins with `wipe`/`export` privilege can now record consent for another user
+~ Audit-trail list controllers re-check core.manage in display()
+~ Frontend dispatcher now fails closed, blocking any view but the public user options page
+~ Removed a redundant check that wrongly blocked Super Users/managers acting for others
+~ Re-validate list ordering column/direction against the whitelist before building ORDER BY
+~ Bound the user ID as an integer in the login-time notification cleanup query
+# [HIGH] Open redirect: post-consent/post-wipe return URL was not re-validated before redirect
+# [HIGH] Admin consent-on-behalf now requires an evidence reference (GDPR Article 7(1))
+# [MEDIUM] Declared export/wipe ACL actions in access.xml; block wiping a Super User
+# [LOW] "creator_id:" search prefix used the wrong offset, always matching user 0
+# [LOW] Wipe trails "id:" search filtered on the wrong (export trails) column
+# [LOW] Invalid SQL "==" operator when loading old profile values for change logging
+# [LOW] Trail list views couldn't be sorted: bad filter_fields/sort dropdown columns
+# [LOW] Removed the non-functional Enabled/Published filter from export/wipe trail lists
+# [LOW] Lifecycle list search errored on plain terms; users table wasn't aliased
+# [LOW] Wipe re-check now uses an explicit $allowReWipe parameter, not app identity
 
 Akeeba Data Compliance 4.0.2
 ================================================================================
