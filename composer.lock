@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6854db1f20b8f6f716e7acc5c654072b",
+    "content-hash": "03733880220dac2f3e15bd3a16d83013",
     "packages": [
         {
             "name": "akeeba/s3",
-            "version": "2.5.0",
+            "version": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
@@ -25,6 +25,7 @@
                 "ext-simplexml": "*",
                 "php": "^7.4.0|^8.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -53,7 +54,7 @@
             ],
             "support": {
                 "issues": "https://github.com/akeeba/s3/issues",
-                "source": "https://github.com/akeeba/s3/tree/2.5.0"
+                "source": "https://github.com/akeeba/s3/tree/development"
             },
             "time": "2026-07-14T08:45:05+00:00"
         }
@@ -61,7 +62,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "akeeba/s3": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
