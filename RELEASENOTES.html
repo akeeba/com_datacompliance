@@ -1,5 +1,15 @@
 <h3>What's new?</h3>
 
 <p>
-	<strong>Bug fixes and minor improvements</strong>.
+	This release fixes an <strong>open redirect</strong> in the post-consent / post-wipe return URL handling,
+	and closes a gap where an administrator recording consent on another user's behalf could do so without
+	any evidence reference, which would not satisfy GDPR Article 7(1). An evidence reference (support ticket
+	ID, email transcript, signed form, etc.) is now required and shown on the consent form. Admins with the
+	<code>wipe</code> or <code>export</code> privilege can now also record consent for another user, matching
+	the data subject's own consent view.
+</p>
+
+<p>
+	The rest of the release is hardening (stricter access checks, input validation) and low-impact bug fixes
+	to the audit trail list views and lifecycle search.
 </p>

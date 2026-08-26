@@ -4,28 +4,27 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03733880220dac2f3e15bd3a16d83013",
+    "content-hash": "6854db1f20b8f6f716e7acc5c654072b",
     "packages": [
         {
             "name": "akeeba/s3",
-            "version": "dev-development",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "f4f20122476b27ffa243f8a49aeaf7813cbc8932"
+                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/f4f20122476b27ffa243f8a49aeaf7813cbc8932",
-                "reference": "f4f20122476b27ffa243f8a49aeaf7813cbc8932",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
+                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-simplexml": "*",
-                "php": ">=7.1.0 <8.4"
+                "php": "^7.4.0|^8.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -54,17 +53,15 @@
             ],
             "support": {
                 "issues": "https://github.com/akeeba/s3/issues",
-                "source": "https://github.com/akeeba/s3/tree/development"
+                "source": "https://github.com/akeeba/s3/tree/2.5.0"
             },
-            "time": "2025-01-06T14:29:07+00:00"
+            "time": "2026-07-14T08:45:05+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "akeeba/s3": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -77,5 +74,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
