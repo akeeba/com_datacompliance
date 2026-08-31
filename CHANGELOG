@@ -1,3 +1,7 @@
+Akeeba Data Compliance 4.0.4
+================================================================================
+# [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
+
 Akeeba Data Compliance 4.0.3
 ================================================================================
 ~ Admins with `wipe`/`export` privilege can now record consent for another user

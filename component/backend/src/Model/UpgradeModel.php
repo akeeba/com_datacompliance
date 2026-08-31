@@ -460,7 +460,14 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 
 		if ($baseName === $lowercaseBaseName)
 		{
-			return $hasMixedCase && Folder::delete($path);
+			try
+			{
+				return $hasMixedCase && Folder::delete($path);
+			}
+			catch (\Exception $e)
+			{
+				return false;
+			}
 		}
 
 		// We have a mixed case folder. Further investigation necessary.
@@ -470,7 +477,14 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		// If the lowercase path does not exist we have a case-sensitive filesystem. Return early.
 		if (!$hasLowercase)
 		{
-			return $hasMixedCase && Folder::delete($path);
+			try
+			{
+				return $hasMixedCase && Folder::delete($path);
+			}
+			catch (\Exception $e)
+			{
+				return false;
+			}
 		}
 
 		// Both folders exist. Are they the same?
@@ -490,21 +504,44 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 
 		$readData = file_get_contents($uppercaseTestFile);
 
-		File::delete($lowercaseTestFile);
+		try
+		{
+			File::delete($lowercaseTestFile);
+		}
+		catch (\Exception $e)
+		{
+			// Swallow.
+		}
 
 		// The two folders are different. We have a case-sensitive filesystem. Proceed with deletion.
 		if ($readData !== $data)
 		{
-			return Folder::delete($path);
+			try
+			{
+				return Folder::delete($path);
+			}
+			catch (\Exception $e)
+			{
+				return false;
+			}
 		}
 
 		/**
-		 * The two folders are identical.
+		 * The two folders are identical: we are on a case-insensitive filesystem, and $path and $altPath are two
+		 * spellings of one directory. The probe above proves it — a file written through $altPath was read back
+		 * through $path — so deleting it removes exactly the folder we were asked to remove, and nothing else.
 		 *
-		 * It is impossible to know if the folder is written on disk as lowercase or mixed case. We must rename it to
-		 * all lowercase. If we don't, moving the site to a case-sensitive filesystem will break it (the folder will be
-		 * in the wrong case!). Therefore we have to do a two-step process to effect the rename on a case-insensitive
-		 * filesystem...
+		 * We cannot simply delete $path, because we do not know how the entry is actually spelled on disk, and
+		 * deleting through the wrong spelling is what the original Windows breakage was about. So we first rename
+		 * the folder to a name we chose ourselves, whose spelling is therefore known exactly, and delete that.
+		 *
+		 * The rename is two-step because renaming Foo to foo is a no-op (or an error) on a case-insensitive
+		 * filesystem: the source and destination are the same entry. Going through a uniquely named intermediate
+		 * avoids that collision.
+		 *
+		 * If the deletion fails we still land the folder on its all-lowercase name rather than leaving it under the
+		 * intermediate one, so that a failure here leaves the tree tidy — and correctly cased, which matters if the
+		 * site is later moved to a case-sensitive filesystem.
 		 */
 		$intermediateBasename = $lowercaseBaseName . '_' . UserHelper::genRandomPassword(8);
 		$intermediatePath     = dirname($path) . '/' . $intermediateBasename;
@@ -512,11 +549,38 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		try
 		{
 			Folder::move($path, $intermediatePath);
+		}
+		catch (\Exception $e)
+		{
+			// Swallow; the is_dir() check below is what actually decides whether the rename landed.
+		}
+
+		/**
+		 * Folder::move() reports failure by RETURNING a string ('Rename failed', 'Folder already exists', …) rather
+		 * than throwing, so the catch above cannot be relied upon. Check the filesystem instead: if the folder is not
+		 * where we just tried to put it, the rename did not happen and there is nothing safe to delete.
+		 */
+		if (!is_dir($intermediatePath))
+		{
+			return false;
+		}
+
+		try
+		{
+			return Folder::delete($intermediatePath);
+		}
+		catch (\Exception $e)
+		{
+			// Deletion failed. Fall through and at least leave the folder correctly cased.
+		}
+
+		try
+		{
 			Folder::move($intermediatePath, $altPath);
 		}
 		catch (\Exception $e)
 		{
-			// Swallow.
+			// Swallow: nothing further we can do.
 		}
 
 		return false;
