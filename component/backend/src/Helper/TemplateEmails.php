@@ -9,6 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Helper;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Mail\MailerFactoryInterface;
@@ -392,7 +393,7 @@ abstract class TemplateEmails
 		{
 			/** @var DatabaseDriver $db */
 			$db    = Factory::getContainer()->get(DatabaseInterface::class);
-			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true));
+			$query = DbQuery::create($db);
 			$query->select('*')
 				->from($db->quoteName('#__mail_templates'))
 				->where($db->quoteName('template_id') . ' = :key')

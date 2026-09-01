@@ -1,5 +1,6 @@
 Akeeba Data Compliance 4.0.4
 ================================================================================
+~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind

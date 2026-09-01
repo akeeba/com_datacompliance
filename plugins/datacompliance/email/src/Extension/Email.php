@@ -9,6 +9,7 @@ namespace Akeeba\Plugin\DataCompliance\Email\Extension;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
 use Akeeba\Component\DataCompliance\Site\Model\OptionsModel;
 use Exception;
@@ -229,7 +230,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 
 		try
 		{
-			$q      = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+			$q      = DbQuery::create($db)
 				->select([$db->quoteName('id')])
 				->from($db->quoteName('#__usergroups'));
 			$groups = $db->setQuery($q)->loadColumn();
@@ -252,7 +253,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 		// Get the user IDs of users belonging to the SA groups
 		try
 		{
-			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+			$query = DbQuery::create($db)
 				->select($db->quoteName('user_id'))
 				->from($db->quoteName('#__user_usergroup_map'))
 				->whereIn($db->quoteName('group_id'), $groups, ParameterType::INTEGER);
@@ -279,7 +280,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 		// Get the user information for the Super Administrator users
 		try
 		{
-			$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+			$query = DbQuery::create($db)
 				->select([
 					$db->quoteName('id'),
 					$db->quoteName('username'),

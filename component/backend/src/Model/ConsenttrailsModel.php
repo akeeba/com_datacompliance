@@ -9,6 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
@@ -36,7 +37,7 @@ class ConsenttrailsModel extends ListModel
 	protected function getListQuery()
 	{
 		$db    = $this->getDatabase();
-		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$query = DbQuery::create($db)
 			->select([
 				$db->quoteName('a') . '.*',
 				$db->quoteName('u.name'),

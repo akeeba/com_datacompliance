@@ -9,6 +9,7 @@ namespace Akeeba\Plugin\System\DataCompliance\Extension;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Table\ConsenttrailsTable;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
@@ -275,7 +276,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 	{
 		// Get the consent information from Joomla
 		$db     = $this->getDatabase();
-		$query  = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$query  = DbQuery::create($db)
 			->select('COUNT(*)')
 			->from($db->quoteName('#__privacy_consents'))
 			->where($db->quoteName('user_id') . ' = :userid')

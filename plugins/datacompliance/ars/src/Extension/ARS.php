@@ -9,6 +9,7 @@ namespace Akeeba\Plugin\DataCompliance\ARS\Extension;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Helper\Export;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
@@ -111,11 +112,11 @@ class ARS extends CMSPlugin implements SubscriberInterface
 
 		// ======================================== Log entries ========================================
 
-		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$selectQuery = DbQuery::create($db)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_log'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
-		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__ars_log'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
@@ -144,12 +145,12 @@ class ARS extends CMSPlugin implements SubscriberInterface
 
 		// ======================================== Download IDs ========================================
 
-		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$selectQuery = DbQuery::create($db)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_dlidlabels'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
-		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__ars_dlidlabels'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
 
@@ -205,7 +206,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$domain->addAttribute('name', 'ars_log');
 		$domain->addAttribute('description', 'Akeeba Release System download log');
 
-		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__ars_log'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
@@ -222,7 +223,7 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$domain->addAttribute('name', 'ars_dlidlables');
 		$domain->addAttribute('description', 'Akeeba Release System download IDs (main and add-on)');
 
-		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__ars_dlidlabels'))
 			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));

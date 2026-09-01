@@ -7,6 +7,7 @@
 
 namespace Akeeba\Component\DataCompliance\Administrator\Table;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\TableAssertionTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\TableCreateModifyTrait;
@@ -74,7 +75,7 @@ class ConsenttrailsTable extends AbstractTable
 			else
 			{
 				$db = method_exists($this, 'getDatabase') ? $this->getDatabase() : $this->getDbo();
-				$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+				$query = DbQuery::create($db)
 					->delete($this->_tbl)
 					->where($db->quoteName('created_by') . ' = :created_by')
 					->bind(':created_by', $this->created_by, ParameterType::INTEGER);

@@ -9,6 +9,7 @@ namespace Akeeba\Plugin\DataCompliance\LoginGuard\Extension;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Helper\Export;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
@@ -110,13 +111,13 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 		$db = $this->getDatabase();
 		$db->setMonitor(null);
 
-		$selectQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$selectQuery = DbQuery::create($db)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__loginguard_tfa'))
 			->where($db->quoteName('user_id') . ' = :user_id')
 			->bind(':user_id', $userId, ParameterType::INTEGER);
 
-		$deleteQuery = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__loginguard_tfa'))
 			->where($db->quoteName('user_id') . ' = :user_id')
 			->bind(':user_id', $userId, ParameterType::INTEGER);
@@ -165,7 +166,7 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 
 		try
 		{
-			$query   = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+			$query   = DbQuery::create($db)
 				->select('*')
 				->from('#__loginguard_tfa')
 				->where($db->quoteName('user_id') . ' = :user_id')

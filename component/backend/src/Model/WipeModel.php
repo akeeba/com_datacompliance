@@ -11,6 +11,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\RunPluginsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Table\WipetrailsTable;
 use DateTime;
@@ -140,7 +141,7 @@ class WipeModel extends BaseDatabaseModel
 	public function getWipedUserIDs(): array
 	{
 		$db    = $this->getDatabase();
-		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$query = DbQuery::create($db)
 			->select('user_id')
 			->from($db->quoteName('#__datacompliance_wipetrails'))
 			->group($db->quoteName('user_id'));
@@ -165,7 +166,7 @@ class WipeModel extends BaseDatabaseModel
 	public function isUserNotified(int $userId, ?Date $when = null): bool
 	{
 		$db     = $this->getDatabase();
-		$query  = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$query  = DbQuery::create($db)
 			->select([
 				$db->quoteName('profile_key'),
 				$db->quoteName('profile_value'),
@@ -281,7 +282,7 @@ class WipeModel extends BaseDatabaseModel
 	public function resetUserNotification(int $userId): void
 	{
 		$db    = $this->getDatabase();
-		$query = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$query = DbQuery::create($db)
 			->delete($db->quoteName('#__user_profiles'))
 			->where($db->quoteName('user_id') . ' = :userId')
 			->where($db->quoteName('profile_key') . ' LIKE ' .

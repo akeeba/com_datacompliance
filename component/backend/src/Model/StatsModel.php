@@ -9,6 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use DateInterval;
 use Exception;
 use Joomla\CMS\Date\Date;
@@ -40,7 +41,7 @@ class StatsModel extends BaseDatabaseModel
 		$db      = $this->getDatabase();
 		$fromSql = $from->toSql();
 		$toSql   = $to->toSql();
-		$query   = (method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true))
+		$query   = DbQuery::create($db)
 			->select([
 				'count(*) AS ' . $db->quoteName('records'),
 				$db->quoteName('type'),
