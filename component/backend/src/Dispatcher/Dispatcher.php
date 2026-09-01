@@ -23,13 +23,42 @@ class Dispatcher extends ComponentDispatcher
 
 	protected $defaultController = 'controlpanel';
 
+	/**
+	 * Minimum supported PHP version.
+	 *
+	 * @var string
+	 */
+	protected $minPHPVersion = '8.1.0';
+
+	/**
+	 * First PHP version which is NOT supported.
+	 *
+	 * @var string
+	 */
+	protected $maxPHPVersion = '8.7';
+
 	public function dispatch()
 	{
 		try
 		{
-			if (version_compare(PHP_VERSION, '7.4.0', 'lt'))
+			if (version_compare(PHP_VERSION, $this->minPHPVersion, 'lt'))
 			{
-				throw new RuntimeException('Akeeba DataCompliance requires PHP 7.4.0 or later.');
+				throw new RuntimeException(
+					sprintf(
+						'Akeeba DataCompliance requires PHP %s or later.',
+						$this->minPHPVersion
+					)
+				);
+			}
+
+			if (!empty($this->maxPHPVersion) && version_compare(PHP_VERSION, $this->maxPHPVersion, 'ge'))
+			{
+				throw new RuntimeException(
+					sprintf(
+						'Akeeba DataCompliance does not support PHP %s or later.',
+						$this->maxPHPVersion
+					)
+				);
 			}
 
 			$this->triggerEvent('onBeforeDispatch');
@@ -157,9 +186,7 @@ class Dispatcher extends ComponentDispatcher
 		$document->getWebAssetManager()
 			->usePreset('com_datacompliance.backend');
 
-		if (version_compare(JVERSION, '4.99999.99999', 'gt')) {
-			$document->getWebAssetManager()
-				->useStyle('com_datacompliance.j5');
-		}
+		$document->getWebAssetManager()
+			->useStyle('com_datacompliance.j5');
 	}
 }

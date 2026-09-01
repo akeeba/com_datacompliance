@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\Adapter\PackageAdapter;
 use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\CMS\Installer\InstallerScript;
+use Joomla\CMS\Log\Log;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseInterface;
 
@@ -30,11 +31,80 @@ class Pkg_DatacomplianceInstallerScript extends InstallerScript
 	 */
 	protected $dbo;
 
-	protected $minimumPhp = '7.4.0';
+	protected $minimumPhp = '8.1.0';
 
-	protected $minimumJoomla = '4.4.0';
+	/**
+	 * First PHP version which is NOT supported.
+	 *
+	 * @var string
+	 */
+	protected $maximumPhp = '8.7';
+
+	protected $minimumJoomla = '5.4.0';
+
+	/**
+	 * First Joomla! version which is NOT supported.
+	 *
+	 * @var string
+	 */
+	protected $maximumJoomla = '6.3';
 
 	protected $allowDowngrades = true;
+
+	/**
+	 * Called before any type of installation / uninstallation action.
+	 *
+	 * Joomla! itself enforces $minimumPhp and $minimumJoomla for us. It has no equivalent for the maximum of either,
+	 * so we enforce those here.
+	 *
+	 * @param   string            $type    Which action is happening (install|uninstall|discover_install|update)
+	 * @param   InstallerAdapter  $parent  The object responsible for running this script
+	 *
+	 * @return  bool
+	 */
+	public function preflight($type, $parent)
+	{
+		if (!parent::preflight($type, $parent))
+		{
+			return false;
+		}
+
+		// Check for the maximum PHP version before continuing
+		$maxPhp = !empty($this->maximumPhp) ? trim($this->maximumPhp) : null;
+
+		if (!empty($maxPhp) && version_compare(PHP_VERSION, $maxPhp, 'ge'))
+		{
+			Log::add(
+				sprintf(
+					'This extension supports PHP versions lower than %s. Your server has a newer PHP version (%s) which has not been tested with it. The installation cannot proceed.',
+					$maxPhp, PHP_VERSION
+				),
+				Log::WARNING,
+				'jerror'
+			);
+
+			return false;
+		}
+
+		// Check for the maximum Joomla version before continuing
+		$maxJoomla = !empty($this->maximumJoomla) ? trim($this->maximumJoomla) : null;
+
+		if (!empty($maxJoomla) && version_compare(JVERSION, $maxJoomla, 'ge'))
+		{
+			Log::add(
+				sprintf(
+					'This extension supports Joomla! versions lower than %s. Your site has a newer Joomla! version (%s) which has not been tested with it. The installation cannot proceed.',
+					$maxJoomla, JVERSION
+				),
+				Log::WARNING,
+				'jerror'
+			);
+
+			return false;
+		}
+
+		return true;
+	}
 
 	/**
 	 * Called after any type of installation / uninstallation action.

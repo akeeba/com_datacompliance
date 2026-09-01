@@ -162,12 +162,6 @@ class ExportModel extends BaseDatabaseModel
 	 */
 	protected function getJoomlaPrivacyResults(int $userId): array
 	{
-		// This feature is available since Joomla! 3.9.0
-		if (version_compare(JVERSION, '3.9.0', 'lt'))
-		{
-			return [];
-		}
-
 		// Get a user record
 		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userId);
 

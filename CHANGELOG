@@ -1,5 +1,8 @@
-Akeeba Data Compliance 4.0.4
+Akeeba Data Compliance 4.1.0
 ================================================================================
+! Dropped support for Joomla! 4.x and 5.0 to 5.3; Joomla! 5.4 to 6.2 is now required
+! Dropped support for PHP 7.4 and 8.0; PHP 8.1 to 8.6 is now required
++ The installer now refuses to install on a Joomla! or PHP version newer than the supported maximum
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems

@@ -153,11 +153,6 @@ class MailTemplateHotFix
 
 	private static function hotFixMailTemplate(): void
 	{
-		if (!version_compare(JVERSION, '5.2.0', 'ge'))
-		{
-			return;
-		}
-
 		if (!self::canRegisterWrapper())
 		{
 			return;

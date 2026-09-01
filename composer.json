@@ -4,14 +4,58 @@
   "config": {
     "vendor-dir": "component/backend/vendor",
     "platform": {
-      "php": "7.4.0"
+      "php": "8.1.999"
     }
   },
   "require": {
-    "php": "^7.4.0||^8.0.0",
+    "php": ">=8.1.0 <8.7",
     "akeeba/s3": "dev-development",
     "ext-simplexml": "*",
     "ext-dom": "*",
     "ext-json": "*"
+  },
+  "extra": {
+    "akcompat": {
+      "limit_type": "joomla",
+      "limit": ">=5.4.0 <6.3",
+      "locations": [
+        {
+          "file": "component/script.datacompliance.php",
+          "type": "variable",
+          "marker": "$minimumPhp",
+          "value": "PHP_MIN"
+        },
+        {
+          "file": "component/script.datacompliance.php",
+          "type": "variable",
+          "marker": "$maximumPhp",
+          "value": "PHP_MAX"
+        },
+        {
+          "file": "component/backend/src/Dispatcher/Dispatcher.php",
+          "type": "variable",
+          "marker": "$minPHPVersion",
+          "value": "PHP_MIN"
+        },
+        {
+          "file": "component/backend/src/Dispatcher/Dispatcher.php",
+          "type": "variable",
+          "marker": "$maxPHPVersion",
+          "value": "PHP_MAX"
+        },
+        {
+          "file": "component/script.datacompliance.php",
+          "type": "variable",
+          "marker": "$minimumJoomla",
+          "value": "LIMIT_MIN"
+        },
+        {
+          "file": "component/script.datacompliance.php",
+          "type": "variable",
+          "marker": "$maximumJoomla",
+          "value": "LIMIT_MAX"
+        }
+      ]
+    }
   }
 }
