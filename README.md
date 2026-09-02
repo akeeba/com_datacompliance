@@ -29,33 +29,23 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU General Public License  along with this program.  If not, see [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).
 
-## Support policy
+## Build instructions
 
-We do not provide any end user support.
+Check out this repository and Akeeba Build Tools — Public Packager using the following directory names:
 
-If you are a developer and want to contribute a bug fix or small feature please send a Pull Request. 
+- `com_datacompliance` This repository.
+- `buildfiles` [Akeeba Build Tools — Public Packager](https://github.com/akeeba/buildfiles-public)
+- `build.properties` A file created as per the instructions in `buildfiles/README.md`
 
-If it's a more significant feature you want to contribute please file an issue first, explaining your use case, how you propose to address it and what is your timeline for writing the code.
+Then:
 
-## Building the component (for developers)
+```bash
+cd com_datacompliance
+composer install
+phing git
+```
 
-In order to build the installation packages of this component you will need to have the following tools:
-
-* A command line environment. Using Bash under Linux / Mac OS X works best. On Windows you will need to run most tools through an elevated privileges (administrator) command prompt on an NTFS filesystem due to the use of symlinks. Press WIN-X and click on "Command Prompt (Admin)" to launch an elevated command prompt.
-* A PHP CLI binary in your path
-* Command line Git executables
-* Phing
-
-You will also need the following path structure inside a folder on your system
-
-* **com_datacompliance** This repository
-* **buildfiles** [Akeeba Build Tools](https://github.com/akeeba/buildfiles)
-
-You will need to use the exact folder names specified here.
-
-## Building a dev release
-
-Go inside `com_datacompliance/build` and run `phing git -Dversion=0.0.1.a1` to create a development release. The installable Joomla! ZIP package file is output in the `com_datacompliance/release` directory.
+The generated package is under `com_datacompliance/release`.
 
 ## Regulatory status (EU Cyber Resilience Act)
 
