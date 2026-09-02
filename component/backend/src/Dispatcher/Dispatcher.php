@@ -39,51 +39,32 @@ class Dispatcher extends ComponentDispatcher
 
 	public function dispatch()
 	{
-		try
+		if (version_compare(PHP_VERSION, $this->minPHPVersion, 'lt'))
 		{
-			if (version_compare(PHP_VERSION, $this->minPHPVersion, 'lt'))
-			{
-				throw new RuntimeException(
-					sprintf(
-						'Akeeba DataCompliance requires PHP %s or later.',
-						$this->minPHPVersion
-					)
-				);
-			}
-
-			if (!empty($this->maxPHPVersion) && version_compare(PHP_VERSION, $this->maxPHPVersion, 'ge'))
-			{
-				throw new RuntimeException(
-					sprintf(
-						'Akeeba DataCompliance does not support PHP %s or later.',
-						$this->maxPHPVersion
-					)
-				);
-			}
-
-			$this->triggerEvent('onBeforeDispatch');
-
-			parent::dispatch();
-
-			// This will only execute if there is no redirection set by the Controller
-			$this->triggerEvent('onAfterDispatch');
+			throw new RuntimeException(
+				sprintf(
+					'Akeeba DataCompliance requires PHP %s or later.',
+					$this->minPHPVersion
+				)
+			);
 		}
-		catch (Throwable $e)
+
+		if (!empty($this->maxPHPVersion) && version_compare(PHP_VERSION, $this->maxPHPVersion, 'ge'))
 		{
-			$title = 'Akeeba Data Compliance';
-			$isPro = false;
-
-			// Frontend: forwards errors 401, 403 and 404 to Joomla
-			if (in_array($e->getCode(), [401, 403, 404]) && $this->app->isClient('site'))
-			{
-				throw $e;
-			}
-
-			if (!(include_once JPATH_ADMINISTRATOR . '/components/com_datacompliance/tmpl/common/errorhandler.php'))
-			{
-				throw $e;
-			}
+			throw new RuntimeException(
+				sprintf(
+					'Akeeba DataCompliance does not support PHP %s or later.',
+					$this->maxPHPVersion
+				)
+			);
 		}
+
+		$this->triggerEvent('onBeforeDispatch');
+
+		parent::dispatch();
+
+		// This will only execute if there is no redirection set by the Controller
+		$this->triggerEvent('onAfterDispatch');
 	}
 
 	/** @inheritdoc  */

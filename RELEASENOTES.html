@@ -1,15 +1,6 @@
 <h3>What's new?</h3>
 
 <p>
-	This release fixes an <strong>open redirect</strong> in the post-consent / post-wipe return URL handling,
-	and closes a gap where an administrator recording consent on another user's behalf could do so without
-	any evidence reference, which would not satisfy GDPR Article 7(1). An evidence reference (support ticket
-	ID, email transcript, signed form, etc.) is now required and shown on the consent form. Admins with the
-	<code>wipe</code> or <code>export</code> privilege can now also record consent for another user, matching
-	the data subject's own consent view.
-</p>
-
-<p>
-	The rest of the release is hardening (stricter access checks, input validation) and low-impact bug fixes
-	to the audit trail list views and lifecycle search.
+	<strong>Removed legacy error handler</strong>.
+	We removed our legacy custom error handler. If you are met with an Exception or PHP error when using our software, please go to your site's administrator, System, Global Configuration, and set Debug Mode to Yes and Error Reporting to Developer. Then, reproduce the error. You will get the same level of information as our now-removed error handler. It is enough to help us help you.
 </p>

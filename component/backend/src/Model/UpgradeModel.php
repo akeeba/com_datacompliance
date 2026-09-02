@@ -125,6 +125,8 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Controller/Mixin',
 			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Table/Mixin',
 			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/View/Mixin',
+
+			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/tmpl/common',
 		],
 	];
 
