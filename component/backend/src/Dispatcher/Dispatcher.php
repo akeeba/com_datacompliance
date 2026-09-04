@@ -9,12 +9,12 @@ namespace Akeeba\Component\DataCompliance\Administrator\Dispatcher;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\VersionLimits;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\TriggerEventTrait;
 use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Dispatcher\ComponentDispatcher;
 use Joomla\CMS\Document\HtmlDocument;
-use RuntimeException;
 use Throwable;
 
 class Dispatcher extends ComponentDispatcher
@@ -23,41 +23,10 @@ class Dispatcher extends ComponentDispatcher
 
 	protected $defaultController = 'controlpanel';
 
-	/**
-	 * Minimum supported PHP version.
-	 *
-	 * @var string
-	 */
-	protected $minPHPVersion = '8.1.0';
-
-	/**
-	 * First PHP version which is NOT supported.
-	 *
-	 * @var string
-	 */
-	protected $maxPHPVersion = '8.7';
-
 	public function dispatch()
 	{
-		if (version_compare(PHP_VERSION, $this->minPHPVersion, 'lt'))
-		{
-			throw new RuntimeException(
-				sprintf(
-					'Akeeba DataCompliance requires PHP %s or later.',
-					$this->minPHPVersion
-				)
-			);
-		}
-
-		if (!empty($this->maxPHPVersion) && version_compare(PHP_VERSION, $this->maxPHPVersion, 'ge'))
-		{
-			throw new RuntimeException(
-				sprintf(
-					'Akeeba DataCompliance does not support PHP %s or later.',
-					$this->maxPHPVersion
-				)
-			);
-		}
+		// Check the supported PHP and Joomla version limits
+		VersionLimits::throwIfVersionsIncompatible();
 
 		$this->triggerEvent('onBeforeDispatch');
 

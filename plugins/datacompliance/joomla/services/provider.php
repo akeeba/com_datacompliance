@@ -7,6 +7,7 @@
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Helper\VersionLimits;
 use Joomla\CMS\Extension\PluginInterface;
 use Joomla\CMS\Extension\Service\Provider\MVCFactory;
 use Joomla\CMS\Factory;
@@ -29,6 +30,12 @@ return new class implements ServiceProviderInterface {
 	 */
 	public function register(Container $container)
 	{
+		// Only register the plugin in compatible environments
+		if (!class_exists(VersionLimits::class) || !VersionLimits::isCompatible())
+		{
+			return;
+		}
+
 		$mvcFactory = new MVCFactory('Akeeba\\Component\\DataCompliance');
 		$container->registerServiceProvider($mvcFactory);
 
