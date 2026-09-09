@@ -4,6 +4,9 @@ A tool to facilitate GDPR conformance of your Joomla! sites
 
 [Download](https://www.akeeba.com/download/official/datacompliance.html) • [Documentation](https://www.akeeba.com/documentation/data-compliance.html)
 
+> [!IMPORTANT]
+> Developing and maintaining world-class software is neither easy nor free. The development of this software is subsidised by sales of our commercial offerings. If you like this software and would like to see it maintained in the future, please consider [purchasing a subscription](https://www.akeeba.com/subscribe.html) to one of our commercial offerings. _Thank you!_
+
 ## What does it do?
 
 The component allows the site's visitors to:
