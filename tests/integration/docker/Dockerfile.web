@@ -1,0 +1,27 @@
+# Apache 2.4 front-end. PHP runs as FastCGI in the separate php-fpm container;
+# Apache proxies *.php requests to it over fcgi://php:9000.
+#
+# AllowOverride All matters: the component ships .htaccess files denying direct
+# web access to its own folders (notably backend/vendor/). Without AllowOverride
+# they would be silently inert, and any test asserting on them would pass for the
+# wrong reason.
+#
+# Apache only. Data Compliance has no server-specific behaviour that would make a
+# second (NginX) front-end worth the extra wall-clock: its only web-server-level
+# control is the deny-all vendor/.htaccess, which ships with a web.config twin and
+# is defence in depth, not the component's access control.
+
+ARG APACHE_VERSION=2.4
+FROM httpd:${APACHE_VERSION}
+
+RUN sed -i \
+        -e 's|^#\(LoadModule proxy_module .*\)|\1|' \
+        -e 's|^#\(LoadModule proxy_fcgi_module .*\)|\1|' \
+        -e 's|^#\(LoadModule rewrite_module .*\)|\1|' \
+        -e 's|^#\(LoadModule deflate_module .*\)|\1|' \
+        -e 's|^#\(LoadModule expires_module .*\)|\1|' \
+        -e 's|^#\(LoadModule headers_module .*\)|\1|' \
+        /usr/local/apache2/conf/httpd.conf \
+ && echo 'IncludeOptional conf/extra/e2e-vhost.conf' >> /usr/local/apache2/conf/httpd.conf
+
+COPY config/e2e-vhost.conf /usr/local/apache2/conf/extra/e2e-vhost.conf

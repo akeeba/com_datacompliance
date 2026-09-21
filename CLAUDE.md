@@ -6,7 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Akeeba Data Compliance is a Joomla extension (component + plugins) for GDPR compliance. It provides consent management, personal data export (XML), right-to-erasure (account wipe with audit trail), and lifecycle management for stale accounts. Version 4.x supports PHP 8.1 – 8.6 and Joomla! 5.4 – 6.2.
 
-There is no test suite in this repository.
+Tests: unit tests in `UnitTest/` (`phpunit`, config `phpunit.xml`; see `UnitTest/README.md`) and end-to-end tests against
+a disposable Dockerized Joomla site in `tests/integration/` (`tests/integration/docker/run.sh`, config
+`phpunit-integration.xml`; see `tests/integration/README.md`). The E2E harness builds and installs the sibling `../ats`
+and `../ars` working copies.
 
 Builds use Phing with the Akeeba Build Tools — see the `phing-build` skill. `build.xml` is at the working copy root, and the build requires a sibling `../buildfiles` checkout.
 

@@ -1,0 +1,114 @@
+# Dockerized throwaway stack for the Akeeba Data Compliance end-to-end tests.
+#
+# All versions are configurable through the .env file (see env.dist):
+#   JOOMLA_VERSION, PHP_VERSION, APACHE_VERSION, MYSQL_VERSION, MAILPIT_VERSION,
+#   MINIO_VERSION.
+#
+# Do not run this by hand. Use ./run.sh, which scrubs, provisions and tests in
+# one shot. This file only describes the services.
+
+name: datacompliance-e2e
+
+services:
+  db:
+    image: "mysql:${MYSQL_VERSION:-8.4}"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-root}"
+      MYSQL_DATABASE: "${DB_NAME:-dce2e}"
+      MYSQL_USER: "${DB_USER:-dce2e}"
+      MYSQL_PASSWORD: "${DB_PASSWORD:-dce2e}"
+    command:
+      - "--sql-mode="
+    ports:
+      # Published so the host-side PHPUnit process can seed and inspect fixtures.
+      - "${DB_PORT:-33310}:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+      args:
+        PHP_VERSION: "${PHP_VERSION:-8.5}"
+        PUID: "${PUID:-1000}"
+        PGID: "${PGID:-1000}"
+    volumes:
+      - ./www:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+      minio:
+        condition: service_started
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        APACHE_VERSION: "${APACHE_VERSION:-2.4}"
+    ports:
+      - "${HTTP_PORT:-8120}:80"
+    volumes:
+      - ./www:/var/www/html
+    depends_on:
+      - php
+
+  # Outbound mail sink. Joomla is pointed at smtp://mailpit:1025, so the wipe and
+  # lifecycle notifications go through the real mailer configuration, Joomla's
+  # MailTemplate (and the component's MailTemplateHotFix) and a real SMTP
+  # dialogue. The tests read the result back over the REST API on 8025.
+  #
+  # Mailpit never relays: it accepts a message and stores it.
+  mailpit:
+    image: "axllent/mailpit:${MAILPIT_VERSION:-v1.21}"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "1"
+      MP_MAX_MESSAGES: "0"
+    ports:
+      - "${MAILPIT_HTTP_PORT:-8145}:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # S3-compatible object storage for plg_datacompliance_s3, which uploads every
+  # wipe audit record to a bucket. A real S3 API, so the plugin's connector,
+  # request signing and upload are exercised end to end rather than stubbed.
+  #
+  # Deliberately no `ports:` mapping. The site reaches it as http://minio:9000
+  # from inside the compose network, and the tests inspect the bucket through
+  # the `mc` client (profile "tools" below), also from inside the network.
+  minio:
+    image: "quay.io/minio/minio:${MINIO_VERSION:-RELEASE.2025-09-07T16-13-09Z}"
+    command: ["server", "/data"]
+    environment:
+      MINIO_ROOT_USER: "${S3_ACCESS_KEY:-dce2eaccess}"
+      MINIO_ROOT_PASSWORD: "${S3_SECRET_KEY:-dce2esecret}"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # One-shot MinIO client. Never started by `up`; run.sh and the tests invoke it
+  # with `docker compose run --rm mc …`.
+  mc:
+    image: "quay.io/minio/mc:${MC_VERSION:-RELEASE.2025-08-13T08-35-41Z}"
+    profiles: ["tools"]
+    environment:
+      MC_HOST_e2e: "http://${S3_ACCESS_KEY:-dce2eaccess}:${S3_SECRET_KEY:-dce2esecret}@minio:9000"
+    depends_on:
+      - minio
+
+volumes:
+  dbdata:
