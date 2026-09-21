@@ -40,6 +40,9 @@ class OptionsController extends BaseController
 		parent::__construct($config, $factory, $app, $input);
 
 		$this->registerControllerTasks('options');
+
+		// A request for task=display must go through options(), which checks the user has access to the page.
+		$this->registerTask('display', 'options');
 	}
 
 	/**

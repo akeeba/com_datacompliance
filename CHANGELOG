@@ -28,6 +28,7 @@ Akeeba Data Compliance 4.1.0
 # [LOW] The package shipped development files of bundled libraries, and their folder allowed direct web access
 # [LOW] Upgrading did not remove some obsolete files and folders left behind by very old versions
 # [LOW] The user changes audit trail built some database queries without prepared statements
+# [LOW] The data options page could be displayed without the access check by using task=display
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
 
