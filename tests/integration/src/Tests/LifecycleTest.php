@@ -235,9 +235,8 @@ class LifecycleTest extends AbstractE2ETestCase
 		$this->assertStringContainsString(sprintf('User %d is not notified, skipping.', $late['id']), $output, "The account that was never notified is not reported as skipped.\n" . $output);
 		$this->assertStringContainsString('Failed to delete:       0', $output, "The summary does not report the number of failed deletions.\n" . $output);
 
-		$this->assertOrKnownIssue(
-			!str_contains($subject, '<code>'),
-			18,
+		$this->assertTrue(
+			!str_contains($subject, '<code>') && !str_contains($subject, 'datacompliance:'),
 			sprintf('The subject of the lifecycle deletion email sent to the user contains HTML and the name of a CLI command: "%s" (COM_DATACOMPLIANCE_MAIL_USER_LIFECYCLE_SUBJECT looks copied from the template\'s description).', $subject)
 		);
 	}

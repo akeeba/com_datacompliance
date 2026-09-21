@@ -37,6 +37,7 @@ Akeeba Data Compliance 4.1.0
 # Saving a custom field change together with a user parameter change lost the parameter change from the user trail
 # Accounts which had just registered were end-of-life under the default lifecycle rules
 # datacompliance:lifecycle:delete reported wrong numbers, with a PHP warning
+# The subject of the automatic (lifecycle) account deletion email contained HTML and the name of a CLI command
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash

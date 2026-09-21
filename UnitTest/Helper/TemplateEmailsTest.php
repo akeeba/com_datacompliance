@@ -143,11 +143,6 @@ class TemplateEmailsTest extends TestCase
 		$strings = LanguageFile::load(\dirname(__DIR__, 2) . '/component/backend/language/en-GB/com_datacompliance.ini');
 		$subject = $strings[$definition['subject']] ?? '';
 
-		if ($subject !== strip_tags($subject))
-		{
-			$this->markTestSkipped(sprintf('Known issue #18 (see known-issues.md): the subject of %s contains markup: %s', $key, $subject));
-		}
-
-		$this->assertTrue(true);
+		$this->assertSame(strip_tags($subject), $subject, sprintf('The subject of %s contains markup: %s', $key, $subject));
 	}
 }
