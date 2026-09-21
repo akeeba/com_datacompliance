@@ -195,8 +195,11 @@ class ARS extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
+		$arguments = array_values($event->getArguments());
 		/** @var int $userId */
-		[$userId] = array_values($event->getArguments());
+		$userId = $arguments[0];
+		/** @var bool $maximalist Maximalist Export? If false, remove authentication material at the source. */
+		$maximalist = (bool) ($arguments[1] ?? true);
 
 		$export = new SimpleXMLElement("<root></root>");
 		$db     = $this->getDatabase();
@@ -230,6 +233,12 @@ class ARS extends CMSPlugin implements SubscriberInterface
 
 		foreach ($db->setQuery($selectQuery)->getIterator() as $record)
 		{
+			// Download IDs are bearer credentials. Only keep the last four characters so the user can tell them apart.
+			if (!$maximalist && !empty($record->dlid))
+			{
+				$record->dlid = str_repeat('*', max(0, strlen($record->dlid) - 4)) . substr($record->dlid, -4);
+			}
+
 			Export::adoptChild($domain, Export::exportItemFromObject($record));
 
 			unset($record);

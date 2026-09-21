@@ -152,8 +152,11 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
+		$arguments = array_values($event->getArguments());
 		/** @var int $userId */
-		[$userId] = array_values($event->getArguments());
+		$userId = $arguments[0];
+		/** @var bool $maximalist Maximalist Export? If false, remove authentication material at the source. */
+		$maximalist = (bool) ($arguments[1] ?? true);
 
 		$db = $this->getDatabase();
 
@@ -180,6 +183,12 @@ class LoginGuard extends CMSPlugin implements SubscriberInterface
 
 		foreach ($records as $record)
 		{
+			// The method options hold the TFA secrets (e.g. TOTP seeds) and backup codes.
+			if (!$maximalist)
+			{
+				unset($record->options);
+			}
+
 			Export::adoptChild($domainTfa, Export::exportItemFromObject($record));
 		}
 

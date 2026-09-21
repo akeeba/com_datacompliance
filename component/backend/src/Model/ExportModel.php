@@ -14,6 +14,7 @@ use Akeeba\Component\DataCompliance\Administrator\Mixin\RunPluginsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Table\ExporttrailsTable;
 use DOMDocument;
 use Exception;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -78,9 +79,17 @@ class ExportModel extends BaseDatabaseModel
 			'user_id' => $userId,
 		]);
 
-		// Integrate results from DataCompliance plugins
+		/**
+		 * Integrate results from DataCompliance plugins.
+		 *
+		 * The second argument tells plugins whether to perform a Maximalist Export (everything, including authentication
+		 * material such as MFA configuration and tokens), or to remove / mask authentication material at the source.
+		 * This way plugins do not need to read the component's options. Password hashes are never exported either way.
+		 */
+		$maximalist = (bool) ComponentHelper::getParams('com_datacompliance')->get('maximalist_export', 1);
+
 		PluginHelper::importPlugin('datacompliance');
-		$results = $this->runPlugins('onDataComplianceExportUser', [$userId]);
+		$results = $this->runPlugins('onDataComplianceExportUser', [$userId, $maximalist]);
 
 		$export = new SimpleXMLElement("<root />");
 
@@ -126,7 +135,7 @@ class ExportModel extends BaseDatabaseModel
 					continue;
 				}
 
-				$export = ExportHelper::merge($export, ExportHelper::mapJoomlaPrivacyExportDomain($domain));
+				$export = ExportHelper::merge($export, ExportHelper::mapJoomlaPrivacyExportDomain($domain, $maximalist));
 			}
 
 		}

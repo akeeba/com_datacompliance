@@ -34,6 +34,18 @@
             <option value="1">JYes</option>
         </field>
 
+        <field name="maximalist_export"
+               type="radio"
+               default="1"
+               label="COM_DATACOMPLIANCE_CONFIG_MAXIMALIST_EXPORT_LABEL"
+               description="COM_DATACOMPLIANCE_CONFIG_MAXIMALIST_EXPORT_DESC"
+               layout="joomla.form.field.radio.switcher"
+               showon="showexport:1"
+        >
+            <option value="0">JNo</option>
+            <option value="1">JYes</option>
+        </field>
+
         <field name="showwipe"
                type="radio"
                default="1"

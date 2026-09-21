@@ -125,13 +125,17 @@ abstract class Export
 	 * Converts a PrivacyExportDomain object, returned by Joomla privacy plugins, into an export format compatible with
 	 * Akeeba DataCompliance.
 	 *
+	 * Joomla's privacy plugins do not know about our Maximalist Export option. When it's disabled, we remove the
+	 * authentication material they are known to export.
+	 *
 	 * @param   ExportDomain  $joomlaDomain  The Joomla! export domain object
+	 * @param   bool          $maximalist    Maximalist Export? If false, remove known authentication material.
 	 *
 	 * @return  SimpleXMLElement  The DataCompliance export object
 	 * @since   1.0.0
 	 * @noinspection PhpUnused
 	 */
-	public static function mapJoomlaPrivacyExportDomain(ExportDomain $joomlaDomain): SimpleXMLElement
+	public static function mapJoomlaPrivacyExportDomain(ExportDomain $joomlaDomain, bool $maximalist = true): SimpleXMLElement
 	{
 		$export = new SimpleXMLElement("<root></root>");
 		$domain = $export->addChild('domain');
@@ -150,6 +154,12 @@ abstract class Export
 			foreach ($fields as $field)
 			{
 				$itemArray[$field->name] = $field->value;
+			}
+
+			// plg_privacy_user exports all #__user_profiles rows. The Joomla API token seed is equivalent to the token.
+			if (!$maximalist && ($itemArray['profile_key'] ?? '') === 'joomlatoken.token')
+			{
+				continue;
 			}
 
 			self::adoptChild($domain, self::exportItemFromArray($itemArray));

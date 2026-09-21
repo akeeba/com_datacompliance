@@ -4,3 +4,8 @@
 	<strong>Removed legacy error handler</strong>.
 	We removed our legacy custom error handler. If you are met with an Exception or PHP error when using our software, please go to your site's administrator, System, Global Configuration, and set Debug Mode to Yes and Error Reporting to Developer. Then, reproduce the error. You will get the same level of information as our now-removed error handler. It is enough to help us help you.
 </p>
+
+<p>
+	<strong>Maximalist export option</strong>.
+	The personal data export no longer includes the user's password hash. A new component option, Maximalist Export, controls whether the rest of the authentication material is exported: Multi-factor Authentication configuration and backup codes, &ldquo;remember me&rdquo; tokens, the Joomla! API token, and download IDs. It is enabled by default, mirroring what Joomla's own privacy export does. Set it to No to remove this material from the export and mask download IDs. Moreover, only Super Users can now export the personal data of other Super Users.
+</p>

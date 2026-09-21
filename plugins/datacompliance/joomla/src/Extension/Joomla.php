@@ -210,8 +210,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 */
 	public function onDataComplianceExportUser(Event $event): void
 	{
+		$arguments = array_values($event->getArguments());
 		/** @var int $userId */
-		[$userId] = array_values($event->getArguments());
+		$userId = $arguments[0];
+		/** @var bool $maximalist Maximalist Export? If false, remove authentication material at the source. */
+		$maximalist = (bool) ($arguments[1] ?? true);
 
 		$db   = $this->getDatabase();
 		$user = self::getJoomlaUserObject($userId);
@@ -231,7 +234,27 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		/** @var \Joomla\CMS\Table\User $userTable */
 		$userTable = User::getTable();
 		$userTable->load($userId);
-		Export::adoptChild($domainUser, Export::exportItemFromJTable($userTable));
+
+		// The password hash is never exported. Joomla's own plg_privacy_user does the same.
+		$exclude = ['password'];
+
+		if (!$maximalist)
+		{
+			// Legacy TFA secrets (removed in newer Joomla versions), and the account activation / password reset token.
+			$exclude = array_merge($exclude, ['otpKey', 'otep', 'activation']);
+		}
+
+		$userData = [];
+
+		foreach (array_keys($userTable->getFields()) as $fieldName)
+		{
+			if (!in_array($fieldName, $exclude))
+			{
+				$userData[$fieldName] = $userTable->{$fieldName};
+			}
+		}
+
+		Export::adoptChild($domainUser, Export::exportItemFromArray($userData, $userTable->getKeyName(false)));
 
 		// #__user_notes
 		$domainNotes = $export->addChild('domain');
@@ -264,6 +287,12 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		foreach ($items as $item)
 		{
+			// The Joomla API token seed is equivalent to the API token itself.
+			if (!$maximalist && ($item->profile_key ?? '') === 'joomlatoken.token')
+			{
+				continue;
+			}
+
 			Export::adoptChild($domainNotes, Export::exportItemFromObject($item));
 		}
 
@@ -298,6 +327,12 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		foreach ($items as $item)
 		{
+			// The "remember me" series and token hash are authentication material.
+			if (!$maximalist)
+			{
+				unset($item->series, $item->token);
+			}
+
 			Export::adoptChild($domainGroups, Export::exportItemFromObject($item));
 		}
 

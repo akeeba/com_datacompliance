@@ -1567,6 +1567,18 @@
           shown you will have to take and fulfil these requests
           manually.</para>
 
+          <para>The <guilabel>Maximalist export</guilabel> option controls
+          what the personal information export includes. When it's set to Yes
+          (default) the export includes everything stored about the user,
+          including authentication material such as their Multi-factor
+          Authentication configuration and backup codes, <quote>remember
+          me</quote> tokens, their Joomla! API token, and their download IDs.
+          This mirrors what Joomla's own privacy export does. When it's set to
+          No this authentication material is removed from the export, and
+          download IDs are masked so that only their last four characters are
+          shown. The user's password hash is never included in the export,
+          regardless of this option.</para>
+
           <bridgehead>Permissions</bridgehead>
 
           <para>This is the standard Joomla! ACL configuration page for the
@@ -1583,7 +1595,9 @@
           is allowed to delete the profiles of other users.</para>
 
           <para><guilabel>Export profiles</guilabel> controls whether the user
-          is allowed to export the personal information of other users.</para>
+          is allowed to export the personal information of other users. Only
+          Super Users can export the personal information of other Super
+          Users.</para>
 
           <para>Due to the way Joomla! works, Super Users (that is: any user
           belonging to a group with the Super User privilege) has all of these
