@@ -69,3 +69,6 @@ Questo glossario definisce le traduzioni italiane standard dei termini tecnici e
 | Custom endpoint | Endpoint personalizzato | URL delle API di un provider di archiviazione compatibile con S3 diverso da Amazon. |
 | Virtual Hosting (S3 bucket access) | Hosting virtuale | Modalità di accesso al bucket S3 tramite URL del tipo `https://BUCKET.ENDPOINT`. |
 | Path Access (S3 bucket access) | Accesso tramite percorso | Modalità legacy di accesso al bucket S3 tramite URL del tipo `https://ENDPOINT/BUCKET`. |
+| Evidence of consent | Prova del consenso | Art. 7, par. 1, GDPR. |
+| Multi-factor authentication | Autenticazione a più fattori | |
+| Maximalist export | Esportazione massimalista | Esportazione che include anche il materiale di autenticazione. |

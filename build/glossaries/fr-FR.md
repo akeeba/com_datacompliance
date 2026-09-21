@@ -56,3 +56,6 @@ Ce glossaire établit les traductions françaises normalisées des termes utilis
 | Secret Key (AWS S3) | Clé secrète | Clé privée AWS associée à la clé d'accès pour l'authentification aux services Amazon S3. |
 | Bucket (AWS S3 storage bucket) | Compartiment (compartiment de stockage Amazon S3) | Terme officiel AWS en français. La documentation AWS utilise « compartiment S3 » (et non « seau » ni « bucket »). |
 | Storage class | Classe de stockage | Catégorie de stockage Amazon S3 définissant les caractéristiques de disponibilité, de durabilité et de coût (ex. : Standard, Glacier, etc.). |
+| Evidence of consent | Preuve du consentement | Article 7, paragraphe 1, du RGPD. |
+| Multi-factor authentication | Authentification multifacteur | |
+| Maximalist export | Exportation maximaliste | Exportation incluant aussi les éléments d'authentification. |

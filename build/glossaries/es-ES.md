@@ -72,3 +72,6 @@ Este glosario establece las traducciones al español (España) de los términos 
 | Right to object | Derecho de oposición | Término oficial del Art. 21 RGPD |
 | Extension | Extensión | Terminología de Joomla en español |
 | Module | Módulo | Terminología oficial de Joomla en español |
+| Evidence of consent | Prueba del consentimiento | Artículo 7, apartado 1, del RGPD. |
+| Multi-factor authentication | Autenticación multifactor | |
+| Maximalist export | Exportación maximalista | Exportación que incluye también el material de autenticación. |

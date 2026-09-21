@@ -61,3 +61,6 @@ Este glossário define as traduções padronizadas para os termos técnicos e ju
 | Data subject | Titular dos dados | Artigo 4.º, n.º 1, do RGPD: pessoa singular identificada ou identificável a quem os dados dizem respeito. |
 | Lifecycle deletion | Eliminação por ciclo de vida | Eliminação automática de uma conta de utilizador desencadeada pela expiração do ciclo de vida definido. |
 | Lifecycle notification | Notificação de ciclo de vida | Aviso enviado ao utilizador antes da eliminação automática da sua conta por inatividade. |
+| Evidence of consent | Prova do consentimento | Artigo 7.º, n.º 1, do RGPD. |
+| Multi-factor authentication | Autenticação multifator | |
+| Maximalist export | Exportação maximalista | Exportação que inclui também o material de autenticação. |

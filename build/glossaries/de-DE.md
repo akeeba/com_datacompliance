@@ -58,3 +58,6 @@ Dieses Glossar enthält die massgeblichen deutschen Ubersetzungen fur die in Ake
 | Right to restriction of processing | Recht auf Einschrankung der Verarbeitung | Amtlicher DSGVO-Begriff (Art. 18 DSGVO). |
 | Captive page / Consent gate | Einwilligungsseite / Pflichtseite | Bezeichnet die Seite, die Benutzer zur Abgabe ihrer Einwilligung zwingt, bevor sie die Website nutzen konnen. |
 | Lifecycle notification | Lebenszyklusbenachrichtigung | Bezeichnet die automatische Benachrichtigung eines Benutzers vor der bevorstehenden automatischen Loschung seines Kontos. |
+| Evidence of consent | Nachweis der Einwilligung | Art. 7 Abs. 1 DSGVO. |
+| Multi-factor authentication | Multi-Faktor-Authentifizierung | |
+| Maximalist export | Maximaler Export | Export einschließlich Authentifizierungsdaten. |
