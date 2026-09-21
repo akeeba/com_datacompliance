@@ -89,9 +89,8 @@ class S3AuditTrailTest extends AbstractE2ETestCase
 
 		$uploaded = (bool) preg_match('/\b' . $id . '_[0-9a-f]{40}\.json\b/', $listing, $match);
 
-		$this->assertOrKnownIssue(
+		$this->assertTrue(
 			$uploaded,
-			19,
 			'The wipe audit record is never uploaded to S3. S3::getS3Connector() checks class_exists() for Akeeba Backup\'s engine class name (Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Connector) instead of the bundled Akeeba\\S3\\Connector, so it always throws "Could not get the Composer autoloader."; and even with that fixed, it calls setUseLegacyPathStyle() BEFORE setEndpoint(), which resets path-style access for any custom (S3-compatible) endpoint. Failures are logged, then reported as success.'
 		);
 

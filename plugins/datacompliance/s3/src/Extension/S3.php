@@ -165,6 +165,8 @@ class S3 extends CMSPlugin implements SubscriberInterface
 			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 
 			$this->setEventResult($event, false);
+
+			return;
 		}
 
 		Log::add("Profile deletion audit trail record uploaded to S3", Log::DEBUG, 'com_datacompliance');
@@ -185,12 +187,12 @@ class S3 extends CMSPlugin implements SubscriberInterface
 			define('AKEEBAENGINE', 1);
 		}
 
-		if (!class_exists('Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Connector'))
+		if (!class_exists(Connector::class))
 		{
 			include_once JPATH_ADMINISTRATOR . '/components/com_datacompliance/vendor/autoload.php';
 		}
 
-		if (!class_exists('Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Connector'))
+		if (!class_exists(Connector::class))
 		{
 			throw new \RuntimeException("Could not get the Composer autoloader.");
 		}
@@ -204,8 +206,6 @@ class S3 extends CMSPlugin implements SubscriberInterface
 
 		$useSSL = $this->params->get('ssl', '1');
 		$s3Configuration->setSSL($useSSL);
-
-		$s3Configuration->setUseLegacyPathStyle($this->params->get('pathaccess', '0'));
 
 		// If SSL is not enabled you must not provide the CA root file.
 		if ($useSSL && !defined('AKEEBA_CACERT_PEM'))
@@ -229,6 +229,12 @@ class S3 extends CMSPlugin implements SubscriberInterface
 
 			$s3Configuration->setEndpoint($endpoint);
 		}
+
+		/**
+		 * Must come after setEndpoint(). For a custom endpoint, setEndpoint() switches to v2 signatures, which resets
+		 * path-style access while the endpoint is still the default Amazon S3 one.
+		 */
+		$s3Configuration->setUseLegacyPathStyle((bool) $this->params->get('pathaccess', '0'));
 
 		$s3Configuration->setAlternateDateHeaderFormat($this->params->get('alternateDateHeaderFormat', '1'));
 		$s3Configuration->setUseHTTPDateHeader($this->params->get('useHTTPDateHeader', '0'));
