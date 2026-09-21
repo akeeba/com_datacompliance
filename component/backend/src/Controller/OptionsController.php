@@ -126,11 +126,11 @@ class OptionsController extends BaseController
 		$export = $this->getModel('Export', 'Administrator');
 		$result = $export->exportFormattedXML($userID);
 
-		// Disable caching
-		header("Pragma: public");
+		// Disable caching. The export contains personal data; no browser, proxy or CDN may store it.
+		header("Pragma: no-cache");
 		header("Expires: 0");
-		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-		header("Cache-Control: public", false);
+		header("Cache-Control: no-store, no-cache, must-revalidate, private");
+		header("X-Content-Type-Options: nosniff");
 
 		// Send MIME headers
 		header("Content-Description: File Transfer");
