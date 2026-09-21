@@ -524,14 +524,15 @@ abstract class TemplateEmails
 				// Do I need to update the record? We check the variables, subject and the plaintext and HTML bodies.
 				try
 				{
-					$params         = json_decode($templateInDB['params'], true);
-					$variablesInDB  = array_map('strtoupper', (array) $params['tags'][0] ?? []);
+					$params         = json_decode($templateInDB['params'] ?? '', true) ?: [];
+					$variablesInDB  = array_map('strtoupper', (array) ($params['tags'] ?? []));
 					$variablesKnown = array_map('strtoupper', $record['variables'] ?? []);
-					$isIdentical    = empty(array_diff($variablesKnown, $variablesInDB));
+					$isIdentical    = empty(array_diff($variablesKnown, $variablesInDB))
+					                  && empty(array_diff($variablesInDB, $variablesKnown));
 
 					$isIdentical = $isIdentical && ($templateInDB['subject'] == $record['subject']);
 					$isIdentical = $isIdentical && ($templateInDB['body'] == $record['bodyPlaintext']);
-					$isIdentical = $isIdentical && ($templateInDB['htmlbody'] == $record['bodyHtml']);
+					$isIdentical = $isIdentical && ($templateInDB['htmlbody'] == ($record['bodyHtml'] ?? ''));
 				}
 				catch (\Exception $e)
 				{
