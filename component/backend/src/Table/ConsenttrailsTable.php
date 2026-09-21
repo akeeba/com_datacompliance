@@ -80,13 +80,29 @@ class ConsenttrailsTable extends AbstractTable
 					->where($db->quoteName('created_by') . ' = :created_by')
 					->bind(':created_by', $this->created_by, ParameterType::INTEGER);
 
+				/**
+				 * Replace the record atomically. Without a transaction, a failed insert would leave the user with no
+				 * consent record at all.
+				 */
+				$db->transactionStart();
+
 				try
 				{
 					$db->setQuery($query)->execute();
 					$db->insertObject($this->_tbl, $this, $this->_tbl_keys[0]);
+					$db->transactionCommit();
 				}
 				catch (\Exception $e)
 				{
+					try
+					{
+						$db->transactionRollback();
+					}
+					catch (\Exception $rollbackException)
+					{
+						// Report the original error, not the rollback failure.
+					}
+
 					$this->setErrorOrThrow($e->getMessage());
 
 					$result = false;
