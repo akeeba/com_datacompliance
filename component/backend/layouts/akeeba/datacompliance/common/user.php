@@ -51,8 +51,14 @@ $showUserId   = $showUserId && !empty($user_id);
 $showCountry  = $showCountry && !empty($user_id);
 $showGravatar = $showGravatar && !empty($email);
 
+$user_id = (int) $user_id;
+
 $link = $showLink
-	? str_replace(['[USER_ID]', '[USERNAME]', '[NAME]', '[EMAIL]'], [$user_id, $username, $name, $email], $link)
+	? str_replace(
+		['[USER_ID]', '[USERNAME]', '[NAME]', '[EMAIL]'],
+		[$user_id, rawurlencode($username ?? ''), rawurlencode($name ?? ''), rawurlencode($email ?? '')],
+		$link
+	)
 	: '';
 
 $gravatarUrl = sprintf(
@@ -60,10 +66,16 @@ $gravatarUrl = sprintf(
 	function_exists('hash') && function_exists('hash_algos') && in_array('sha256', hash_algos())
 		? hash('sha256', strtolower(trim($email ?? '')))
 		: hash('md5', strtolower(trim($email ?? ''))),
-	$gravatarSize
+	(int) $gravatarSize
 );
 
-$email = str_replace(['@', '.'],['<wbr>@', '<wbr>.'], $email ?? '');
+// User data may come from outside Joomla's user forms (e.g. SSO or bridges); always escape it for output.
+$link        = htmlspecialchars($link, ENT_QUOTES, 'UTF-8');
+$gravatarUrl = htmlspecialchars($gravatarUrl, ENT_QUOTES, 'UTF-8');
+$name        = htmlspecialchars($name ?? '', ENT_QUOTES, 'UTF-8');
+$username    = htmlspecialchars($username ?? '', ENT_QUOTES, 'UTF-8');
+// Escape the email address BEFORE adding the <wbr> tags, otherwise they would be escaped as well.
+$email       = str_replace(['@', '.'], ['<wbr>@', '<wbr>.'], htmlspecialchars($email ?? '', ENT_QUOTES, 'UTF-8'));
 
 if ($showCountry) {
 	HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
