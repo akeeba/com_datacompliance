@@ -22,6 +22,7 @@ use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
+use Joomla\Filesystem\File;
 use SimpleXMLElement;
 
 /**
@@ -83,7 +84,9 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 * any personally identifiable information.
 	 *
 	 * This plugin takes the following actions:
-	 * - Delete ARS log entries relevant to the user
+	 * - Delete the user's tickets (only the private ones for lifecycle wipes), their posts, and their attachments,
+	 *   including the attachment files
+	 * - Delete ATS 4 attempts, credit consumptions, credit transactions and user tags, if these tables exist
 	 *
 	 * @param   Event  $event  The event we are handling
 	 *
@@ -149,12 +152,16 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		if (!empty($postIDs))
 		{
-			// Query for the attachment IDs
+			// Query for the attachment IDs and the names of the files they are stored in
 			$attachmentsQuery          = DbQuery::create($db)
-			                                ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_attachment_id'))
+			                                ->select([
+				                                $db->quoteName($isATS5OrLater ? 'id' : 'ats_attachment_id', 'id'),
+				                                $db->quoteName('mangled_filename'),
+			                                ])
 			                                ->from($db->quoteName('#__ats_attachments'))
 			                                ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
-			$ret['ats']['attachments'] = $db->setQuery($attachmentsQuery)->loadColumn(0);
+			$attachments               = $db->setQuery($attachmentsQuery)->loadObjectList();
+			$ret['ats']['attachments'] = array_column($attachments, 'id');
 
 			// Delete attachments
 			$query = DbQuery::create($db)
@@ -162,6 +169,10 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			            ->whereIn($db->quoteName($isATS5OrLater ? 'post_id' : 'ats_post_id'), $postIDs, ParameterType::INTEGER);
 			$db->setQuery($query)->execute();
 			unset($postIDs);
+
+			// Delete the attachment files, like ATS' AttachmentTable does after deleting an attachment record.
+			$this->deleteAttachmentFiles(array_column($attachments, 'mangled_filename'));
+			unset($attachments);
 
 			// Delete posts
 			$query = DbQuery::create($db)
@@ -455,6 +466,103 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		{
 			Export::adoptChild($domain, Export::exportItemFromObject($item));
 		}
+	}
+
+	/**
+	 * Delete the files of ATS attachments from disk.
+	 *
+	 * Mirrors ATS' AttachmentTable::getAbsoluteFilename(): files are stored as ab/cd/abcd… (two-level prefix taken
+	 * from the mangled filename itself) or, for attachments uploaded by older ATS versions, directly in the
+	 * attachments directory. Both the configured and the default attachments directory are looked into.
+	 *
+	 * The mangled filenames come from the database. Only well-formed hex hashes are accepted, so that a tampered
+	 * value can never point outside the attachments directory.
+	 *
+	 * @param   array  $mangledFilenames  The mangled filenames of the attachments to delete.
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	private function deleteAttachmentFiles(array $mangledFilenames): void
+	{
+		if (empty($mangledFilenames))
+		{
+			return;
+		}
+
+		$directories = $this->getAttachmentDirectories();
+
+		foreach ($mangledFilenames as $mangledFilename)
+		{
+			$mangledFilename = (string) $mangledFilename;
+
+			// Same rule as ATS' Attachment::isValidMangledFilename(): MD5, SHA-1 or SHA-256 hex hashes only.
+			if (!preg_match('/\A(?:[a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64})\z/i', $mangledFilename))
+			{
+				continue;
+			}
+
+			$relativePath = substr($mangledFilename, 0, 2) . '/' . substr($mangledFilename, 2, 2) . '/' . $mangledFilename;
+
+			foreach ($directories as $directory)
+			{
+				foreach ([$directory . '/' . $relativePath, $directory . '/' . $mangledFilename] as $filePath)
+				{
+					if (!@is_file($filePath))
+					{
+						continue;
+					}
+
+					try
+					{
+						$deleted = File::delete($filePath);
+					}
+					catch (\Throwable $e)
+					{
+						$deleted = false;
+					}
+
+					if (!$deleted && !@unlink($filePath))
+					{
+						Log::add(
+							sprintf('Could not delete the Akeeba Ticket System attachment file %s', $filePath),
+							Log::WARNING, 'com_datacompliance'
+						);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Get the absolute paths of the directories ATS stores attachments in.
+	 *
+	 * The configured directory is resolved (and validated) by ATS' own Attachment helper, when available. The
+	 * default directory is always included: before ATS 5.6.1 a custom attachments folder was ignored.
+	 *
+	 * @return  string[]
+	 * @since   4.1.0
+	 */
+	private function getAttachmentDirectories(): array
+	{
+		$directories = [JPATH_ROOT . '/media/com_ats/attachments'];
+		$helperClass = 'Akeeba\\Component\\ATS\\Administrator\\Helper\\Attachment';
+
+		try
+		{
+			if (class_exists($helperClass) && method_exists($helperClass, 'getDirectory'))
+			{
+				$directories[] = (string) $helperClass::getDirectory();
+			}
+		}
+		catch (\Throwable $e)
+		{
+			// ATS could not tell us; the default directory is still searched.
+		}
+
+		$directories = array_map(fn($dir) => rtrim(str_replace('\\', '/', $dir), '/'), $directories);
+
+		return array_unique(array_filter($directories));
 	}
 
 	private function getAttachments(array $postIDs)

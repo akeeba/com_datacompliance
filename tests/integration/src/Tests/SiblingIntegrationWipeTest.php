@@ -97,11 +97,12 @@ class SiblingIntegrationWipeTest extends AbstractE2ETestCase
 
 		$file = static::$config->getSiteRoot() . '/' . $ats['attachmentFile'];
 
+		$this->assertFileDoesNotExist(
+			$file,
+			'The attachment FILE survives the wipe (' . $ats['attachmentFile'] . '): plg_datacompliance_ats deletes the #__ats_attachments rows with a DELETE query, bypassing ATS\'s AttachmentTable, which is what removes the file from disk.'
+		);
+
 		$this->assertOrKnownIssues([
-			20 => [
-				!is_file($file),
-				'The attachment FILE survives the wipe (' . $ats['attachmentFile'] . '): plg_datacompliance_ats deletes the #__ats_attachments rows with a DELETE query, bypassing ATS\'s AttachmentTable, which is what removes the file from disk.',
-			],
 			21 => [
 				$this->rows('#__ats_managernotes', 'id', $ats['managerNote']) === 0,
 				'The manager notes of the deleted tickets survive the wipe, orphaned: plg_datacompliance_ats deletes tickets, posts and attachments, but not #__ats_managernotes — notes staff write ABOUT the user.',
