@@ -645,6 +645,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 * - The email is pseudonymized to "user1234@example.com" where 1234 is the user ID
 	 * - The password is changed to the hash of a long, random string
 	 * - Account creation and last access time are set to dummy values 1/1/1999 GMT.
+	 * - The user is assigned to no user groups.
 	 *
 	 * @param   User  $user
 	 *
@@ -670,6 +671,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$user->lastResetTime = $jFake->toSql();
 		$user->resetCount    = 0;
 		$user->requireReset  = 1;
+		/**
+		 * The User object was loaded before deleteUserGroups() ran, so it still lists the user's groups. Saving it would
+		 * have Table\User::store() write them back into #__user_usergroup_map. With no groups, store() writes none.
+		 */
+		$user->groups        = [];
 
 		ComponentHelper::getParams('com_users');
 

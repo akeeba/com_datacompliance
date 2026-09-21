@@ -106,7 +106,8 @@ Why more than one Joomla version is not optional thoroughness:
   HTML layout. Known issue #14 was reproduced on 6.1.3; only the matrix tells whether 5.4 and 6.0 behave
   the same.
 * **`ConsenttrailsTable`** keeps a `getDatabase()`/`getDbo()` fallback for the declared range, and
-  **`Table\User::store()`**'s group handling (known issue #8) is core code the wipe depends on.
+  **`Table\User::store()`**'s group handling is core code the wipe depends on: stripping a wiped
+  account of its user groups relies on `store()` writing no group map rows for an empty `$groups`.
 
 The day-to-day run (no flags) covers only Joomla 6.1 on PHP 8.5. **A green single-version run proves
 less than it looks** — in particular nothing about Joomla 5.4 or the PHP 8.1 floor. Run the matrix
