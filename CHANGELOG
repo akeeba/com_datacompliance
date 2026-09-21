@@ -32,6 +32,7 @@ Akeeba Data Compliance 4.1.0
 # [LOW] The data options page could be displayed without the access check by using task=display
 # [LOW] The Lifecycle page could show a stale list of users, ignoring the selected date
 # [LOW] The Control Panel loaded JavaScript libraries from a third-party CDN without integrity checks
+# [LOW] The data options pages did not escape the username and site name
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
 

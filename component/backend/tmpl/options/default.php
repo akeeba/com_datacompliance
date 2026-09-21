@@ -25,7 +25,7 @@ $myUser = Factory::getApplication()->getIdentity();
 
 	<div class="card-body">
 		<p>
-			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_INFOBLOCK', $this->siteName) ?>
+			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_INFOBLOCK', $this->escape($this->siteName)) ?>
 		</p>
 		<div class="my-4">
 			<p>
@@ -57,7 +57,7 @@ $myUser = Factory::getApplication()->getIdentity();
 
 			<div class="mb-3">
 				<label for="enabled" class="fw-bold">
-					<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL', $this->siteName) ?>
+					<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL', $this->escape($this->siteName)) ?>
 				</label>
 				<?= HTMLHelper::_('datacompliance.booleanlist', 'enabled', 0, Text::_('COM_DATACOMPLIANCE_OPTIONS_CONSENT_PREFERENCELABEL')) ?>
 			</div>
@@ -82,12 +82,12 @@ $myUser = Factory::getApplication()->getIdentity();
 <?php else: ?>
     <div class="card mb-3 border-primary">
 		<h3 class="h1 card-header bg-primary text-white">
-			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MANAGE_HEADER', $this->user->username) ?>
+			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_CONSENT_MANAGE_HEADER', $this->escape($this->user->username)) ?>
 		</h3>
 		<div class="card-body">
 			<p class="alert alert-info">
 				<span class="fa fa-info-circle" aria-hidden="true"></span>
-				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_CONSENT_WARN', $this->user->username) ?>
+				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_CONSENT_WARN', $this->escape($this->user->username)) ?>
 			</p>
 			<p>
 				<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_MANAGE_CONSENT_CURRENTPREFERENCE') ?>
@@ -186,16 +186,16 @@ $myUser = Factory::getApplication()->getIdentity();
 <?php if($this->type !== 'user'): ?>
 	<div class="card mb-3 border-warning">
 		<h3 class="h1 card-header bg-warning">
-			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_HEADER', $this->user->username) ?>
+			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_HEADER', $this->escape($this->user->username)) ?>
 		</h3>
 
 		<div class="card-body">
 			<p>
-				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_INFOBLOCK', $this->user->username) ?>
+				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_INFOBLOCK', $this->escape($this->user->username)) ?>
 			</p>
 			<p class="alert alert-warning">
 				<span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
-				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_WARNING', $this->user->username) ?>
+				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_WARNING', $this->escape($this->user->username)) ?>
 			</p>
 			<div class="row mb-3">
 				<?php if($myUser->authorise('export', 'com_datacompliance')): ?>

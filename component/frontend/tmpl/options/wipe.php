@@ -20,7 +20,7 @@ $otherInfo = ($otherInfo == 'COM_DATACOMPLIANCE_OPTIONS_WIPE_OTHERINFO') ? '' : 
 		<?php if($this->type == 'user'): ?>
 		<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_HEADER') ?>
 		<?php else: ?>
-		<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ADMIN_HEADER', $this->user->username) ?>
+		<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ADMIN_HEADER', $this->escape($this->user->username)) ?>
 		<?php endif ?>
 	</h2>
 	<div class="card-body">
@@ -46,7 +46,7 @@ $otherInfo = ($otherInfo == 'COM_DATACOMPLIANCE_OPTIONS_WIPE_OTHERINFO') ? '' : 
 			<?php if($this->type == 'user'): ?>
 				<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ACTIONSTOBETAKEN') ?>
 			<?php else: ?>
-				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ACTIONSTOBETAKEN_ADMIN', $this->user->username) ?>
+				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_ACTIONSTOBETAKEN_ADMIN', $this->escape($this->user->username)) ?>
 			<?php endif ?>
 		</p>
 		<ul>
@@ -69,7 +69,7 @@ $otherInfo = ($otherInfo == 'COM_DATACOMPLIANCE_OPTIONS_WIPE_OTHERINFO') ? '' : 
 			<?= Text::sprintf(($this->type == 'user') ? 'COM_DATACOMPLIANCE_OPTIONS_WIPE_ASKFORPHRASE' : 'COM_DATACOMPLIANCE_OPTIONS_WIPE_ASKFORPHRASE_ADMIN', Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE')); ?>
 		</p>
 		<p class="akeeba-block--warning">
-			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_YOURUSER', 'badge bg-dark', $this->user->username) ?>
+			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_WIPE_YOURUSER', 'badge bg-dark', $this->escape($this->user->username)) ?>
 		</p>
 
 		<form method="post"
