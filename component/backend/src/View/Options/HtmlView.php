@@ -64,6 +64,14 @@ class HtmlView extends BaseHtmlView
 	public $showWipe = false;
 
 	/**
+	 * Can the current user record consent on behalf of the user being displayed?
+	 *
+	 * @var   bool
+	 * @since 4.1.0
+	 */
+	public $canManageConsent = false;
+
+	/**
 	 * The site's name
 	 *
 	 * @var   string
@@ -154,12 +162,16 @@ class HtmlView extends BaseHtmlView
 	 */
 	private function populateBasicViewParameters(): void
 	{
-		// Only allow Super Users and DataCompliance users with Export or Wipe privileges to view a different user
+		/**
+		 * Only allow Super Users, DataCompliance administrators (core.admin on the component), and DataCompliance users
+		 * with Export or Wipe privileges to view a different user. Mirrors OptionsController::assertUserAccess('options').
+		 */
 		$currentUser = Factory::getApplication()->getIdentity();
 		$canExport   = $currentUser->authorise('export', 'com_datacompliance');
 		$canWipe     = $currentUser->authorise('wipe', 'com_datacompliance');
 		$isSuper     = $currentUser->authorise('core.admin');
-		$isAdmin     = $isSuper || $canWipe || $canExport;
+		$isDCAdmin   = $currentUser->authorise('core.admin', 'com_datacompliance');
+		$isAdmin     = $isSuper || $isDCAdmin || $canWipe || $canExport;
 		$userID      = $isAdmin ? Factory::getApplication()->getInput()->getInt('user_id', null) : null;
 		$cParams     = ComponentHelper::getParams('com_datacompliance');
 
@@ -169,6 +181,9 @@ class HtmlView extends BaseHtmlView
 			? Factory::getApplication()->getIdentity()
 			: Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
 		$this->type       = ($this->user->id == $currentUser->id) ? 'user' : 'admin';
+
+		// Mirrors OptionsController::assertUserAccess('consent')
+		$this->canManageConsent = $isSuper || $isDCAdmin;
 
 		if ($this->type == 'admin')
 		{

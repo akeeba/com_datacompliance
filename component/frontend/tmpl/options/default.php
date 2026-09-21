@@ -97,6 +97,7 @@ $myUser = Factory::getApplication()->getIdentity();
 					</strong>
 				</span>
 			</p>
+			<?php if ($this->canManageConsent): ?>
 			<form
 				class="border border-primary rounded-3 p-3 m-2"
 				method="post"
@@ -129,6 +130,7 @@ $myUser = Factory::getApplication()->getIdentity();
 
 				<?= HTMLHelper::_('form.token') ?>
 			</form>
+			<?php endif ?>
 		</div>
     </div>
 <?php endif; ?>

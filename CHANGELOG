@@ -24,6 +24,7 @@ Akeeba Data Compliance 4.1.0
 # [LOW] Admin email notifications ignored the recipients list and did not reach any Super User
 # [LOW] User details were inserted into HTML emails without escaping
 # [LOW] Internal error messages, e.g. database errors, were shown to users when deleting an account failed
+# [LOW] Users with only the export or delete privilege could record consent on behalf of other users
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
 
