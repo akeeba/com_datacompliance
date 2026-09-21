@@ -70,6 +70,11 @@ trait ControllerReusableModelsTrait
 			$type = $document->getType();
 		}
 
+		/**
+		 * Defence in depth only. This does NOT run for regular page views: BaseController::display() always passes a
+		 * non-empty $config. The authoritative protection against path traversal through the layout is the filename
+		 * cleaning in ViewLoadAnyTemplateTrait::loadTemplate(). Do not remove it from there.
+		 */
 		if (empty($config))
 		{
 			// Like the cmd filter, but keeps the colon of the template:layout notation.

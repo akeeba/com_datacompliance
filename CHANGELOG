@@ -8,6 +8,7 @@ Akeeba Data Compliance 4.1.0
 + The installer now refuses to install on a Joomla! or PHP version newer than the supported maximum
 + "Maximalist export" option; set it to No to remove authentication material from data exports
 ~ Updated moment.js to 2.31.0
+~ Hardened template loading: Email Templates page uses the same layout name cleaning as all other pages
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted

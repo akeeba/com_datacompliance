@@ -178,6 +178,9 @@ HTML;
 		// Clean the template name. It comes from the request (layout=template:layout) and becomes part of a path.
 		$layoutTemplate = isset($layoutTemplate) ? preg_replace('/[^A-Z0-9_-]/i', '', $layoutTemplate) : $layoutTemplate;
 
+		// A template name which is empty after cleaning means "no specific template", just like '_'.
+		$layoutTemplate = ($layoutTemplate === '') ? '_' : $layoutTemplate;
+
 		// Load the language file for the template
 		$lang = Factory::getApplication()->getLanguage();
 		$lang->load('tpl_' . $template->template, JPATH_BASE)
