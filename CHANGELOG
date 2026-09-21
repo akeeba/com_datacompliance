@@ -13,6 +13,7 @@ Akeeba Data Compliance 4.1.0
 ~ Pseudonymised user accounts now store a properly hashed random password
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
+# Recording consent for a non-existent user overwrote your own consent record
 # The datacompliance:lifecycle:notify CLI command failed with a PHP error instead of notifying users
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens

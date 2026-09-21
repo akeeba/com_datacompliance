@@ -70,6 +70,12 @@ class OptionsController extends BaseController
 		else
 		{
 			$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+
+			// Joomla returns an empty user object for a user ID which does not exist.
+			if (empty($user->id) || $user->id != $userID)
+			{
+				throw new RuntimeException(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 404);
+			}
 		}
 
 		$enabled = $this->input->getBool('enabled', false);

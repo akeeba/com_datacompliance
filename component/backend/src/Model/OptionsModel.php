@@ -157,6 +157,12 @@ class OptionsModel extends BaseDatabaseModel
 			$user = $app->getIdentity();
 		}
 
+		// Never record consent for a user who does not exist. The consent record would end up belonging to the actor.
+		if (empty($user->id))
+		{
+			throw new RuntimeException(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 404);
+		}
+
 		// When recording consent on another user's behalf, Article 7(1) GDPR requires the controller to demonstrate
 		// that the data subject consented. A non-empty reason describing the evidence is therefore mandatory.
 		$actor     = $app->getIdentity();
@@ -187,8 +193,13 @@ class OptionsModel extends BaseDatabaseModel
 		 *
 		 * This means that if you go from Consent to Non-consent the plugin will evaluate your option again and redirect
 		 * you to the consent page, preventing you from using the site (as it should).
+		 *
+		 * The flag describes the current session's user. Do not touch it when recording consent on behalf of someone else.
 		 */
-		$app->getSession()->set('com_datacompliance.has_consented', $preference ? 1 : 0);
+		if (!$isOnBehalf)
+		{
+			$app->getSession()->set('com_datacompliance.has_consented', $preference ? 1 : 0);
+		}
 	}
 
 	/**
