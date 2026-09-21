@@ -314,7 +314,7 @@ class OptionsController extends BaseController
 		$canExport = $user->authorise('export', 'com_datacompliance');
 		$canWipe   = $user->authorise('wipe', 'com_datacompliance');
 		$isSuper   = $user->authorise('core.admin');
-		$isAdmin   = $user->authorise('core.manage', 'com_datacompliance');
+		$isAdmin   = $user->authorise('core.admin', 'com_datacompliance');
 
 		switch ($actionType)
 		{
