@@ -9,3 +9,8 @@
 	<strong>Maximalist export option</strong>.
 	The personal data export no longer includes the user's password hash. A new component option, Maximalist Export, controls whether the rest of the authentication material is exported: Multi-factor Authentication configuration and backup codes, &ldquo;remember me&rdquo; tokens, the Joomla! API token, and download IDs. It is enabled by default, mirroring what Joomla's own privacy export does. Set it to No to remove this material from the export and mask download IDs. Moreover, only Super Users can now export the personal data of other Super Users.
 </p>
+
+<p>
+	<strong>Please reset your Joomla! API tokens</strong>.
+	Joomla! submits each user's API token back to the server whenever they save their user profile. Previous versions of Akeeba Data Compliance recorded it in the user changes audit trail, where anyone who can view the audit trails, or who has a copy of your site's database, could read it. By default, only Super Users have API tokens. This version no longer records the API token. However, tokens recorded by previous versions remain in the audit trail. We recommend that all Super Users reset their Joomla! API token: edit your user profile, go to the Joomla API Token tab, set Reset to Yes, and save.
+</p>

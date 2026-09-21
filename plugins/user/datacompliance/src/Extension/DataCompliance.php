@@ -284,6 +284,20 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			'id', 'password', 'lastvisitDate', 'params', 'otpKey', 'otep', 'groups', 'profile',
 			'com_fields',
 		];
+		/**
+		 * Joomla's plg_user_token submits the user's API token back in the profile form as joomlatoken.token. It's a
+		 * ready-to-use bearer token; it must never be logged. We still log changes to the other joomlatoken fields.
+		 */
+		if (is_array($oldUser['joomlatoken'] ?? null))
+		{
+			unset($oldUser['joomlatoken']['token']);
+		}
+
+		if (is_array($newUser['joomlatoken'] ?? null))
+		{
+			unset($newUser['joomlatoken']['token']);
+		}
+
 		$allFields    = array_merge(array_keys($oldUser), array_keys($newUser));
 		$allFields    = array_diff($allFields, $exemptFields);
 

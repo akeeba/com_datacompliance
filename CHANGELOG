@@ -9,6 +9,7 @@ Akeeba Data Compliance 4.1.0
 + "Maximalist export" option; set it to No to remove authentication material from data exports
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
+# [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash
 # [HIGH] Backend users without access to the component could run its other tasks by adding view=options to the URL
 # [HIGH] Users with the export privilege could export Super Users' data, including credentials
