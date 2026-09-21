@@ -88,8 +88,8 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 
 			// FOF 4 stuff
 			JPATH_ADMINISTRATOR . '/components/com_datacompliance/datacompliance.php',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/fof.xml',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/version.php',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/fof.xml',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/version.php',
 
 			JPATH_SITE . '/components/com_datacompliance/datacompliance.php',
 
@@ -101,20 +101,20 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 		],
 		'folders' => [
 			// Old CLI base script
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/assets/cli',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/assets/cli',
 
 			// FOF 3 stuff
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/ViewTemplates',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/ViewTemplates',
 			JPATH_SITE . '/components/com_datacompliance/ViewTemplates',
 
 			// FOF 4 stuff
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Controller',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Dispatcher',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/fields',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Helper',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Model',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Toolbar',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/View',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/Controller',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/Dispatcher',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/fields',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/Helper',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/Model',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/Toolbar',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/View',
 
 			JPATH_SITE . '/components/com_datacompliance/Controller',
 			JPATH_SITE . '/components/com_datacompliance/Dispatcher',
@@ -122,11 +122,11 @@ class UpgradeModel extends BaseModel implements DatabaseAwareInterface
 			JPATH_SITE . '/components/com_datacompliance/View',
 
 			// Moved traits
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Controller/Mixin',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/Table/Mixin',
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/View/Mixin',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/Controller/Mixin',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/Table/Mixin',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/View/Mixin',
 
-			JPATH_ADMINISTRATOR . '/administrator/components/com_datacompliance/tmpl/common',
+			JPATH_ADMINISTRATOR . '/components/com_datacompliance/tmpl/common',
 		],
 	];
 
