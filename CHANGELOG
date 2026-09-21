@@ -14,6 +14,7 @@ Akeeba Data Compliance 4.1.0
 ~ Pseudonymised user accounts now store a properly hashed random password
 ~ The package no longer includes a stale copy of the component manifest
 ~ Database queries in the plugins now use prepared statements instead of quoted values
+~ Emails no longer receive the account activation code as an (unused) template tag
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
 # User profile changes were never logged, and data exports filed profile and key records under the wrong heading

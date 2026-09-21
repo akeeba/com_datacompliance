@@ -372,7 +372,6 @@ class LifecycleNotify extends AbstractCommand implements DatabaseAwareInterface
 				'requirereset'  => $user->requireReset,
 				'resetcount'    => $user->resetCount,
 				'lastresettime' => $user->lastResetTime,
-				'activation'    => empty($user->activation) ? Text::_('JNO') : $user->activation,
 				'block'         => $user->block ? Text::_('JYES') : Text::_('JNO'),
 				'id'            => $user->id,
 				'actions'       => $actionsHtml,
