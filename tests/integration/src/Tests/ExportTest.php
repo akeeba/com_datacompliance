@@ -330,9 +330,8 @@ class ExportTest extends AbstractE2ETestCase
 
 		$this->assertStringNotContainsString('<domain', $response->body, 'An export was produced for a user who does not exist.');
 
-		$this->assertOrKnownIssue(
+		$this->assertTrue(
 			$response->code < 500 && $this->exportTrailCount($missing) === 0,
-			4,
 			sprintf(
 				'Exporting a user id that does not exist is an HTTP %d, and leaves %d export audit trail row(s) for it: ExportModel::exportSimpleXML() records the trail before plg_datacompliance_joomla throws "Cannot find a user record", and nothing catches that exception.',
 				$response->code,

@@ -25,6 +25,7 @@ use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Router\Route as JRoute;
 use Joomla\CMS\Uri\Uri as JUri;
+use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserFactoryInterface;
 use Joomla\Input\Input;
 use RuntimeException;
@@ -126,6 +127,9 @@ class OptionsController extends BaseController
 
 		$currentUser = $this->app->getIdentity();
 		$userID      = $this->input->getInt('user_id', $currentUser->id);
+
+		// Make sure the user exists before doing anything, including writing an export audit trail record.
+		$this->assertUserExists($userID);
 
 		// Make sure there's no buffered data
 		@ob_end_clean();
@@ -367,6 +371,29 @@ class OptionsController extends BaseController
 			Log::ERROR,
 			'com_datacompliance.errors'
 		);
+	}
+
+	/**
+	 * Ensures that a user account exists.
+	 *
+	 * @param   int  $userID  The user ID to check
+	 *
+	 * @return  User  The user object
+	 *
+	 * @throws  RuntimeException  If the user does not exist (HTTP 404)
+	 * @since   4.1.0
+	 */
+	private function assertUserExists(int $userID): User
+	{
+		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+
+		// Joomla returns an empty user object for a user ID which does not exist.
+		if (empty($user->id) || $user->id != $userID)
+		{
+			throw new RuntimeException(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 404);
+		}
+
+		return $user;
 	}
 
 	/**

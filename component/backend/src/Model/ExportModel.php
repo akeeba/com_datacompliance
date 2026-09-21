@@ -16,6 +16,7 @@ use DOMDocument;
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\User\UserFactoryInterface;
@@ -71,6 +72,14 @@ class ExportModel extends BaseDatabaseModel
 	 */
 	public function exportSimpleXML(int $userId): SimpleXMLElement
 	{
+		// Never export, or record an export audit trail entry for, a user which does not exist.
+		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userId);
+
+		if (empty($user->id) || $user->id != $userId)
+		{
+			throw new RuntimeException(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 404);
+		}
+
 		// Create an audit trail entry for this export
 		/** @var ExporttrailsTable $trail */
 		$trail = $this->getMVCFactory()->createTable('Exporttrails', 'Administrator');
