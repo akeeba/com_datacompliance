@@ -9,6 +9,7 @@ namespace Akeeba\Plugin\DataCompliance\Joomla\Extension;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Exception\WipeRefusedException;
 use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Helper\Export;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
@@ -97,7 +98,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @return  void  No return value is expected. Throw exceptions when there is a problem.
 	 *
-	 * @throws  RuntimeException  The error which prevents us from deleting a user
+	 * @throws  WipeRefusedException  The reason which prevents us from deleting a user
 	 */
 	public function onDataComplianceCanDelete(Event $event)
 	{
@@ -112,7 +113,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		if (empty($user))
 		{
-			throw new RuntimeException(Text::sprintf('PLG_DATACOMPLIANCE_JOOMLA_ERR_UNKNOWNUSER', $userId));
+			throw new WipeRefusedException(Text::sprintf('PLG_DATACOMPLIANCE_JOOMLA_ERR_UNKNOWNUSER', $userId));
 		}
 
 		$exemptGroups = $this->params->get('exemptgroups', []);
@@ -121,17 +122,17 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		if ($foundGroups)
 		{
-			throw new RuntimeException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_EXEMPTGROUPS'));
+			throw new WipeRefusedException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_EXEMPTGROUPS'));
 		}
 
 		if ($user->authorise('core.admin'))
 		{
-			throw new RuntimeException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_SUPERUSER'));
+			throw new WipeRefusedException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_SUPERUSER'));
 		}
 
 		if ($user->authorise('core.login.admin'))
 		{
-			throw new RuntimeException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_BACKENDUSER'));
+			throw new WipeRefusedException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_BACKENDUSER'));
 		}
 	}
 

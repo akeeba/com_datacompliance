@@ -50,7 +50,16 @@ class WipeModel extends BaseDatabaseModel
 	protected $skipAuditRecord = false;
 
 	/**
-	 * Checks if we can wipe a user. If it returns FALSE use getError to retrieve the reason.
+	 * Why the last checkWipeAbility() or wipe() call refused to wipe the user. Empty if there is no reason safe to show
+	 * the user.
+	 *
+	 * @var   string
+	 * @since 4.1.0
+	 */
+	protected string $refusalReason = '';
+
+	/**
+	 * Checks if we can wipe a user. If it returns FALSE use getRefusalReason() to retrieve the reason.
 	 *
 	 * @param   int            $userId  The user ID we are asked for permission to delete
 	 * @param   string         $type    user, admin or lifecycle
@@ -63,6 +72,8 @@ class WipeModel extends BaseDatabaseModel
 	 */
 	public function checkWipeAbility(int $userId, string $type = 'user', ?DateTime $when = null): bool
 	{
+		$this->refusalReason = '';
+
 		PluginHelper::importPlugin('datacompliance');
 		PluginHelper::importPlugin('privacy');
 
@@ -73,12 +84,31 @@ class WipeModel extends BaseDatabaseModel
 			// Akeeba DataCompliance
 			$this->runPlugins('onDataComplianceCanDelete', [$userId, $type, $when]);
 		}
+		catch (WipeRefusedException $e)
+		{
+			// The reason is meant for the user.
+			$this->refusalReason = $e->getMessage();
+
+			return false;
+		}
 		catch (RuntimeException $e)
 		{
+			// Any other message may contain internal details; it must not be shown to the user.
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Why the last checkWipeAbility() or wipe() call refused to wipe the user.
+	 *
+	 * @return  string  The human-readable, translated reason. Empty if there is no reason safe to show the user.
+	 * @since   4.1.0
+	 */
+	public function getRefusalReason(): string
+	{
+		return $this->refusalReason;
 	}
 
 	/**
@@ -308,7 +338,7 @@ class WipeModel extends BaseDatabaseModel
 	}
 
 	/**
-	 * Wipes the user information. If it returns FALSE use getError to retrieve the reason.
+	 * Wipes the user information. If it returns FALSE use getRefusalReason() to retrieve the reason.
 	 *
 	 * @param   int     $userId        The user ID to export
 	 * @param   string  $type          user, admin or lifecycle
@@ -326,12 +356,24 @@ class WipeModel extends BaseDatabaseModel
 	 */
 	public function wipe(int $userId, string $type = 'user', bool $godMode = false, bool $allowReWipe = false): bool
 	{
+		$this->refusalReason = '';
+
 		if (!$godMode && !$this->checkWipeAbility($userId, $type))
 		{
 			return false;
 		}
 
-		$this->createAuditRecord($userId, $type, $allowReWipe);
+		try
+		{
+			$this->createAuditRecord($userId, $type, $allowReWipe);
+		}
+		catch (WipeRefusedException $e)
+		{
+			// The account has already been wiped. The reason is meant for the user.
+			$this->refusalReason = $e->getMessage();
+
+			return false;
+		}
 
 		// Actually delete the records
 		PluginHelper::importPlugin('datacompliance');
@@ -437,10 +479,10 @@ class WipeModel extends BaseDatabaseModel
 
 			if (!$result->canRemove)
 			{
-				throw new WipeRefusedException($result->reason);
+				// Joomla's privacy plugins give a translated reason, meant for the user. It may be missing (NULL).
+				throw new WipeRefusedException((string) ($result->reason ?? ''));
 			}
 		}
-
 	}
 
 	/**
@@ -450,6 +492,7 @@ class WipeModel extends BaseDatabaseModel
 	 * @param   string  $type          user, admin or lifecycle
 	 * @param   bool    $allowReWipe   If true, allow overwriting an existing wipe audit trail for this user.
 	 *
+	 * @throws  WipeRefusedException  If the user has already been wiped. The message says why.
 	 * @throws  Exception
 	 * @since   1.0.0
 	 */
@@ -530,7 +573,7 @@ class WipeModel extends BaseDatabaseModel
 
 			if (!$result->canRemove)
 			{
-				throw new WipeRefusedException($result->reason);
+				throw new WipeRefusedException((string) ($result->reason ?? ''));
 			}
 		}
 	}

@@ -177,6 +177,9 @@ class AccountDelete extends AbstractCommand
 
 			if (!$result)
 			{
+				// The model records why it refused to wipe the user.
+				$error = $error ?: $wipeModel->getRefusalReason();
+
 				$this->ioStyle->error(
 					[
 						Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_ERR_CANNOTDELETE'),
@@ -203,6 +206,8 @@ class AccountDelete extends AbstractCommand
 
 			return 0;
 		}
+
+		$error = $error ?: $wipeModel->getRefusalReason();
 
 		$this->ioStyle->error(
 			[

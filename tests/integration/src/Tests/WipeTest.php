@@ -194,8 +194,7 @@ class WipeTest extends AbstractE2ETestCase
 	 */
 	public function testProtectedAccountsCannotWipeThemselves(): void
 	{
-		$reasons = [];
-		$cases   = [
+		$cases = [
 			'exempt'        => [$this->loggedIn('exempt'), 'exempt from being deleted'],
 			'administrator' => [$this->loggedIn('administrator'), 'administrator login access'],
 			'admin'         => [$this->superUserFrontend(), 'Super User'],
@@ -214,16 +213,14 @@ class WipeTest extends AbstractE2ETestCase
 			$surfer->followRedirects = false;
 
 			$this->assertBodyContains('cannot be deleted automatically', $landing, $role . ': the refusal is not shown.');
+			$this->assertBodyContains(
+				$reason,
+				$landing,
+				$role . ': the refusal does not say why. The plugin must refuse with a WipeRefusedException, whose message WipeModel::getRefusalReason() hands to the Options page.'
+			);
+			$this->assertBodyNotContains('internal error', $landing, $role);
 			$this->assertUserUntouched($before, $role . ' wiped their own account.');
-
-			$reasons[$role] = str_contains($landing->body, $reason);
 		}
-
-		$this->assertOrKnownIssue(
-			!in_array(false, $reasons, true),
-			12,
-			'A refused wipe never says why ("…cannot be deleted automatically right now. " and nothing else): WipeModel::checkWipeAbility() catches the plugins\' RuntimeException — WipeRefusedException included — and returns false without keeping the message, and OptionsController then shows the empty $model->getError().'
-		);
 	}
 
 	/**
@@ -322,6 +319,21 @@ class WipeTest extends AbstractE2ETestCase
 			$this->assertRefused($wiper, $response, 'wiper wiping ' . $role);
 			$this->assertUserUntouched($before, 'wiper wiped ' . $role . '.');
 		}
+
+		/**
+		 * The Super User is refused by the controller's access check (HTTP 403). The back-end user passes it, and is
+		 * refused by plg_datacompliance_joomla, whose reason must reach the wiper.
+		 */
+		$response = $this->requestWipe($wiper, static::$fixtures->userId('administrator'));
+
+		$this->assertTrue($response->isRedirect(), "A refused wipe redirects back.\n" . $response->summary());
+
+		$wiper->followRedirects = true;
+		$landing                = $wiper->get((string) $response->getLocation());
+		$wiper->followRedirects = false;
+
+		$this->assertBodyContains('administrator login access', $landing, 'The refusal does not say why.');
+		$this->assertBodyNotContains('internal error', $landing);
 	}
 
 	/**

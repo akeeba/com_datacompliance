@@ -94,14 +94,21 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 	}
 
 	/**
-	 * A Super User, a back-end user, and an exempt account are refused (exit 127) and left untouched.
+	 * A Super User, a back-end user, and an exempt account are refused (exit 127) with the reason, and left
+	 * untouched.
 	 *
 	 * @return  void
 	 * @since   4.1.0
 	 */
 	public function testProtectedAccountsAreRefused(): void
 	{
-		foreach (['super2', 'administrator', 'exempt'] as $role)
+		$cases = [
+			'super2'        => 'Super User',
+			'administrator' => 'administrator login access',
+			'exempt'        => 'exempt from being deleted',
+		];
+
+		foreach ($cases as $role => $reason)
 		{
 			$before = $this->userRow(static::$fixtures->userId($role));
 
@@ -109,6 +116,13 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 
 			$this->assertSame(127, $exitCode, $role . "\n" . $output);
 			$this->assertUserUntouched($before, $role . ' was deleted.');
+
+			// The console wraps long lines; compare with the whitespace collapsed.
+			$this->assertStringContainsString(
+				$reason,
+				preg_replace('/\s+/', ' ', $output),
+				$role . ': the refusal does not say why.'
+			);
 		}
 	}
 

@@ -31,6 +31,7 @@ Akeeba Data Compliance 4.1.0
 # Wiped accounts kept their user groups
 # The values of user custom fields survived the account wipe
 # Wiping a user that does not exist caused an HTTP 500 error
+# A refused account deletion did not tell the user why
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash

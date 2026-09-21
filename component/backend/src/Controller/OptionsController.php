@@ -335,10 +335,8 @@ class OptionsController extends BaseController
 			return [true, ''];
 		}
 
-		// Legacy error handling; the model may have recorded why it failed.
-		$error = method_exists($model, 'getError') ? $model->getError() : '';
-
-		return [false, is_string($error) ? $error : ''];
+		// The model refused to wipe the user; it may have recorded a reason which is safe to show the user.
+		return [false, $model->getRefusalReason()];
 	}
 
 	/**

@@ -202,6 +202,9 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 				continue;
 			}
 
+			// The model records why it refused to wipe the user.
+			$error = $error ?: $wipeModel->getRefusalReason();
+
 			$this->ioStyle->text(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_FAILED'));
 			$this->ioStyle->text("\t<error>$error</error>");
 
