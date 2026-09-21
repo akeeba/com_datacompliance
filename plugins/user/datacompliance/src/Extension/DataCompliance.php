@@ -278,11 +278,12 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		 * - groups: Groups need special handling.
 		 * - profile: User profile fields require special handling.
 		 * - com_fields: Custom fields require special handling.
+		 * - activation: account activation and password reset tokens must not be logged. Handled separately.
 		 */
 		$exemptFields = [
 			'isRoot', 'userHelper', 'password1', 'password2', 'email1', 'email2',
 			'id', 'password', 'lastvisitDate', 'params', 'otpKey', 'otep', 'groups', 'profile',
-			'com_fields',
+			'com_fields', 'activation',
 		];
 		/**
 		 * Joomla's plg_user_token submits the user's API token back in the profile form as joomlatoken.token. It's a
@@ -331,6 +332,25 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			$changes['password_clear'] = [
 				'from' => '(plaintext passwords are not logged for security reasons)',
 				'to'   => '(plaintext passwords are not logged for security reasons)',
+			];
+		}
+
+		/**
+		 * Account activation / password reset token. We only log whether a token was set or cleared, never its value:
+		 * in admin activation mode Joomla stores the raw activation token which can be used to activate the account.
+		 */
+		$oldActivation = $oldUser['activation'] ?? '';
+		$newActivation = $newUser['activation'] ?? '';
+
+		if (array_key_exists('activation', $newUser) && $oldActivation != $newActivation)
+		{
+			$describeToken = fn($value) => empty($value)
+				? ''
+				: '(activation tokens are not logged for security reasons)';
+
+			$changes['activation'] = [
+				'from' => $describeToken($oldActivation),
+				'to'   => $describeToken($newActivation),
 			];
 		}
 
