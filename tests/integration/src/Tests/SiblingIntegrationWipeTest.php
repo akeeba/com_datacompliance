@@ -26,7 +26,7 @@ use Akeeba\DataCompliance\IntegrationTest\AbstractE2ETestCase;
 class SiblingIntegrationWipeTest extends AbstractE2ETestCase
 {
 	/**
-	 * Set up: no administrator notifications (known issue #11 crashes every wipe with them on).
+	 * Set up: no administrator notifications; they are tested in WipeNotificationTest.
 	 *
 	 * @return  void
 	 * @since   4.1.0

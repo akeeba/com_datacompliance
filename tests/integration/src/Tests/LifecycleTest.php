@@ -43,8 +43,8 @@ class LifecycleTest extends AbstractE2ETestCase
 
 	/**
 	 * Set up: plg_datacompliance_joomla's lifecycle rules at their defaults, and no administrator
-	 * notifications, which currently crash every wipe (known issue #11; covered by
-	 * testLifecycleDeleteWithDefaultNotificationSettings).
+	 * notifications, so that the only mail in the mailbox is the users' (the defaults are covered by
+	 * testLifecycleDeleteWithDefaultNotificationSettings; regression test for known issue #11).
 	 *
 	 * @return  void
 	 * @since   4.1.0
@@ -295,9 +295,8 @@ class LifecycleTest extends AbstractE2ETestCase
 
 		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:lifecycle:delete']);
 
-		$this->assertOrKnownIssue(
+		$this->assertTrue(
 			$exitCode === 0 && $this->userRow($stale['id'])['username'] !== $stale['username'],
-			11,
 			sprintf("With the email plugin's defaults datacompliance:lifecycle:delete dies on the first account (exit %d) and leaves it NOT pseudonymised but with a wipe audit record — the same TypeError as on the web.\nOutput:\n%s", $exitCode, $output)
 		);
 	}

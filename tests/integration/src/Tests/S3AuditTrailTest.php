@@ -23,7 +23,8 @@ use Akeeba\DataCompliance\IntegrationTest\AbstractE2ETestCase;
 class S3AuditTrailTest extends AbstractE2ETestCase
 {
 	/**
-	 * Set up: the plugin pointed at the stack's MinIO; no administrator notifications (known issue #11).
+	 * Set up: the plugin pointed at the stack's MinIO; no administrator notifications (they are tested
+	 * in WipeNotificationTest).
 	 *
 	 * @return  void
 	 * @since   4.1.0

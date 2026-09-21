@@ -30,10 +30,9 @@ class WipeTest extends AbstractE2ETestCase
 	/**
 	 * Set up: no administrator notifications.
 	 *
-	 * With plg_datacompliance_email's default settings every web wipe currently dies half-way with a
-	 * TypeError (known issue #11) — before the account is pseudonymised. The notifications have their
-	 * own test class (WipeNotificationTest); here they are switched off so that what the wipe does to
-	 * the account can be tested at all.
+	 * The notifications have their own test class (WipeNotificationTest, which also covers known
+	 * issue #11: administrator notifications used to crash every wipe half-way); here they are
+	 * switched off so that what the wipe does to the account is tested independently of mail.
 	 *
 	 * @return  void
 	 * @since   4.1.0

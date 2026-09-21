@@ -22,8 +22,8 @@ use Akeeba\DataCompliance\IntegrationTest\AbstractE2ETestCase;
 class AccountDeleteCliTest extends AbstractE2ETestCase
 {
 	/**
-	 * Set up: no administrator notifications (known issue #11 crashes every wipe with them on; see
-	 * testDeleteWithDefaultNotificationSettings).
+	 * Set up: no administrator notifications, so that these tests do not depend on mail delivery
+	 * (testDeleteWithDefaultNotificationSettings covers the defaults; regression test for known issue #11).
 	 *
 	 * @return  void
 	 * @since   4.1.0
@@ -164,9 +164,8 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 
 		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:account:delete', '--id=' . $id]);
 
-		$this->assertOrKnownIssue(
+		$this->assertTrue(
 			$exitCode === 0 && $this->userRow($id)['username'] !== $before['username'],
-			11,
 			sprintf("With the email plugin's defaults datacompliance:account:delete dies (exit %d), leaving the account NOT pseudonymised but with a wipe audit record.\nOutput:\n%s", $exitCode, $output)
 		);
 	}

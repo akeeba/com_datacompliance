@@ -216,9 +216,9 @@ Conventions:
 - **Mail:** clear Mailpit at the start of a test that asserts on mail (`$this->mailpit()->clear()`).
   Joomla's mail templates are plain text by default; set `com_mails`' `mail_style` to `both` to get the
   HTML part (`WipeNotificationTest` does).
-- **Administrator notifications crash every wipe** while known issue #11 stands. Tests about something
-  else switch them off in `setUp()` (`admins => 0`) and back on in `tearDown()`; the tests about the
-  notifications themselves run with the defaults.
+- **Administrator notifications** are off in tests about something else: they switch them off in
+  `setUp()` (`admins => 0`) and back on in `tearDown()`, so that they do not depend on mail delivery;
+  the tests about the notifications themselves run with the defaults.
 - **The lifecycle commands act on every end-of-life account on the site.** `LifecycleTest` resets the
   fixtures when it is done.
 - **A transient install failure** — "Joomla\Filesystem\Folder::delete: Could not delete folder … install_…"

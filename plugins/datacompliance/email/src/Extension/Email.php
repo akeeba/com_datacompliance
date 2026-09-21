@@ -27,6 +27,7 @@ use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
+use Throwable;
 
 /**
  * Data Compliance plugin to send emails on user deletion
@@ -162,9 +163,12 @@ class Email extends CMSPlugin implements SubscriberInterface
 			{
 				TemplateEmails::sendMail('com_datacompliance.user_' . $type, $emailVariables, $user);
 			}
-			catch (Exception $e)
+			catch (Throwable $e)
 			{
-				// Well, it looks like Joomla failed to send the email.
+				// A notification which cannot be sent must never abort the wipe half-way.
+				Log::add(
+					sprintf('Could not email the user: %s', $e->getMessage()), Log::WARNING, 'com_datacompliance'
+				);
 			}
 		}
 
@@ -186,21 +190,35 @@ class Email extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
+		$userFactory = Factory::getContainer()->get(UserFactoryInterface::class);
+
 		foreach ($superUsers as $sa)
 		{
-			$emailVariables = array_merge($emailVariables, [
-				'admin:name'     => $sa->name,
-				'admin:username' => $sa->username,
-				'admin:email'    => $sa->email,
-			]);
-
 			try
 			{
-				TemplateEmails::sendMail('com_datacompliance.admin_' . $type, $emailVariables, $sa);
+				// TemplateEmails::sendMail() needs a User object, not the raw database row.
+				$adminUser = $userFactory->loadUserById((int) $sa->id);
+
+				if (empty($adminUser) || empty($adminUser->id))
+				{
+					continue;
+				}
+
+				$adminVariables = array_merge($emailVariables, [
+					'admin:name'     => $adminUser->name,
+					'admin:username' => $adminUser->username,
+					'admin:email'    => $adminUser->email,
+				]);
+
+				TemplateEmails::sendMail('com_datacompliance.admin_' . $type, $adminVariables, $adminUser);
 			}
-			catch (Exception $e)
+			catch (Throwable $e)
 			{
-				// Well, it looks like Joomla failed to send the email.
+				// A notification which cannot be sent must never abort the wipe half-way.
+				Log::add(
+					sprintf('Could not email administrator #%d: %s', (int) $sa->id, $e->getMessage()), Log::WARNING,
+					'com_datacompliance'
+				);
 			}
 		}
 	}

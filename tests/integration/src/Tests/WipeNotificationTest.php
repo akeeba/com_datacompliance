@@ -66,9 +66,8 @@ class WipeNotificationTest extends AbstractE2ETestCase
 		$wiped  = $after['username'] !== $username;
 		$trails = count($this->wipeTrails($victimId));
 
-		$this->assertOrKnownIssue(
+		$this->assertTrue(
 			$wiped && $this->lastWipeResponseCode < 500,
-			11,
 			sprintf(
 				'With the email plugin\'s defaults every wipe dies with an HTTP %d, after the wipe audit record is written (%d record(s)) but BEFORE the account is pseudonymised (%s). plg_datacompliance_email passes the stdClass rows of getSuperUserEmails() to TemplateEmails::sendMail(string, array, ?User …): a TypeError. The account can then never be wiped again, because its audit record already exists. The same happens in datacompliance:lifecycle:delete and datacompliance:account:delete.',
 				$this->lastWipeResponseCode,
@@ -77,7 +76,7 @@ class WipeNotificationTest extends AbstractE2ETestCase
 			)
 		);
 
-		// Only reached once the TypeError is fixed: the administrators were told.
+		// The administrators were told.
 		$this->assertNotEmpty($this->mailpit()->messagesTo(static::$fixtures->email('admin')), 'The Super User was not notified.');
 	}
 
@@ -157,9 +156,9 @@ class WipeNotificationTest extends AbstractE2ETestCase
 
 		[$victimId, $username, $name] = $this->victimWipesThemselves();
 
-		$this->assertOrKnownIssue(
-			$this->lastWipeResponseCode < 500,
-			11,
+		$this->assertLessThan(
+			500,
+			$this->lastWipeResponseCode,
 			'Administrator notifications crash the wipe (see testWipeCompletesWithDefaultNotificationSettings).'
 		);
 
