@@ -40,6 +40,12 @@ Datacompliance-group plugins handle data export/deletion for specific subsystems
 ### Key Patterns
 
 - **Composition via traits** (`component/backend/src/Mixin/`) — `RunPluginsTrait`, `TriggerEventTrait`, `ControllerEventsTrait`, etc.
+- **Administrators always get the Export / Delete buttons for other users** — compliance requirement: having these
+  buttons trumps every other display option. On another user's Options page (`tmpl/options/default.php`, "manage
+  another user" block) they depend only on the viewer's privileges (`HtmlView::$canManageExport` / `$canManageWipe`,
+  mirroring `OptionsController::assertUserAccess()`). The component's `showexport` / `showwipe` options govern only a
+  user's own self-service buttons and must never hide the administrator's. Sole exception: a non Super User gets no
+  buttons on a Super User's page, because the controller refuses that action (H2a).
 - **Composer autoloader** — loaded in `Extension/DataComplianceComponent.php` for the `akeeba/s3` dependency (vendor dir: `component/backend/vendor/`)
 
 ## CLI Commands

@@ -48,7 +48,9 @@ class HtmlView extends BaseHtmlView
 	public $preference;
 
 	/**
-	 * Am I allowed to show the Export user profile controls?
+	 * Show the Export controls on the user's OWN Options page (self-service)?
+	 *
+	 * Driven by the component's showexport option. It does NOT apply when managing another user; see $canManageExport.
 	 *
 	 * @var   bool
 	 * @since 1.0.0
@@ -56,12 +58,36 @@ class HtmlView extends BaseHtmlView
 	public $showExport = false;
 
 	/**
-	 * Am I allowed to show the Wipe user profile controls?
+	 * Show the Wipe controls on the user's OWN Options page (self-service)?
+	 *
+	 * Driven by the component's showwipe option. It does NOT apply when managing another user; see $canManageWipe.
 	 *
 	 * @var   bool
 	 * @since 1.0.0
 	 */
 	public $showWipe = false;
+
+	/**
+	 * Show the Export button when managing ANOTHER user's Options page?
+	 *
+	 * Deliberately independent of the component's showexport option: administrators must always be able to export
+	 * other users (compliance requirement).
+	 *
+	 * @var   bool
+	 * @since 4.1.0
+	 */
+	public $canManageExport = false;
+
+	/**
+	 * Show the Delete button when managing ANOTHER user's Options page?
+	 *
+	 * Deliberately independent of the component's showwipe option: administrators must always be able to delete
+	 * other users (compliance requirement).
+	 *
+	 * @var   bool
+	 * @since 4.1.0
+	 */
+	public $canManageWipe = false;
 
 	/**
 	 * Can the current user record consent on behalf of the user being displayed?
@@ -154,7 +180,7 @@ class HtmlView extends BaseHtmlView
 	}
 
 	/**
-	 * Populate basic view parameters such as showExport, showWipe, user and type
+	 * Populate basic view parameters such as showExport, showWipe, canManageExport, canManageWipe, user and type
 	 *
 	 * @return  void
 	 * @throws  Exception
@@ -175,8 +201,9 @@ class HtmlView extends BaseHtmlView
 		$userID      = $isAdmin ? Factory::getApplication()->getInput()->getInt('user_id', null) : null;
 		$cParams     = ComponentHelper::getParams('com_datacompliance');
 
-		$this->showExport = $cParams->get('showexport', 1);
-		$this->showWipe   = $cParams->get('showwipe', 1);
+		// Self-service only: these component options govern the buttons on the user's own Options page.
+		$this->showExport = (bool) $cParams->get('showexport', 1);
+		$this->showWipe   = (bool) $cParams->get('showwipe', 1);
 		$this->user       = empty($userID)
 			? Factory::getApplication()->getIdentity()
 			: Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
@@ -185,17 +212,23 @@ class HtmlView extends BaseHtmlView
 		// Mirrors OptionsController::assertUserAccess('consent')
 		$this->canManageConsent = $isSuper || $isDCAdmin;
 
+		/**
+		 * Managing another user. HAVING THE EXPORT / DELETE BUTTONS TRUMPS EVERY OTHER DISPLAY OPTION.
+		 *
+		 * An administrator must always be able to export and delete other users; a UI where they cannot is a compliance
+		 * problem. Therefore these flags depend ONLY on the viewer's privileges, exactly as
+		 * OptionsController::assertUserAccess() checks them. The component's showexport / showwipe options must NOT be
+		 * applied here; they only govern a user's own self-service buttons.
+		 *
+		 * The one exception: only Super Users may export or wipe other Super Users (H2a). The controller refuses that
+		 * action, so the button could never work and is not shown.
+		 */
 		if ($this->type == 'admin')
 		{
-			$this->showExport = $this->showExport && $canExport;
-			$this->showWipe   = $this->showWipe && $canWipe;
+			$targetIsSuper = $this->user->authorise('core.admin');
 
-			// Only Super Users may export or wipe other Super Users. Mirrors OptionsController::assertUserAccess().
-			if (!$isSuper && $this->user->authorise('core.admin'))
-			{
-				$this->showExport = false;
-				$this->showWipe   = false;
-			}
+			$this->canManageExport = ($canExport || $isSuper || $isDCAdmin) && ($isSuper || !$targetIsSuper);
+			$this->canManageWipe   = ($canWipe || $isSuper || $isDCAdmin) && ($isSuper || !$targetIsSuper);
 		}
 
 		if (Factory::getApplication()->isClient('administrator'))

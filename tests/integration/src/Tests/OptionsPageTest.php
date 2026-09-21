@@ -107,6 +107,51 @@ class OptionsPageTest extends AbstractE2ETestCase
 	}
 
 	/**
+	 * The component's showexport / showwipe options only govern a user's own self-service buttons. They
+	 * must never hide the Export / Delete buttons from an administrator managing another user: having
+	 * those buttons trumps every other display option (compliance requirement).
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	public function testShowExportAndShowWipeOptionsDoNotHideAdministratorButtons(): void
+	{
+		$bobId = static::$fixtures->userId('bob');
+
+		static::$fixtures->setComponentParams(['showexport' => 0, 'showwipe' => 0]);
+
+		try
+		{
+			$pages = [
+				'exporter (front-end)'   => [$this->loggedIn('exporter')->get($this->siteUrl(['view' => 'options', 'user_id' => $bobId])), true, false],
+				'wiper (front-end)'      => [$this->loggedIn('wiper')->get($this->siteUrl(['view' => 'options', 'user_id' => $bobId])), false, true],
+				'dcadmin (front-end)'    => [$this->loggedIn('dcadmin')->get($this->siteUrl(['view' => 'options', 'user_id' => $bobId])), true, true],
+				'Super User (front-end)' => [$this->superUserFrontend()->get($this->siteUrl(['view' => 'options', 'user_id' => $bobId])), true, true],
+				'Super User (back-end)'  => [$this->superUser()->get($this->adminUrl(['view' => 'options', 'user_id' => $bobId])), true, true],
+			];
+
+			foreach ($pages as $who => [$page, $export, $wipe])
+			{
+				$this->assertStatus(200, $page, $who);
+
+				if ($export)
+				{
+					$this->assertTrue($this->offersExportOf($page->body, $bobId), sprintf('%s is not offered the export of bob when showexport is off.', $who));
+				}
+
+				if ($wipe)
+				{
+					$this->assertMatchesRegularExpression('/task=wipe(&|&amp;)user_id=' . $bobId . '\b/', $page->body, sprintf('%s is not offered to delete bob when showwipe is off.', $who));
+				}
+			}
+		}
+		finally
+		{
+			static::$fixtures->setComponentParams(['showexport' => 1, 'showwipe' => 1]);
+		}
+	}
+
+	/**
 	 * L19: a username with markup (created outside Joomla's forms, e.g. by a bridge or an SSO plugin,
 	 * which do not go through Table\User::check()) is escaped on the Options and wipe pages.
 	 *

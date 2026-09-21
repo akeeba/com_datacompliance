@@ -23,6 +23,7 @@ Akeeba Data Compliance 4.1.0
 # Sorting the Lifecycle page by last visit date did not work, and its sort options had the wrong labels
 # Recording consent for a non-existent user overwrote your own consent record
 # The datacompliance:lifecycle:notify CLI command failed with a PHP error instead of notifying users
+# The Options page of a Super User offered the Export and Delete buttons to administrators who are not allowed to act on Super Users
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash

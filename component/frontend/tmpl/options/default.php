@@ -183,7 +183,16 @@ $myUser = Factory::getApplication()->getIdentity();
     </div>
 <?php endif ?>
 
-<?php if($this->type !== 'user'): ?>
+<?php
+/**
+ * Managing another user. HAVING THE EXPORT / DELETE BUTTONS TRUMPS EVERY OTHER DISPLAY OPTION (compliance requirement).
+ *
+ * Administrators must always be able to export and delete other users. Use ONLY $this->canManageExport /
+ * $this->canManageWipe here, which depend solely on the viewer's privileges (and the H2a Super User rule). Do NOT use
+ * $this->showExport / $this->showWipe: the component's showexport / showwipe options only govern self-service buttons.
+ */
+?>
+<?php if(($this->type !== 'user') && ($this->canManageExport || $this->canManageWipe)): ?>
 	<div class="card mb-3 border-warning">
 		<h3 class="h1 card-header bg-warning">
 			<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_HEADER', $this->escape($this->user->username)) ?>
@@ -198,7 +207,7 @@ $myUser = Factory::getApplication()->getIdentity();
 				<?= Text::sprintf('COM_DATACOMPLIANCE_OPTIONS_MANAGE_DATARIGHTS_WARNING', $this->escape($this->user->username)) ?>
 			</p>
 			<div class="row mb-3">
-				<?php if($myUser->authorise('export', 'com_datacompliance')): ?>
+				<?php if($this->canManageExport): ?>
 					<div class="col-sm-6">
 						<form method="post"
 							  action="<?= Route::_('index.php?option=com_datacompliance&view=options&task=export&format=raw') ?>">
@@ -211,7 +220,7 @@ $myUser = Factory::getApplication()->getIdentity();
 						</form>
 					</div>
 				<?php endif ?>
-				<?php if($myUser->authorise('wipe', 'com_datacompliance')): ?>
+				<?php if($this->canManageWipe): ?>
 					<div class="col-sm-6">
 						<a href="<?= Route::_('index.php?option=com_datacompliance&view=options&task=wipe&user_id=' . (int) $this->user->id) ?>"
 						   class="btn btn-danger w-100">

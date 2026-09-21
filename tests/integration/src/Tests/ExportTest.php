@@ -213,10 +213,9 @@ class ExportTest extends AbstractE2ETestCase
 		$offered  = (bool) preg_match('/name="user_id"\s+value="' . $superId . '"/', $page->body);
 
 		$this->assertStatus(200, $page);
-		$this->assertOrKnownIssue(
-			!$offered,
-			3,
-			'The Options page of a Super User still offers the Export (and Delete) buttons to a non Super User with the export/wipe privilege. HtmlView computes showExport/showWipe, but tmpl/options/default.php ignores them in the "manage another user" block and checks only $myUser->authorise().'
+		$this->assertFalse(
+			$offered,
+			'The Options page of a Super User still offers the Export (and Delete) buttons to a non Super User with the export/wipe privilege, although the controller refuses that action (H2a). HtmlView::$canManageExport / $canManageWipe must be false in this case.'
 		);
 	}
 
