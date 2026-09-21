@@ -42,6 +42,7 @@ Akeeba Data Compliance 4.1.0
 # Akeeba Ticket System attachment files were left on disk after deleting a user account
 # Manager notes of a deleted user's Akeeba Ticket System tickets were not deleted
 # Akeeba Ticket System ticket invitations of a deleted user were neither deleted nor exported
+# The data export crashed when a plugin exported an object value
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash

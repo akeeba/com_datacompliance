@@ -73,13 +73,10 @@ abstract class Export
 
 		foreach ($data as $k => $v)
 		{
-			if (is_array($v))
+			// Arrays and objects (e.g. a decoded JSON column) are dumped as text.
+			if (is_array($v) || is_object($v))
 			{
-				$v = print_r($v, true);
-			}
-			elseif (is_object($v))
-			{
-				$v = (array) $v;
+				$v = print_r((array) $v, true);
 			}
 
 			$v     = htmlspecialchars($v ?? '', ENT_QUOTES);

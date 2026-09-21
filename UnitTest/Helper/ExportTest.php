@@ -134,18 +134,9 @@ class ExportTest extends TestCase
 	 */
 	public function testObjectValues(): void
 	{
-		try
-		{
-			$item = Export::exportItemFromArray(['obj' => (object) ['x' => 'y']]);
-		}
-		catch (\TypeError $e)
-		{
-			$this->markTestSkipped(
-				'Known issue #23 (see known-issues.md): Export::exportItemFromArray() casts an object value to an array and then passes that array to htmlspecialchars(): ' . $e->getMessage()
-			);
-		}
+		$item = Export::exportItemFromArray(['obj' => (object) ['x' => 'y']]);
 
-		$this->assertStringContainsString('y', (string) $this->column($item, 'obj'));
+		$this->assertStringContainsString('[x] => y', (string) $this->column($item, 'obj'), 'Export::exportItemFromArray() does not dump an object value as text.');
 	}
 
 	/**
