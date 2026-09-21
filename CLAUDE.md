@@ -54,3 +54,14 @@ Registered via the console plugin, invoked through Joomla CLI:
 - `datacompliance:lifecycle:delete` — auto-remove inactive users
 - `datacompliance:lifecycle:notify` — notify users before deletion
 - `datacompliance:account:delete` — manual account deletion
+
+## Workarounds for core Joomla bugs — re-check on every Joomla release
+
+- **HTML mail escaping** (`Helper\TemplateEmails::isHtmlLayoutUnescaped()` / `escapeForHtml()`): core
+  `MailTemplate::send()` renders com_mails' HTML layout and then calls `replaceTags()` without
+  `$isHtml = true`, so tags marked with `addUnsafeTags()` are **not** escaped in the HTML body (checked on
+  Joomla 6.1.3). We copy core's "will the HTML layout be used" logic (`mail_style`, `disable_htmllayout`,
+  `alternative_mailconfig` + per-template params) and pass pre-escaped values for the HTML part only.
+  Whenever the supported Joomla range changes, diff core's `MailTemplate::send()` against our copy: if
+  core changed how it decides on the layout, update ours; if core fixed the escaping, remove the
+  workaround (otherwise values get escaped twice).

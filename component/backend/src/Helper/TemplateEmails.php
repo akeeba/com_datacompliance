@@ -18,6 +18,7 @@ use Joomla\CMS\User\User;
 use Joomla\Database\DatabaseDriver;
 use Exception;
 use Joomla\Database\DatabaseInterface;
+use Joomla\Registry\Registry;
 
 /**
  * Manage and send emails with Joomla's email templates component
@@ -338,13 +339,28 @@ abstract class TemplateEmails
 				$templateMailer = new MailTemplate($key, $langTag, $mailer);
 			}
 
-			$templateMailer->addTemplateData($data);
-
 			/**
 			 * Escape all tags in HTML emails, except the ones we know contain HTML built from trusted language strings.
 			 * User data (name, username, etc.) may have been created outside Joomla's filtered user forms, e.g. by SSO.
 			 */
 			$templateMailer->addUnsafeTags(array_diff(array_keys($data), ['actions']));
+
+			if (self::isHtmlLayoutUnescaped($template))
+			{
+				/**
+				 * Core Joomla's MailTemplate::send() ignores the unsafe tags when it wraps the HTML body in com_mails'
+				 * HTML layout: it replaces the tags in the rendered layout without escaping them. In this case we give
+				 * it pre-escaped values for the HTML part, and the raw values for the plain text part. The raw values
+				 * are also what Joomla uses when it converts an empty HTML body from the plain text one; that
+				 * conversion does honour the unsafe tags, so nothing is escaped twice.
+				 */
+				$templateMailer->addTemplateData(self::escapeForHtml($data));
+				$templateMailer->addTemplateData($data, true);
+			}
+			else
+			{
+				$templateMailer->addTemplateData($data);
+			}
 			$templateMailer->addRecipient(trim($user->email), $user->name);
 
 			$result = $templateMailer->send();
@@ -360,6 +376,70 @@ abstract class TemplateEmails
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Tags whose values must NOT be HTML–escaped in advance.
+	 *
+	 * - actions: HTML built from trusted language strings.
+	 * - sitename, deletedate: not user–supplied, and used in the subjects, which Joomla builds from the same values as
+	 *   the HTML body; escaping them would show HTML entities in the subject.
+	 */
+	private const TRUSTED_TAGS = ['actions', 'sitename', 'deletedate'];
+
+	/**
+	 * Will core Joomla put the tag values into the HTML body without escaping the unsafe tags?
+	 *
+	 * This mirrors the logic of MailTemplate::send(): it happens when HTML emails are sent and the HTML body is wrapped
+	 * in com_mails' HTML layout.
+	 *
+	 * @param   object  $template  The mail template, as returned by MailTemplate::getTemplate()
+	 *
+	 * @return  bool
+	 */
+	private static function isHtmlLayoutUnescaped(object $template): bool
+	{
+		$config    = ComponentHelper::getParams('com_mails');
+		$mailStyle = $config->get('mail_style', 'plaintext');
+
+		if (!in_array($mailStyle, ['html', 'both'], true))
+		{
+			return false;
+		}
+
+		// Despite its name, a non-zero "disable_htmllayout" means that the HTML layout IS used.
+		$useLayout = $config->get('disable_htmllayout', '1');
+
+		if ((int) $config->get('alternative_mailconfig', 0) === 1)
+		{
+			$params    = $template->params ?? null;
+			$params    = $params instanceof Registry ? $params : new Registry($params);
+			$useLayout = $params->get('disable_htmllayout', $useLayout);
+		}
+
+		return (bool) $useLayout;
+	}
+
+	/**
+	 * HTML–escape the values of all but the trusted tags.
+	 *
+	 * @param   array  $data  The tag => value array
+	 *
+	 * @return  array
+	 */
+	private static function escapeForHtml(array $data): array
+	{
+		foreach ($data as $key => $value)
+		{
+			if (in_array(strtolower($key), self::TRUSTED_TAGS, true) || !is_scalar($value))
+			{
+				continue;
+			}
+
+			$data[$key] = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+		}
+
+		return $data;
 	}
 
 	/**

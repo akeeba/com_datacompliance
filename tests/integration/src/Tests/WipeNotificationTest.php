@@ -117,10 +117,9 @@ class WipeNotificationTest extends AbstractE2ETestCase
 		// No administrator notifications when they are switched off.
 		$this->assertSame([], $this->mailpit()->messagesTo(static::$fixtures->email('admin')));
 
-		// L5: user data is escaped in HTML. Last, because it skips.
-		$this->assertOrKnownIssue(
+		// L5: user data is escaped in HTML, exactly once.
+		$this->assertTrue(
 			!str_contains($message['HTML'], '<b>Bold</b>') && str_contains($message['HTML'], '&lt;b&gt;Bold&lt;/b&gt;'),
-			14,
 			'The user\'s name is raw HTML in the HTML notification: the L5 fix relies on MailTemplate::addUnsafeTags(), but with com_mails\' HTML layout enabled (the default) core Joomla\'s MailTemplate::send() replaces the tags a second time, in the rendered layout, without escaping. Data Compliance must escape the values itself.'
 		);
 	}
