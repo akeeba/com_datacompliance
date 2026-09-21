@@ -739,7 +739,7 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			}
 		}
 
-		if (count($changedNewProfile))
+		if (!count($changedNewProfile))
 		{
 			return;
 		}

@@ -295,7 +295,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 				continue;
 			}
 
-			Export::adoptChild($domainNotes, Export::exportItemFromObject($item));
+			Export::adoptChild($domainProfiles, Export::exportItemFromObject($item));
 		}
 
 		// #__user_usergroup_map
@@ -337,7 +337,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 				unset($item->series, $item->token);
 			}
 
-			Export::adoptChild($domainGroups, Export::exportItemFromObject($item));
+			Export::adoptChild($domainKeys, Export::exportItemFromObject($item));
 		}
 
 		$this->setEventResult($event, $export);

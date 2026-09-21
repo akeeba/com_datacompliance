@@ -16,6 +16,7 @@ Akeeba Data Compliance 4.1.0
 ~ Database queries in the plugins now use prepared statements instead of quoted values
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
+# User profile changes were never logged, and data exports filed profile and key records under the wrong heading
 # A database error while recording consent could delete the user's existing consent record
 # Sorting the Lifecycle page by last visit date did not work, and its sort options had the wrong labels
 # Recording consent for a non-existent user overwrote your own consent record
