@@ -174,6 +174,8 @@ class WipeTest extends AbstractE2ETestCase
 		$keys       = (int) $this->db()->value('SELECT COUNT(*) FROM #__user_keys WHERE series = ?', [$data['keySeries']]);
 		$fieldValue = (int) $this->db()->value('SELECT COUNT(*) FROM #__fields_values WHERE item_id = ? AND value = ?', [(string) $victimId, $data['fieldValue']]);
 
+		$this->assertSame(0, $keys, 'The user\'s remember-me key (#__user_keys) survives the wipe: deleteKeys() matches user_id against the numeric id, but that column holds the username.');
+
 		$this->assertOrKnownIssues([
 			8 => [
 				$groups === 0,
@@ -182,10 +184,6 @@ class WipeTest extends AbstractE2ETestCase
 			9 => [
 				$fieldValue === 0,
 				'The value of the user\'s custom field (#__fields_values, com_users.user context) survives the wipe: deleteFields() only deletes #__user_profiles rows, although the wipe page promises that "any additional user profile fields will be removed".',
-			],
-			5 => [
-				$keys === 0,
-				'The user\'s remember-me key (#__user_keys) survives the wipe: deleteKeys() matches user_id against the numeric id, but that column holds the username.',
 			],
 		]);
 	}

@@ -184,6 +184,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		$ret['joomla']['notes']  = $this->deleteNotes($user);
 		$ret['joomla']['fields'] = $this->deleteFields($user);
+		// Must run before pseudonymizeUser(): the keys are looked up by the (original) username.
 		$ret['joomla']['keys']   = $this->deleteKeys($user);
 
 		$this->deleteUserGroups($user);
@@ -321,11 +322,13 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$domainKeys->addAttribute('name', 'user_keys');
 		$domainKeys->addAttribute('description', 'Joomla! #__user_keys records');
 
-		$query = DbQuery::create($db)
+		// Despite its name, #__user_keys.user_id holds the USERNAME, not the numeric user ID.
+		$username = (string) $user->username;
+		$query    = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = :userId')
-			->bind(':userId', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = :username')
+			->bind(':username', $username, ParameterType::STRING);
 
 		$items = $db->setQuery($query)->loadObjectList();
 
@@ -524,19 +527,23 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		$db = $this->getDatabase();
 		$db->setMonitor(null);
-		$ids    = [];
-		$userId = $user->id;
+		$ids = [];
 
-		// WTAF?! Trying to bind the user id with bind() results in a fatal error.
+		/**
+		 * Despite its name, #__user_keys.user_id holds the USERNAME, not the numeric user ID. This must therefore run
+		 * BEFORE pseudonymizeUser() changes the username.
+		 */
+		$username    = (string) $user->username;
 		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = :userId')
-			->bind(':userId', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = :username')
+			->bind(':username', $username, ParameterType::STRING);
 		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = :userId')
-			->bind(':userId', $user->id, ParameterType::INTEGER);
+			->where($db->quoteName('user_id') . ' = :username')
+			->bind(':username', $username, ParameterType::STRING);
+
 		try
 		{
 			$ids = $db->setQuery($selectQuery)->loadColumn(0);

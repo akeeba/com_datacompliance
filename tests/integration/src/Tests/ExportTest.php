@@ -278,7 +278,11 @@ class ExportTest extends AbstractE2ETestCase
 			$this->assertStringContainsString($dlid, $maximal->body, 'Maximalist export: the Download ID is missing.');
 		}
 
-		$remembered = str_contains($maximal->body, $data['keySeries']);
+		$this->assertStringContainsString(
+			$data['keySeries'],
+			$maximal->body,
+			'The user\'s remember-me keys (#__user_keys) are never exported: plg_datacompliance_joomla looks them up with user_id = <numeric id>, but that column holds the USERNAME.'
+		);
 
 		// Minimal.
 		static::$fixtures->setComponentParams(['maximalist_export' => 0]);
@@ -303,17 +307,12 @@ class ExportTest extends AbstractE2ETestCase
 			$this->assertStringContainsString(substr($dlid, -4), $minimal->body, 'The masked Download ID lost its last four characters.');
 		}
 
-		// Last, because they skip.
-		$this->assertOrKnownIssues([
-			7 => [
-				!str_contains($minimal->body, $activation),
-				'With Maximalist Export off, the account activation / password reset token is still exported: Data Compliance drops it from its own "users" domain, but the "users" domain of core plg_privacy_user carries it too, and Export::mapJoomlaPrivacyExportDomain() only filters joomlatoken.token.',
-			],
-			5 => [
-				$remembered,
-				'The user\'s remember-me keys (#__user_keys) are never exported: plg_datacompliance_joomla looks them up with user_id = <numeric id>, but that column holds the USERNAME.',
-			],
-		]);
+		// Last, because it skips.
+		$this->assertOrKnownIssue(
+			!str_contains($minimal->body, $activation),
+			7,
+			'With Maximalist Export off, the account activation / password reset token is still exported: Data Compliance drops it from its own "users" domain, but the "users" domain of core plg_privacy_user carries it too, and Export::mapJoomlaPrivacyExportDomain() only filters joomlatoken.token.'
+		);
 	}
 
 	/**
