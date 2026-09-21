@@ -144,7 +144,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 * This plugin takes the following actions:
 	 * - The user name is pseudonymized to "user1234" where 1234 is the user ID
 	 * - The email is pseudonymized to "user1234@example.com" where 1234 is the user ID
-	 * - The password is changed to a long, random string\
+	 * - The password is changed to the hash of a long, random string
 	 * - Account creation and last access time are set to dummy values 1/1/1999 and 31/12/1999 GMT.
 	 * - User notes are deleted
 	 * - User fields are deleted
@@ -625,7 +625,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 * Pseudonymize a user:
 	 * - The user name is pseudonymized to "user1234" where 1234 is the user ID
 	 * - The email is pseudonymized to "user1234@example.com" where 1234 is the user ID
-	 * - The password is changed to a long, random string\
+	 * - The password is changed to the hash of a long, random string
 	 * - Account creation and last access time are set to dummy values 1/1/1999 GMT.
 	 *
 	 * @param   User  $user
@@ -641,7 +641,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$user->name          = "User {$user->id}";
 		$user->username      = "user{$user->id}";
 		$user->email         = "UserID{$user->id}removed@email.invalid";
-		$user->password      = UserHelper::genRandomPassword(64);
+		// Store a well-formed hash of a random password nobody knows. Assigning to $user->password bypasses hashing.
+		$user->password      = UserHelper::hashPassword(UserHelper::genRandomPassword(64));
 		$user->block         = 0;
 		$user->sendEmail     = 0;
 		$user->registerDate  = $jFake->toSql();
