@@ -7,6 +7,7 @@ Akeeba Data Compliance 4.1.0
 - Removed legacy error handler
 + The installer now refuses to install on a Joomla! or PHP version newer than the supported maximum
 + "Maximalist export" option; set it to No to remove authentication material from data exports
+~ Updated moment.js to 2.31.0
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
@@ -30,6 +31,7 @@ Akeeba Data Compliance 4.1.0
 # [LOW] The user changes audit trail built some database queries without prepared statements
 # [LOW] The data options page could be displayed without the access check by using task=display
 # [LOW] The Lifecycle page could show a stale list of users, ignoring the selected date
+# [LOW] The Control Panel loaded JavaScript libraries from a third-party CDN without integrity checks
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
 

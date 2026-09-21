@@ -47,31 +47,31 @@
 
 		{
 			"name": "com_datacompliance.chart",
-			"description": "Charts.js — renders charts and graphs",
+			"description": "Chart.js 3.2.1 — renders charts and graphs",
 			"type": "script",
-			"uri": "https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js",
+			"uri": "com_datacompliance/vendor/chart.min.js",
 			"attributes": {
 				"defer": true
 			}
 		},
 		{
 			"name": "com_datacompliance.chart_moment_adapter",
-			"description": "Moment adapter for Charts.js",
+			"description": "Moment adapter 0.1.1 for Chart.js",
 			"type": "script",
 			"dependencies": [
 				"com_datacompliance.chart",
 				"com_datacompliance.moment"
 			],
-			"uri": "https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@0.1.1",
+			"uri": "com_datacompliance/vendor/chartjs-adapter-moment.min.js",
 			"attributes": {
 				"defer": true
 			}
 		},
 		{
 			"name": "com_datacompliance.moment",
-			"description": "Moment — handles date conversions in JavaScript",
+			"description": "Moment 2.31.0 — handles date conversions in JavaScript",
 			"type": "script",
-			"uri": "https://cdn.jsdelivr.net/npm/moment@2.27.0",
+			"uri": "com_datacompliance/vendor/moment.min.js",
 			"attributes": {
 				"defer": true
 			}
