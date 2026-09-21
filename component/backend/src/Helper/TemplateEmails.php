@@ -66,6 +66,9 @@ abstract class TemplateEmails
 				'id',
 				'actions',
 				'actions_text',
+				'admin:name',
+				'admin:username',
+				'admin:email',
 			],
 		],
 
@@ -106,6 +109,9 @@ abstract class TemplateEmails
 				'id',
 				'actions',
 				'actions_text',
+				'admin:name',
+				'admin:username',
+				'admin:email',
 			],
 		],
 
@@ -126,6 +132,9 @@ abstract class TemplateEmails
 				'id',
 				'actions',
 				'actions_text',
+				'admin:name',
+				'admin:username',
+				'admin:email',
 			],
 		],
 

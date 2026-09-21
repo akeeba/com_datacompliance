@@ -168,9 +168,9 @@ class WipeNotificationTest extends AbstractE2ETestCase
 		$message = $this->mailpit()->message($this->mailpit()->messagesTo(static::$fixtures->email('super2'))[0]['ID']);
 
 		$this->assertStringContainsString((string) $victimId, $message['Text'], 'The notification does not say which user was deleted.');
-		$this->assertOrKnownIssue(
-			!str_contains($message['Text'], 'Hello ' . $name),
-			13,
+		$this->assertStringNotContainsString(
+			'Hello ' . $name,
+			$message['Text'],
 			'The administrator notifications greet the Super User with the DELETED user\'s name ("Hello {NAME}"): the admin_* templates use {NAME}, which is the wiped user\'s name; the recipient\'s is {ADMIN:NAME}.'
 		);
 	}

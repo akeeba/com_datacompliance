@@ -121,12 +121,11 @@ class TemplateEmailsTest extends TestCase
 
 		$strings = LanguageFile::load(\dirname(__DIR__, 2) . '/component/backend/language/en-GB/com_datacompliance.ini');
 
-		if (preg_match('/Hello \{NAME\}/', ($strings[$definition['bodyPlaintext']] ?? '') . ($strings[$definition['bodyHtml']] ?? '')))
-		{
-			$this->markTestSkipped(sprintf('Known issue #13 (see known-issues.md): %s greets the Super User with "Hello {NAME}", the deleted user\'s name.', $key));
-		}
-
-		$this->assertTrue(true);
+		$this->assertDoesNotMatchRegularExpression(
+			'/Hello \{NAME\}/',
+			($strings[$definition['bodyPlaintext']] ?? '') . ($strings[$definition['bodyHtml']] ?? ''),
+			sprintf('%s greets the Super User with "Hello {NAME}", the deleted user\'s name.', $key)
+		);
 	}
 
 	/**
