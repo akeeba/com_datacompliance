@@ -77,7 +77,7 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 	}
 
 	/**
-	 * --dry-run deletes nothing.
+	 * --dry-run deletes nothing, not even with --force, and still refuses an account that cannot be deleted.
 	 *
 	 * @return  void
 	 * @since   4.1.0
@@ -91,6 +91,20 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 
 		$this->assertSame(1, $exitCode, $output);
 		$this->assertUserUntouched($before, 'The dry run deleted the account.');
+
+		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:account:delete', '--id=' . $id, '--dry-run', '--force']);
+
+		$this->assertSame(1, $exitCode, $output);
+		$this->assertUserUntouched($before, 'The dry run deleted the account when combined with --force.');
+		$this->assertCount(0, $this->wipeTrails($id), 'The dry run wrote a wipe audit trail record.');
+
+		// A dry run still says when an account cannot be deleted.
+		$super = $this->userRow(static::$fixtures->userId('super2'));
+
+		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:account:delete', '--id=' . $super['id'], '--dry-run']);
+
+		$this->assertSame(127, $exitCode, $output);
+		$this->assertUserUntouched($super, 'The dry run deleted a Super User.');
 	}
 
 	/**

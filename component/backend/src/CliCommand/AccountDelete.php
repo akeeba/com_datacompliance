@@ -171,7 +171,8 @@ class AccountDelete extends AbstractCommand
 			$this->ioStyle->warning(Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_WARN_FORCE'));
 		}
 
-		if (!$force && !$dryRun)
+		// A dry run also reports whether the account could be deleted.
+		if (!$force)
 		{
 			[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'checkWipeAbility', $user_id, 'admin');
 
@@ -191,7 +192,8 @@ class AccountDelete extends AbstractCommand
 			}
 		}
 
-		if (!$force && $dryRun)
+		// A dry run never deletes anything, not even with --force.
+		if ($dryRun)
 		{
 			$this->ioStyle->info(Text::_('COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_ERR_DRYRUN'));
 
