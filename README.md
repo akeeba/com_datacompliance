@@ -21,6 +21,24 @@ The account removal audit log can be automatically exported to S3 (in a JSON for
 
 There is a Joomla CLI integration plugin. You can use the CLI commands to, among other things, schedule periodic removal of stale accounts. This lets you comply with the data minimisation requirement of the GDPR.
 
+## For developers: refusing to delete an account
+
+Third-party plugins in the `datacompliance` group can veto the deletion of a user account by handling the `onDataComplianceCanDelete` event and throwing an exception.
+
+**Throw `Akeeba\Component\DataCompliance\Administrator\Exception\WipeRefusedException` with a human-readable, translated message** (e.g. "You have an active subscription"). Its message is shown to the user and printed by the CLI commands. Any other exception is also a refusal, but it is treated as an internal error: its message is **not** shown, because it may contain internal details, and the user only sees a generic message.
+
+`WipeRefusedException` was added in Data Compliance 4.1.0. If your plugin must also work with older versions, fall back to `RuntimeException`:
+
+```php
+use Akeeba\Component\DataCompliance\Administrator\Exception\WipeRefusedException;
+
+$exceptionClass = class_exists(WipeRefusedException::class) ? WipeRefusedException::class : RuntimeException::class;
+
+throw new $exceptionClass(Text::_('PLG_DATACOMPLIANCE_EXAMPLE_ERR_CANNOT_DELETE'));
+```
+
+A refusal is not final. An administrator can override every refusal with the `datacompliance:account:delete` CLI command's `--force` option, e.g. when a user insists on having their account deleted despite a recent purchase.
+
 ## Copyright notice and license 
 
 Akeeba Data Compliance — A tool to facilitate GDPR conformance of your Joomla! sites
