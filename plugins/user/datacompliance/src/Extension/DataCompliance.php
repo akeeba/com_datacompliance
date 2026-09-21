@@ -605,7 +605,8 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
-		$changes['change_params'] = [
+		// Its own key: 'change_params' holds the user parameter changes, which this would overwrite.
+		$changes['com_fields'] = [
 			'from' => $changedFieldsOldProfile,
 			'to'   => $changedFieldsNewProfile,
 		];

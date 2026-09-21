@@ -80,9 +80,8 @@ class UserTrailTest extends AbstractE2ETestCase
 		$params = str_contains($json, 'Europe\/Athens');
 		$custom = str_contains($json, 'E2E-NEW-PHONE');
 
-		$this->assertOrKnownIssue(
+		$this->assertTrue(
 			$params && $custom,
-			15,
 			sprintf(
 				'Changing a user parameter and a custom field in one save does not record both (parameter recorded: %s; custom field recorded: %s). getCustomFieldsChanges() writes its result to $changes[\'change_params\'] — the key the user parameter changes use — overwriting them.',
 				$params ? 'yes' : 'NO',
