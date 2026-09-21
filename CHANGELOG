@@ -29,6 +29,7 @@ Akeeba Data Compliance 4.1.0
 # Personal data exports contained no Akeeba Ticket System data with ATS 5 or later
 # With Maximalist Export off, the account activation / password reset token was still exported
 # Wiped accounts kept their user groups
+# The values of user custom fields survived the account wipe
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash

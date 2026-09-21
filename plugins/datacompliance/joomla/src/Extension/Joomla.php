@@ -148,6 +148,7 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 	 * - Account creation and last access time are set to dummy values 1/1/1999 and 31/12/1999 GMT.
 	 * - User notes are deleted
 	 * - User fields are deleted
+	 * - The values of the user custom fields (com_fields, com_users.user context) are deleted
 	 * - User keys (#__user_keys) are deleted
 	 * - All user groups are removed from #__user_usergroup_map for this user, making it impossible to login
 	 *
@@ -171,10 +172,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		$ret = [
 			'joomla' => [
-				'user'   => $userId,
-				'notes'  => [],
-				'fields' => [],
-				'keys'   => [],
+				'user'         => $userId,
+				'notes'        => [],
+				'fields'       => [],
+				'customfields' => [],
+				'keys'         => [],
 			],
 		];
 
@@ -182,10 +184,11 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 
 		$user = $this->getJoomlaUserObject($userId);
 
-		$ret['joomla']['notes']  = $this->deleteNotes($user);
-		$ret['joomla']['fields'] = $this->deleteFields($user);
+		$ret['joomla']['notes']        = $this->deleteNotes($user);
+		$ret['joomla']['fields']       = $this->deleteFields($user);
+		$ret['joomla']['customfields'] = $this->deleteCustomFieldValues($user);
 		// Must run before pseudonymizeUser(): the keys are looked up by the (original) username.
-		$ret['joomla']['keys']   = $this->deleteKeys($user);
+		$ret['joomla']['keys']         = $this->deleteKeys($user);
 
 		$this->deleteUserGroups($user);
 		$this->pseudonymizeUser($user);
@@ -506,6 +509,69 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		catch (Exception $e)
 		{
 			Log::add("Could not delete user fields: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
+			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
+			// Never mind...
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Delete the values of the user's custom fields (com_fields, context com_users.user).
+	 *
+	 * Joomla's own plg_privacy_user exports these values, but neither it nor any other core plugin removes them.
+	 *
+	 * @param   User  $user  The user object we are deleting
+	 *
+	 * @return  array  IDs of the custom fields whose values were removed
+	 * @since   4.1.0
+	 */
+	private function deleteCustomFieldValues(User $user): array
+	{
+		Log::add("Deleting user custom field values", Log::DEBUG, 'com_datacompliance');
+
+		$db = $this->getDatabase();
+		$db->setMonitor(null);
+		$ids = [];
+
+		// #__fields_values.item_id is a string column.
+		$context = 'com_users.user';
+		$itemId  = (string) $user->id;
+
+		try
+		{
+			$fieldIdsQuery = DbQuery::create($db)
+				->select($db->quoteName('id'))
+				->from($db->quoteName('#__fields'))
+				->where($db->quoteName('context') . ' = :context')
+				->bind(':context', $context, ParameterType::STRING);
+
+			$fieldIds = array_map('intval', $db->setQuery($fieldIdsQuery)->loadColumn(0) ?: []);
+
+			if (empty($fieldIds))
+			{
+				return $ids;
+			}
+
+			$selectQuery = DbQuery::create($db)
+				->select($db->quoteName('field_id'))
+				->from($db->quoteName('#__fields_values'))
+				->where($db->quoteName('item_id') . ' = :itemId')
+				->whereIn($db->quoteName('field_id'), $fieldIds)
+				->bind(':itemId', $itemId, ParameterType::STRING);
+
+			$deleteQuery = DbQuery::create($db)
+				->delete($db->quoteName('#__fields_values'))
+				->where($db->quoteName('item_id') . ' = :itemId')
+				->whereIn($db->quoteName('field_id'), $fieldIds)
+				->bind(':itemId', $itemId, ParameterType::STRING);
+
+			$ids = array_values(array_unique($db->setQuery($selectQuery)->loadColumn(0) ?: []));
+			$db->setQuery($deleteQuery)->execute();
+		}
+		catch (Exception $e)
+		{
+			Log::add("Could not delete user custom field values: {$e->getMessage()}", Log::ERROR, 'com_datacompliance');
 			Log::add("Stack trace: {$e->getTraceAsString()}", Log::ERROR, 'com_datacompliance');
 			// Never mind...
 		}

@@ -178,9 +178,9 @@ class WipeTest extends AbstractE2ETestCase
 
 		$this->assertSame(0, $groups, sprintf('The wiped account still belongs to %d user group(s). plg_datacompliance_joomla deletes its #__user_usergroup_map rows, then pseudonymizeUser() calls $user->save() on the User object it loaded BEFORE that, and Table\\User::store() writes the stale $groups straight back.', $groups));
 
-		$this->assertOrKnownIssue(
-			$fieldValue === 0,
-			9,
+		$this->assertSame(
+			0,
+			$fieldValue,
 			'The value of the user\'s custom field (#__fields_values, com_users.user context) survives the wipe: deleteFields() only deletes #__user_profiles rows, although the wipe page promises that "any additional user profile fields will be removed".'
 		);
 	}
