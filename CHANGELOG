@@ -8,6 +8,7 @@ Akeeba Data Compliance 4.1.0
 + The installer now refuses to install on a Joomla! or PHP version newer than the supported maximum
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
+# [HIGH] Backend users without access to the component could run its other tasks by adding view=options to the URL
 # [MEDIUM] The layout URL parameter could make a page include a PHP file from outside the templates folder
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind

@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Helper\TemplateEmails;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
+use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Router\Route;
@@ -18,6 +19,23 @@ use Joomla\CMS\Router\Route;
 class EmailtemplatesController extends BaseController
 {
 	use ControllerEventsTrait;
+
+	/**
+	 * Defence in depth: the dispatcher already enforces core.manage, but these tasks overwrite the component's mail
+	 * templates. Do not rely on the dispatcher alone.
+	 *
+	 * @param   string  $task  The task being executed
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	protected function onBeforeExecute(&$task): void
+	{
+		if (!$this->app->getIdentity()->authorise('core.manage', 'com_datacompliance'))
+		{
+			throw new NotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+		}
+	}
 
 	public function updateEmails($cachable = false, $urlparams = [])
 	{

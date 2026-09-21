@@ -15,8 +15,10 @@ use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerRegisterTasksT
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModelsTrait;
 use DateInterval;
 use Exception;
+use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Input\Input;
@@ -40,6 +42,23 @@ class ControlpanelController extends BaseController
 		parent::__construct($config, $factory, $app, $input);
 
 		$this->registerControllerTasks();
+	}
+
+	/**
+	 * Defence in depth: the dispatcher already enforces core.manage, but do not rely on it alone for the statistics
+	 * tasks.
+	 *
+	 * @param   string  $task  The task being executed
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	protected function onBeforeExecute(&$task): void
+	{
+		if (!$this->app->getIdentity()->authorise('core.manage', 'com_datacompliance'))
+		{
+			throw new NotAllowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+		}
 	}
 
 

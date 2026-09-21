@@ -39,8 +39,17 @@ class Dispatcher extends ComponentDispatcher
 	/** @inheritdoc  */
 	protected function checkAccess()
 	{
-		// Always allow access to the options view
-		if ($this->input->getCmd('view', null) === 'options')
+		/**
+		 * Always allow access to the options view, but only when it's also the controller which will run.
+		 *
+		 * Core's dispatch() instantiates the controller named in the `controller` input, not the view. Checking the view
+		 * alone would let view=options&task=anothercontroller.task run another controller without core.manage. By the
+		 * time we get here, applyViewAndController() has already normalised both inputs.
+		 */
+		if (
+			$this->input->getCmd('view', null) === 'options'
+			&& $this->input->getCmd('controller', null) === 'options'
+		)
 		{
 			return true;
 		}
