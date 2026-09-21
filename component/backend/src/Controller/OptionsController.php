@@ -9,7 +9,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Akeeba\Component\DataCompliance\Administrator\Mixin\CMSObjectWorkaroundTrait;
+use Akeeba\Component\DataCompliance\Administrator\Exception\WipeRefusedException;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerEventsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerRegisterTasksTrait;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\ControllerReusableModelsTrait;
@@ -20,6 +20,7 @@ use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Router\Route as JRoute;
@@ -33,7 +34,6 @@ class OptionsController extends BaseController
 	use ControllerEventsTrait;
 	use ControllerRegisterTasksTrait;
 	use ControllerReusableModelsTrait;
-	use CMSObjectWorkaroundTrait;
 
 	public function __construct($config = [], ?MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)
 	{
@@ -201,7 +201,7 @@ class OptionsController extends BaseController
 		$wipeModel = $this->getModel('Wipe', 'Administrator');
 
 		// Can the user be wiped, at all?
-		[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'checkWipeAbility', $user->id);
+		[$result, $error] = $this->safeWipeModelCall($wipeModel, 'checkWipeAbility', $user->id);
 
 		if (!$result)
 		{
@@ -248,7 +248,7 @@ class OptionsController extends BaseController
 		// Try to delete the user
 		$currentUser = $this->app->getIdentity();
 		$wipeType    = ($currentUser->id == $user->id) ? 'user' : 'admin';
-		[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'wipe', $user->id, $wipeType);
+		[$result, $error] = $this->safeWipeModelCall($wipeModel, 'wipe', $user->id, $wipeType);
 
 		if (!$result)
 		{
@@ -282,6 +282,81 @@ class OptionsController extends BaseController
 		$message = Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_MSG_ERASED');
 		$this->app->enqueueMessage($message);
 		$this->app->redirect(JUri::base());
+	}
+
+	/**
+	 * Call a WipeModel method, making sure internal error details are never shown to the user.
+	 *
+	 * Only the reasons of a WipeRefusedException are meant for the user. Any other exception (e.g. a database error) is
+	 * logged, and the user only sees a generic error message.
+	 *
+	 * @param   WipeModel  $model         The wipe model
+	 * @param   string     $method        The method to call
+	 * @param   mixed      ...$arguments  The method's arguments
+	 *
+	 * @return  array  [bool $result, string $error]
+	 * @since   4.1.0
+	 */
+	private function safeWipeModelCall(WipeModel $model, string $method, ...$arguments): array
+	{
+		try
+		{
+			$result = $model->{$method}(...$arguments);
+		}
+		catch (WipeRefusedException $e)
+		{
+			return [false, $e->getMessage()];
+		}
+		catch (Exception $e)
+		{
+			self::logInternalError($e);
+
+			return [false, Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_ERR_INTERNAL')];
+		}
+
+		if ($result)
+		{
+			return [true, ''];
+		}
+
+		// Legacy error handling; the model may have recorded why it failed.
+		$error = method_exists($model, 'getError') ? $model->getError() : '';
+
+		return [false, is_string($error) ? $error : ''];
+	}
+
+	/**
+	 * Log an internal error to the administrator/logs/com_datacompliance_errors.php log file.
+	 *
+	 * @param   Exception  $e  The exception to log
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	private static function logInternalError(Exception $e): void
+	{
+		static $hasLogger = false;
+
+		if (!$hasLogger)
+		{
+			Log::addLogger(['text_file' => 'com_datacompliance_errors.php'], Log::ALL, ['com_datacompliance.errors']);
+
+			$hasLogger = true;
+		}
+
+		Log::add(
+			sprintf(
+				'%s: %s in %s:%d%s%s',
+				get_class($e),
+				$e->getMessage(),
+				$e->getFile(),
+				$e->getLine(),
+				PHP_EOL,
+				$e->getTraceAsString()
+			),
+			Log::ERROR,
+			'com_datacompliance.errors'
+		);
 	}
 
 	/**

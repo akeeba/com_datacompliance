@@ -11,6 +11,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 
 defined('_JEXEC') or die;
 
+use Akeeba\Component\DataCompliance\Administrator\Exception\WipeRefusedException;
 use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\RunPluginsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Table\WipetrailsTable;
@@ -417,7 +418,7 @@ class WipeModel extends BaseDatabaseModel
 
 			if (!$result->canRemove)
 			{
-				throw new RuntimeException($result->reason);
+				throw new WipeRefusedException($result->reason);
 			}
 		}
 
@@ -460,7 +461,7 @@ class WipeModel extends BaseDatabaseModel
 
 		if (!$allowReWipe)
 		{
-			throw new RuntimeException(Text::_('COM_DATACOMPLIANCE_WIPE_ERR_TRAILEXISTS'));
+			throw new WipeRefusedException(Text::_('COM_DATACOMPLIANCE_WIPE_ERR_TRAILEXISTS'));
 		}
 
 		$this->auditRecord->type = $type;
@@ -510,7 +511,7 @@ class WipeModel extends BaseDatabaseModel
 
 			if (!$result->canRemove)
 			{
-				throw new RuntimeException($result->reason);
+				throw new WipeRefusedException($result->reason);
 			}
 		}
 	}
