@@ -353,9 +353,9 @@ class ExportTest extends AbstractE2ETestCase
 		$response = $this->requestExport($this->loggedIn('alice'));
 		$xml      = $this->assertIsExport($response);
 
-		$this->assertOrKnownIssue(
-			in_array('ats_tickets', $this->domainNames($xml), true),
-			6,
+		$this->assertContains(
+			'ats_tickets',
+			$this->domainNames($xml),
 			'The export contains no ATS data at all on ATS 5+: plg_datacompliance_ats only calls setEventResult() inside the try block for #__ats_users_usertags, a table ATS 5 no longer has, so the exception is swallowed and the whole ATS export is discarded.'
 		);
 

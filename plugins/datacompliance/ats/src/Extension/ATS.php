@@ -289,7 +289,9 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 * data dump following the structure root > domain > item[...] > column[...].
 	 *
 	 * This plugin exports the following tables / models:
-	 * - #__ars_log
+	 * - #__ats_tickets, #__ats_posts and #__ats_attachments of the user's tickets
+	 * - #__ats_attempts, #__ats_creditconsumptions, #__ats_credittransactions and #__ats_users_usertags (ATS 4 and
+	 *   earlier; skipped when the tables do not exist)
 	 *
 	 * @param   Event  $event  The event we are handling
 	 *
@@ -304,151 +306,110 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		[$userId] = array_values($event->getArguments());
 
 		$export = new SimpleXMLElement("<root></root>");
+		$db     = $this->getDatabase();
 
 		// Tickets
-		$domainTickets = $export->addChild('domain');
-		$domainTickets->addAttribute('name', 'ats_tickets');
-		$domainTickets->addAttribute('description', 'Akeeba Ticket System tickets');
-
 		$tickets   = $this->getTickets($userId);
-		$ticketIDs = [];
+		$ticketIDs = array_map(fn($ticket) => $isATS5OrLater ? $ticket->id : $ticket->ats_ticket_id, $tickets);
 
-		array_map(function ($ticket) use (&$domainTickets, &$ticketIDs, $isATS5OrLater) {
-			Export::adoptChild($domainTickets, Export::exportItemFromObject($ticket));
-			$ticketIDs[] = $isATS5OrLater ? $ticket->id : $ticket->ats_ticket_id;
-		}, $tickets);
+		$this->addExportDomain($export, 'ats_tickets', 'Akeeba Ticket System tickets', $tickets);
 		unset($tickets);
 
-		// Export #__ats_attempts entries
+		// Export #__ats_attempts entries (ATS 4 and earlier)
 		if (!empty($ticketIDs))
 		{
 			try
 			{
-				$db          = $this->getDatabase();
 				$selectQuery = DbQuery::create($db)
 				                  ->select('*')
 				                  ->from($db->quoteName('#__ats_attempts'))
 				                  ->whereIn($db->quoteName('ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
 
-				$items = $db->setQuery($selectQuery)->loadObjectList();
-
-				$domain = $export->addChild('domain');
-				$domain->addAttribute('name', 'ats_attempts');
-				$domain->addAttribute('description', 'Akeeba Ticket System ticket filing attempts (successful), linked to each ticket');
-
-				array_map(function ($item) use (&$domainAttachments) {
-					Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-				}, $items);
+				$this->addExportDomain(
+					$export, 'ats_attempts',
+					'Akeeba Ticket System ticket filing attempts (successful), linked to each ticket',
+					$db->setQuery($selectQuery)->loadObjectList()
+				);
 			}
 			catch (\Exception $e)
 			{
+				// The table does not exist in this version of ATS.
 			}
 		}
 
 		// Posts
-		$domainPosts = $export->addChild('domain');
-		$domainPosts->addAttribute('name', 'ats_posts');
-		$domainPosts->addAttribute('description', 'Akeeba Ticket System posts, linked to each ticket');
-
 		$posts   = $this->getPosts($ticketIDs);
-		$postIDs = [];
+		$postIDs = array_map(fn($post) => $isATS5OrLater ? $post->id : $post->ats_post_id, $posts);
 
-		array_map(function ($post) use (&$domainPosts, &$postIDs, $isATS5OrLater) {
-			Export::adoptChild($domainPosts, Export::exportItemFromObject($post));
-			$postIDs[] = $isATS5OrLater ? $post->id : $post->ats_post_id;
-		}, $posts);
-
-		unset($ticketIDs);
+		$this->addExportDomain($export, 'ats_posts', 'Akeeba Ticket System posts, linked to each ticket', $posts);
 		unset($posts);
 
-
 		// Attachments
-		$domainAttachments = $export->addChild('domain');
-		$domainAttachments->addAttribute('name', 'ats_attachments');
-		$domainAttachments->addAttribute('description', 'Akeeba Ticket System attachments, linked to each post');
+		$this->addExportDomain(
+			$export, 'ats_attachments', 'Akeeba Ticket System attachments, linked to each post',
+			$this->getAttachments($postIDs)
+		);
 
-		$attachments = $this->getAttachments($postIDs);
-
-		array_map(function ($attachment) use (&$domainAttachments, $isATS5OrLater) {
-			Export::adoptChild($domainAttachments, Export::exportItemFromObject($attachment));
-			$postIDs[] = $isATS5OrLater ? $attachment->id : $attachment->ats_post_id;
-		}, $attachments);
-
-		// Export #__ats_creditconsumptions entries
+		// Export #__ats_creditconsumptions entries (ATS 4 and earlier)
 		try
 		{
-			$db          = $this->getDatabase();
 			$selectQuery = DbQuery::create($db)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_creditconsumptions'))
 			                  ->where($db->quoteName('user_id') . ' = :userId')
 			                  ->bind(':userId', $userId, ParameterType::INTEGER);
 
-			$items = $db->setQuery($selectQuery)->loadObjectList();
-
-			$domain = $export->addChild('domain');
-			$domain->addAttribute('name', 'ats_creditconsumptions');
-			$domain->addAttribute('description', 'Akeeba Ticket System credit consumption events, linked to each ticket');
-
-			array_map(function ($item) use (&$domainAttachments) {
-				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-			}, $items);
+			$this->addExportDomain(
+				$export, 'ats_creditconsumptions',
+				'Akeeba Ticket System credit consumption events, linked to each ticket',
+				$db->setQuery($selectQuery)->loadObjectList()
+			);
 		}
 		catch (\Exception $e)
 		{
+			// The table does not exist in this version of ATS.
 		}
 
-		// Export #__ats_credittransactions entries
+		// Export #__ats_credittransactions entries (ATS 4 and earlier)
 		try
 		{
-			$db          = $this->getDatabase();
 			$selectQuery = DbQuery::create($db)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_credittransactions'))
 			                  ->where($db->quoteName('user_id') . ' = :userId')
 			                  ->bind(':userId', $userId, ParameterType::INTEGER);
 
-			$items = $db->setQuery($selectQuery)->loadObjectList();
-
-			$domain = $export->addChild('domain');
-			$domain->addAttribute('name', 'ats_credittransactions');
-			$domain->addAttribute('description', 'Akeeba Ticket System credit transactions (credit purchases)');
-
-			array_map(function ($item) use (&$domainAttachments) {
-				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-			}, $items);
+			$this->addExportDomain(
+				$export, 'ats_credittransactions', 'Akeeba Ticket System credit transactions (credit purchases)',
+				$db->setQuery($selectQuery)->loadObjectList()
+			);
 		}
 		catch (\Exception $e)
 		{
-
+			// The table does not exist in this version of ATS.
 		}
 
-		// Export #__ats_users_usertags entries
+		// Export #__ats_users_usertags entries (ATS 4 and earlier)
 		try
 		{
-			$db          = $this->getDatabase();
 			$selectQuery = DbQuery::create($db)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_users_usertags'))
 			                  ->where($db->quoteName('user_id') . ' = :userId')
 			                  ->bind(':userId', $userId, ParameterType::INTEGER);
 
-			$items = $db->setQuery($selectQuery)->loadObjectList();
-
-			$domain = $export->addChild('domain');
-			$domain->addAttribute('name', 'ats_user_usertags');
-			$domain->addAttribute('description', 'Akeeba Ticket System user tags');
-
-			array_map(function ($item) use (&$domainAttachments) {
-				Export::adoptChild($domainAttachments, Export::exportItemFromObject($item));
-			}, $items);
-
-			$this->setEventResult($event, $export);
+			$this->addExportDomain(
+				$export, 'ats_user_usertags', 'Akeeba Ticket System user tags',
+				$db->setQuery($selectQuery)->loadObjectList()
+			);
 		}
 		catch (\Exception $e)
 		{
-
+			// The table does not exist in this version of ATS.
 		}
+
+		// Only now, after all the optional sections (whose tables may not exist), return the export.
+		$this->setEventResult($event, $export);
 	}
 
 	/**
@@ -471,6 +432,29 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_ATS_ACTIONS_1'),
 		]);
+	}
+
+	/**
+	 * Add an export domain with the given rows to the export document.
+	 *
+	 * @param   SimpleXMLElement  $export       The export document (root node)
+	 * @param   string            $name         The domain name
+	 * @param   string            $description  The domain description
+	 * @param   object[]          $items        The rows to export into this domain
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	private function addExportDomain(SimpleXMLElement $export, string $name, string $description, array $items): void
+	{
+		$domain = $export->addChild('domain');
+		$domain->addAttribute('name', $name);
+		$domain->addAttribute('description', $description);
+
+		foreach ($items as $item)
+		{
+			Export::adoptChild($domain, Export::exportItemFromObject($item));
+		}
 	}
 
 	private function getAttachments(array $postIDs)
