@@ -108,21 +108,20 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		 */
 		[$userId, $type, $when] = array_values($event->getArguments());
 
-		$exemptGroups = $this->params->get('exemptgroups', []);
-		$jUser        = $this->getJoomlaUserObject($userId);
-		$userGroups   = $jUser->getAuthorisedGroups();
-		$foundGroups  = array_intersect($userGroups, $exemptGroups);
-
-		if ($foundGroups)
-		{
-			throw new RuntimeException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_EXEMPTGROUPS'));
-		}
-
 		$user = $this->getJoomlaUserObject($userId);
 
 		if (empty($user))
 		{
 			throw new RuntimeException(Text::sprintf('PLG_DATACOMPLIANCE_JOOMLA_ERR_UNKNOWNUSER', $userId));
+		}
+
+		$exemptGroups = $this->params->get('exemptgroups', []);
+		$userGroups   = $user->getAuthorisedGroups();
+		$foundGroups  = array_intersect($userGroups, $exemptGroups);
+
+		if ($foundGroups)
+		{
+			throw new RuntimeException(Text::_('PLG_DATACOMPLIANCE_JOOMLA_ERR_EXEMPTGROUPS'));
 		}
 
 		if ($user->authorise('core.admin'))

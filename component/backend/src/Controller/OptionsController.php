@@ -209,7 +209,9 @@ class OptionsController extends BaseController
 
 		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=options', false);
 
-		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+		// Make sure the user exists before doing anything else.
+		$user = $this->assertUserExists($userID);
+
 		/** @var WipeModel $wipeModel */
 		$wipeModel = $this->getModel('Wipe', 'Administrator');
 

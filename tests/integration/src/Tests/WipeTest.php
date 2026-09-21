@@ -369,9 +369,8 @@ class WipeTest extends AbstractE2ETestCase
 
 		$trails = (int) $this->db()->value('SELECT COUNT(*) FROM #__datacompliance_wipetrails WHERE user_id IN (0, ?)', [$missing]);
 
-		$this->assertOrKnownIssue(
+		$this->assertTrue(
 			$response->code < 500 && $trails === 0,
-			10,
 			sprintf(
 				'Wiping a user id that does not exist gives HTTP %d and %d wipe audit record(s): OptionsController::wipe() passes the empty User object\'s null id on to WipeModel::checkWipeAbility(int …) — a TypeError, which is an Error, not an Exception, so safeWipeModelCall() does not catch it.',
 				$response->code,
