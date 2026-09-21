@@ -340,34 +340,42 @@ class WipeModel extends BaseDatabaseModel
 		// Set a session variable indicating we are wiping a profile, therefore no change audit trail should be preserved
 		Factory::getApplication()->getSession()->set('com_datacompliance.wiping', true);
 
-		// Run the user account removal
-		$auditItems = [];
-		$results    = $this->runPlugins('onDataComplianceDeleteUser', [$userId, $type]);
-
-		foreach ($results as $result)
-		{
-			if (!is_array($result))
-			{
-				continue;
-			}
-
-			$auditItems = array_merge($auditItems, $result);
-		}
-
-		// Also run Joomla Privacy plugins
 		try
 		{
-			$this->deleteUserWithJoomla($userId);
+			// Run the user account removal
+			$auditItems = [];
+			$results    = $this->runPlugins('onDataComplianceDeleteUser', [$userId, $type]);
+
+			foreach ($results as $result)
+			{
+				if (!is_array($result))
+				{
+					continue;
+				}
+
+				$auditItems = array_merge($auditItems, $result);
+			}
+
+			// Also run Joomla Privacy plugins
+			try
+			{
+				$this->deleteUserWithJoomla($userId);
+			}
+			catch (Exception $e)
+			{
+				// Don't care if it fails
+			}
+
+			$this->saveAuditRecord($auditItems);
 		}
-		catch (Exception $e)
+		finally
 		{
-			// Don't care if it fails
+			/**
+			 * Unset the session variable indicating we are wiping a profile, even if the wipe failed. Otherwise, the
+			 * user changes audit trail would stay disabled for the rest of this session.
+			 */
+			Factory::getApplication()->getSession()->set('com_datacompliance.wiping', false);
 		}
-
-		$this->saveAuditRecord($auditItems);
-
-		// Unset the session variable indicating we are wiping a profile
-		Factory::getApplication()->getSession()->set('com_datacompliance.wiping', false);
 
 		// The cached lists of lifecycle users (see LifecycleModel::getLifecycleUserIDs) are now out of date.
 		try
