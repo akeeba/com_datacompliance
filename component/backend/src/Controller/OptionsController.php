@@ -203,8 +203,11 @@ class OptionsController extends BaseController
 		/** @var WipeModel $wipeModel */
 		$wipeModel = $this->getModel('Wipe', 'Administrator');
 
+		// Deleting your own account is a 'user' wipe; deleting someone else's is an 'admin' wipe.
+		$wipeType = ($currentUser->id == $user->id) ? 'user' : 'admin';
+
 		// Can the user be wiped, at all?
-		[$result, $error] = $this->safeWipeModelCall($wipeModel, 'checkWipeAbility', $user->id);
+		[$result, $error] = $this->safeWipeModelCall($wipeModel, 'checkWipeAbility', $user->id, $wipeType);
 
 		if (!$result)
 		{
@@ -249,8 +252,6 @@ class OptionsController extends BaseController
 		}
 
 		// Try to delete the user
-		$currentUser = $this->app->getIdentity();
-		$wipeType    = ($currentUser->id == $user->id) ? 'user' : 'admin';
 		[$result, $error] = $this->safeWipeModelCall($wipeModel, 'wipe', $user->id, $wipeType);
 
 		if (!$result)
