@@ -365,6 +365,24 @@ class OptionsController extends BaseController
 					throw new RuntimeException(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 				}
 
+				/**
+				 * Only Super Users may export other Super Users.
+				 *
+				 * The export may contain credential material (see the Maximalist Export component option). Letting a
+				 * lower privileged user export a Super User would make the export privilege equivalent to Super User.
+				 */
+				if (!$isSuper && !empty($user_id))
+				{
+					$target = Factory::getContainer()
+						->get(UserFactoryInterface::class)
+						->loadUserById($user_id);
+
+					if ($target->authorise('core.admin'))
+					{
+						throw new RuntimeException(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+					}
+				}
+
 				break;
 		}
 	}

@@ -174,6 +174,13 @@ class HtmlView extends BaseHtmlView
 		{
 			$this->showExport = $this->showExport && $canExport;
 			$this->showWipe   = $this->showWipe && $canWipe;
+
+			// Only Super Users may export or wipe other Super Users. Mirrors OptionsController::assertUserAccess().
+			if (!$isSuper && $this->user->authorise('core.admin'))
+			{
+				$this->showExport = false;
+				$this->showWipe   = false;
+			}
 		}
 
 		if (Factory::getApplication()->isClient('administrator'))
