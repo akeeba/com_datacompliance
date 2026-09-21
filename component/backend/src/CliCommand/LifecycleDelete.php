@@ -132,7 +132,8 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 		$numRecords   = count($userIDs);
 		$deleted      = 0;
 		$notNotified  = 0;
-		$cannotDelete = 0;
+		$cannotWipe   = 0;
+		$failed       = 0;
 
 		$this->ioStyle->text(Text::plural('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_FOUNDUSERS', $numRecords));
 
@@ -170,7 +171,7 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 			{
 				$this->ioStyle->text(Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_SKIPUSER', $id));
 
-				$cannotNotify++;
+				$cannotWipe++;
 
 				continue;
 			}
@@ -208,7 +209,7 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 			$this->ioStyle->text(Text::_('COM_DATACOMPLIANCE_CLI_LIFECYCLENOTIFY_LBL_FAILED'));
 			$this->ioStyle->text("\t<error>$error</error>");
 
-			$cannotDelete++;
+			$failed++;
 		}
 
 		$end = microtime(true);
@@ -219,7 +220,8 @@ class LifecycleDelete extends AbstractCommand implements DatabaseAwareInterface
 		$this->ioStyle->success([
 			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_TOTAL', $numRecords),
 			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_DELETED', $deleted),
-			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_NOTNOTIFIED', $cannotNotify),
+			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_FAILED', $failed),
+			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_CANNOTDELETE', $cannotWipe),
 			Text::sprintf('COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_SKIPPED', $notNotified),
 		]);
 

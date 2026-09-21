@@ -228,16 +228,18 @@ class LifecycleTest extends AbstractE2ETestCase
 
 		$subject = $this->mailpit()->message($notices[0]['ID'])['Subject'];
 
-		$this->assertOrKnownIssues([
-			17 => [
-				!preg_grep('/Undefined variable/', $this->newPhpErrors()) && !str_contains($output, 'Failed to delete:       ' . $late['id']),
-				"datacompliance:lifecycle:delete's report is wrong: it increments and prints an undefined \$cannotNotify (\"PHP Warning: Undefined variable \$cannotNotify\" in php-errors.log), labels the skipped accounts with the summary line \"Failed to delete: %u\" (COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_NOTNOTIFIED is defined twice in the language file; the second definition wins), and never reports the accounts it failed to delete (\$cannotDelete).\nOutput:\n" . $output,
-			],
-			18 => [
-				!str_contains($subject, '<code>'),
-				sprintf('The subject of the lifecycle deletion email sent to the user contains HTML and the name of a CLI command: "%s" (COM_DATACOMPLIANCE_MAIL_USER_LIFECYCLE_SUBJECT looks copied from the template\'s description).', $subject),
-			],
-		]);
+		$this->assertTrue(
+			!preg_grep('/Undefined variable/', $this->newPhpErrors()) && !str_contains($output, 'Failed to delete:       ' . $late['id']),
+			"datacompliance:lifecycle:delete's report is wrong: it increments and prints an undefined \$cannotNotify (\"PHP Warning: Undefined variable \$cannotNotify\" in php-errors.log), labels the skipped accounts with the summary line \"Failed to delete: %u\" (COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_NOTNOTIFIED is defined twice in the language file; the second definition wins), and never reports the accounts it failed to delete (\$cannotDelete).\nOutput:\n" . $output
+		);
+		$this->assertStringContainsString(sprintf('User %d is not notified, skipping.', $late['id']), $output, "The account that was never notified is not reported as skipped.\n" . $output);
+		$this->assertStringContainsString('Failed to delete:       0', $output, "The summary does not report the number of failed deletions.\n" . $output);
+
+		$this->assertOrKnownIssue(
+			!str_contains($subject, '<code>'),
+			18,
+			sprintf('The subject of the lifecycle deletion email sent to the user contains HTML and the name of a CLI command: "%s" (COM_DATACOMPLIANCE_MAIL_USER_LIFECYCLE_SUBJECT looks copied from the template\'s description).', $subject)
+		);
 	}
 
 	/**

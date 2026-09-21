@@ -64,11 +64,6 @@ class LanguageFilesTest extends TestCase
 	{
 		$duplicates = LanguageFile::duplicates($path);
 
-		if ($duplicates !== [] && array_diff($duplicates, ['COM_DATACOMPLIANCE_CLI_LIFECYCLEDELETE_LBL_NOTNOTIFIED', 'COM_DATACOMPLIANCE_CLI_ACCOUNTDELETE_OPT_USER_ID']) === [])
-		{
-			$this->markTestSkipped('Known issue #17 (see known-issues.md): duplicate keys ' . implode(', ', $duplicates));
-		}
-
 		$this->assertSame([], $duplicates, 'Keys defined more than once; Joomla silently keeps the last one.');
 	}
 
