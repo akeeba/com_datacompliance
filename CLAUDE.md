@@ -10,6 +10,13 @@ There is no test suite in this repository.
 
 Builds use Phing with the Akeeba Build Tools — see the `phing-build` skill. `build.xml` is at the working copy root, and the build requires a sibling `../buildfiles` checkout.
 
+## Security audits
+
+Before any security audit, security review, or `audit-*` skill run — and before reporting any
+finding from one — you MUST read `.claude/security-audit-triage.md` — the actors that are out
+of scope, finding classes already ruled invalid, controls already in place, and how to
+classify hardening versus vulnerabilities.
+
 ## Architecture
 
 ### Namespaces
