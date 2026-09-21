@@ -543,22 +543,22 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// Found an extended user profile by custom fields, go on and load old values to compare
-		$postedCustomFields = array_keys($newUser['com_fields']);
-		$postedCustomFields = array_map([$db, 'quote'], $postedCustomFields);
-		$postedCustomFields = implode(',', $postedCustomFields);
+		$postedCustomFields = array_values(array_map('strval', array_keys($newUser['com_fields'])));
+		$userId             = (int) $newUser['id'];
 
 		$query = DbQuery::create($db)
 			->select([
 				$db->qn('name', 'key'),
 				$db->qn('value'),
 			])
-			->from($db->qn('#__fields') . ' AS ' . $db->qn('f'))
+			->from($db->qn('#__fields', 'f'))
 			->innerJoin(
-				$db->qn('#__fields_values') . ' AS ' . $db->qn('v') .
-				'ON ' . $db->qn('f.id') . ' = ' . $db->qn('v.field_id')
-			)->where($db->qn('v.item_id') . ' = ' . (int) $newUser['id'])
+				$db->qn('#__fields_values', 'v'),
+				$db->qn('f.id') . ' = ' . $db->qn('v.field_id')
+			)->where($db->qn('v.item_id') . ' = :itemId')
 			->where($db->qn('f.state') . ' = 1')
-			->where($db->qn('f.name') . ' IN(' . $postedCustomFields . ')');
+			->whereIn($db->qn('f.name'), $postedCustomFields, ParameterType::STRING)
+			->bind(':itemId', $userId, ParameterType::INTEGER);
 
 		try
 		{
@@ -634,21 +634,25 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
+		// Get the titles of a list of groups. You cannot have a WHERE IN with an empty set.
+		$getGroupTitles = function (array $groupIDs) use ($db): array {
+			if (empty($groupIDs))
+			{
+				return [];
+			}
+
+			$query = DbQuery::create($db)
+				->select($db->qn('title'))
+				->from($db->qn('#__usergroups'))
+				->whereIn($db->qn('id'), array_values($groupIDs), ParameterType::INTEGER);
+
+			return $db->setQuery($query)->loadColumn() ?: [];
+		};
+
 		try
 		{
-			// Get the names of old groups
-			$query     = DbQuery::create($db)
-				->select($db->qn('title'))
-				->from($db->qn('#__usergroups'))
-				->where($db->qn('id') . 'IN (' . implode(',', $oldGroupIDs) . ')');
-			$oldGroups = $db->setQuery($query)->loadColumn();
-
-			// Get the names of old groups
-			$query     = DbQuery::create($db)
-				->select($db->qn('title'))
-				->from($db->qn('#__usergroups'))
-				->where($db->qn('id') . 'IN (' . implode(',', $newGroupIDs) . ')');
-			$newGroups = $db->setQuery($query)->loadColumn();
+			$oldGroups = $getGroupTitles($oldGroupIDs);
+			$newGroups = $getGroupTitles($newGroupIDs);
 
 			$changes['usergroups'] = [
 				'from' => $oldGroups,
@@ -685,13 +689,15 @@ class DataCompliance extends CMSPlugin implements SubscriberInterface
 		}
 
 		// Found an extended user profile, go on and load old values to compare
-		$query = DbQuery::create($db)
+		$userId = (int) $newUser['id'];
+		$query  = DbQuery::create($db)
 			->select([
 				$db->qn('profile_key', 'key'),
 				$db->qn('profile_value', 'value'),
 			])
 			->from($db->qn('#__user_profiles'))
-			->where($db->qn('user_id') . ' = ' . (int) $newUser['id']);
+			->where($db->qn('user_id') . ' = :userId')
+			->bind(':userId', $userId, ParameterType::INTEGER);
 
 		try
 		{
