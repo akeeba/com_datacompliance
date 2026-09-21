@@ -177,13 +177,19 @@ class LifecycleModel extends ListModel
 		$cache = Factory::getContainer()->get(CacheControllerFactoryInterface::class)
 			->createCacheController('callback', $options);
 
+		/**
+		 * The cache ID must depend on the date. We use minute precision, so that the default 'now' can still be cached.
+		 * WipeModel::wipe() clears this cache after deleting a user.
+		 */
+		$cacheId = 'lifecycleUserIDs_' . $when->format('Y-m-d_H-i');
+
 		return $cache->get(function () use ($when) {
 			/** @var WipeModel $mWipe */
 			$mWipe = $this->getMVCFactory()->createModel('Wipe');
 
 			return $mWipe->getLifecycleUserIDs(true, $when);
 
-		}, [], 'lifecycleUserIDs');
+		}, [], $cacheId);
 	}
 
 }

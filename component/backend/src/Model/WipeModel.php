@@ -12,6 +12,7 @@ namespace Akeeba\Component\DataCompliance\Administrator\Model;
 defined('_JEXEC') or die;
 
 use Akeeba\Component\DataCompliance\Administrator\Exception\WipeRefusedException;
+use Akeeba\Component\DataCompliance\Administrator\Helper\CacheCleaner;
 use Akeeba\Component\DataCompliance\Administrator\Helper\DbQuery;
 use Akeeba\Component\DataCompliance\Administrator\Mixin\RunPluginsTrait;
 use Akeeba\Component\DataCompliance\Administrator\Table\WipetrailsTable;
@@ -367,6 +368,16 @@ class WipeModel extends BaseDatabaseModel
 
 		// Unset the session variable indicating we are wiping a profile
 		Factory::getApplication()->getSession()->set('com_datacompliance.wiping', false);
+
+		// The cached lists of lifecycle users (see LifecycleModel::getLifecycleUserIDs) are now out of date.
+		try
+		{
+			CacheCleaner::clearCacheGroups(['com_datacompliance'], [0, 1]);
+		}
+		catch (Exception $e)
+		{
+			// A failure to clear the cache must not be reported as a failure to delete the user.
+		}
 
 		return true;
 	}

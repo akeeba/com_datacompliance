@@ -29,6 +29,7 @@ Akeeba Data Compliance 4.1.0
 # [LOW] Upgrading did not remove some obsolete files and folders left behind by very old versions
 # [LOW] The user changes audit trail built some database queries without prepared statements
 # [LOW] The data options page could be displayed without the access check by using task=display
+# [LOW] The Lifecycle page could show a stale list of users, ignoring the selected date
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
 
