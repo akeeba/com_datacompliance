@@ -12,6 +12,7 @@ Akeeba Data Compliance 4.1.0
 ~ Hardened template loading: Email Templates page uses the same layout name cleaning as all other pages
 ~ Deleting another user's account now checks whether it can be deleted as an administrator deletion
 ~ Pseudonymised user accounts now store a properly hashed random password
+~ The package no longer includes a stale copy of the component manifest
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
 # Recording consent for a non-existent user overwrote your own consent record

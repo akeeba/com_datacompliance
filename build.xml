@@ -19,6 +19,9 @@
         <exclude name="backend/views/**" />
         <exclude name="frontend/views/**" />
 
+        <!-- Local development copy of the manifest (gitignored); the real manifest is datacompliance.xml -->
+        <exclude name="backend/datacompliance.xml" />
+
         <!-- Development files of the bundled Composer libraries -->
         <exclude name="backend/vendor/**/minitest/**" />
         <exclude name="backend/vendor/**/rector.php" />
