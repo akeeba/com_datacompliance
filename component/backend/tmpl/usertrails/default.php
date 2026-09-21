@@ -172,7 +172,7 @@ $userLayout = new FileLayout('akeeba.datacompliance.common.user', JPATH_ADMINIST
 														} elseif (is_null($info['from'])) {
 															echo "NULL";
 														} else {
-															echo sprintf("<pre>%s</pre>", print_r($info['from'], true));
+															echo sprintf("<pre>%s</pre>", $this->escape(print_r($info['from'], true)));
 														}
 														?>
 													</td>
@@ -183,7 +183,7 @@ $userLayout = new FileLayout('akeeba.datacompliance.common.user', JPATH_ADMINIST
 														} elseif (is_null($info['to'])) {
 															echo "NULL";
 														} else {
-															echo sprintf("<pre>%s</pre>", print_r($info['to'], true));
+															echo sprintf("<pre>%s</pre>", $this->escape(print_r($info['to'], true)));
 														}
 														?>
 													</td>
