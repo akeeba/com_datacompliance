@@ -93,11 +93,30 @@ class LifecycleTest extends AbstractE2ETestCase
 			$this->assertBodyNotContains($users[$kind]['username'], $page, sprintf('The %s account is listed as end-of-life.', $kind));
 		}
 
-		$this->assertOrKnownIssue(
-			!str_contains($page->body, $users['freshNeverVisited']['username']),
-			16,
+		$this->assertBodyNotContains(
+			$users['freshNeverVisited']['username'],
+			$page,
 			'An account registered an hour ago that has not logged in yet is listed as end-of-life, and will be deleted by the next datacompliance:lifecycle:delete once notified: the "never visited" rule of plg_datacompliance_joomla ignores the registration date (the "blocked" rule honours it).'
 		);
+	}
+
+	/**
+	 * With the "never visited" rule off, the "blocked" rule still matches a blocked account that never
+	 * logged in — unless it was registered within the threshold.
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	public function testBlockedRuleMatchesAccountsThatNeverVisited(): void
+	{
+		static::$fixtures->setPluginParams('datacompliance', 'joomla', ['nevervisited' => 0]);
+
+		$old    = $this->createLifecycleUser('blockednever', ['block' => 1, 'lastvisitDate' => null, 'registerDate' => $this->yearsAgo(4)]);
+		$recent = $this->createLifecycleUser('blockedfresh', ['block' => 1, 'lastvisitDate' => null, 'registerDate' => gmdate('Y-m-d H:i:s', time() - 3600)]);
+		$page   = $this->lifecyclePage();
+
+		$this->assertBodyContains($old['username'], $page, 'A blocked account registered years ago that never logged in is not listed as end-of-life: NOT (lastvisitDate >= …) is NULL, not TRUE, for a NULL last visit date.');
+		$this->assertBodyNotContains($recent['username'], $page, 'A blocked account registered an hour ago is listed as end-of-life.');
 	}
 
 	/**

@@ -389,29 +389,37 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query->where($db->quoteName('lastvisitDate') . ' < :lastYear', 'OR')
 			->bind(':lastYear', $sqlLastYear, ParameterType::STRING);
 
-		// Users who have never visited the site
+		// Users who have never visited the site (unless they were created during the threshold period)
 		if ($this->params->get('nevervisited', 1))
 		{
 			// A "never visited" user has a NULL or '0000-00-00 00:00:00' last visit date. We avoid the deprecated
 			// (and eventually removed) DatabaseDriver::getNullDate() method by checking for both explicitly.
+			$condition = '(' .
+				'(' .
+				$db->qn('lastvisitDate') . ' IS NULL OR ' .
+				$db->qn('lastvisitDate') . ' = ' . $db->quote('0000-00-00 00:00:00') .
+				') AND ' .
+				$db->qn('registerDate') . ' < :lastYear4' .
+				')';
 			$query
-				->where($db->qn('lastvisitDate') . ' = ' . $db->quote('0000-00-00 00:00:00'), 'OR')
-				->where($db->qn('lastvisitDate') . ' IS NULL ', 'OR');
+				->where($condition, 'OR')
+				->bind(':lastYear4', $sqlLastYear, ParameterType::STRING);
 		}
 
 		// Blocked users (unless they were created or have visited the site during the threshold period)
 		if ($this->params->get('blocked', 1))
 		{
+			// A NULL last visit date (never visited) must match, too. NOT (NULL >= x) is NULL, not TRUE.
 			$condition = '(' .
 				'(' . $db->qn('block') . ' = 1) AND ' .
-				'NOT (' . $db->qn('lastvisitDate') . ' >= :lastYear2) AND ' .
-				'NOT (' . $db->qn('registerDate') . ' >= :lastYear3)' .
+				'(' . $db->qn('lastvisitDate') . ' IS NULL OR ' . $db->qn('lastvisitDate') . ' < :lastYear2) AND ' .
+				'(' . $db->qn('registerDate') . ' < :lastYear3)' .
 				')';
 			// Blocked
 			$query
 				->where($condition, 'OR')
-				->bind(':lastYear2', $sqlLastYear)
-				->bind(':lastYear3', $sqlLastYear);
+				->bind(':lastYear2', $sqlLastYear, ParameterType::STRING)
+				->bind(':lastYear3', $sqlLastYear, ParameterType::STRING);
 		}
 
 		$this->setEventResult($event, $db->setQuery($query)->loadColumn(0) ?: []);
