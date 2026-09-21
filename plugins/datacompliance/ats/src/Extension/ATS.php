@@ -19,6 +19,7 @@ use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Database\ParameterType;
+use Joomla\Database\QueryInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
@@ -86,6 +87,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 * This plugin takes the following actions:
 	 * - Delete the user's tickets (only the private ones for lifecycle wipes), their posts, and their attachments,
 	 *   including the attachment files, and the manager notes of these tickets
+	 * - Delete the user's invitations to other people's tickets, and all invitations to the deleted tickets
 	 * - Delete ATS 4 attempts, credit consumptions, credit transactions and user tags, if these tables exist
 	 *
 	 * @param   Event  $event  The event we are handling
@@ -109,6 +111,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 				'posts'              => [],
 				'attachments'        => [],
 				'managernotes'       => [],
+				'ticketsusers'       => [],
 				'attempts'           => [],
 				'creditconsumptions' => [],
 				'credittransactions' => [],
@@ -234,6 +237,34 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			}
 		}
 
+		// ============================== tickets_users (ticket invitations) ==============================
+		/**
+		 * The user's invitations to other people's tickets, and any invitations to the tickets deleted above. The
+		 * table only exists in ATS 5.2.8 and later.
+		 */
+		try
+		{
+			$query = DbQuery::create($db)
+			            ->select($db->quoteName('id'))
+			            ->from($db->quoteName('#__ats_tickets_users'));
+			$this->whereTicketUserOrTickets($query, $userId, $ticketIDs);
+
+			$ret['ats']['ticketsusers'] = $db->setQuery($query)->loadColumn();
+
+			if (!empty($ret['ats']['ticketsusers']))
+			{
+				$query = DbQuery::create($db)
+				            ->delete($db->quoteName('#__ats_tickets_users'));
+				$this->whereTicketUserOrTickets($query, $userId, $ticketIDs);
+
+				$db->setQuery($query)->execute();
+			}
+		}
+		catch (\Exception $e)
+		{
+			unset($ret['ats']['ticketsusers']);
+		}
+
 		unset($ticketIDs);
 
 		// ============================== creditconsumptions ==============================
@@ -326,6 +357,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 * This plugin exports the following tables / models:
 	 * - #__ats_tickets, #__ats_posts and #__ats_attachments of the user's tickets
 	 * - #__ats_managernotes of the user's tickets, only if the export_managernotes plugin option is enabled
+	 * - #__ats_tickets_users rows (invitations to other people's tickets) of the user
 	 * - #__ats_attempts, #__ats_creditconsumptions, #__ats_credittransactions and #__ats_users_usertags (ATS 4 and
 	 *   earlier; skipped when the tables do not exist)
 	 *
@@ -416,6 +448,26 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			}
 		}
 
+		// Invitations to other people's tickets (ATS 5.2.8 and later)
+		try
+		{
+			$selectQuery = DbQuery::create($db)
+			                  ->select('*')
+			                  ->from($db->quoteName('#__ats_tickets_users'))
+			                  ->where($db->quoteName('user_id') . ' = :userId')
+			                  ->bind(':userId', $userId, ParameterType::INTEGER);
+
+			$this->addExportDomain(
+				$export, 'ats_tickets_users',
+				'Akeeba Ticket System ticket invitations (tickets of other users you have been given access to)',
+				$db->setQuery($selectQuery)->loadObjectList()
+			);
+		}
+		catch (\Exception $e)
+		{
+			// The table does not exist in this version of ATS.
+		}
+
 		// Export #__ats_creditconsumptions entries (ATS 4 and earlier)
 		try
 		{
@@ -497,6 +549,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 
 		$this->setEventResult($event, [
 			Text::_('PLG_DATACOMPLIANCE_ATS_ACTIONS_1'),
+			Text::_('PLG_DATACOMPLIANCE_ATS_ACTIONS_2'),
 		]);
 	}
 
@@ -618,6 +671,33 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$directories = array_map(fn($dir) => rtrim(str_replace('\\', '/', $dir), '/'), $directories);
 
 		return array_unique(array_filter($directories));
+	}
+
+	/**
+	 * Filter #__ats_tickets_users rows to those of a user, or of any of the given tickets.
+	 *
+	 * @param   QueryInterface  $query      The query to add the WHERE clause to
+	 * @param   int             $userId     The user ID
+	 * @param   array           $ticketIDs  The ticket IDs; can be empty
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	private function whereTicketUserOrTickets(QueryInterface $query, int $userId, array $ticketIDs): void
+	{
+		$db         = $this->getDatabase();
+		$conditions = [
+			$db->quoteName('user_id') . ' = ' . $query->bindArray([$userId], ParameterType::INTEGER)[0],
+		];
+
+		if (!empty($ticketIDs))
+		{
+			$conditions[] = $db->quoteName('ticket_id') . ' IN ('
+			                . implode(',', $query->bindArray(array_values($ticketIDs), ParameterType::INTEGER))
+			                . ')';
+		}
+
+		$query->where('(' . implode(' OR ', $conditions) . ')');
 	}
 
 	private function getAttachments(array $postIDs)

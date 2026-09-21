@@ -108,9 +108,9 @@ class SiblingIntegrationWipeTest extends AbstractE2ETestCase
 			'The manager notes of the deleted tickets survive the wipe, orphaned: plg_datacompliance_ats deletes tickets, posts and attachments, but not #__ats_managernotes — notes staff write ABOUT the user.'
 		);
 
-		$this->assertOrKnownIssue(
-			$this->rows('#__ats_tickets_users', 'id', $ats['invite']) === 0,
-			22,
+		$this->assertSame(
+			0,
+			$this->rows('#__ats_tickets_users', 'id', $ats['invite']),
 			'The user\'s invitations to other people\'s tickets (#__ats_tickets_users) survive the wipe, and are not exported either.'
 		);
 	}

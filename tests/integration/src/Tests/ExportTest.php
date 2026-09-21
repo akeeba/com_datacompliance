@@ -341,8 +341,9 @@ class ExportTest extends AbstractE2ETestCase
 
 	/**
 	 * The export includes the ATS tickets the user filed, with every post (M4 is by design: the whole
-	 * ticket, staff replies included) and the attachment metadata. The manager notes of the tickets
-	 * (internal staff communication) are not exported by default.
+	 * ticket, staff replies included), the attachment metadata, and the user's invitations to other
+	 * people's tickets. The manager notes of the tickets (internal staff communication) are not
+	 * exported by default.
 	 *
 	 * @return  void
 	 * @since   4.1.0
@@ -360,10 +361,19 @@ class ExportTest extends AbstractE2ETestCase
 			'The export contains no ATS data at all on ATS 5+: plg_datacompliance_ats only calls setEventResult() inside the try block for #__ats_users_usertags, a table ATS 5 no longer has, so the exception is swallowed and the whole ATS export is discarded.'
 		);
 
-		foreach (['ats_tickets', 'ats_posts', 'ats_attachments'] as $domain)
+		foreach (['ats_tickets', 'ats_posts', 'ats_attachments', 'ats_tickets_users'] as $domain)
 		{
 			$this->assertContains($domain, $this->domainNames($xml), sprintf('The export has no %s domain.', $domain));
 		}
+
+		// The user's invitation to someone else's ticket.
+		$ats = static::$fixtures->getManifest()['ats']['alice'];
+
+		$this->assertContains(
+			(string) $ats['invite'],
+			$this->columnValues($xml, 'ats_tickets_users', 'id'),
+			'The user\'s invitation to another user\'s ticket (#__ats_tickets_users) is missing from the export.'
+		);
 
 		foreach (['E2E private ticket of alice', 'E2E public ticket of alice', 'E2E-ATS-USER-POST-alice', 'E2E-ATS-STAFF-REPLY-alice', 'e2e-alice.txt'] as $needle)
 		{
