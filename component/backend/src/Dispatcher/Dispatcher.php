@@ -15,6 +15,7 @@ use Joomla\CMS\Access\Exception\NotAllowed;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Dispatcher\ComponentDispatcher;
 use Joomla\CMS\Document\HtmlDocument;
+use LogicException;
 use Throwable;
 
 class Dispatcher extends ComponentDispatcher
@@ -40,15 +41,38 @@ class Dispatcher extends ComponentDispatcher
 	protected function checkAccess()
 	{
 		/**
+		 * Expected flow. This method relies on it; do not reorder it.
+		 *
+		 * 1. Our dispatch() triggers onBeforeDispatch, which calls applyViewAndController(). That method ALWAYS sets a
+		 *    non-empty `controller` input, using the first of: the prefix of a `controller.task` task; an explicit
+		 *    `controller` URL parameter; the view name; the default controller. It also sets `view` and `task`.
+		 * 2. Our dispatch() then calls parent::dispatch(). Core's ComponentDispatcher::dispatch() calls this method
+		 *    first, then instantiates the controller named in the `controller` input (NOT the view).
+		 *
+		 * Therefore, the `controller` input we read here is the controller which is about to run. If it's empty, the flow
+		 * above has been broken by a code change. That's a bug in this component, not a runtime condition.
+		 */
+		$controller = $this->input->getCmd('controller', null);
+
+		if (empty($controller))
+		{
+			throw new LogicException(
+				sprintf(
+					'%s::checkAccess() called without a controller; applyViewAndController() must run first.',
+					static::class
+				)
+			);
+		}
+
+		/**
 		 * Always allow access to the options view, but only when it's also the controller which will run.
 		 *
-		 * Core's dispatch() instantiates the controller named in the `controller` input, not the view. Checking the view
-		 * alone would let view=options&task=anothercontroller.task run another controller without core.manage. By the
-		 * time we get here, applyViewAndController() has already normalised both inputs.
+		 * Checking the view alone would let view=options&task=anothercontroller.task run another controller without
+		 * core.manage.
 		 */
 		if (
 			$this->input->getCmd('view', null) === 'options'
-			&& $this->input->getCmd('controller', null) === 'options'
+			&& $controller === 'options'
 		)
 		{
 			return true;
