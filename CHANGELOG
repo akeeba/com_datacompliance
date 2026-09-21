@@ -28,6 +28,7 @@ Akeeba Data Compliance 4.1.0
 # [HIGH] Data exports included the user's password hash
 # [HIGH] Backend users without access to the component could run its other tasks by adding view=options to the URL
 # [HIGH] Users with the export privilege could export Super Users' data, including credentials
+# [HIGH] The consent evidence recorded on someone's behalf was silently discarded on sites installed with 4.0.3 or later
 # [MEDIUM] Users with the component's Access Administration Interface permission could export or delete any user
 # [MEDIUM] Stored XSS in the backend lists through user names not created by Joomla's user forms (e.g. SSO)
 # [MEDIUM] Stored XSS in the User Trails details through user parameters, profile, and custom field values

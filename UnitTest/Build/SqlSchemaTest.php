@@ -70,11 +70,6 @@ class SqlSchemaTest extends TestCase
 			}
 		}
 
-		if ($missing === ['#__datacompliance_consenttrails.reason (added by 4.0.2-20260806-0000.sql)'])
-		{
-			$this->markTestSkipped('Known issue #2 (see known-issues.md): ' . $install . ' lacks ' . implode(', ', $missing));
-		}
-
 		$this->assertSame([], $missing, $install . ' lacks columns that the update SQL adds.');
 	}
 

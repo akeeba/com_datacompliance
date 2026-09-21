@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `#__datacompliance_consenttrails` (
     `created_by`   bigint(20)   NOT NULL,
     `requester_ip` varchar(255) NOT NULL,
     `enabled`      int(1)       NOT NULL DEFAULT 0,
+    `reason`       TEXT         NULL,
     PRIMARY KEY (`created_by`)
 ) DEFAULT COLLATE utf8mb4_unicode_ci;
 

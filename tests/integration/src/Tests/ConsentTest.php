@@ -152,9 +152,9 @@ class ConsentTest extends AbstractE2ETestCase
 		$this->assertSame(1, (int) $row['enabled']);
 		$this->assertSame($before, $this->consentRow($actorId), "The actor's own consent record changed.");
 
-		$this->assertOrKnownIssue(
-			($row['reason'] ?? null) === 'Signed paper form #E2E-42',
-			2,
+		$this->assertSame(
+			'Signed paper form #E2E-42',
+			$row['reason'] ?? null,
 			'The Article 7(1) evidence of consent is silently discarded on a fresh install: install.mysql.utf8.sql has no `reason` column (only the 4.0.2 update SQL adds it), and DatabaseDriver::insertObject() drops properties without a column.'
 		);
 	}

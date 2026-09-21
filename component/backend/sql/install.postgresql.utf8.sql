@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS "#__datacompliance_consenttrails"
     "created_by"   BIGINT       NOT NULL,
     "requester_ip" VARCHAR(255) NOT NULL,
     "enabled"      SMALLINT     NOT NULL DEFAULT 0,
+    "reason"       TEXT         NULL,
     PRIMARY KEY ("created_by")
 );
 
