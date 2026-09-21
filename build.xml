@@ -18,6 +18,15 @@
 
         <exclude name="backend/views/**" />
         <exclude name="frontend/views/**" />
+
+        <!-- Development files of the bundled Composer libraries -->
+        <exclude name="backend/vendor/**/minitest/**" />
+        <exclude name="backend/vendor/**/rector.php" />
+        <exclude name="backend/vendor/**/README.md" />
+        <exclude name="backend/vendor/**/composer.json" />
+        <exclude name="backend/vendor/**/composer.lock" />
+        <exclude name="backend/vendor/**/.gitignore" />
+        <exclude name="backend/vendor/composer/installed.json" />
 	</fileset>
 
     <fileset dir="${dirs.release}" id="package">

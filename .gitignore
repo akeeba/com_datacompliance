@@ -15,7 +15,10 @@
 /release/*
 
 ### Composer
-/component/backend/vendor
+/component/backend/vendor/*
+# Deny direct web access to the bundled libraries
+!/component/backend/vendor/.htaccess
+!/component/backend/vendor/web.config
 
 ### Other generated files
 /assets/email/*.ini
