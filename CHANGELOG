@@ -45,6 +45,7 @@ Akeeba Data Compliance 4.1.0
 # The data export crashed when a plugin exported an object value
 # The component's icon font was never installed, so the back-end icons were missing
 # Checking the mail templates rewrote them every time, even when they were up to date
+# datacompliance:account:delete --force could not complete the deletion of an account which already had a deletion audit trail
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash

@@ -144,6 +144,37 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 	}
 
 	/**
+	 * An account with a wipe audit trail whose wipe never completed (e.g. it crashed half-way) is refused without
+	 * --force, with the reason, and wiped with --force, reusing the existing audit trail record.
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	public function testForceCompletesAnInterruptedWipe(): void
+	{
+		$id     = static::$fixtures->createUser();
+		$before = $this->userRow($id);
+
+		// The audit trail of a wipe which never got as far as pseudonymising the account.
+		$this->db()->insert('#__datacompliance_wipetrails', [
+			'user_id' => $id, 'type' => 'admin', 'created_on' => gmdate('Y-m-d H:i:s'), 'created_by' => $id,
+			'requester_ip' => '192.0.2.9', 'items' => '{}',
+		]);
+
+		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:account:delete', '--id=' . $id]);
+
+		$this->assertNotSame(0, $exitCode, $output);
+		$this->assertUserUntouched($before, 'The account was deleted although it has a wipe audit trail and --force was not given.');
+		$this->assertStringContainsString('already been deleted', preg_replace('/\s+/', ' ', $output), 'The refusal does not say why.');
+
+		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:account:delete', '--id=' . $id, '--force']);
+
+		$this->assertSame(0, $exitCode, $output);
+		$this->assertNotSame($before['username'], $this->userRow($id)['username'], "--force did not complete the interrupted wipe.\n" . $output);
+		$this->assertCount(1, $this->wipeTrails($id), 'Completing the wipe did not reuse the existing audit trail record.');
+	}
+
+	/**
 	 * No user, and a user that does not exist.
 	 *
 	 * @return  void

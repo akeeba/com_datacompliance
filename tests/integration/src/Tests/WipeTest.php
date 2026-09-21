@@ -360,7 +360,7 @@ class WipeTest extends AbstractE2ETestCase
 		$landing                = $wiper->get((string) $response->getLocation());
 		$wiper->followRedirects = false;
 
-		$this->assertBodyContains('has been already wiped', $landing, 'The refusal reason is not shown.');
+		$this->assertBodyContains('has already been deleted', $landing, 'The refusal reason is not shown.');
 		$this->assertBodyNotContains('internal error', $landing);
 		$this->assertCount(1, $this->wipeTrails($victimId), 'A second wipe audit trail record was written.');
 	}

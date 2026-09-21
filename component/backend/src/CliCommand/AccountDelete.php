@@ -198,7 +198,9 @@ class AccountDelete extends AbstractCommand
 			return 1;
 		}
 
-		[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'wipe', $user_id, 'admin', $force);
+		// --force also completes the wipe of an account that already has a wipe audit trail (e.g. an earlier wipe
+		// which did not complete).
+		[$result, $error, ] = $this->cmsObjectSafeCall($wipeModel, 'wipe', $user_id, 'admin', $force, $force);
 
 		if ($result)
 		{
