@@ -295,6 +295,11 @@ class ExportTest extends AbstractE2ETestCase
 		$this->assertStringNotContainsString($seed, $minimal->body, 'The API token seed was exported.');
 		$this->assertSame([], $this->columnValues($xml, 'users', 'otpKey'), 'The legacy TFA key was exported.');
 		$this->assertSame([], $this->columnValues($xml, 'users', 'otep'), 'The legacy TFA backup codes were exported.');
+		$this->assertStringNotContainsString(
+			$activation,
+			$minimal->body,
+			'With Maximalist Export off, the account activation / password reset token is still exported: Data Compliance drops it from its own "users" domain, but the "users" domain of core plg_privacy_user carries it too, and Export::mapJoomlaPrivacyExportDomain() only filters joomlatoken.token.'
+		);
 		$this->assertStringNotContainsString($hash, $minimal->body, 'The export contains the password hash.');
 
 		// Personal data is still there: this is redaction of credentials, not of the export.
@@ -306,13 +311,6 @@ class ExportTest extends AbstractE2ETestCase
 			$this->assertStringNotContainsString($dlid, $minimal->body, 'The full Download ID was exported.');
 			$this->assertStringContainsString(substr($dlid, -4), $minimal->body, 'The masked Download ID lost its last four characters.');
 		}
-
-		// Last, because it skips.
-		$this->assertOrKnownIssue(
-			!str_contains($minimal->body, $activation),
-			7,
-			'With Maximalist Export off, the account activation / password reset token is still exported: Data Compliance drops it from its own "users" domain, but the "users" domain of core plg_privacy_user carries it too, and Export::mapJoomlaPrivacyExportDomain() only filters joomlatoken.token.'
-		);
 	}
 
 	/**

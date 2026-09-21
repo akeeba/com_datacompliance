@@ -20,6 +20,14 @@ defined('_JEXEC') or die;
 abstract class Export
 {
 	/**
+	 * The #__users columns holding authentication material, removed from the export when Maximalist Export is off: the
+	 * account activation / password reset token, and the legacy TFA secrets (removed in newer Joomla versions).
+	 *
+	 * @since 4.1.0
+	 */
+	private const USER_AUTHENTICATION_COLUMNS = ['activation', 'otpKey', 'otep'];
+
+	/**
 	 * Essentially a deep addChild for SimpleXMLElement. It appends the $child node as a child of $root.
 	 *
 	 * @param   SimpleXMLElement  $root   The XML node to append children to
@@ -126,7 +134,8 @@ abstract class Export
 	 * Akeeba DataCompliance.
 	 *
 	 * Joomla's privacy plugins do not know about our Maximalist Export option. When it's disabled, we remove the
-	 * authentication material they are known to export.
+	 * authentication material they are known to export: the Joomla API token seed (the joomlatoken.token user profile
+	 * row), and the account activation / password reset token and legacy TFA columns of the #__users record.
 	 *
 	 * @param   ExportDomain  $joomlaDomain  The Joomla! export domain object
 	 * @param   bool          $maximalist    Maximalist Export? If false, remove known authentication material.
@@ -153,6 +162,12 @@ abstract class Export
 
 			foreach ($fields as $field)
 			{
+				// plg_privacy_user exports the whole #__users row, save the password.
+				if (!$maximalist && in_array($field->name, self::USER_AUTHENTICATION_COLUMNS, true))
+				{
+					continue;
+				}
+
 				$itemArray[$field->name] = $field->value;
 			}
 

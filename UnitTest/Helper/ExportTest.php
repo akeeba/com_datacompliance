@@ -222,11 +222,7 @@ class ExportTest extends TestCase
 
 		$minimal = Export::mapJoomlaPrivacyExportDomain($domain, false)->asXML();
 
-		if (str_contains($minimal, 'ACTIVATION-TOKEN'))
-		{
-			$this->markTestSkipped('Known issue #7 (see known-issues.md): mapJoomlaPrivacyExportDomain() only filters joomlatoken.token; the core users domain\'s activation token is exported even with Maximalist Export off.');
-		}
-
+		$this->assertStringNotContainsString('ACTIVATION-TOKEN', $minimal, 'mapJoomlaPrivacyExportDomain() only filters joomlatoken.token; the core users domain\'s activation token is exported even with Maximalist Export off.');
 		$this->assertStringContainsString('alice', $minimal);
 	}
 
