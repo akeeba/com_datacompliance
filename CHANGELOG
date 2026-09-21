@@ -22,6 +22,7 @@ Akeeba Data Compliance 4.1.0
 # [LOW] Anti-CSRF tokens were placed in URLs, where they could leak through browser history, logs, and referrers
 # [LOW] Personal data exports were sent with headers allowing shared caches to store them
 # [LOW] Admin email notifications ignored the recipients list and did not reach any Super User
+# [LOW] User details were inserted into HTML emails without escaping
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
 

@@ -337,6 +337,12 @@ abstract class TemplateEmails
 			}
 
 			$templateMailer->addTemplateData($data);
+
+			/**
+			 * Escape all tags in HTML emails, except the ones we know contain HTML built from trusted language strings.
+			 * User data (name, username, etc.) may have been created outside Joomla's filtered user forms, e.g. by SSO.
+			 */
+			$templateMailer->addUnsafeTags(array_diff(array_keys($data), ['actions']));
 			$templateMailer->addRecipient(trim($user->email), $user->name);
 
 			$result = $templateMailer->send();
