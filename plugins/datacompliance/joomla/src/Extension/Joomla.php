@@ -264,7 +264,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_notes'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		$items = $db->setQuery($query)->loadObjectList();
 
@@ -281,7 +282,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		$items = $db->setQuery($query)->loadObjectList();
 
@@ -304,7 +306,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_usergroup_map'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		$items = $db->setQuery($query)->loadObjectList();
 
@@ -321,7 +324,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$query = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		$items = $db->setQuery($query)->loadObjectList();
 
@@ -483,11 +487,13 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__user_profiles'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		try
 		{
@@ -525,10 +531,12 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__user_keys'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 		try
 		{
 			$ids = $db->setQuery($selectQuery)->loadColumn(0);
@@ -564,11 +572,13 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__user_notes'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__user_notes'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		try
 		{
@@ -606,7 +616,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		$db->setMonitor(null);
 		$query = DbQuery::create($db)
 			->delete($db->quoteName('#__user_usergroup_map'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->id));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $user->id, ParameterType::INTEGER);
 
 		try
 		{

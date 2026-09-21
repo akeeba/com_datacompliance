@@ -123,7 +123,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$ticketsQuery = DbQuery::create($db)
 		                   ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_ticket_id'))
 		                   ->from($db->quoteName('#__ats_tickets'))
-		                   ->where($db->qn('created_by') . ' = ' . $db->quote($userId));
+		                   ->where($db->qn('created_by') . ' = :userId')
+		                   ->bind(':userId', $userId, ParameterType::INTEGER);
 
 		if ($type == 'lifecycle')
 		{
@@ -207,7 +208,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			$query = DbQuery::create($db)
 			            ->select($db->quoteName('ats_creditconsumption_id'))
 			            ->from($db->quoteName('#__ats_creditconsumptions'))
-			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			            ->where($db->quoteName('user_id') . ' = :userId')
+			            ->bind(':userId', $userId, ParameterType::INTEGER);
 
 			$ret['ats']['creditconsumptions'] = $db->setQuery($query)->loadColumn();
 
@@ -215,7 +217,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			{
 				$query = DbQuery::create($db)
 				            ->delete($db->quoteName('#__ats_creditconsumptions'))
-				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+				            ->where($db->quoteName('user_id') . ' = :userId')
+				            ->bind(':userId', $userId, ParameterType::INTEGER);
 
 				$db->setQuery($query)->execute();
 			}
@@ -232,7 +235,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			$query = DbQuery::create($db)
 			            ->select($db->quoteName('ats_credittransaction_id'))
 			            ->from($db->quoteName('#__ats_credittransactions'))
-			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			            ->where($db->quoteName('user_id') . ' = :userId')
+			            ->bind(':userId', $userId, ParameterType::INTEGER);
 
 			$ret['ats']['credittransactions'] = $db->setQuery($query)->loadColumn();
 
@@ -240,7 +244,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			{
 				$query = DbQuery::create($db)
 				            ->delete($db->quoteName('#__ats_credittransactions'))
-				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+				            ->where($db->quoteName('user_id') . ' = :userId')
+				            ->bind(':userId', $userId, ParameterType::INTEGER);
 
 				$db->setQuery($query)->execute();
 			}
@@ -256,7 +261,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			$query = DbQuery::create($db)
 			            ->select($db->quoteName('id'))
 			            ->from($db->quoteName('#__ats_users_usertags'))
-			            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			            ->where($db->quoteName('user_id') . ' = :userId')
+			            ->bind(':userId', $userId, ParameterType::INTEGER);
 
 			$ret['ats']['usertags'] = $db->setQuery($query)->loadColumn();
 
@@ -264,7 +270,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			{
 				$query = DbQuery::create($db)
 				            ->delete($db->quoteName('#__ats_users_usertags'))
-				            ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+				            ->where($db->quoteName('user_id') . ' = :userId')
+				            ->bind(':userId', $userId, ParameterType::INTEGER);
 
 				$db->setQuery($query)->execute();
 			}
@@ -374,7 +381,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			$selectQuery = DbQuery::create($db)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_creditconsumptions'))
-			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			                  ->where($db->quoteName('user_id') . ' = :userId')
+			                  ->bind(':userId', $userId, ParameterType::INTEGER);
 
 			$items = $db->setQuery($selectQuery)->loadObjectList();
 
@@ -397,7 +405,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			$selectQuery = DbQuery::create($db)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_credittransactions'))
-			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			                  ->where($db->quoteName('user_id') . ' = :userId')
+			                  ->bind(':userId', $userId, ParameterType::INTEGER);
 
 			$items = $db->setQuery($selectQuery)->loadObjectList();
 
@@ -421,7 +430,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			$selectQuery = DbQuery::create($db)
 			                  ->select('*')
 			                  ->from($db->quoteName('#__ats_users_usertags'))
-			                  ->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			                  ->where($db->quoteName('user_id') . ' = :userId')
+			                  ->bind(':userId', $userId, ParameterType::INTEGER);
 
 			$items = $db->setQuery($selectQuery)->loadObjectList();
 
@@ -505,7 +515,8 @@ class ATS extends CMSPlugin implements SubscriberInterface
 		$query = DbQuery::create($db)
 		            ->select('*')
 		            ->from('#__ats_tickets')
-		            ->where($db->quoteName('created_by') . ' = ' . $db->quote($user_id));
+		            ->where($db->quoteName('created_by') . ' = :userId')
+		            ->bind(':userId', $user_id, ParameterType::INTEGER);
 
 		return $db->setQuery($query)->loadObjectList();
 	}

@@ -14,6 +14,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory as JoomlaFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseInterface;
+use Joomla\Database\ParameterType;
 use Joomla\Registry\Registry;
 
 class ComponentParams
@@ -29,13 +30,18 @@ class ComponentParams
 	{
 		/** @var DatabaseDriver $db */
 		$db   = JoomlaFactory::getContainer()->get(DatabaseInterface::class);
-		$data = $params->toString('JSON');
+		$data    = $params->toString('JSON');
+		$element = 'com_datacompliance';
+		$type    = 'component';
 
 		$sql = DbQuery::create($db)
 			->update($db->qn('#__extensions'))
-			->set($db->qn('params') . ' = ' . $db->q($data))
-			->where($db->qn('element') . ' = ' . $db->q('com_datacompliance'))
-			->where($db->qn('type') . ' = ' . $db->q('component'));
+			->set($db->qn('params') . ' = :params')
+			->where($db->qn('element') . ' = :element')
+			->where($db->qn('type') . ' = :type')
+			->bind(':params', $data, ParameterType::STRING)
+			->bind(':element', $element, ParameterType::STRING)
+			->bind(':type', $type, ParameterType::STRING);
 
 		$db->setQuery($sql);
 

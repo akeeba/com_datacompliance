@@ -19,6 +19,7 @@ use Joomla\CMS\MVC\Factory\MVCFactoryAwareTrait;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Database\DatabaseAwareTrait;
+use Joomla\Database\ParameterType;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
@@ -115,10 +116,12 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = DbQuery::create($db)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_log'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $userId, ParameterType::INTEGER);
 		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__ars_log'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $userId, ParameterType::INTEGER);
 
 		try
 		{
@@ -148,11 +151,13 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = DbQuery::create($db)
 			->select($db->quoteName('id'))
 			->from($db->quoteName('#__ars_dlidlabels'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $userId, ParameterType::INTEGER);
 
 		$deleteQuery = DbQuery::create($db)
 			->delete($db->quoteName('#__ars_dlidlabels'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $userId, ParameterType::INTEGER);
 
 		try
 		{
@@ -212,7 +217,8 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__ars_log'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $userId, ParameterType::INTEGER);
 
 		foreach ($db->setQuery($selectQuery)->getIterator() as $record)
 		{
@@ -229,7 +235,8 @@ class ARS extends CMSPlugin implements SubscriberInterface
 		$selectQuery = DbQuery::create($db)
 			->select('*')
 			->from($db->quoteName('#__ars_dlidlabels'))
-			->where($db->quoteName('user_id') . ' = ' . $db->quote($userId));
+			->where($db->quoteName('user_id') . ' = :userId')
+			->bind(':userId', $userId, ParameterType::INTEGER);
 
 		foreach ($db->setQuery($selectQuery)->getIterator() as $record)
 		{
