@@ -230,7 +230,7 @@ class WipeModel extends BaseDatabaseModel
 	public function notifyUser(int $userId, DateTime $when): bool
 	{
 		// Can the user really be deleted on the date and time specified by $when?
-		if (!$this->checkWipeAbility($userId, $when))
+		if (!$this->checkWipeAbility($userId, 'lifecycle', $when))
 		{
 			return false;
 		}
