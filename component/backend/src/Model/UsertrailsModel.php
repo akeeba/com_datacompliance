@@ -24,8 +24,9 @@ class UsertrailsModel extends ListModel
 	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		$config['filter_fields'] = $config['filter_fields'] ?? [];
+		// The ordering whitelist. Only real, sortable columns; filters do not belong here.
 		$config['filter_fields'] = $config['filter_fields'] ?: [
-			'search', 'created_on',
+			'created_on',
 		];
 
 		parent::__construct($config, $factory);
@@ -133,7 +134,7 @@ class UsertrailsModel extends ListModel
 			$orderDirn = 'DESC';
 		}
 
-		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
+		$query->order($db->quoteName('a.' . $orderCol) . ' ' . $orderDirn);
 
 		return $query;
 	}

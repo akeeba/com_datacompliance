@@ -41,8 +41,8 @@
             <option value="id DESC">JGRID_HEADING_ID_DESC</option>
             <option value="registerDate ASC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_REGISTERDATE_ASC</option>
             <option value="registerDate DESC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_REGISTERDATE_DESC</option>
-            <option value="lastvisitDate ASC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_LASTVISITDATE</option>
-            <option value="lastvisitDate DESC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_LASTVISITDATE_ASC</option>
+            <option value="lastvisitDate ASC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_LASTVISITDATE_ASC</option>
+            <option value="lastvisitDate DESC">COM_DATACOMPLIANCE_LIFECYCLE_FIELD_LASTVISITDATE_DESC</option>
         </field>
 
         <field

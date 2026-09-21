@@ -24,8 +24,9 @@ class ConsenttrailsModel extends ListModel
 	public function __construct($config = [], ?MVCFactoryInterface $factory = null)
 	{
 		$config['filter_fields'] = $config['filter_fields'] ?? [];
+		// The ordering whitelist. Only real, sortable columns; filters do not belong here.
 		$config['filter_fields'] = $config['filter_fields'] ?: [
-			'search', 'enabled', 'created_on',
+			'enabled', 'created_on',
 		];
 
 		parent::__construct($config, $factory);
@@ -111,7 +112,7 @@ class ConsenttrailsModel extends ListModel
 			$orderDirn = 'DESC';
 		}
 
-		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
+		$query->order($db->quoteName('a.' . $orderCol) . ' ' . $orderDirn);
 
 		return $query;
 	}
