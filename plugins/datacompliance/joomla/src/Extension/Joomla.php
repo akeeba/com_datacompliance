@@ -361,6 +361,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		if (!$this->params->get('lifecycle', 1))
 		{
 			$this->setEventResult($event, []);
+
+			return;
 		}
 
 		$db    = $this->getDatabase();
@@ -371,7 +373,8 @@ class Joomla extends CMSPlugin implements SubscriberInterface
 		// Users who have not been logged in for at least $threshold months
 		$threshold   = (int) $this->params->get('threshold', 18);
 		$threshold   = max(1, $threshold);
-		$jLastYear   = (clone Factory::getDate())->sub(new \DateInterval("P{$threshold}M"));
+		$jReference  = Factory::getDate($date instanceof \DateTimeInterface ? $date->format(DATE_ATOM) : 'now');
+		$jLastYear   = $jReference->sub(new \DateInterval("P{$threshold}M"));
 		$sqlLastYear = $jLastYear->toSql();
 		$query->where($db->quoteName('lastvisitDate') . ' < :lastYear', 'OR')
 			->bind(':lastYear', $sqlLastYear, ParameterType::STRING);
