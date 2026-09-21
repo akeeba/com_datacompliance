@@ -219,11 +219,8 @@ class Email extends CMSPlugin implements SubscriberInterface
 		// Get a reference to the database object
 		$db = $this->getDatabase();
 
-		// Convert the email list to an array
-		if (empty($email))
-		{
-			$emails = [];
-		}
+		// Normalise the list of email addresses; drop empty lines. An empty list means "all Super Users".
+		$emails = array_values(array_filter(array_map('trim', $email)));
 
 		// Get a list of groups which have Super User privileges
 		$ret = [];
@@ -265,12 +262,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 				return $ret;
 			}
 
-			$userIDs = [];
-
-			foreach ($rawUserIDs as $id)
-			{
-				$userIDs[] = $db->q($id);
-			}
+			$userIDs = array_values(array_unique(array_map('intval', $rawUserIDs)));
 		}
 		catch (Exception $exc)
 		{
@@ -292,7 +284,7 @@ class Email extends CMSPlugin implements SubscriberInterface
 
 			if (!empty($emails))
 			{
-				$query->whereIn($db->quoteName('email'), $email, ParameterType::INTEGER);
+				$query->whereIn($db->quoteName('email'), $emails, ParameterType::STRING);
 			}
 
 			$db->setQuery($query);
