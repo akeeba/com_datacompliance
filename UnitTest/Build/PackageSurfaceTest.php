@@ -168,11 +168,6 @@ class PackageSurfaceTest extends TestCase
 		$listed   = array_map('strval', iterator_to_array($media->folder, false));
 		$unlisted = array_values(array_diff(array_map('basename', glob($component . '/media/*', GLOB_ONLYDIR)), $listed));
 
-		if ($unlisted === ['fonts'])
-		{
-			$this->markTestSkipped('Known issue #24 (see known-issues.md): media/fonts is not in the manifest\'s <media>, so the icon font backend.css loads is never installed (HTTP 404).');
-		}
-
 		$this->assertSame([], $unlisted, 'Media folders the manifest does not install.');
 	}
 

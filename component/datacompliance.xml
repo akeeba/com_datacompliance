@@ -80,6 +80,7 @@
 	<!-- Media files -->
 	<media destination="com_datacompliance" folder="media">
 		<folder>css</folder>
+		<folder>fonts</folder>
 		<folder>js</folder>
 
 		<filename>joomla.asset.json</filename>
