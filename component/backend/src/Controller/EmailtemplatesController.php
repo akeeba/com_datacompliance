@@ -39,7 +39,7 @@ class EmailtemplatesController extends BaseController
 
 	public function updateEmails($cachable = false, $urlparams = [])
 	{
-		$this->checkToken('get');
+		$this->checkToken('post');
 
 		$returnURL = Route::_('index.php?option=com_datacompliance&view=Emailtemplates', false);
 		$this->setRedirect($returnURL);
@@ -55,7 +55,7 @@ class EmailtemplatesController extends BaseController
 
 	public function resetEmails($cachable = false, $urlparams = [])
 	{
-		$this->checkToken('get');
+		$this->checkToken('post');
 
 		$returnURL = Route::_('index.php?option=com_datacompliance&view=Emailtemplates', false);
 		$this->setRedirect($returnURL);

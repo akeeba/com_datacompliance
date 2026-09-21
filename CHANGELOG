@@ -19,6 +19,7 @@ Akeeba Data Compliance 4.1.0
 # [MEDIUM] Stored XSS in the User Trails details through user parameters, profile, and custom field values
 # [MEDIUM] The layout URL parameter could make a page include a PHP file from outside the templates folder
 # [LOW] The user changes audit trail recorded raw account activation tokens
+# [LOW] Anti-CSRF tokens were placed in URLs, where they could leak through browser history, logs, and referrers
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
 

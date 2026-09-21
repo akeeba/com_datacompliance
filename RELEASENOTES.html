@@ -14,3 +14,8 @@
 	<strong>Please reset your Joomla! API tokens</strong>.
 	Joomla! submits each user's API token back to the server whenever they save their user profile. Previous versions of Akeeba Data Compliance recorded it in the user changes audit trail, where anyone who can view the audit trails, or who has a copy of your site's database, could read it. By default, only Super Users have API tokens. This version no longer records the API token. However, tokens recorded by previous versions remain in the audit trail. We recommend that all Super Users reset their Joomla! API token: edit your user profile, go to the Joomla API Token tab, set Reset to Yes, and save.
 </p>
+
+<p>
+	<strong>Check your template overrides</strong>.
+	The Export button on the user's data options page is now a form which submits the request with POST, instead of a link. This keeps your site's anti-CSRF token out of URLs, where it could leak through the browser history, server logs, and referrers. The Delete button no longer carries the anti-CSRF token; the token is only needed when the user confirms the deletion, which already happens through a form. The same applies to the Update and Reset buttons of the Email Templates page. If you have created a template override for the data options page (<code>com_datacompliance/options/default.php</code>) the Export button will stop working with an invalid token error. Please delete your override, or recreate it from the new version of the file.
+</p>

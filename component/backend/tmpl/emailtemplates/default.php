@@ -9,11 +9,10 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
-$token = Factory::getApplication()->getFormToken();
 ?>
 
 <div class="card mb-3">
@@ -42,14 +41,16 @@ $token = Factory::getApplication()->getFormToken();
 		<div class="row cols-2">
 			<div class="col d-flex flex-column align-items-center">
 				<div class="mb-2">
-					<a href="<?= Route::_('index.php?option=com_datacompliance&view=Emailtemplates&task=updateEmails&' . $token . '=1') ?>"
-					   class="btn btn-success d-flex flex-column" style="min-width: 10em"
-					>
-						<span class="fa fa-check fs-1 p-2"></span>
-						<span>
-							<?= Text::_('COM_DATACOMPLIANCE_EMAILTEMPLATES_BTN_UPDATE') ?>
-						</span>
-					</a>
+					<form method="post"
+						  action="<?= Route::_('index.php?option=com_datacompliance&view=Emailtemplates&task=updateEmails') ?>">
+						<button type="submit" class="btn btn-success d-flex flex-column align-items-center" style="min-width: 10em">
+							<span class="fa fa-check fs-1 p-2" aria-hidden="true"></span>
+							<span>
+								<?= Text::_('COM_DATACOMPLIANCE_EMAILTEMPLATES_BTN_UPDATE') ?>
+							</span>
+						</button>
+						<?= HTMLHelper::_('form.token') ?>
+					</form>
 				</div>
 				<div class="text-muted">
 					<?= Text::_('COM_DATACOMPLIANCE_EMAILTEMPLATES_LBL_UPDATE') ?>
@@ -57,14 +58,16 @@ $token = Factory::getApplication()->getFormToken();
 			</div>
 			<div class="col d-flex flex-column align-items-center">
 				<div class="mb-2">
-					<a href="<?= Route::_('index.php?option=com_datacompliance&view=Emailtemplates&task=resetEmails&' . $token . '=1') ?>"
-					   class="btn btn-danger d-flex flex-column" style="min-width: 10em"
-					>
-						<span class="fa fa-redo-alt fs-1 p-2"></span>
-						<span>
-							<?= Text::_('COM_DATACOMPLIANCE_EMAILTEMPLATES_BTN_RESET') ?>
-						</span>
-					</a>
+					<form method="post"
+						  action="<?= Route::_('index.php?option=com_datacompliance&view=Emailtemplates&task=resetEmails') ?>">
+						<button type="submit" class="btn btn-danger d-flex flex-column align-items-center" style="min-width: 10em">
+							<span class="fa fa-redo-alt fs-1 p-2" aria-hidden="true"></span>
+							<span>
+								<?= Text::_('COM_DATACOMPLIANCE_EMAILTEMPLATES_BTN_RESET') ?>
+							</span>
+						</button>
+						<?= HTMLHelper::_('form.token') ?>
+					</form>
 				</div>
 				<div class="text-muted">
 					<?= Text::_('COM_DATACOMPLIANCE_EMAILTEMPLATES_LBL_RESET') ?>

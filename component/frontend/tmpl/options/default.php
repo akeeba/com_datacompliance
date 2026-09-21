@@ -15,7 +15,6 @@ use Joomla\CMS\Router\Route;
 /** @var \Akeeba\Component\DataCompliance\Administrator\View\Options\HtmlView $this  */
 
 $myUser = Factory::getApplication()->getIdentity();
-$token  = Factory::getApplication()->getFormToken();
 ?>
 
 <?php if($this->type == 'user'): ?>
@@ -157,17 +156,20 @@ $token  = Factory::getApplication()->getFormToken();
 			<div class="row mb-3">
 				<?php if($this->showExport && (($this->type == 'user') || $myUser->authorise('export', 'com_datacompliance'))): ?>
 					<div class="col-sm-6">
-						<a href="<?= Route::_('index.php?option=com_datacompliance&view=options&task=export&format=raw&' . $token . '=1') ?>"
-						   class="btn btn-success w-100">
-							<span class="fa fa-file-download" aria-hidden="true"></span>
-							<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT') ?>
-						</a>
+						<form method="post"
+							  action="<?= Route::_('index.php?option=com_datacompliance&view=options&task=export&format=raw') ?>">
+							<button type="submit" class="btn btn-success w-100">
+								<span class="fa fa-file-download" aria-hidden="true"></span>
+								<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT') ?>
+							</button>
+							<?= HTMLHelper::_('form.token') ?>
+						</form>
 					</div>
 				<?php endif ?>
 
 				<?php if($this->showWipe && (($this->type == 'user') || $myUser->authorise('wipe', 'com_datacompliance'))): ?>
 					<div class="col-sm-6">
-						<a href="<?= Route::_('index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1') ?>"
+						<a href="<?= Route::_('index.php?option=com_datacompliance&view=options&task=wipe') ?>"
 						   class="btn btn-danger w-100">
 							<span class="fa fa-user-times" aria-hidden="true"></span>
 							<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_WIPE') ?>
@@ -196,16 +198,20 @@ $token  = Factory::getApplication()->getFormToken();
 			<div class="row mb-3">
 				<?php if($myUser->authorise('export', 'com_datacompliance')): ?>
 					<div class="col-sm-6">
-						<a href="<?= Route::_('index.php?option=com_datacompliance&view=options&task=export&user_id=' . $this->user->id . '&format=raw&' . $token . '=1') ?>"
-						   class="btn btn-success w-100">
-							<span class="fa fa-file-download" aria-hidden="true"></span>
-							<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT_ADMIN') ?>
-						</a>
+						<form method="post"
+							  action="<?= Route::_('index.php?option=com_datacompliance&view=options&task=export&format=raw') ?>">
+							<button type="submit" class="btn btn-success w-100">
+								<span class="fa fa-file-download" aria-hidden="true"></span>
+								<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_EXPORT_ADMIN') ?>
+							</button>
+							<input type="hidden" name="user_id" value="<?= (int) $this->user->id ?>" />
+							<?= HTMLHelper::_('form.token') ?>
+						</form>
 					</div>
 				<?php endif ?>
 				<?php if($myUser->authorise('wipe', 'com_datacompliance')): ?>
 					<div class="col-sm-6">
-						<a href="<?= Route::_('index.php?option=com_datacompliance&view=options&task=wipe&user_id=' . $this->user->id . '&' . $token . '=1') ?>"
+						<a href="<?= Route::_('index.php?option=com_datacompliance&view=options&task=wipe&user_id=' . (int) $this->user->id) ?>"
 						   class="btn btn-danger w-100">
 							<span class="fa fa-user-times" aria-hidden="true"></span>
 							<?= Text::_('COM_DATACOMPLIANCE_OPTIONS_DATARIGHTS_BTN_WIPE_ADMIN') ?>

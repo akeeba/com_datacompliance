@@ -53,7 +53,7 @@ class OptionsController extends BaseController
 	 */
 	public function consent()
 	{
-		$this->checkToken($this->input->getMethod());
+		$this->checkToken('post');
 		$this->assertUserAccess('consent');
 
 		$currentUser = $this->app->getIdentity();
@@ -112,7 +112,7 @@ class OptionsController extends BaseController
 	 */
 	public function export()
 	{
-		$this->checkToken($this->input->getMethod());
+		$this->checkToken('post');
 		$this->assertUserAccess('export');
 
 		$currentUser = $this->app->getIdentity();
@@ -176,8 +176,19 @@ class OptionsController extends BaseController
 	 */
 	public function wipe()
 	{
-		$this->checkToken($this->input->getMethod());
 		$this->assertUserAccess('wipe');
+
+		/**
+		 * Without a phrase we only display the confirmation page, which changes nothing; no anti-CSRF token is needed.
+		 * This lets us link and redirect to it without putting the token in the URL. The phrase is only read from POST
+		 * data, and the actual wipe requires a valid anti-CSRF token in the POST data.
+		 */
+		$phrase = $this->input->post->getString('phrase', null);
+
+		if (!is_null($phrase))
+		{
+			$this->checkToken('post');
+		}
 
 		$currentUser = $this->app->getIdentity();
 		$userID      = $this->input->getInt('user_id', $currentUser->id);
@@ -185,8 +196,7 @@ class OptionsController extends BaseController
 
 		$defaultUrl = JRoute::_('index.php?option=com_datacompliance&view=options', false);
 
-		$phrase = $this->input->getString('phrase', null);
-		$user   = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
+		$user = Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($userID);
 		/** @var WipeModel $wipeModel */
 		$wipeModel = $this->getModel('Wipe', 'Administrator');
 
@@ -220,8 +230,7 @@ class OptionsController extends BaseController
 		// Confirm the phrase
 		if ($phrase != Text::_('COM_DATACOMPLIANCE_OPTIONS_WIPE_CONFIRMPHRASE'))
 		{
-			$token       = $this->app->getFormToken();
-			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1';
+			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
 
@@ -243,8 +252,7 @@ class OptionsController extends BaseController
 
 		if (!$result)
 		{
-			$token       = $this->app->getFormToken();
-			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe&' . $token . '=1';
+			$url         = 'index.php?option=com_datacompliance&view=options&task=wipe';
 			$url         .= empty($userID) ? '' : ('&user_id=' . $userID);
 			$redirectUrl = JRoute::_($url, false);
 
