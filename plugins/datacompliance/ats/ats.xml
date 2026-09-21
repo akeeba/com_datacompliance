@@ -41,4 +41,20 @@
         <language tag="pt-PT">pt-PT/plg_datacompliance_ats.ini</language>
         <language tag="pt-PT">pt-PT/plg_datacompliance_ats.sys.ini</language>
     </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="export_managernotes"
+                       type="radio"
+                       layout="joomla.form.field.radio.switcher"
+                       default="0"
+                       label="PLG_DATACOMPLIANCE_ATS_EXPORT_MANAGERNOTES_LABEL"
+                       description="PLG_DATACOMPLIANCE_ATS_EXPORT_MANAGERNOTES_DESC">
+                    <option value="0">JNo</option>
+                    <option value="1">JYes</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
 </extension>

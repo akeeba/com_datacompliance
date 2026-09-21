@@ -85,7 +85,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 *
 	 * This plugin takes the following actions:
 	 * - Delete the user's tickets (only the private ones for lifecycle wipes), their posts, and their attachments,
-	 *   including the attachment files
+	 *   including the attachment files, and the manager notes of these tickets
 	 * - Delete ATS 4 attempts, credit consumptions, credit transactions and user tags, if these tables exist
 	 *
 	 * @param   Event  $event  The event we are handling
@@ -108,6 +108,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 				'tickets'            => [],
 				'posts'              => [],
 				'attachments'        => [],
+				'managernotes'       => [],
 				'attempts'           => [],
 				'creditconsumptions' => [],
 				'credittransactions' => [],
@@ -208,6 +209,29 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			{
 				unset($ret['ats']['attempts']);
 			}
+
+			// ============================== managernotes ==============================
+			try
+			{
+				$query = DbQuery::create($db)
+				            ->select($db->quoteName($isATS5OrLater ? 'id' : 'ats_managernote_id'))
+				            ->from($db->quoteName('#__ats_managernotes'))
+				            ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+
+				$ret['ats']['managernotes'] = $db->setQuery($query)->loadColumn();
+
+				if (!empty($ret['ats']['managernotes']))
+				{
+					$query = DbQuery::create($db)
+					            ->delete($db->quoteName('#__ats_managernotes'))
+					            ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+					$db->setQuery($query)->execute();
+				}
+			}
+			catch (\Exception $e)
+			{
+				unset($ret['ats']['managernotes']);
+			}
 		}
 
 		unset($ticketIDs);
@@ -301,6 +325,7 @@ class ATS extends CMSPlugin implements SubscriberInterface
 	 *
 	 * This plugin exports the following tables / models:
 	 * - #__ats_tickets, #__ats_posts and #__ats_attachments of the user's tickets
+	 * - #__ats_managernotes of the user's tickets, only if the export_managernotes plugin option is enabled
 	 * - #__ats_attempts, #__ats_creditconsumptions, #__ats_credittransactions and #__ats_users_usertags (ATS 4 and
 	 *   earlier; skipped when the tables do not exist)
 	 *
@@ -360,6 +385,36 @@ class ATS extends CMSPlugin implements SubscriberInterface
 			$export, 'ats_attachments', 'Akeeba Ticket System attachments, linked to each post',
 			$this->getAttachments($postIDs)
 		);
+
+		/**
+		 * Manager notes of the user's tickets. These are internal communication between staff members, not decisions
+		 * made about the user, so they are only exported when the site owner opts in. They are always deleted on wipe.
+		 */
+		if ($this->params->get('export_managernotes', 0))
+		{
+			try
+			{
+				$items = [];
+
+				if (!empty($ticketIDs))
+				{
+					$selectQuery = DbQuery::create($db)
+					                  ->select('*')
+					                  ->from($db->quoteName('#__ats_managernotes'))
+					                  ->whereIn($db->quoteName($isATS5OrLater ? 'ticket_id' : 'ats_ticket_id'), $ticketIDs, ParameterType::INTEGER);
+
+					$items = $db->setQuery($selectQuery)->loadObjectList();
+				}
+
+				$this->addExportDomain(
+					$export, 'ats_managernotes', 'Akeeba Ticket System manager notes, linked to each ticket', $items
+				);
+			}
+			catch (\Exception $e)
+			{
+				// The table does not exist in this version of ATS.
+			}
+		}
 
 		// Export #__ats_creditconsumptions entries (ATS 4 and earlier)
 		try

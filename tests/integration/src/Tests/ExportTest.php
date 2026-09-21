@@ -25,7 +25,8 @@ use SimpleXMLElement;
 class ExportTest extends AbstractE2ETestCase
 {
 	/**
-	 * Tear down: the Maximalist Export tests change the component options.
+	 * Tear down: the Maximalist Export tests change the component options, the ATS manager notes test
+	 * changes the ATS plugin options.
 	 *
 	 * @return  void
 	 * @since   4.1.0
@@ -33,6 +34,7 @@ class ExportTest extends AbstractE2ETestCase
 	protected function tearDown(): void
 	{
 		static::$fixtures->setComponentParams(['maximalist_export' => 1]);
+		static::$fixtures->setPluginParams('datacompliance', 'ats', ['export_managernotes' => 0]);
 
 		parent::tearDown();
 	}
@@ -339,7 +341,8 @@ class ExportTest extends AbstractE2ETestCase
 
 	/**
 	 * The export includes the ATS tickets the user filed, with every post (M4 is by design: the whole
-	 * ticket, staff replies included), and the attachment metadata.
+	 * ticket, staff replies included) and the attachment metadata. The manager notes of the tickets
+	 * (internal staff communication) are not exported by default.
 	 *
 	 * @return  void
 	 * @since   4.1.0
@@ -367,8 +370,36 @@ class ExportTest extends AbstractE2ETestCase
 			$this->assertStringContainsString(htmlspecialchars($needle), $response->body, sprintf('"%s" is missing from the export.', $needle));
 		}
 
+		// Manager notes are internal staff communication; not exported unless the plugin option says so.
+		$this->assertNotContains('ats_managernotes', $this->domainNames($xml), 'The ATS manager notes were exported although the export_managernotes plugin option is disabled.');
+		$this->assertStringNotContainsString('E2E-ATS-MANAGER-NOTE-about-alice', $response->body, 'An ATS manager note was exported although the export_managernotes plugin option is disabled.');
+
 		// Other people's tickets are not the user's data.
 		$this->assertStringNotContainsString('E2E-ATS-BOB-POST-alice', $response->body, 'Another user\'s ticket was exported.');
+	}
+
+	/**
+	 * With the ATS plugin's export_managernotes option enabled, the export also includes the manager
+	 * notes of the user's tickets.
+	 *
+	 * @return  void
+	 * @since   4.1.0
+	 */
+	public function testExportIncludesAtsManagerNotesWhenEnabled(): void
+	{
+		$this->requireSibling('ats');
+
+		static::$fixtures->setPluginParams('datacompliance', 'ats', ['export_managernotes' => 1]);
+
+		$response = $this->requestExport($this->loggedIn('alice'));
+		$xml      = $this->assertIsExport($response);
+
+		$this->assertContains('ats_managernotes', $this->domainNames($xml), 'The export has no ats_managernotes domain although the export_managernotes plugin option is enabled.');
+		$this->assertStringContainsString(
+			htmlspecialchars('E2E-ATS-MANAGER-NOTE-about-alice'),
+			$response->body,
+			'The manager note of the user\'s ticket is missing from the export although the export_managernotes plugin option is enabled.'
+		);
 	}
 
 	/**

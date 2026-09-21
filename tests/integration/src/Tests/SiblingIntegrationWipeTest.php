@@ -102,16 +102,17 @@ class SiblingIntegrationWipeTest extends AbstractE2ETestCase
 			'The attachment FILE survives the wipe (' . $ats['attachmentFile'] . '): plg_datacompliance_ats deletes the #__ats_attachments rows with a DELETE query, bypassing ATS\'s AttachmentTable, which is what removes the file from disk.'
 		);
 
-		$this->assertOrKnownIssues([
-			21 => [
-				$this->rows('#__ats_managernotes', 'id', $ats['managerNote']) === 0,
-				'The manager notes of the deleted tickets survive the wipe, orphaned: plg_datacompliance_ats deletes tickets, posts and attachments, but not #__ats_managernotes — notes staff write ABOUT the user.',
-			],
-			22 => [
-				$this->rows('#__ats_tickets_users', 'id', $ats['invite']) === 0,
-				'The user\'s invitations to other people\'s tickets (#__ats_tickets_users) survive the wipe, and are not exported either.',
-			],
-		]);
+		$this->assertSame(
+			0,
+			$this->rows('#__ats_managernotes', 'id', $ats['managerNote']),
+			'The manager notes of the deleted tickets survive the wipe, orphaned: plg_datacompliance_ats deletes tickets, posts and attachments, but not #__ats_managernotes — notes staff write ABOUT the user.'
+		);
+
+		$this->assertOrKnownIssue(
+			$this->rows('#__ats_tickets_users', 'id', $ats['invite']) === 0,
+			22,
+			'The user\'s invitations to other people\'s tickets (#__ats_tickets_users) survive the wipe, and are not exported either.'
+		);
 	}
 
 	/**
