@@ -1,5 +1,6 @@
 Akeeba Data Compliance 4.1.0
 ================================================================================
+# When cleaning one cache failed, the remaining caches were not cleaned either
 ~ Declare the core.options permission so it can be granted per user group
 ~ Cache cleaning now targets the single cache folder that every Joomla 4+ application shares
 ! Dropped support for Joomla! 4.x and 5.0 to 5.3; Joomla! 5.4 to 6.2 is now required
