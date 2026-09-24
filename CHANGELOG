@@ -1,15 +1,14 @@
 Akeeba Data Compliance 4.1.0
 ================================================================================
-# When cleaning one cache failed, the remaining caches were not cleaned either
-~ Declare the core.options permission so it can be granted per user group
-~ Cache cleaning now targets the single cache folder that every Joomla 4+ application shares
 ! Dropped support for Joomla! 4.x and 5.0 to 5.3; Joomla! 5.4 to 6.2 is now required
 ! Dropped support for PHP 7.4 and 8.0; PHP 8.1 to 8.6 is now required
 ! PHP and Joomla minimum and maximum version compatibility is now enforced
-- Removed legacy error handler
-- Removed the unused site URL option, obsolete since Joomla has its own CLI application
 + The installer now refuses to install on a Joomla! or PHP version newer than the supported maximum
 + "Maximalist export" option; set it to No to remove authentication material from data exports
+- Removed legacy error handler
+- Removed the unused site URL option, obsolete since Joomla has its own CLI application
+~ Declare the core.options permission so it can be granted per user group
+~ Cache cleaning now targets the single cache folder that every Joomla 4+ application shares
 ~ Updated moment.js to 2.31.0
 ~ Hardened template loading: Email Templates page uses the same layout name cleaning as all other pages
 ~ Deleting another user's account now checks whether it can be deleted as an administrator deletion
@@ -19,46 +18,47 @@ Akeeba Data Compliance 4.1.0
 ~ Emails no longer receive the account activation code as an (unused) template tag
 ~ Funnelled all createQuery()/getQuery(true) compatibility branches through Helper\DbQuery::create()
 ~ Errors thrown by custom upgrade handlers are now reported when Joomla's Debug Site setting is on
-# User profile changes were never logged, and data exports filed profile and key records under the wrong heading
-# A database error while recording consent could delete the user's existing consent record
-# Sorting the Lifecycle page by last visit date did not work, and its sort options had the wrong labels
-# Recording consent for a non-existent user overwrote your own consent record
-# The datacompliance:lifecycle:notify CLI command failed with a PHP error instead of notifying users
-# The Options page of a Super User offered the Export and Delete buttons to administrators who are not allowed to act on Super Users
-# Exporting a user that does not exist caused an HTTP 500 error and left an export audit trail record
-# Remember-me keys were neither exported nor deleted when an account was wiped
-# Personal data exports contained no Akeeba Ticket System data with ATS 5 or later
-# With Maximalist Export off, the account activation / password reset token was still exported
-# Wiped accounts kept their user groups
-# The values of user custom fields survived the account wipe
-# Wiping a user that does not exist caused an HTTP 500 error
-# A refused account deletion did not tell the user why
-# The administrator notifications about a deleted account greeted the Super User by the deleted user's name
-# Names and other user data were inserted as raw HTML in the HTML notification emails
-# Saving a custom field change together with a user parameter change lost the parameter change from the user trail
-# Accounts which had just registered were end-of-life under the default lifecycle rules
-# datacompliance:lifecycle:delete reported wrong numbers, with a PHP warning
-# The subject of the automatic (lifecycle) account deletion email contained HTML and the name of a CLI command
-# The S3 audit trail plugin never uploaded anything
-# Akeeba Ticket System attachment files were left on disk after deleting a user account
-# Manager notes of a deleted user's Akeeba Ticket System tickets were not deleted
-# Akeeba Ticket System ticket invitations of a deleted user were neither deleted nor exported
-# The data export crashed when a plugin exported an object value
-# The component's icon font was never installed, so the back-end icons were missing
-# Checking the mail templates rewrote them every time, even when they were up to date
-# datacompliance:account:delete --force could not complete the deletion of an account which already had a deletion audit trail
+# [HIGH] Accounts which had just registered were end-of-life under the default lifecycle rules
 # [HIGH] Disabling the Joomla plugin's lifecycle rules did not stop inactive users from being deleted
 # [HIGH] The user changes audit trail recorded Super Users' Joomla! API tokens
 # [HIGH] Data exports included the user's password hash
 # [HIGH] Backend users without access to the component could run its other tasks by adding view=options to the URL
 # [HIGH] Users with the export privilege could export Super Users' data, including credentials
 # [HIGH] The consent evidence recorded on someone's behalf was silently discarded on sites installed with 4.0.3 or later
-# [HIGH] Every account wipe crashed half-way, leaving the account not pseudonymised and impossible to wipe again, when administrator notifications were enabled (the default)
+# [HIGH] With admin notifications on (default), account wipes crashed half-way and could not be retried
 # [HIGH] datacompliance:account:delete --dry-run deleted the account for real when combined with --force
+# [MEDIUM] Profile changes were never logged; exports filed profile and key records under the wrong heading
+# [MEDIUM] A database error while recording consent could delete the user's existing consent record
+# [MEDIUM] Recording consent for a non-existent user overwrote your own consent record
+# [MEDIUM] The datacompliance:lifecycle:notify CLI command failed with a PHP error instead of notifying users
+# [MEDIUM] Remember-me keys were neither exported nor deleted when an account was wiped
+# [MEDIUM] Personal data exports contained no Akeeba Ticket System data with ATS 5 or later
+# [MEDIUM] With Maximalist Export off, the account activation / password reset token was still exported
+# [MEDIUM] Wiped accounts kept their user groups
+# [MEDIUM] The values of user custom fields survived the account wipe
+# [MEDIUM] The S3 audit trail plugin never uploaded anything
+# [MEDIUM] Akeeba Ticket System attachment files were left on disk after deleting a user account
+# [MEDIUM] Manager notes of a deleted user's Akeeba Ticket System tickets were not deleted
+# [MEDIUM] Akeeba Ticket System ticket invitations of a deleted user were neither deleted nor exported
+# [MEDIUM] The data export crashed when a plugin exported an object value
+# [MEDIUM] datacompliance:account:delete --force failed on accounts with an earlier deletion audit trail
 # [MEDIUM] Users with the component's Access Administration Interface permission could export or delete any user
 # [MEDIUM] Stored XSS in the backend lists through user names not created by Joomla's user forms (e.g. SSO)
 # [MEDIUM] Stored XSS in the User Trails details through user parameters, profile, and custom field values
 # [MEDIUM] The layout URL parameter could make a page include a PHP file from outside the templates folder
+# [LOW] When cleaning one cache failed, the remaining caches were not cleaned either
+# [LOW] Sorting the Lifecycle page by last visit date did not work, and its sort options had the wrong labels
+# [LOW] A Super User's Options page showed Export and Delete to administrators not allowed to use them
+# [LOW] Exporting a user that does not exist caused an HTTP 500 error and left an export audit trail record
+# [LOW] Wiping a user that does not exist caused an HTTP 500 error
+# [LOW] A refused account deletion did not tell the user why
+# [LOW] The administrator notifications about a deleted account greeted the Super User by the deleted user's name
+# [LOW] Names and other user data were inserted as raw HTML in the HTML notification emails
+# [LOW] Saving a custom field change together with a user parameter change lost the parameter change from the user trail
+# [LOW] datacompliance:lifecycle:delete reported wrong numbers, with a PHP warning
+# [LOW] The subject of the automatic (lifecycle) account deletion email contained HTML and the name of a CLI command
+# [LOW] The component's icon font was never installed, so the back-end icons were missing
+# [LOW] Checking the mail templates rewrote them every time, even when they were up to date
 # [LOW] The user changes audit trail recorded raw account activation tokens
 # [LOW] Anti-CSRF tokens were placed in URLs, where they could leak through browser history, logs, and referrers
 # [LOW] Personal data exports were sent with headers allowing shared caches to store them
