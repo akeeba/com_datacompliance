@@ -43,6 +43,7 @@ defines `_JEXEC` and a stand-in `JVERSION`, registers the component's PSR-4 pref
 | `Table/GetPropertiesAwareTraitTest` | What the tables expose as their properties (it ends up in audit records) |
 | `Build/SqlSchemaTest` | Every column an update SQL adds is also in the fresh-install SQL |
 | `Build/LanguageFilesTest` | No language key is defined twice (Joomla keeps the last one, silently); every line parses |
+| `Language/IniQuoteEscapingTest` | How `''`, `\'`, `'`, `\"` and `"_QQ_"` in a language INI value reach the user, through a verbatim mirror of core's `LanguageHelper::parseIniFile()` and `Text::_()` (E2E twin: `tests/integration/src/Tests/IniQuoteEscapingTest.php`) |
 | `Build/PackageSurfaceTest` | `_JEXEC` guards, the vendor folder's deny-all files and build exclusions, manifests vs. the files on disk |
 
 ## Conventions
