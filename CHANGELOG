@@ -76,6 +76,7 @@ Akeeba Data Compliance 4.1.0
 # [LOW] A failed account deletion stopped the user changes audit trail for the rest of the session
 # [LOW] Upgrading left obsolete folders behind on Windows, macOS, and other case-insensitive filesystems
 # [LOW] An unhandled filesystem error could abort the post-installation cleanup, leaving obsolete files behind
+# [LOW] Apostrophes were shown doubled in the notification emails and in French, Italian and Greek texts
 
 Akeeba Data Compliance 4.0.3
 ================================================================================

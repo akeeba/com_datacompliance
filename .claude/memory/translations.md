@@ -22,8 +22,9 @@ and `\'` with its backslash; neither is an escape. A double quote is `\"` (Jooml
 `LanguageHelper::parseIniFile()` (`INI_SCANNER_RAW`, then only `\"` → `"`), and `Text::_()` only
 interprets `\\`, `\t` and `\n`. `UnitTest/Language/IniQuoteEscapingTest.php` and
 `tests/integration/src/Tests/IniQuoteEscapingTest.php` pin it down on every supported PHP and Joomla
-version. `''` is SQL's escape, not INI's — yet the en-GB, fr-FR, it-IT and el-GR files were found
-shipping it.
+version. `''` is SQL's escape, not INI's — yet the en-GB, fr-FR, it-IT and el-GR files had shipped
+it (82 lines, fixed in 4.1.0).
 
 **How to apply:** when translating or editing any `.ini` file, grep it for `''` and `\'` before
-finishing; both are always wrong.
+finishing; both are always wrong. `UnitTest/Language/ShippedApostropheTest.php` fails on either in any
+shipped language file and names each as file:line:key — run `phpunit` before finishing.
