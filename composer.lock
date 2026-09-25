@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b06f160e6c7665c391094ebba0df8612",
+    "content-hash": "ba7ce38f7fce7213a399593061135255",
     "packages": [
         {
             "name": "akeeba/s3",
-            "version": "dev-development",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d"
+                "reference": "e09b5032e8bc2a2789f95f45a0acc10db70320a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
-                "reference": "111fdfc7d2a9f9cebedf07a0300f24942f25b42d",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/e09b5032e8bc2a2789f95f45a0acc10db70320a2",
+                "reference": "e09b5032e8bc2a2789f95f45a0acc10db70320a2",
                 "shasum": ""
             },
             "require": {
@@ -25,7 +25,6 @@
                 "ext-simplexml": "*",
                 "php": "^7.4.0|^8.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -54,17 +53,15 @@
             ],
             "support": {
                 "issues": "https://github.com/akeeba/s3/issues",
-                "source": "https://github.com/akeeba/s3/tree/development"
+                "source": "https://github.com/akeeba/s3/tree/2.5.1"
             },
-            "time": "2026-07-14T08:45:05+00:00"
+            "time": "2026-09-24T09:12:18+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "akeeba/s3": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

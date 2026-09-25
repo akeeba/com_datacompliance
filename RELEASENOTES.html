@@ -1,6 +1,16 @@
 <h3>What's new?</h3>
 
 <p>
+	<strong>Supported PHP and Joomla! versions have changed</strong>.
+	This version requires Joomla! 5.4 to 6.2 and PHP 8.1 to 8.6. Support for Joomla! 4.x, Joomla! 5.0&ndash;5.3, PHP 7.4, and PHP 8.0 has been dropped. The installer now refuses to install on a Joomla! or PHP version outside this range, instead of installing and failing later.
+</p>
+
+<p>
+	<strong>Security hardening</strong>.
+	This release fixes several security issues, most notably: personal data exports no longer include the user's password hash; only Super Users can export another Super User's data; backend users without access to the component could no longer run its other tasks through the URL; and stored XSS issues in the backend lists and user trails have been fixed. See the CHANGELOG for the complete list of security fixes.
+</p>
+
+<p>
 	<strong>Removed legacy error handler</strong>.
 	We removed our legacy custom error handler. If you are met with an Exception or PHP error when using our software, please go to your site's administrator, System, Global Configuration, and set Debug Mode to Yes and Error Reporting to Developer. Then, reproduce the error. You will get the same level of information as our now-removed error handler. It is enough to help us help you.
 </p>

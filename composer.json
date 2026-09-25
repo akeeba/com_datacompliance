@@ -9,7 +9,7 @@
   },
   "require": {
     "php": ">=8.1.0 <8.7",
-    "akeeba/s3": "dev-development",
+    "akeeba/s3": "^2.5.1",
     "ext-simplexml": "*",
     "ext-dom": "*",
     "ext-json": "*"
