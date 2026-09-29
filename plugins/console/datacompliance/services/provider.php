@@ -19,12 +19,6 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
 
-// Make sure that Joomla has registered the namespace for the plugin
-if (!class_exists('\Akeeba\Plugin\Console\DataCompliance\Extension\DataCompliance'))
-{
-	JLoader::registerNamespace('\Akeeba\Plugin\Console\DataCompliance', realpath(__DIR__ . '/../src'));
-}
-
 return new class implements ServiceProviderInterface {
 	/**
 	 * Registers the service provider with a DI container.
