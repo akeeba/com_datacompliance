@@ -57,18 +57,18 @@
     <target name="documentation" description="Creates the documentation packages" depends="doc-epub">
     </target>
 
-    <target name="doc-epub" description="Documentation for Joomla! in PDF format">
-        <phingcall target="docbook-epub">
-            <property name="docs.input" value="datacompliance.xml" />
+    <target name="doc-epub" description="Documentation for Joomla! in ePub format">
+        <phingcall target="gfm-epub">
+            <property name="docs.input" value="datacompliance" />
         </phingcall>
     </target>
 
     <target name="docsdeploy">
-        <phingcall target="docbook-zip">
-            <property name="docs.input" value="datacompliance.xml" />
+        <phingcall target="gfm-zip">
+            <property name="docs.input" value="datacompliance" />
         </phingcall>
 
-        <property name="docsdeploy.path.source" value="datacompliance-import.zip"/>
+        <property name="docsdeploy.path.source" value="datacompliance.zip"/>
         <property name="docsdeploy.path.target" value="datacompliance"/>
 
         <curlsftp

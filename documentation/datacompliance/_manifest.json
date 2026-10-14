@@ -1,0 +1,159 @@
+{
+    "home": "index",
+    "pages": [
+        {
+            "slug": "index",
+            "title": "Akeeba Data Compliance"
+        },
+        {
+            "slug": "part1-users-guide",
+            "title": "User's Guide",
+            "children": [
+                {
+                    "slug": "introduction",
+                    "title": "Introduction",
+                    "children": [
+                        {
+                            "slug": "requirements",
+                            "title": "Server environment requirements"
+                        },
+                        {
+                            "slug": "technology-overview",
+                            "title": "Technology overview"
+                        }
+                    ]
+                },
+                {
+                    "slug": "installation-updates-upgrades",
+                    "title": "Installation, updates, and upgrades",
+                    "children": [
+                        {
+                            "slug": "update",
+                            "title": "Automatic updates"
+                        },
+                        {
+                            "slug": "version-limits-enforcement",
+                            "title": "Enforced PHP and Joomla version limits"
+                        }
+                    ]
+                },
+                {
+                    "slug": "using",
+                    "title": "Using Akeeba Data Compliance",
+                    "children": [
+                        {
+                            "slug": "managing-pii",
+                            "title": "Managing personal information",
+                            "children": [
+                                {
+                                    "slug": "self-service",
+                                    "title": "Self-service page"
+                                },
+                                {
+                                    "slug": "backend-pii-management",
+                                    "title": "Managing users' personal information from the backend"
+                                }
+                            ]
+                        },
+                        {
+                            "slug": "control-panel",
+                            "title": "Dashboard (a.k.a. Control Panel) page"
+                        },
+                        {
+                            "slug": "email-templates",
+                            "title": "Setting up the email templates"
+                        },
+                        {
+                            "slug": "audit-trails",
+                            "title": "Managing audit trails",
+                            "children": [
+                                {
+                                    "slug": "profile-changes",
+                                    "title": "Profile Changes"
+                                },
+                                {
+                                    "slug": "data-exports",
+                                    "title": "Data Exports"
+                                },
+                                {
+                                    "slug": "profile-deletions",
+                                    "title": "Profile Deletions"
+                                }
+                            ]
+                        },
+                        {
+                            "slug": "data-actions",
+                            "title": "Managing data actions"
+                        },
+                        {
+                            "slug": "data-minimization",
+                            "title": "Automating data minimisation actions",
+                            "children": [
+                                {
+                                    "slug": "cron-delete-expired",
+                                    "title": "Automatically delete expired user profiles"
+                                }
+                            ]
+                        },
+                        {
+                            "slug": "configuration",
+                            "title": "Configuration",
+                            "children": [
+                                {
+                                    "slug": "system-config",
+                                    "title": "System plugin configuration"
+                                },
+                                {
+                                    "slug": "data-sources",
+                                    "title": "Data sources configuration (datacompliance plugins)",
+                                    "children": [
+                                        {
+                                            "slug": "source-ars",
+                                            "title": "Akeeba Release System"
+                                        },
+                                        {
+                                            "slug": "source-ats",
+                                            "title": "Akeeba Ticket System"
+                                        },
+                                        {
+                                            "slug": "source-loginguard",
+                                            "title": "Akeeba LoginGuard"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "slug": "other-plugins",
+                                    "title": "Other plugins",
+                                    "children": [
+                                        {
+                                            "slug": "plugin-email",
+                                            "title": "Send emails on account deletion"
+                                        },
+                                        {
+                                            "slug": "plugin-s3",
+                                            "title": "Upload user deletion audit trail to S3-compatible storage"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "slug": "cli-tools",
+                            "title": "Other CLI tools"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "slug": "appendices",
+            "title": "Appendices",
+            "children": [
+                {
+                    "slug": "gnu-fdl",
+                    "title": "GNU Free Documentation License"
+                }
+            ]
+        }
+    ]
+}
