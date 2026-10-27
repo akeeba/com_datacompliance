@@ -4,14 +4,26 @@
 #   JOOMLA_VERSION, PHP_VERSION, APACHE_VERSION, MYSQL_VERSION, MAILPIT_VERSION,
 #   MINIO_VERSION.
 #
+# The php and web images are the ones shared by every Akeeba E2E stack. They are built by
+# ../buildfiles/docker/e2e/images.sh — which run.sh calls before bringing the stack up — never by
+# this file, hence `pull_policy: never` and no `build:`. Everything specific to Data Compliance is
+# bind-mounted into them: php.ini. The Apache vhost is the shared image's default.
+#
+# Every service (including the profile-only mc), the volume and the network carry the
+# org.akeeba.e2e label, which is what the scheduled ../buildfiles/docker/e2e/maintain.sh prunes by.
+#
 # Do not run this by hand. Use ./run.sh, which scrubs, provisions and tests in
 # one shot. This file only describes the services.
 
 name: datacompliance-e2e
 
+x-e2e-labels: &e2e-labels
+  org.akeeba.e2e: "1"
+
 services:
   db:
     image: "mysql:${MYSQL_VERSION:-8.4}"
+    labels: *e2e-labels
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-root}"
       MYSQL_DATABASE: "${DB_NAME:-dce2e}"
@@ -31,15 +43,12 @@ services:
       retries: 40
 
   php:
-    build:
-      context: .
-      dockerfile: Dockerfile.php
-      args:
-        PHP_VERSION: "${PHP_VERSION:-8.5}"
-        PUID: "${PUID:-1000}"
-        PGID: "${PGID:-1000}"
+    image: "akeeba-e2e/php:${PHP_VERSION:-8.5}"
+    pull_policy: never
+    labels: *e2e-labels
     volumes:
       - ./www:/var/www/html
+      - ./config/php.ini:/usr/local/etc/php/conf.d/zz-e2e.ini:ro
     depends_on:
       db:
         condition: service_healthy
@@ -49,11 +58,9 @@ services:
         condition: service_started
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
-      args:
-        APACHE_VERSION: "${APACHE_VERSION:-2.4}"
+    image: "akeeba-e2e/web:${APACHE_VERSION:-2.4}"
+    pull_policy: never
+    labels: *e2e-labels
     ports:
       - "127.0.0.1:${HTTP_PORT:-8120}:80"
     volumes:
@@ -69,6 +76,7 @@ services:
   # Mailpit never relays: it accepts a message and stores it.
   mailpit:
     image: "axllent/mailpit:${MAILPIT_VERSION:-v1.21}"
+    labels: *e2e-labels
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: "1"
       MP_SMTP_AUTH_ALLOW_INSECURE: "1"
@@ -90,6 +98,7 @@ services:
   # the `mc` client (profile "tools" below), also from inside the network.
   minio:
     image: "quay.io/minio/minio:${MINIO_VERSION:-RELEASE.2025-09-07T16-13-09Z}"
+    labels: *e2e-labels
     command: ["server", "/data"]
     environment:
       MINIO_ROOT_USER: "${S3_ACCESS_KEY:-dce2eaccess}"
@@ -104,6 +113,7 @@ services:
   # with `docker compose run --rm mc …`.
   mc:
     image: "quay.io/minio/mc:${MC_VERSION:-RELEASE.2025-08-13T08-35-41Z}"
+    labels: *e2e-labels
     profiles: ["tools"]
     environment:
       MC_HOST_e2e: "http://${S3_ACCESS_KEY:-dce2eaccess}:${S3_SECRET_KEY:-dce2esecret}@minio:9000"
@@ -112,3 +122,8 @@ services:
 
 volumes:
   dbdata:
+    labels: *e2e-labels
+
+networks:
+  default:
+    labels: *e2e-labels

@@ -40,7 +40,16 @@ tests/integration/docker/run.sh
 
 That one command scrubs, brings the stack up, installs Joomla, points its mailer at Mailpit, builds and
 installs Data Compliance, ATS Pro and ARS, provisions the fixtures, runs the suite, and tears the stack
-down.
+down — containers, network and the database volume — however it ends: the suite finishing, a failed step,
+or Ctrl-C. Only `--keep-containers` and `--no-tests` leave it up. After a passing run `docker/www/` is
+deleted too; after a failure it is left for inspection, and the next run clears it.
+
+The `php` and `web` images are not built here. They are the `akeeba-e2e/*` images every Akeeba E2E stack
+shares, defined in the sibling `buildfiles` repository under `docker/e2e/` (see its `README.md`); `run.sh`
+calls `../buildfiles/docker/e2e/images.sh ensure` for each before bringing the stack up, so `../buildfiles`
+must be checked out next to this repository. Data Compliance's own `php.ini` (`docker/config/php.ini`) is
+bind-mounted into the php container, and Apache uses the shared image's default vhost. A PHP extension the
+suite needs goes into that shared image, never into a project-local Dockerfile.
 
 To iterate, keep the stack up and re-run PHPUnit directly — provisioning is the slow part, the tests
 themselves take seconds:
@@ -131,6 +140,7 @@ configuring anything.
 |---|---|
 | `docker/run.sh` | The one-shot orchestrator described above |
 | `docker/docker-compose.yml` | The services |
+| `docker/config/php.ini` | Data Compliance's PHP settings, bind-mounted into the shared `akeeba-e2e/php` image |
 | `assets/e2e-provision.php` | Runs **inside** the container: the nested-set fixtures (user groups, the component's permission rules, the ATS category, a user custom field, the privacy policy article) |
 | `assets/e2e-probe.php` | Runs inside the container: reports who a session belongs to and what it may do |
 | `src/SiteProvisioner.php` | Host-side: runs the above, then seeds everything flat over PDO (users, consent, parameters, ATS / ARS rows); hands fixtures to tests by name; creates throwaway accounts |
