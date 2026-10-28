@@ -1,3 +1,7 @@
+Akeeba Data Compliance 4.1.1
+================================================================================
+# [LOW] HTML notification emails showed special characters in names as HTML entities, e.g. &amp;lt;
+
 Akeeba Data Compliance 4.1.0
 ================================================================================
 ! Dropped support for Joomla! 4.x and 5.0 to 5.3; Joomla! 5.4 to 6.2 is now required
