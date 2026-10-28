@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/akeeba/s3.git",
-                "reference": "e09b5032e8bc2a2789f95f45a0acc10db70320a2"
+                "reference": "fe0a2b80bb78c6332e871be1d08840dba42d1407"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/akeeba/s3/zipball/e09b5032e8bc2a2789f95f45a0acc10db70320a2",
-                "reference": "e09b5032e8bc2a2789f95f45a0acc10db70320a2",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/fe0a2b80bb78c6332e871be1d08840dba42d1407",
+                "reference": "fe0a2b80bb78c6332e871be1d08840dba42d1407",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,7 @@
                 "issues": "https://github.com/akeeba/s3/issues",
                 "source": "https://github.com/akeeba/s3/tree/development"
             },
-            "time": "2026-09-24T09:12:18+00:00"
+            "time": "2026-10-28T15:18:56+00:00"
         }
     ],
     "packages-dev": [],
