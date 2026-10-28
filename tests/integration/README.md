@@ -30,7 +30,8 @@ The unit tests are a separate suite; see [`UnitTest/README.md`](../../UnitTest/R
   System), next to this repository. `run.sh` builds and installs both, so `plg_datacompliance_ats` and
   `plg_datacompliance_ars` act on the real tables. Only the directory *names* are assumed; everything is
   resolved relative to this repository. Use `--no-siblings` to run without them (their tests skip).
-* `unzip`, `curl`, `gunzip` and `jq`, used to resolve, fetch and extract Joomla.
+* `unzip`, plus `getcms` from the sibling `../buildfiles` checkout (run `composer install` there),
+  used to resolve, download and extract Joomla.
 
 ## Quick start
 
