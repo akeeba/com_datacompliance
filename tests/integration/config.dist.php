@@ -36,9 +36,9 @@ return [
 	],
 	's3'            => [
 		// As the SITE sees it, from inside the compose network.
-		'endpoint' => 'minio:9000',
-		'access'   => 'dce2eaccess',
-		'secret'   => 'dce2esecret',
+		'endpoint' => 'garage:3900',
+		'access'   => 'GKd0c0e2e0d0c0e2e0d0c0e2e0',
+		'secret'   => 'd0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0',
 		'bucket'   => 'dc-audit',
 	],
 	'docker'        => [

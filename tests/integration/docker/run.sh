@@ -3,7 +3,7 @@
 # One-shot end-to-end test harness for Akeeba Data Compliance.
 #
 # Provisions a throwaway Joomla site inside Docker (Apache + PHP-FPM + MySQL +
-# Mailpit + MinIO, all versions configurable) and runs the PHPUnit end-to-end
+# Mailpit + Garage, all versions configurable) and runs the PHPUnit end-to-end
 # suite against it over real HTTP. Every run starts from a completely clean
 # slate, so a suite that fails or crashes mid-way never leaves a site behind in
 # an unknown state.
@@ -51,6 +51,9 @@ INBOX_DIR="${INTEGRATION_DIR}/inbox"
 WWW_DIR="${SCRIPT_DIR}/www"
 # Builds the PHP and Apache images every Akeeba E2E stack shares; see bring_up_stack().
 E2E_IMAGES="${REPO_ROOT}/../buildfiles/docker/e2e/images.sh"
+# Garage's configuration and the provisioning helpers, shared with every Akeeba E2E stack that needs S3.
+E2E_GARAGE_DIR="${REPO_ROOT}/../buildfiles/docker/e2e/garage"
+export E2E_GARAGE_DIR
 INSTALLER_SCRIPT="${REPO_ROOT}/component/script.datacompliance.php"
 
 # The sibling working copies. Only their directory NAMES are stable; where the parent directory lives
@@ -149,8 +152,8 @@ set +a
 : "${TEST_USER_PASSWORD:=test}"
 : "${MAIL_FROM:=privacy@example.test}"
 : "${MAIL_FROM_NAME:=Data Compliance E2E}"
-: "${S3_ACCESS_KEY:=dce2eaccess}"
-: "${S3_SECRET_KEY:=dce2esecret}"
+: "${S3_ACCESS_KEY:=GKd0c0e2e0d0c0e2e0d0c0e2e0}"
+: "${S3_SECRET_KEY:=d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0}"
 : "${S3_BUCKET:=dc-audit}"
 : "${WITH_ATS:=1}"
 : "${WITH_ARS:=1}"
@@ -164,7 +167,10 @@ fi
 # In-container CLI helpers ---------------------------------------------------
 php_cli()   { DC exec -T php php "$@"; }
 mysql_cli() { DC exec -T db mysql -uroot -p"${DB_ROOT_PASSWORD}" "$@"; }
-mc_cli()    { DC run --rm -T mc "$@"; }
+garage_cli() { DC exec -T garage /garage "$@"; }
+[ -f "${E2E_GARAGE_DIR}/provision.sh" ] || die "${E2E_GARAGE_DIR}/provision.sh not found. Check out akeeba/buildfiles next to this repository."
+# shellcheck source=/dev/null
+. "${E2E_GARAGE_DIR}/provision.sh"
 
 # ---------------------------------------------------------------------------
 # Matrix mode: re-invoke ourselves once per pair and aggregate the result.
@@ -450,7 +456,7 @@ ensure_images() {
 }
 
 bring_up_stack() {
-	log "Starting the stack (PHP ${PHP_VERSION}, Apache ${APACHE_VERSION}, MySQL ${MYSQL_VERSION}, Mailpit ${MAILPIT_VERSION}, MinIO ${MINIO_VERSION})"
+	log "Starting the stack (PHP ${PHP_VERSION}, Apache ${APACHE_VERSION}, MySQL ${MYSQL_VERSION}, Mailpit ${MAILPIT_VERSION}, Garage ${GARAGE_VERSION})"
 	ensure_images
 	DC up -d
 
@@ -472,14 +478,9 @@ bring_up_stack() {
 	done
 	ok "Mailpit is up"
 
-	log "Waiting for MinIO and creating the '${S3_BUCKET}' bucket"
-	tries=0
-	until mc_cli mb --ignore-existing "e2e/${S3_BUCKET}" >/dev/null 2>&1; do
-		tries=$((tries + 1))
-		[ "${tries}" -gt 30 ] && die "MinIO did not become ready, or the bucket could not be created."
-		sleep 2
-	done
-	ok "MinIO is up; bucket ${S3_BUCKET} exists"
+	log "Waiting for Garage and creating the '${S3_BUCKET}' bucket"
+	garage_provision "${S3_ACCESS_KEY}" "${S3_SECRET_KEY}" "${S3_BUCKET}"
+	ok "Garage is up; bucket ${S3_BUCKET} exists"
 
 	log "Waiting for the web front-end"
 	tries=0
@@ -692,7 +693,7 @@ return [
 	],
 	's3'      => [
 		// As the SITE sees it, from inside the compose network.
-		'endpoint' => 'minio:9000',
+		'endpoint' => 'garage:3900',
 		'access'   => '${S3_ACCESS_KEY}',
 		'secret'   => '${S3_SECRET_KEY}',
 		'bucket'   => '${S3_BUCKET}',

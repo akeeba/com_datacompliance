@@ -265,7 +265,7 @@ abstract class AbstractE2ETestCase extends TestCase
 	}
 
 	/**
-	 * Joomla's console application, and the MinIO client, inside the stack.
+	 * Joomla's console application, and the AWS CLI, inside the stack.
 	 *
 	 * @return  ContainerCli
 	 * @since   4.1.0
@@ -573,13 +573,14 @@ abstract class AbstractE2ETestCase extends TestCase
 	/**
 	 * Did the account survive untouched? Compares the columns a wipe rewrites.
 	 *
-	 * @param   array   $before   The user row before the attempt.
-	 * @param   string  $message  Context.
+	 * @param   array   $before       The user row before the attempt.
+	 * @param   string  $message      Context.
+	 * @param   bool    $noWipeTrail  Also assert that no wipe audit trail exists (false when the test planted one).
 	 *
 	 * @return  void
 	 * @since   4.1.0
 	 */
-	protected function assertUserUntouched(array $before, string $message = ''): void
+	protected function assertUserUntouched(array $before, string $message = '', bool $noWipeTrail = true): void
 	{
 		$after = $this->userRow((int) $before['id']);
 
@@ -594,7 +595,10 @@ abstract class AbstractE2ETestCase extends TestCase
 			);
 		}
 
-		$this->assertSame([], $this->wipeTrails((int) $before['id']), trim('A wipe audit trail was recorded. ' . $message));
+		if ($noWipeTrail)
+		{
+			$this->assertSame([], $this->wipeTrails((int) $before['id']), trim('A wipe audit trail was recorded. ' . $message));
+		}
 	}
 
 	/**

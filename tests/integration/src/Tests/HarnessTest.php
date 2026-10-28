@@ -139,7 +139,7 @@ class HarnessTest extends AbstractE2ETestCase
 	}
 
 	/**
-	 * Mailpit and MinIO answer.
+	 * Mailpit and Garage answer.
 	 *
 	 * @return  void
 	 * @since   4.1.0
@@ -148,7 +148,7 @@ class HarnessTest extends AbstractE2ETestCase
 	{
 		$this->assertTrue($this->mailpit()->isAvailable(), 'Mailpit is not reachable.');
 
-		[$exitCode, $output] = $this->cli()->mc(['ls', 'e2e/' . static::$config->getS3()['bucket']]);
+		[$exitCode, $output] = $this->cli()->s3(['s3', 'ls', 's3://' . static::$config->getS3()['bucket']]);
 
 		$this->assertSame(0, $exitCode, "The S3 bucket is not reachable:\n" . $output);
 	}

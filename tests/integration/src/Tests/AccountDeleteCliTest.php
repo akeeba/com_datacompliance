@@ -117,7 +117,7 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 	public function testProtectedAccountsAreRefused(): void
 	{
 		$cases = [
-			'super2'        => 'Super User',
+			'super2'        => '/super[ _]?user/i',
 			'administrator' => 'administrator login access',
 			'exempt'        => 'exempt from being deleted',
 		];
@@ -131,12 +131,20 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 			$this->assertSame(127, $exitCode, $role . "\n" . $output);
 			$this->assertUserUntouched($before, $role . ' was deleted.');
 
-			// The console wraps long lines; compare with the whitespace collapsed.
-			$this->assertStringContainsString(
-				$reason,
-				preg_replace('/\s+/', ' ', $output),
-				$role . ': the refusal does not say why.'
-			);
+			// The console wraps long lines; compare with the whitespace collapsed. A pattern is used where the
+			// reason comes from a core language string: its wording differs per Joomla version, and the console
+			// may print the untranslated key.
+			$collapsed = preg_replace('/\s+/', ' ', $output);
+			$why       = $role . ': the refusal does not say why.';
+
+			if ($reason[0] === '/')
+			{
+				$this->assertMatchesRegularExpression($reason, $collapsed, $why);
+
+				continue;
+			}
+
+			$this->assertStringContainsString($reason, $collapsed, $why);
 		}
 	}
 
@@ -178,7 +186,8 @@ class AccountDeleteCliTest extends AbstractE2ETestCase
 		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:account:delete', '--id=' . $id]);
 
 		$this->assertNotSame(0, $exitCode, $output);
-		$this->assertUserUntouched($before, 'The account was deleted although it has a wipe audit trail and --force was not given.');
+		$this->assertUserUntouched($before, 'The account was deleted although it has a wipe audit trail and --force was not given.', false);
+		$this->assertCount(1, $this->wipeTrails($id), 'The refused wipe changed the existing audit trail record.');
 		$this->assertStringContainsString('already been deleted', preg_replace('/\s+/', ' ', $output), 'The refusal does not say why.');
 
 		[$exitCode, $output] = $this->cli()->joomla(['datacompliance:account:delete', '--id=' . $id, '--force']);

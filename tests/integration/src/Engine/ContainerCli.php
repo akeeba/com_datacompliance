@@ -97,19 +97,19 @@ class ContainerCli
 	}
 
 	/**
-	 * Run the MinIO client against the stack's S3 server, e.g. ['ls', '--recursive', 'e2e/dc-audit'].
+	 * Run the AWS CLI against the stack's S3 server, e.g. ['s3', 'ls', '--recursive', 's3://dc-audit/'].
 	 *
-	 * The `mc` service is pre-configured with an `e2e` alias pointing at http://minio:9000. MinIO has
-	 * no published port, so this is the only way to look inside the bucket from the host.
+	 * The `s3cli` service is pre-configured with the stack's credentials and endpoint (http://garage:3900).
+	 * Garage has no published port, so this is the only way to look inside the bucket from the host.
 	 *
-	 * @param   string[]  $arguments  The mc arguments.
+	 * @param   string[]  $arguments  The aws arguments.
 	 *
 	 * @return  array{0: int, 1: string}  Exit code and combined output.
 	 * @since   4.1.0
 	 */
-	public function mc(array $arguments): array
+	public function s3(array $arguments): array
 	{
-		return $this->compose(array_merge(['--profile', 'tools', 'run', '--rm', '-T', 'mc'], $arguments));
+		return $this->compose(array_merge(['--profile', 'tools', 'run', '--rm', '-T', '--no-deps', 's3cli'], $arguments));
 	}
 
 	/**

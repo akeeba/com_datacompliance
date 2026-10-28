@@ -15,7 +15,7 @@ use Akeeba\DataCompliance\IntegrationTest\AbstractE2ETestCase;
  * plg_datacompliance_s3: every wipe audit record is also uploaded to an S3 bucket, so the audit trail
  * survives the site.
  *
- * The bucket is a real S3 API (MinIO, inside the compose network), so the plugin's connector, request
+ * The bucket is a real S3 API (Garage, inside the compose network), so the plugin's connector, request
  * signing and upload are exercised for real.
  *
  * @since 4.1.0
@@ -23,7 +23,7 @@ use Akeeba\DataCompliance\IntegrationTest\AbstractE2ETestCase;
 class S3AuditTrailTest extends AbstractE2ETestCase
 {
 	/**
-	 * Set up: the plugin pointed at the stack's MinIO; no administrator notifications (they are tested
+	 * Set up: the plugin pointed at the stack's Garage; no administrator notifications (they are tested
 	 * in WipeNotificationTest).
 	 *
 	 * @return  void
@@ -83,7 +83,7 @@ class S3AuditTrailTest extends AbstractE2ETestCase
 
 		$bucket = static::$config->getS3()['bucket'];
 
-		[$exitCode, $listing] = $this->cli()->mc(['ls', '--recursive', 'e2e/' . $bucket . '/e2e-audit/']);
+		[$exitCode, $listing] = $this->cli()->s3(['s3', 'ls', '--recursive', 's3://' . $bucket . '/e2e-audit/']);
 
 		$this->assertSame(0, $exitCode, $listing);
 
@@ -94,7 +94,7 @@ class S3AuditTrailTest extends AbstractE2ETestCase
 			'The wipe audit record is never uploaded to S3. S3::getS3Connector() checks class_exists() for Akeeba Backup\'s engine class name (Akeeba\\Engine\\Postproc\\Connector\\S3v4\\Connector) instead of the bundled Akeeba\\S3\\Connector, so it always throws "Could not get the Composer autoloader."; and even with that fixed, it calls setUseLegacyPathStyle() BEFORE setEndpoint(), which resets path-style access for any custom (S3-compatible) endpoint. Failures are logged, then reported as success.'
 		);
 
-		[, $object] = $this->cli()->mc(['cat', 'e2e/' . $bucket . '/e2e-audit/' . $match[0]]);
+		[, $object] = $this->cli()->s3(['s3', 'cp', 's3://' . $bucket . '/e2e-audit/' . $match[0], '-']);
 
 		// `docker compose run` may print its own progress lines around the object.
 		$start  = strpos($object, '{');

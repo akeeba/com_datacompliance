@@ -227,7 +227,7 @@ final class Configuration
 	}
 
 	/**
-	 * The S3 (MinIO) connection settings, as the SITE sees them from inside the compose network.
+	 * The S3 (Garage) connection settings, as the SITE sees them from inside the compose network.
 	 *
 	 * @return  array{endpoint: string, access: string, secret: string, bucket: string}
 	 * @since   4.1.0
@@ -235,9 +235,9 @@ final class Configuration
 	public function getS3(): array
 	{
 		return [
-			'endpoint' => (string) $this->get('s3.endpoint', 'minio:9000'),
-			'access'   => (string) $this->get('s3.access', 'dce2eaccess'),
-			'secret'   => (string) $this->get('s3.secret', 'dce2esecret'),
+			'endpoint' => (string) $this->get('s3.endpoint', 'garage:3900'),
+			'access'   => (string) $this->get('s3.access', 'GKd0c0e2e0d0c0e2e0d0c0e2e0'),
+			'secret'   => (string) $this->get('s3.secret', 'd0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0'),
 			'bucket'   => (string) $this->get('s3.bucket', 'dc-audit'),
 		];
 	}

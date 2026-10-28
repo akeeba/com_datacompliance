@@ -2,14 +2,14 @@
 #
 # All versions are configurable through the .env file (see env.dist):
 #   JOOMLA_VERSION, PHP_VERSION, APACHE_VERSION, MYSQL_VERSION, MAILPIT_VERSION,
-#   MINIO_VERSION.
+#   GARAGE_VERSION.
 #
 # The php and web images are the ones shared by every Akeeba E2E stack. They are built by
 # ../buildfiles/docker/e2e/images.sh — which run.sh calls before bringing the stack up — never by
 # this file, hence `pull_policy: never` and no `build:`. Everything specific to Data Compliance is
 # bind-mounted into them: php.ini. The Apache vhost is the shared image's default.
 #
-# Every service (including the profile-only mc), the volume and the network carry the
+# Every service (including the profile-only s3cli), the volume and the network carry the
 # org.akeeba.e2e label, which is what the scheduled ../buildfiles/docker/e2e/maintain.sh prunes by.
 #
 # Do not run this by hand. Use ./run.sh, which scrubs, provisions and tests in
@@ -54,8 +54,8 @@ services:
         condition: service_healthy
       mailpit:
         condition: service_started
-      minio:
-        condition: service_started
+      garage:
+        condition: service_healthy
 
   web:
     image: "akeeba-e2e/web:${APACHE_VERSION:-2.4}"
@@ -93,32 +93,40 @@ services:
   # wipe audit record to a bucket. A real S3 API, so the plugin's connector,
   # request signing and upload are exercised end to end rather than stubbed.
   #
-  # Deliberately no `ports:` mapping. The site reaches it as http://minio:9000
+  # Garage (MinIO no longer publishes images). It needs a storage layout, a key and
+  # a bucket before it is usable: run.sh provisions them with garage_provision()
+  # from ../buildfiles/docker/e2e/garage/provision.sh.
+  #
+  # Deliberately no `ports:` mapping. The site reaches it as http://garage:3900
   # from inside the compose network, and the tests inspect the bucket through
-  # the `mc` client (profile "tools" below), also from inside the network.
-  minio:
-    image: "quay.io/minio/minio:${MINIO_VERSION:-RELEASE.2025-09-07T16-13-09Z}"
+  # the `s3cli` client (profile "tools" below), also from inside the network.
+  garage:
+    image: "dxflrs/garage:${GARAGE_VERSION:-v2.5.0}"
     labels: *e2e-labels
-    command: ["server", "/data"]
-    environment:
-      MINIO_ROOT_USER: "${S3_ACCESS_KEY:-dce2eaccess}"
-      MINIO_ROOT_PASSWORD: "${S3_SECRET_KEY:-dce2esecret}"
+    volumes:
+      - ${E2E_GARAGE_DIR:-../../../../buildfiles/docker/e2e/garage}/garage.toml:/etc/garage.toml:ro
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD", "/garage", "status"]
       interval: 5s
       timeout: 5s
       retries: 20
 
-  # One-shot MinIO client. Never started by `up`; run.sh and the tests invoke it
-  # with `docker compose run --rm mc …`.
-  mc:
-    image: "quay.io/minio/mc:${MC_VERSION:-RELEASE.2025-08-13T08-35-41Z}"
+  # One-shot AWS CLI. Never started by `up`; the tests invoke it with
+  # `docker compose run --rm s3cli …`.
+  s3cli:
+    image: "amazon/aws-cli:2.39.0"
     labels: *e2e-labels
     profiles: ["tools"]
+    entrypoint: ["aws"]
     environment:
-      MC_HOST_e2e: "http://${S3_ACCESS_KEY:-dce2eaccess}:${S3_SECRET_KEY:-dce2esecret}@minio:9000"
+      AWS_ACCESS_KEY_ID: "${S3_ACCESS_KEY:-GKd0c0e2e0d0c0e2e0d0c0e2e0}"
+      AWS_SECRET_ACCESS_KEY: "${S3_SECRET_KEY:-d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0}"
+      AWS_DEFAULT_REGION: "us-east-1"
+      AWS_ENDPOINT_URL: "http://garage:3900"
+      AWS_REQUEST_CHECKSUM_CALCULATION: "when_required"
+      AWS_RESPONSE_CHECKSUM_VALIDATION: "when_required"
     depends_on:
-      - minio
+      - garage
 
 volumes:
   dbdata:

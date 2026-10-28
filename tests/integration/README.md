@@ -10,8 +10,8 @@ up in Docker, provisioned from nothing, tested, and thrown away:
 | `php` | PHP-FPM running Joomla, and the Joomla CLI |
 | `web` | Apache, proxying to `php` over FastCGI |
 | `mailpit` | SMTP sink with a REST API: the wipe and lifecycle notifications really go out over SMTP |
-| `minio` | S3-compatible storage for `plg_datacompliance_s3` (no published port) |
-| `mc` | One-shot MinIO client (profile `tools`), how the tests look inside the bucket |
+| `garage` | S3-compatible storage (Garage) for `plg_datacompliance_s3` (no published port) |
+| `s3cli` | One-shot AWS CLI (profile `tools`), how the tests look inside the bucket |
 
 Nothing boots Joomla inside the PHPUnit process. You never configure a site by hand, and a run that
 fails or crashes mid-way never leaves anything behind in an unknown state.
@@ -123,11 +123,10 @@ Why more than one Joomla version is not optional thoroughness:
   core's source file at runtime. Whether its replacements still apply is a property of each Joomla
   release's `MailTemplate.php`; the notification tests (`WipeNotificationTest`, `LifecycleTest`) are the
   only thing that exercises it against a given release.
-* **HTML mail escaping** relies on core's `MailTemplate::addUnsafeTags()` and on how core renders the
-  HTML layout: `TemplateEmails::sendMail()` mirrors core's decision whether the layout is used, and
-  pre-escapes the values only then (core does not escape them in the layout; known issue #14, seen on
-  6.1.3). Only the matrix tells whether 5.4 and 6 still behave the same; try `--joomla=6.0` for an
-  interior release.
+* **HTML mail escaping** relies on core's `MailTemplate::addUnsafeTags()` alone: current core escapes the unsafe
+  tags in com_mails' HTML layout too (known issue #14 was core not doing so, seen on 6.1.3). The component used
+  to pre-escape the values itself, which double-escapes on current core. `WipeNotificationTest` asserts the
+  HTML body shows a name with markup in it escaped exactly once.
 * **`ConsenttrailsTable`** keeps a `getDatabase()`/`getDbo()` fallback for the declared range, and
   **`Table\User::store()`**'s group handling is core code the wipe depends on: stripping a wiped
   account of its user groups relies on `store()` writing no group map rows for an empty `$groups`.
@@ -158,7 +157,7 @@ configuring anything.
 | `assets/e2e-probe.php` | Runs inside the container: reports who a session belongs to and what it may do |
 | `src/SiteProvisioner.php` | Host-side: runs the above, then seeds everything flat over PDO (users, consent, parameters, ATS / ARS rows); hands fixtures to tests by name; creates throwaway accounts |
 | `src/Engine/Surfer.php` | cURL client with a cookie jar, token extraction, and redirects captured rather than followed |
-| `src/Engine/ContainerCli.php` | `cli/joomla.php` and `mc` inside the stack |
+| `src/Engine/ContainerCli.php` | `cli/joomla.php` and `aws` inside the stack |
 | `src/Engine/Mailpit.php` | Reads the mail the site actually sent |
 | `src/AbstractE2ETestCase.php` | Base class: logged-in actors, request helpers (export, wipe, consent), refusal and known-issue assertions |
 
