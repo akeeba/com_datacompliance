@@ -72,7 +72,7 @@ is on <http://localhost:8145>.
 |---|---|
 | `-j`, `--joomla=V` | Override `JOOMLA_VERSION` for this run (`6`, `6.1`, `6.1.3`) |
 | `-p`, `--php=V` | Override `PHP_VERSION` for this run (`8.1`, `8.3`, `8.5`) |
-| `--matrix` | Run every Joomla/PHP pair in `JOOMLA_MATRIX`, then exit |
+| `--matrix` | Run every Joomla/PHP pair in the committed `JOOMLA_MATRIX`, then exit |
 | `-f`, `--filter=NAME` | Passed through to PHPUnit |
 | `--skip-build` | Don't run `phing git` anywhere; install the newest packages already in `release/`, `../ats/release/`, `../ars/release/` |
 | `--no-siblings` | Don't build or install ATS and ARS |
@@ -90,17 +90,28 @@ path, so either works.
 tests/integration/docker/run.sh --matrix
 ```
 
-Runs the suite once per pair in `JOOMLA_MATRIX` — by default Joomla **5.4 on PHP 8.1 and 8.5, 6.0 on
-PHP 8.3 and 8.5, 6.1 on PHP 8.3 and 8.5**. Where each bound comes from:
+The Joomla/PHP environments are **committed, not configured**. `JOOMLA_MATRIX` lives in
+`docker/e2e/matrix` of the sibling `buildfiles` repository, shared by every Joomla project, and is
+currently:
+
+| Joomla | PHP | |
+|---|---|---|
+| 5.4 | 8.1 | The oldest Joomla and PHP this project supports |
+| 6 | 8.5 | The latest stable Joomla 6 (`6` resolves to it) on the newest PHP |
+
+They are deliberately not in `env.dist` or `.env`: `.env` is git-ignored and copied once, so anything in
+it goes stale and differs between machines. `run.sh` sources the committed files after `.env`, so a
+stale `.env` cannot shadow them. For a one-off, use `run.sh --joomla=6.0 --php=8.3`; to change what
+everybody tests, edit the committed file and let `audit-e2e-matrix` check the result.
+
+Where the bounds come from:
 
 * **Joomla ≥ 5.4.0, < 6.3** — `$minimumJoomla` / `$maximumJoomla` in `component/script.datacompliance.php`
   (the same values as `composer.json` `extra.akcompat.limit` and `Helper\VersionLimits`). `run.sh` reads
-  them from the installer script and refuses anything outside, before touching Docker. 6.1 is the latest
-  stable release today (6.2 is not out), so it is the day-to-day default and the ceiling.
+  them from the installer script and refuses anything outside, before touching Docker.
 * **PHP ≥ 8.1, < 8.7** — `$minimumPhp` / `$maximumPhp`, likewise. Joomla 6 itself needs PHP 8.3; `run.sh`
   reads Joomla's own floor out of the extracted package and refuses an impossible pair. The newest
   published `php:*-fpm` image is 8.5, so that is the ceiling in practice.
-* The pairs are the **edges** of the range, not a cross product.
 
 Why more than one Joomla version is not optional thoroughness:
 
@@ -115,13 +126,14 @@ Why more than one Joomla version is not optional thoroughness:
 * **HTML mail escaping** relies on core's `MailTemplate::addUnsafeTags()` and on how core renders the
   HTML layout: `TemplateEmails::sendMail()` mirrors core's decision whether the layout is used, and
   pre-escapes the values only then (core does not escape them in the layout; known issue #14, seen on
-  6.1.3). Only the matrix tells whether 5.4 and 6.0 still behave the same.
+  6.1.3). Only the matrix tells whether 5.4 and 6 still behave the same; try `--joomla=6.0` for an
+  interior release.
 * **`ConsenttrailsTable`** keeps a `getDatabase()`/`getDbo()` fallback for the declared range, and
   **`Table\User::store()`**'s group handling is core code the wipe depends on: stripping a wiped
   account of its user groups relies on `store()` writing no group map rows for an empty `$groups`.
 
-The day-to-day run (no flags) covers only Joomla 6.1 on PHP 8.5. **A green single-version run proves
-less than it looks** — in particular nothing about Joomla 5.4 or the PHP 8.1 floor. Run the matrix
+The day-to-day run (no flags) covers only the latest Joomla 6 on PHP 8.5. **A green single-version run
+proves less than it looks** — in particular nothing about Joomla 5.4 or the PHP 8.1 floor. Run the matrix
 before a release.
 
 ## Configuration
