@@ -20,83 +20,26 @@ finding from one — you MUST read `.claude/security-audit-triage.md` — the ac
 of scope, finding classes already ruled invalid, controls already in place, and how to
 classify hardening versus vulnerabilities.
 
-## Architecture
+## Always-on rules
 
-### Namespaces
-
-- Backend: `Akeeba\Component\DataCompliance\Administrator\*`
-- Frontend: `Akeeba\Component\DataCompliance\Site\*`
-- Plugins: `Akeeba\Plugin\{Group}\DataCompliance\*`
-
-### Entry Points
-
-- `component/backend/services/provider.php` — DI service provider, the component bootstrap entry point.
-- `component/backend/src/Model/WipeModel.php` — the core of account erasure.
-
-### Plugin Architecture
-
-Datacompliance-group plugins handle data export/deletion for specific subsystems, implementing event handlers invoked by `RunPluginsTrait`. The `ars` and `ats` plugins integrate with Akeeba Release System and Akeeba Ticket System respectively.
-
-### Key Patterns
-
-- **Composition via traits** (`component/backend/src/Mixin/`) — `RunPluginsTrait`, `TriggerEventTrait`, `ControllerEventsTrait`, etc.
 - **Administrators always get the Export / Delete buttons for other users** — compliance requirement: having these
   buttons trumps every other display option. On another user's Options page (`tmpl/options/default.php`, "manage
   another user" block) they depend only on the viewer's privileges (`HtmlView::$canManageExport` / `$canManageWipe`,
   mirroring `OptionsController::assertUserAccess()`). The component's `showexport` / `showwipe` options govern only a
   user's own self-service buttons and must never hide the administrator's. Sole exception: a non Super User gets no
   buttons on a Super User's page, because the controller refuses that action (H2a).
-- **Composer autoloader** — loaded in `Extension/DataComplianceComponent.php` for the `akeeba/s3` dependency (vendor dir: `component/backend/vendor/`)
 
-## CLI Commands
-
-Registered via the console plugin, invoked through Joomla CLI:
-- `datacompliance:lifecycle:delete` — auto-remove inactive users
-- `datacompliance:lifecycle:notify` — notify users before deletion
-- `datacompliance:account:delete` — manual account deletion
-
-## Workarounds for core Joomla bugs — re-check on every Joomla release
-
-- **None at the moment.** There used to be one for HTML mail escaping (`Helper\TemplateEmails` pre-escaped the
-  values itself because core Joomla's `MailTemplate::send()` did not escape `addUnsafeTags()` tags inside
-  com_mails' HTML layout, up to at least 6.1.3). Current core does (5.4.10 and 6.2.0 pass `$isHtml = true`
-  there), so the workaround was removed — keeping it escapes every value twice. `sendMail()` now only
-  calls `addUnsafeTags()`. The integration test `WipeNotificationTest::testUserIsNotifiedAtTheirOriginalAddress`
-  catches a regression in either direction. If a Joomla release inside the supported range stops
-  escaping again, that test fails on that release.
-
-## Git: commit and tag outside the sandbox
-
-Commits and tags are always signed, with a key held in 1Password. The 1Password signing agent is reached
-over a local socket that agent sandboxes do not expose, so a sandboxed `git commit` or `git tag` **always**
-fails (e.g. `error: 1Password: Could not connect to socket. Is the agent running?`).
-
-Run every `git commit` and `git tag` **outside the sandbox from the first attempt** — in Claude Code with
-`dangerouslyDisableSandbox: true`, in other harnesses with their equivalent unsandboxed / escalated
-execution. Do not try the sandboxed form first, do not diagnose the failure, and never work around it
-with `--no-gpg-sign`, `-c commit.gpgsign=false` or unsigned tags.
+- Commits and tags are signed through 1Password, which sandboxes cannot reach: run every `git commit` / `git tag` outside the sandbox from the first attempt; never use `--no-gpg-sign`. Details: `.claude/memory/git-signing.md`.
 
 ## Project memory
 
-Project memory lives in `.claude/memory/`, committed with the code, so that it is shared across machines
-and across agentic harnesses (Claude Code, Codex, Qwen Code, Kimi Code, Junie, …). Read the relevant file
-**before** starting work that matches its trigger:
+Project memory lives in `.claude/memory/`. Read the matching file before starting that kind of work.
 
-| Before you… | Read |
-|---|---|
-| Add, change or translate language strings, or add a language | `.claude/memory/translations.md` |
-| Write or extend unit / E2E tests, or deal with a bug they uncover | `.claude/memory/testing.md` |
-
-### Recording new memories
-
-This is the **default and only** place for project memory. Do not write memories for this project to a
-harness's private memory store (such as Claude Code's auto-memory under `~/.claude/projects/`); write
-them here instead:
-
-- Add to the existing topic file when one fits; otherwise create a new kebab-case `.md` file named after
-  the topic, and add a row for it to the table above with a concrete trigger.
-- Plain Markdown, no frontmatter. State the rule, then **Why:** (the reason or incident behind it) and
-  **How to apply:**. Link related files with relative Markdown links.
-- Don't record what the code, Git history or an existing `AGENTS.md` already says — update that
-  `AGENTS.md` instead when the rule belongs there. Remove or correct entries that turn out wrong.
-- These files are committed: no secrets, credentials, customer data or personal details.
+| File | Read it when… |
+|------|---------------|
+| [`translations.md`](.claude/memory/translations.md) | Before you add, change or translate language strings, or add a language |
+| [`testing.md`](.claude/memory/testing.md) | Before you write or extend unit / E2E tests, or deal with a bug they uncover |
+| [`architecture.md`](.claude/memory/architecture.md) | Before you change namespaces, entry points, datacompliance plugins, the `Mixin/` traits or the CLI commands |
+| [`joomla-workarounds.md`](.claude/memory/joomla-workarounds.md) | On every Joomla release, and before you touch `Helper\TemplateEmails` / `sendMail()` |
+| [`git-signing.md`](.claude/memory/git-signing.md) | Before you run `git commit` or `git tag` |
+| [`recording-memories.md`](.claude/memory/recording-memories.md) | Before you add or change a project memory file |
