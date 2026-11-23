@@ -36,9 +36,9 @@ files:
     source: '%%RELEASEDIR%%/pkg_datacompliance-*.zip'
     access: 1
   -
-    title: 'Documentation (PDF)'
+    title: 'Documentation (ePub)'
     connection: bunny
-    source: '%%RELEASEDIR%%/datacompliance.pdf'
+    source: '%%RELEASEDIR%%/datacompliance.epub'
     access: 1
 
 # Update sources
