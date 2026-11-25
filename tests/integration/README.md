@@ -79,10 +79,22 @@ is on <http://localhost:8145>.
 | `--no-tests` | Provision the site but don't run the suite (leaves it up) |
 | `--keep-containers` | Leave the stack running afterwards |
 | `--down` | Tear everything down and exit |
+| `--host=H`, `--slot=N` | Run on the SSH host `H` (or `local`); pick a kept remote slot. See "Remote host" |
 | `-- <args>` | Everything after `--` goes to PHPUnit |
 
 Invoke `run.sh --matrix` by absolute path or from any directory: it re-invokes itself by its absolute
 path, so either works.
+
+## Remote host
+
+The whole suite can run on another machine over SSH instead: `tests/integration/docker/run.sh --host=HOST`,
+`E2E_DOCKER_HOST` (environment or `docker/.env`), or `e2e.docker.host` in your `build.properties`. `--host=local` forces
+this machine. Every run on the host gets its own slot (staging tree, Compose project and ports), so any number can run at
+once, also from Git worktrees. The `../ats` and `../ars` working copies are sent too, and built there. After a failure
+the PHP error log comes back into `tests/integration/remote-results/`. The host ports in this file apply to local runs
+only; a kept remote stack prints its ports and the `ssh -L` command to reach it. Run `--down` the same way to take it
+down. The host needs `phpunit` besides the usual tools. Details and host requirements: "Remote E2E hosts" in the sibling
+`buildfiles` repository's README.
 
 ## The version matrix
 
