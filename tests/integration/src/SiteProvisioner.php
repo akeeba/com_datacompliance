@@ -367,7 +367,7 @@ class SiteProvisioner
 			'name'          => $spec['name'] ?? ('Victim ' . $suffix),
 			'username'      => $username,
 			'email'         => $spec['email'] ?? ($username . '@example.test'),
-			'password'      => password_hash($spec['password'] ?? $this->config->getUserPassword(), PASSWORD_BCRYPT),
+			'password'      => (new ContainerCli($this->config))->passwordHash($spec['password'] ?? $this->config->getUserPassword()),
 			'block'         => (int) ($spec['block'] ?? 0),
 			'sendEmail'     => (int) ($spec['sendEmail'] ?? 0),
 			'registerDate'  => $spec['registerDate'] ?? gmdate('Y-m-d H:i:s', time() - 86400),
@@ -433,7 +433,7 @@ class SiteProvisioner
 
 		$db->query(
 			'INSERT INTO #__user_keys (user_id, token, series, time, uastring) VALUES (?, ?, ?, ?, ?)',
-			[(string) $db->value('SELECT username FROM #__users WHERE id = ?', [$userId]), password_hash('e2e-token', PASSWORD_BCRYPT), $series, (string) time(), 'E2E-UA']
+			[(string) $db->value('SELECT username FROM #__users WHERE id = ?', [$userId]), (new ContainerCli($this->config))->passwordHash('e2e-token'), $series, (string) time(), 'E2E-UA']
 		);
 
 		$fieldValue = 'E2E-PHONE-' . $userId;

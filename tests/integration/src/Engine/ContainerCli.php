@@ -97,6 +97,41 @@ class ContainerCli
 	}
 
 	/**
+	 * Hash a password with the site's PHP, as the site itself would.
+	 *
+	 * Fixtures must not be hashed with the host's PHP: the default bcrypt cost differs between PHP versions. Joomla
+	 * rehashes a password whose cost is not its own when the user logs in, and saving a changed password clears the
+	 * account's activation token (Joomla 5.4.11 and 6.2.1, for example).
+	 *
+	 * The result is remembered, as each call to the container is slow: the same password gets the same hash.
+	 *
+	 * @param   string  $password  The plain text password.
+	 *
+	 * @return  string  Its bcrypt hash.
+	 * @throws  RuntimeException  When the container does not return a hash.
+	 * @since   4.1.1
+	 */
+	public function passwordHash(string $password): string
+	{
+		static $hashes = [];
+
+		if (isset($hashes[$password]))
+		{
+			return $hashes[$password];
+		}
+
+		[$exitCode, $output] = $this->run(['php', '-r', 'echo password_hash($argv[1], PASSWORD_BCRYPT);', '--', $password]);
+
+		// The output includes stderr, so take the hash rather than all of it.
+		if ($exitCode !== 0 || !preg_match('#\$2y\$\d{2}\$[./A-Za-z0-9]{53}#', $output, $matches))
+		{
+			throw new RuntimeException(sprintf("Cannot hash a password in the php container (exit %d):\n%s", $exitCode, $output));
+		}
+
+		return $hashes[$password] = $matches[0];
+	}
+
+	/**
 	 * Run the AWS CLI against the stack's S3 server, e.g. ['s3', 'ls', '--recursive', 's3://dc-audit/'].
 	 *
 	 * The `s3cli` service is pre-configured with the stack's credentials and endpoint (http://garage:3900).
