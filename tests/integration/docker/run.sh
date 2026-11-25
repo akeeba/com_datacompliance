@@ -186,6 +186,20 @@ e2e_apply_overrides
 : "${WITH_ATS:=1}"
 : "${WITH_ARS:=1}"
 : "${APACHE_VERSION:=2.4}"
+# Image tags. .env is never refreshed from env.dist, so an old copy may lack any of these; keep in step with
+# the defaults in docker-compose.yml.
+: "${MYSQL_VERSION:=8.4}"
+: "${MAILPIT_VERSION:=v1.21}"
+: "${GARAGE_VERSION:=v2.5.0}"
+
+# A .env from the MinIO era still has its S3 credentials, which Garage rejects. Only that exact pair is replaced;
+# any other value is somebody's own choice.
+if [ "${S3_ACCESS_KEY}" = "dce2eaccess" ] && [ "${S3_SECRET_KEY}" = "dce2esecret" ]; then
+	warn ".env has the old MinIO S3 keys; using the Garage defaults. Update it from env.dist."
+	S3_ACCESS_KEY="GKd0c0e2e0d0c0e2e0d0c0e2e0"
+	S3_SECRET_KEY="d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0d0c0e2e0"
+	export S3_ACCESS_KEY S3_SECRET_KEY
+fi
 
 if [ "${NO_SIBLINGS}" -eq 1 ]; then
 	WITH_ATS=0
