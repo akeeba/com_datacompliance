@@ -31,7 +31,8 @@ The unit tests are a separate suite; see [`UnitTest/README.md`](../../UnitTest/R
   `plg_datacompliance_ars` act on the real tables. Only the directory *names* are assumed; everything is
   resolved relative to this repository. Use `--no-siblings` to run without them (their tests skip).
 * `unzip`, plus `getcms` from the sibling `../buildfiles` checkout (run `composer install` there),
-  used to resolve, download and extract Joomla.
+  used to resolve, download and extract Joomla. For its release lookups sign `gh` in (`gh auth login`);
+  without it they are anonymous, and GitHub allows few of those.
 
 ## Quick start
 
@@ -113,7 +114,9 @@ currently:
 
 They are deliberately not in `env.dist` or `.env`: `.env` is git-ignored and copied once, so anything in
 it goes stale and differs between machines. `run.sh` sources the committed files after `.env`, so a
-stale `.env` cannot shadow them. For a one-off, use `run.sh --joomla=6.0 --php=8.3`; to change what
+stale `.env` cannot shadow them. A partial Joomla version means the latest stable release matching it, looked up
+before each run with `../buildfiles/docker/e2e/joomla/acquire.sh` (getcms keeps the release list for an hour);
+`inbox/` only saves downloading it again. For a one-off, use `run.sh --joomla=6.0 --php=8.3`; to change what
 everybody tests, edit the committed file and let `audit-e2e-matrix` check the result.
 
 Where the bounds come from:
