@@ -135,10 +135,12 @@ Why more than one Joomla version is not optional thoroughness:
   core's source file at runtime. Whether its replacements still apply is a property of each Joomla
   release's `MailTemplate.php`; the notification tests (`WipeNotificationTest`, `LifecycleTest`) are the
   only thing that exercises it against a given release.
-* **HTML mail escaping** relies on core's `MailTemplate::addUnsafeTags()` alone: current core escapes the unsafe
-  tags in com_mails' HTML layout too (known issue #14 was core not doing so, seen on 6.1.3). The component used
-  to pre-escape the values itself, which double-escapes on current core. `WipeNotificationTest` asserts the
-  HTML body shows a name with markup in it escaped exactly once.
+* **HTML mail escaping** differs between releases: 5.4.0 – 5.4.8, every 6.0 and 6.1.0 – 6.1.3 do not escape the
+  unsafe tags in com_mails' HTML layout, so the component does it there
+  (`TemplateEmails::coreEscapesHtmlLayout()`); newer releases do, and escaping for them shows entities.
+  `WipeNotificationTest` asserts a name with markup in it is escaped exactly once, with and without the layout. The
+  matrix only runs the newest release of each branch, none of which is affected: after changing this code also run
+  `run.sh --joomla=6.1.3 --filter=WipeNotificationTest`.
 * **`ConsenttrailsTable`** keeps a `getDatabase()`/`getDbo()` fallback for the declared range, and
   **`Table\User::store()`**'s group handling is core code the wipe depends on: stripping a wiped
   account of its user groups relies on `store()` writing no group map rows for an empty `$groups`.

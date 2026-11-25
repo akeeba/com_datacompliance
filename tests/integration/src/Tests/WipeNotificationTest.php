@@ -47,7 +47,7 @@ class WipeNotificationTest extends AbstractE2ETestCase
 	protected function tearDown(): void
 	{
 		static::$fixtures->setPluginParams('datacompliance', 'email', ['users' => 1, 'admins' => 1, 'adminemails' => '']);
-		static::$fixtures->setComponentParams(['mail_style' => 'plaintext'], 'com_mails');
+		static::$fixtures->setComponentParams(['mail_style' => 'plaintext', 'disable_htmllayout' => '1'], 'com_mails');
 
 		parent::tearDown();
 	}
@@ -120,8 +120,34 @@ class WipeNotificationTest extends AbstractE2ETestCase
 		// L5: user data is escaped in HTML, exactly once.
 		$this->assertTrue(
 			!str_contains($message['HTML'], '<b>Bold</b>') && str_contains($message['HTML'], '&lt;b&gt;Bold&lt;/b&gt;'),
-			'The user\'s name is raw HTML in the HTML notification: the L5 fix relies on MailTemplate::addUnsafeTags(), but with com_mails\' HTML layout enabled (the default) core Joomla\'s MailTemplate::send() replaces the tags a second time, in the rendered layout, without escaping. Data Compliance must escape the values itself.'
+			'The user\'s name is not escaped exactly once in the HTML notification. With com_mails\' HTML layout enabled (the default) some Joomla versions do not escape the unsafe tags, so Data Compliance must; the others do, so it must not. See TemplateEmails::coreEscapesHtmlLayout().'
 		);
+	}
+
+	/**
+	 * With com_mails' HTML layout disabled every Joomla version escapes the unsafe tags itself: the values must not be
+	 * escaped in advance as well.
+	 *
+	 * @return  void
+	 * @since   4.1.1
+	 */
+	public function testUserDataIsEscapedOnceWithoutTheHtmlLayout(): void
+	{
+		static::$fixtures->setPluginParams('datacompliance', 'email', ['users' => 1, 'admins' => 0]);
+		// Despite its name, '0' means that the HTML layout is NOT used.
+		static::$fixtures->setComponentParams(['mail_style' => 'both', 'disable_htmllayout' => '0'], 'com_mails');
+
+		[, $username] = $this->victimWipesThemselves(['name' => 'E2E <b>Bold</b> Victim']);
+
+		$messages = $this->mailpit()->messagesTo($username . '@example.test');
+
+		$this->assertCount(1, $messages, 'The user did not receive exactly one notification at their original address.');
+
+		$message = $this->mailpit()->message($messages[0]['ID']);
+
+		$this->assertStringContainsString('&lt;b&gt;Bold&lt;/b&gt;', $message['HTML'], 'The user\'s name is not escaped exactly once.');
+		$this->assertStringNotContainsString('<b>Bold</b>', $message['HTML'], 'The user\'s name is raw HTML.');
+		$this->assertStringContainsString('E2E <b>Bold</b> Victim', $message['Text'], 'The plain text part does not address the user by name.');
 	}
 
 	/**

@@ -18,6 +18,7 @@ use Joomla\CMS\User\User;
 use Joomla\Database\DatabaseDriver;
 use Exception;
 use Joomla\Database\DatabaseInterface;
+use Joomla\Registry\Registry;
 
 /**
  * Manage and send emails with Joomla's email templates component
@@ -178,6 +179,43 @@ abstract class TemplateEmails
 			],
 		],
 	];
+
+	/**
+	 * Tags whose values must NOT be HTML–escaped in advance.
+	 *
+	 * - actions: HTML built from trusted language strings.
+	 * - sitename, deletedate: not user–supplied, and used in the subjects, which Joomla builds from the same values as
+	 *   the HTML body; escaping them would show HTML entities in the subject.
+	 */
+	private const TRUSTED_TAGS = ['actions', 'sitename', 'deletedate'];
+
+	/**
+	 * Does core Joomla escape the unsafe tags when it puts them into com_mails' HTML layout?
+	 *
+	 * Where it does not, MailTemplate::send() replaces the tags in the rendered layout without $isHtml = true, and
+	 * sendMail() has to escape the values itself. The boundaries come from the source of each release.
+	 *
+	 * @param   string  $joomlaVersion  The Joomla version, as in JVERSION
+	 *
+	 * @return  bool
+	 */
+	public static function coreEscapesHtmlLayout(string $joomlaVersion): bool
+	{
+		// Joomla 5.4: since 5.4.9
+		if (version_compare($joomlaVersion, '6.0.0-dev', 'lt'))
+		{
+			return version_compare($joomlaVersion, '5.4.9', 'ge');
+		}
+
+		// Joomla 6.0: no release does. Joomla 6.1: since 6.1.4
+		if (version_compare($joomlaVersion, '6.2.0-dev', 'lt'))
+		{
+			return version_compare($joomlaVersion, '6.1.4', 'ge');
+		}
+
+		// Joomla 6.2 and later: since 6.2.0-rc1
+		return version_compare($joomlaVersion, '6.2.0-rc1', 'ge');
+	}
 
 	/**
 	 * Returns the number of the known email templates.
@@ -344,7 +382,22 @@ abstract class TemplateEmails
 			 */
 			$templateMailer->addUnsafeTags(array_diff(array_keys($data), ['actions']));
 
-			$templateMailer->addTemplateData($data);
+			if (!self::coreEscapesHtmlLayout(JVERSION) && self::usesHtmlLayout($template))
+			{
+				/**
+				 * This Joomla version ignores the unsafe tags when it wraps the HTML body in com_mails' HTML layout. Give
+				 * it pre-escaped values for the HTML part, and the raw values for the plain text part. The raw values
+				 * are also what Joomla uses when it converts an empty HTML body from the plain text one; that conversion
+				 * does honour the unsafe tags, so nothing is escaped twice.
+				 */
+				$templateMailer->addTemplateData(self::escapeForHtml($data));
+				$templateMailer->addTemplateData($data, true);
+			}
+			else
+			{
+				$templateMailer->addTemplateData($data);
+			}
+
 			$templateMailer->addRecipient(trim($user->email), $user->name);
 
 			$result = $templateMailer->send();
@@ -360,6 +413,60 @@ abstract class TemplateEmails
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Will core Joomla send an HTML email wrapped in com_mails' HTML layout?
+	 *
+	 * This mirrors the logic of MailTemplate::send().
+	 *
+	 * @param   object  $template  The mail template, as returned by MailTemplate::getTemplate()
+	 *
+	 * @return  bool
+	 */
+	private static function usesHtmlLayout(object $template): bool
+	{
+		$config    = ComponentHelper::getParams('com_mails');
+		$mailStyle = $config->get('mail_style', 'plaintext');
+
+		if (!in_array($mailStyle, ['html', 'both'], true))
+		{
+			return false;
+		}
+
+		// Despite its name, a non-zero "disable_htmllayout" means that the HTML layout IS used.
+		$useLayout = $config->get('disable_htmllayout', '1');
+
+		if ((int) $config->get('alternative_mailconfig', 0) === 1)
+		{
+			$params    = $template->params ?? null;
+			$params    = $params instanceof Registry ? $params : new Registry($params);
+			$useLayout = $params->get('disable_htmllayout', $useLayout);
+		}
+
+		return (bool) $useLayout;
+	}
+
+	/**
+	 * HTML–escape the values of all but the trusted tags.
+	 *
+	 * @param   array  $data  The tag => value array
+	 *
+	 * @return  array
+	 */
+	private static function escapeForHtml(array $data): array
+	{
+		foreach ($data as $key => $value)
+		{
+			if (in_array(strtolower($key), self::TRUSTED_TAGS, true) || !is_scalar($value))
+			{
+				continue;
+			}
+
+			$data[$key] = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+		}
+
+		return $data;
 	}
 
 	/**

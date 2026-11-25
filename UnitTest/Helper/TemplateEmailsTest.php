@@ -145,4 +145,62 @@ class TemplateEmailsTest extends TestCase
 
 		$this->assertSame(strip_tags($subject), $subject, sprintf('The subject of %s contains markup: %s', $key, $subject));
 	}
+
+	/**
+	 * Joomla versions, and whether their MailTemplate::send() escapes the unsafe tags in com_mails' HTML layout. Read
+	 * off core's source, release by release.
+	 *
+	 * @return  array<string, array{0: string, 1: bool}>
+	 * @since   4.1.1
+	 */
+	public static function joomlaVersions(): array
+	{
+		$versions = [
+			// 5.4: since 5.4.9
+			'5.4.0'        => false,
+			'5.4.8'        => false,
+			'5.4.9-rc1'    => false,
+			'5.4.9'        => true,
+			'5.4.11'       => true,
+			// 6.0: no release has it
+			'6.0.0'        => false,
+			'6.0.4'        => false,
+			// 6.1: since 6.1.4
+			'6.1.0'        => false,
+			'6.1.3'        => false,
+			'6.1.4-rc1'    => false,
+			'6.1.4'        => true,
+			// 6.2: since 6.2.0-rc1, so every stable release
+			'6.2.0-alpha1' => false,
+			'6.2.0-beta3'  => false,
+			'6.2.0-rc1'    => true,
+			'6.2.0'        => true,
+			'6.2.1'        => true,
+		];
+
+		$cases = [];
+
+		foreach ($versions as $version => $escapes)
+		{
+			$cases[$version] = [$version, $escapes];
+		}
+
+		return $cases;
+	}
+
+	/**
+	 * sendMail() pre-escapes the values exactly on the Joomla versions which would not escape them: too few and user
+	 * data is raw HTML, too many and it is escaped twice.
+	 *
+	 * @param   string  $version  The Joomla version.
+	 * @param   bool    $escapes  Whether core escapes the values in the HTML layout.
+	 *
+	 * @return  void
+	 * @since   4.1.1
+	 */
+	#[DataProvider('joomlaVersions')]
+	public function testKnowsWhichJoomlaVersionsEscapeTheHtmlLayout(string $version, bool $escapes): void
+	{
+		$this->assertSame($escapes, TemplateEmails::coreEscapesHtmlLayout($version));
+	}
 }

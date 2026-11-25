@@ -1,6 +1,6 @@
 Akeeba Data Compliance 4.1.1
 ================================================================================
-# [LOW] HTML notification emails showed special characters in names as HTML entities, e.g. &amp;lt;
+# [LOW] HTML emails showed special characters in names as HTML entities, e.g. &amp;lt;, on some Joomla! versions
 
 Akeeba Data Compliance 4.1.0
 ================================================================================
